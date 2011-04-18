@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for database tables/fields belonging to extension 'mediaoembed'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="tx_mediaoembed_provider">oEmbed provider</label>
+			<label index="tx_mediaoembed_provider.name">Provider name</label>
+			<label index="tx_mediaoembed_provider.regular_expressions">Regular expressions</label>
+			<label index="tx_mediaoembed_provider.parent_provider">Parent provider</label>
+			<label index="tx_mediaoembed_provider.parent_provider.I.0">None</label>
+			<label index="tx_mediaoembed_provider_regex">oEmbed Provider Regex</label>
+			<label index="tx_mediaoembed_provider_regex.regex">oEmbed regex</label>
+			<label index="tx_mediaoembed_provider_regex.provider">Parent oEmbed provider</label>
+		</languageKey>
+	</data>
+</T3locallang>
+
