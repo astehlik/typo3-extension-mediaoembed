@@ -8,12 +8,11 @@
 		<languageKey index="default" type="array">
 			<label index="tx_mediaoembed_provider">oEmbed provider</label>
 			<label index="tx_mediaoembed_provider.name">Provider name</label>
-			<label index="tx_mediaoembed_provider.regular_expressions">Regular expressions</label>
-			<label index="tx_mediaoembed_provider.parent_provider">Parent provider</label>
-			<label index="tx_mediaoembed_provider.parent_provider.I.0">None</label>
-			<label index="tx_mediaoembed_provider_regex">oEmbed Provider Regex</label>
-			<label index="tx_mediaoembed_provider_regex.regex">oEmbed regex</label>
-			<label index="tx_mediaoembed_provider_regex.provider">Parent oEmbed provider</label>
+			<label index="tx_mediaoembed_provider.url_schemes">URL schemes</label>
+			<label index="tx_mediaoembed_provider.endpoint">Endpoint URL</label>
+			<label index="tx_mediaoembed_url_scheme">oEmbed Provider URL scheme</label>
+			<label index="tx_mediaoembed_url_scheme.url_scheme">URL scheme</label>
+			<label index="tx_mediaoembed_url_scheme.provider">Parent oEmbed provider</label>
 		</languageKey>
 	</data>
 </T3locallang>
