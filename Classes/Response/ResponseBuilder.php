@@ -22,61 +22,49 @@
  *                                                                        */
 
 /**
- * 
- * This type is used for representing playable videos.
+ * This type is used for representing static photos.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
- * If a provider wishes the consumer to just provide a thumbnail, rather than an
- * embeddable player, they should instead return a photo response type.
  * 
  * @package mediaoembed
  * @subpackage Response
  * @version $Id:$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Response_VideoResponse extends Tx_Mediaoembed_Response_AbstractResponse {
+class Tx_Mediaoembed_Response_ResponseBuilder {
 
-	/**
-     * The HTML required to embed a video player.
-     * The HTML should have no padding or margins.
-     * Consumers may wish to load the HTML in an off-domain iframe to avoid
-     * XSS vulnerabilities.
-     * This value is required.
-     *
-     * @var string
-     */
-	protected $html;
-
-	/**
-	 * The width in pixels required to display the HTML.
-	 * This value is required.
-	 *
-	 * @var string
-	 */
-	protected $width;
-
-	/**
-	 * The height in pixels required to display the HTML.
-	 * This value is required.
-	 *
-	 * @var string
-	 */
-	protected $height;
+	protected $response;
 	
-	/**
-	 * Initializes the response parameters that are specific for this
-	 * resource type.
-	 *
-	 * @param object the parsed json response
-	 */
-	public function initResponseParameters($parameters) {
-		$this->html = $parameters->html;
-		$this->width = $parameters->width;
-		$this->height = $parameters->height;
+	public function buildResponse($responseData) {
+		
+		$responseObject = json_decode($responseData);
+		
+		$this->createResponseByType($responseObject->type);
+		
+		$this->response->initCommonResponseParameters($responseObject);
+		$this->response->initResponseParameters($responseObject);
+		
+		return $this->response;
 	}
 	
-	
-	public function render() {
-		return $this->html;
+	protected function createResponseByType($type) {
+		
+		switch ($type) {
+			case 'link':
+				$this->response = t3lib_div::makeInstance('Tx_Mediaoembed_Response_LinkResponse');
+				break;
+			case 'photo':
+				$this->response = t3lib_div::makeInstance('Tx_Mediaoembed_Response_PhotoResponse');
+				break;
+			case 'rich':
+				$this->response = t3lib_div::makeInstance('Tx_Mediaoembed_Response_RichResponse');
+				break;
+			case 'video':
+				$this->response = t3lib_div::makeInstance('Tx_Mediaoembed_Response_VideoResponse');
+				break;
+			default:
+				throw new Tx_Mediaoembed_Exception_InvalidResourceTypeException($type);
+				break;	
+		}
 	}
 }
 ?>

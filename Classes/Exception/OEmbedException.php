@@ -22,61 +22,13 @@
  *                                                                        */
 
 /**
- * 
- * This type is used for representing playable videos.
- * Responses of this type must obey the maxwidth and maxheight request parameters.
- * If a provider wishes the consumer to just provide a thumbnail, rather than an
- * embeddable player, they should instead return a photo response type.
+ * Base class for all possible Exceptions that are not runtime errors.
  * 
  * @package mediaoembed
- * @subpackage Response
+ * @subpackage Exception
  * @version $Id:$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Response_VideoResponse extends Tx_Mediaoembed_Response_AbstractResponse {
-
-	/**
-     * The HTML required to embed a video player.
-     * The HTML should have no padding or margins.
-     * Consumers may wish to load the HTML in an off-domain iframe to avoid
-     * XSS vulnerabilities.
-     * This value is required.
-     *
-     * @var string
-     */
-	protected $html;
-
-	/**
-	 * The width in pixels required to display the HTML.
-	 * This value is required.
-	 *
-	 * @var string
-	 */
-	protected $width;
-
-	/**
-	 * The height in pixels required to display the HTML.
-	 * This value is required.
-	 *
-	 * @var string
-	 */
-	protected $height;
-	
-	/**
-	 * Initializes the response parameters that are specific for this
-	 * resource type.
-	 *
-	 * @param object the parsed json response
-	 */
-	public function initResponseParameters($parameters) {
-		$this->html = $parameters->html;
-		$this->width = $parameters->width;
-		$this->height = $parameters->height;
-	}
-	
-	
-	public function render() {
-		return $this->html;
-	}
+abstract class Tx_Mediaoembed_Exception_OEmbedException extends t3lib_exception {
 }
 ?>

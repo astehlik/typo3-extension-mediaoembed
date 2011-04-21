@@ -1,5 +1,5 @@
 <?php
-declare(ENCODING = 'utf-8');
+//declare(ENCODING = 'utf-8');
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -35,5 +35,17 @@ declare(ENCODING = 'utf-8');
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
 class Tx_Mediaoembed_Response_LinkResponse extends Tx_Mediaoembed_Response_AbstractResponse {
+
+	/**
+	 * Initializes the response parameters that are specific for this
+	 * resource type.
+	 */
+	public function initResponseParameters($parameters) {
+	}
+	
+	
+	public function render() {
+		return 'I am a link.';
+	}
 }
 ?>

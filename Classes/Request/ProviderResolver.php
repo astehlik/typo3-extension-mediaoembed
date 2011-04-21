@@ -1,5 +1,5 @@
 <?php
-declare(ENCODING = 'utf-8');
+//declare(ENCODING = 'utf-8');
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -32,11 +32,21 @@ declare(ENCODING = 'utf-8');
 class Tx_Mediaoembed_Request_ProviderResolver {
 	
 	/**
+	 * The parent content object
+	 */
+	protected $cObj;
+	
+	/**
 	 * Contains the current media URL
 	 * 
 	 * @var string
 	 */
 	protected $url;
+	
+	
+	public function __construct($cObj) {
+		$this->cObj = $cObj;
+	}
 	
 	/**
 	 * Returns the first provider whos url scheme matches the given
@@ -45,10 +55,12 @@ class Tx_Mediaoembed_Request_ProviderResolver {
 	 * @return array Provider data
 	 * @throws Exception If URL is invalid or no matching provider was found.
 	 */
-	public function getMatchingProvider($url) {
+	public function getMatchingProviderData($url) {
 		$this->url = $url;
 		$this->checkIfUrlIsValid();
 		$providerUid = $this->getMatchingProviderUid();
+		$providerData = $this->fetchProviderDataFromDatabase($providerUid);
+		return $providerData;
 	}
 	
 	/**
@@ -76,7 +88,7 @@ class Tx_Mediaoembed_Request_ProviderResolver {
 		
 		$providerUid = FALSE;
 		
-		$urlSchemeResult = $this->fetchSortedRegularExpressionsFromDatabase();
+		$urlSchemeResult = $this->fetchSortedUrlSchemesFromDatabase();
 		
 		while ($urlSchemeData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($urlSchemeResult)) {
 			$urlScheme = preg_quote($urlSchemeData['url_scheme'], '/');
@@ -101,8 +113,13 @@ class Tx_Mediaoembed_Request_ProviderResolver {
 	 */
 	protected function fetchProviderDataFromDatabase($providerUid) {
 		
-		$result = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'tx_mediaoembed_provider', 'uid = ' . intval($providerUid));
-		return $result;
+		$providerData = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'tx_mediaoembed_provider', 'uid = ' . intval($providerUid));
+		
+		if (!isset($providerData)) {
+			throw new RuntimeException('Error retrieving provider data from database.', 1303399235);
+		}
+		
+		return $providerData;
 	}
 	
 	/**

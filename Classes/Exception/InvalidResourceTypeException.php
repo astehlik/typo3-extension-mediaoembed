@@ -22,61 +22,19 @@
  *                                                                        */
 
 /**
- * 
- * This type is used for representing playable videos.
- * Responses of this type must obey the maxwidth and maxheight request parameters.
- * If a provider wishes the consumer to just provide a thumbnail, rather than an
- * embeddable player, they should instead return a photo response type.
+ * Resolves a matching provider for the given URL
  * 
  * @package mediaoembed
- * @subpackage Response
+ * @subpackage Request
  * @version $Id:$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Response_VideoResponse extends Tx_Mediaoembed_Response_AbstractResponse {
-
-	/**
-     * The HTML required to embed a video player.
-     * The HTML should have no padding or margins.
-     * Consumers may wish to load the HTML in an off-domain iframe to avoid
-     * XSS vulnerabilities.
-     * This value is required.
-     *
-     * @var string
-     */
-	protected $html;
-
-	/**
-	 * The width in pixels required to display the HTML.
-	 * This value is required.
-	 *
-	 * @var string
-	 */
-	protected $width;
-
-	/**
-	 * The height in pixels required to display the HTML.
-	 * This value is required.
-	 *
-	 * @var string
-	 */
-	protected $height;
+class Tx_Mediaoembed_Exception_InvalidResourceTypeException extends Tx_Mediaoembed_Exception_OEmbedException {
 	
-	/**
-	 * Initializes the response parameters that are specific for this
-	 * resource type.
-	 *
-	 * @param object the parsed json response
-	 */
-	public function initResponseParameters($parameters) {
-		$this->html = $parameters->html;
-		$this->width = $parameters->width;
-		$this->height = $parameters->height;
-	}
-	
-	
-	public function render() {
-		return $this->html;
+	public function __construct($resourceType) {
+		$message = 'The server returned an invalid resource type: %s';
+		$message = sprintf($message, htmlspecialchars($resourceType));
+		parent::__construct($message, 1303403046);
 	}
 }
 ?>

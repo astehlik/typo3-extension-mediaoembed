@@ -1,5 +1,5 @@
 <?php
-declare(ENCODING = 'utf-8');
+//declare(ENCODING = 'utf-8');
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -80,14 +80,6 @@ abstract class Tx_Mediaoembed_Response_AbstractResponse {
 	 * @var string
 	 */
 	protected $provider_name;
-
-	/**
-	 * The name of the resource provider.
-	 * This value is optional.
-	 *
-	 * @var string
-	 */
-	protected $provider_name;
  
 	/**
 	 * The url of the resource provider.
@@ -105,18 +97,6 @@ abstract class Tx_Mediaoembed_Response_AbstractResponse {
 	 * @var string
 	 */
 	protected $cache_age;
-	
-	/**
-	 * A URL to a thumbnail image representing the resource.
-	 * The thumbnail must respect any maxwidth and maxheight parameters.
-	 * If this paramater is present, thumbnail_width and thumbnail_height
-	 * must also be present.
-	 * Consumers may choose to use this value or not.
-	 * This value is optional.
-	 *
-	 * @var string
-	 */
-	protected $thumbnail_url;
 	
 	/**
 	 * A URL to a thumbnail image representing the resource.
@@ -149,6 +129,41 @@ abstract class Tx_Mediaoembed_Response_AbstractResponse {
 	 * @var string
 	 */
 	protected $thumbnail_height;
+	
+	/**
+	 * Initializes the response parameters that are valid for all
+	 * response types.
+	 * 
+	 * @param object the parsed json response
+	 */
+	public function initCommonResponseParameters($parameters) {
+		$this->type = $parameters->type;
+		$this->version = $parameters->version;
+		$this->title = $parameters->title;
+		$this->author_name = $parameters->author_name;
+		$this->author_url = $parameters->author_url;
+		$this->provider_name = $parameters->provider_name;
+		$this->provider_url = $parameters->provider_url;
+		$this->cache_age = $parameters->cache_age;
+		$this->thumbnail_url = $parameters->thumbnail_url;
+		$this->thumbnail_width = $parameters->thumbnail_width;
+		$this->thumbnail_height = $parameters->thumbnail_height;
+	}
+	
+	/**
+	 * Initializes the response parameters that are specific for this
+	 * resource type.
+	 * 
+	 * @param object the parsed json response
+	 */
+	abstract public function initResponseParameters($parameters);
+	
+	/**
+	 * Renders the embed code based on the current response data
+	 *
+	 * @return string
+	 */
+	abstract public function render();
 	
 }
 ?>

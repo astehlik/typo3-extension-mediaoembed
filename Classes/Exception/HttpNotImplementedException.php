@@ -1,5 +1,5 @@
 <?php
-declare(ENCODING = 'utf-8');
+//declare(ENCODING = 'utf-8');
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -22,50 +22,27 @@ declare(ENCODING = 'utf-8');
  *                                                                        */
 
 /**
+ * Exception if server returned 501 Not Implemented
+ *
+ * The provider cannot return a response in the requested format.
+ * This should be sent when (for example) the request includes format=xml
+ * and the provider doesn't support XML responses.
+ *
+ * However, providers are encouraged to support both JSON and XML.
+ *
  * @package mediaoembed
- * @subpackage Renderer
+ * @subpackage Request
  * @version $Id:$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_OEmbed_Request {
-
-	/**
-     * The URL to retrieve embedding information for.
-     * This value is required.
-     *
-     * @var string
-     */
-	protected $url;
-
-	/**
-	 * The maximum width of the embedded resource.
-	 * Only applies to some resource types (as specified below).
-	 * For supported resource types, this parameter must be respected by providers.
-	 * This value is optional.
-	 *
-	 * @var string
-	 */
-	protected $maxwidth;
-
-	/**
-	 * The maximum height of the embedded resource.
-	 * Only applies to some resource types (as specified below).
-	 * For supported resource types, this parameter must be respected by providers.
-	 * This value is optional.
-	 *
-	 * @var string
-	 */
-	protected $maxheight;
-
-	/**
-	 * The required response format. When not specified, the provider can return
-	 * any valid response format.
-	 * When specified, the provider must return data in the request format,
-	 * else return an error (see below for error codes). 
-	 * This value is optional.
-	 *
-	 * @var string
-	 */
-	protected $format;
+class Tx_Mediaoembed_Exception_HttpNotImplementedException extends Tx_Mediaoembed_Exception_OEmbedException {
+	
+	public function __construct($mediaUrl, $requestFormat, $requestUrl) {
+		$message  = 'The server returned a 501 Not Implemented error for this URL: %s. ';
+		$message .= 'Please make sure that the data you trying to contact supports the current request format: %s. ';
+		$message .= 'The full request to the server was: %s';
+		$message = sprintf($message, $mediaUrl, $requestFormat, $requestUrl);
+		parent::__construct($message, 1303402211);
+	}
 }
 ?>

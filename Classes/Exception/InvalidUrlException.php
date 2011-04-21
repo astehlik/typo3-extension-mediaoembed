@@ -1,5 +1,5 @@
 <?php
-declare(ENCODING = 'utf-8');
+//declare(ENCODING = 'utf-8');
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -29,7 +29,7 @@ declare(ENCODING = 'utf-8');
  * @version $Id:$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Exception_InvalidUrlException extends t3lib_exception {
+class Tx_Mediaoembed_Exception_InvalidUrlException extends Tx_Mediaoembed_Exception_OEmbedException {
 	
 	public function __construct($url) {
 		$message = 'The media URL %s is not a valid URL. Please make sure the URL is a valid http:// or https:// URL.';

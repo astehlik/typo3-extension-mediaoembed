@@ -1,5 +1,5 @@
 <?php
-declare(ENCODING = 'utf-8');
+//declare(ENCODING = 'utf-8');
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -57,5 +57,21 @@ class Tx_Mediaoembed_Response_PhotoResponse extends Tx_Mediaoembed_Response_Abst
 	 * @var string
 	 */
 	protected $height;
+	
+	/**
+	 * Initializes the response parameters that are specific for this
+	 * resource type.
+	 *
+	 * @param object the parsed json response
+	 */
+	public function initResponseParameters($parameters) {
+		$this->url = $parameters->url;
+		$this->width = $parameters->width;
+		$this->height = $parameters->height;
+	}
+	
+	public function render() {
+		return sprintf('<img src="%s" width="%s" height="%s" alt="%s">', $this->url, $this->width, $this->height, $this->title);
+	}
 }
 ?>

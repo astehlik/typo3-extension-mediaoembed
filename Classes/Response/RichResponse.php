@@ -1,5 +1,5 @@
 <?php
-declare(ENCODING = 'utf-8');
+//declare(ENCODING = 'utf-8');
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -60,5 +60,18 @@ class Tx_Mediaoembed_Response_RichResponse extends Tx_Mediaoembed_Response_Abstr
 	 * @var string
 	 */
 	protected $height;
+	
+	/**
+	 * Initializes the response parameters that are specific for this
+	 * resource type.
+	 *
+	 * @param object the parsed json response
+	 */
+	public function initResponseParameters($parameters) {
+	}
+	
+	public function render() {
+		return 'I am rich.';
+	}
 }
 ?>
