@@ -1,0 +1,107 @@
+
+
+tt_content.media.20.tx_mediaoembed {
+
+	secureIframe {
+		baseUrl < config.baseUrl
+		enable = 0
+	}
+
+	defaultMaxwidth = {$styles.content.imgtext.maxW}
+	defaultMaxheight =
+
+	downloadPhoto = {$plugin.tx_mediaoembed.downloadPhoto}
+
+	renderItem = COA
+	renderItem {
+
+		stdWrap.outerWrap.cObject = COA
+		stdWrap.outerWrap.cObject {
+
+			10 = TEXT
+			10.value = <div
+
+			20 = TEXT
+			20 {
+				value = tx-mediaoembed-unknown
+				override {
+					data = registerarray: tx_mediaoembed|response|type
+					required = 1
+					wrap = tx-mediaoembed-
+				}
+				noTrimWrap = | class="tx-mediaoembed |"|
+			}
+
+			30 = TEXT
+			30 {
+				data = registerarray: tx_mediaoembed|response|width
+				required = 1
+				noTrimWrap = |style="width: |px;"|
+			}
+
+			40 = TEXT
+			40.value = >|</div>
+		}
+
+		10 = CASE
+		10 {
+
+			key = TEXT
+			key.data = registerarray : tx_mediaoembed|response|type
+
+			default = TEXT
+			default.value = Unknown response type: {registerarray : tx_mediaoembed|response|type}
+			default.insertData = 1
+
+			photo = CASE
+			photo {
+
+				key = {$plugin.tx_mediaoembed.downloadPhoto}
+
+				default = HTML
+				default {
+					value (
+						<img
+						src="{registerarray: tx_mediaoembed|response|url}"
+						width="{registerarray: tx_mediaoembed|response|width}"
+						height="{registerarray: tx_mediaoembed|response|height}"
+						alt="{registerarray: tx_mediaoembed|response|title}" />
+					)
+					value.insertData = 1
+				}
+
+				1 = IMAGE
+				1 {
+					file {
+						import.data = registerarray:tx_mediaoembed|response|url_tempimage
+						width.data = registerarray:tx_mediaoembed|response|width
+						height.data = registerarray:tx_mediaoembed|response|height
+					}
+					altText.data = registerarray:tx_mediaoembed|response|title
+				}
+
+			}
+
+			video = HTML
+			video.value.data = registerarray : tx_mediaoembed|response|html
+
+			rich = HTML
+			rich.value.data = registerarray : tx_mediaoembed|response|html
+
+		}
+
+		20 = COA
+		20 {
+			wrap = <div class="tx-mediaoembed-directlink">|</div>
+
+			10 = TEXT
+			10 {
+				data = registerarray: tx_mediaoembed|provider|name
+				override.data = registerarray: tx_mediaoembed|response|provider_name
+				noTrimWrap = ||  Direktlink|
+				outerWrap = |
+				outerWrap.typolink.parameter.data = registerarray: tx_mediaoembed|request|url
+			}
+		}
+	}
+}

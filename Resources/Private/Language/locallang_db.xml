@@ -8,11 +8,11 @@
 		<languageKey index="default" type="array">
 			<label index="tx_mediaoembed_provider">oEmbed provider</label>
 			<label index="tx_mediaoembed_provider.name">Provider name</label>
+			<label index="tx_mediaoembed_provider.is_generic">Is generic</label>
 			<label index="tx_mediaoembed_provider.url_schemes">URL schemes</label>
 			<label index="tx_mediaoembed_provider.endpoint">Endpoint URL</label>
-			<label index="tx_mediaoembed_url_scheme">oEmbed Provider URL scheme</label>
-			<label index="tx_mediaoembed_url_scheme.url_scheme">URL scheme</label>
-			<label index="tx_mediaoembed_url_scheme.provider">Parent oEmbed provider</label>
+			<label index="tx_mediaoembed_provider.use_generic_providers">Use generic providers</label>
+			<label index="tx_mediaoembed_provider.embedly_shortname">embed.ly Shortname</label>
 		</languageKey>
 	</data>
 </T3locallang>

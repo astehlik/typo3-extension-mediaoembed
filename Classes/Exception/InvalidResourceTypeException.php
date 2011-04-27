@@ -23,14 +23,14 @@
 
 /**
  * Resolves a matching provider for the given URL
- * 
+ *
  * @package mediaoembed
  * @subpackage Request
  * @version $Id:$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
 class Tx_Mediaoembed_Exception_InvalidResourceTypeException extends Tx_Mediaoembed_Exception_OEmbedException {
-	
+
 	public function __construct($resourceType) {
 		$message = 'The server returned an invalid resource type: %s';
 		$message = sprintf($message, htmlspecialchars($resourceType));

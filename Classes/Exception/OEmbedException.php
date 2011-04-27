@@ -23,7 +23,7 @@
 
 /**
  * Base class for all possible Exceptions that are not runtime errors.
- * 
+ *
  * @package mediaoembed
  * @subpackage Exception
  * @version $Id:$

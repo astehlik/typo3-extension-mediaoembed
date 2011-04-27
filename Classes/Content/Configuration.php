@@ -1,5 +1,5 @@
 <?php
-declare(ENCODING = 'utf-8');
+//declare(ENCODING = 'utf-8');
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -22,12 +22,46 @@ declare(ENCODING = 'utf-8');
  *                                                                        */
 
 /**
+ * Handels TypoScript and FlexForm configuration
+ *
  * @package mediaoembed
- * @subpackage Renderer
+ * @subpackage Content
  * @version $Id:$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
+class Tx_Mediaoembed_Content_Configuration {
 
-class Tx_Mediaoembed_Renderer_LinkRenderer {
+	/**
+	 * Current TypoScript / Flexform configuration
+	 */
+	protected $conf;
+
+	/**
+	 * Constructor for the content configuration.
+	 *
+	 * @param $conf Current TypoScript / Flexform configuration
+	 */
+	public function __construct($conf) {
+		$this->conf = $conf;
+	}
+
+	public function getMaxheight() {
+		return $this->conf['height'];
+	}
+
+	public function getMaxwidth() {
+		return $this->conf['width'];
+	}
+
+	public function getMediaUrl() {
+		return $this->conf['parameter.']['mmFile'];
+	}
+
+	public function getRenderItem() {
+		return $this->conf['tx_mediaoembed.']['renderItem'];
+	}
+
+	public function getRenderItemConfig() {
+		return $this->conf['tx_mediaoembed.']['renderItem.'];
+	}
 }
-?>

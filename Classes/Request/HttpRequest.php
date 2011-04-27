@@ -30,22 +30,25 @@
 class Tx_Mediaoembed_Request_HttpRequest {
 
 	/**
-     * The URL to retrieve embedding information for.
-     * This value is required.
-     *
-     * @var string
-     */
-	protected $url;
-
-	/**
-	 * The maximum width of the embedded resource.
-	 * Only applies to some resource types (as specified below).
-	 * For supported resource types, this parameter must be respected by providers.
-	 * This value is optional.
+	 * The endpoint URL that should be contacted to get the embed
+	 * information.
 	 *
 	 * @var string
 	 */
-	protected $maxwidth;
+	protected $endpoint;
+
+	/**
+	 * The required response format. When not specified, the provider can return
+	 * any valid response format.
+	 * When specified, the provider must return data in the request format,
+	 * else return an error (see below for error codes).
+	 * This value is optional.
+	 *
+	 * Important! At the moment, we only handle JSON formatted Responses.
+	 *
+	 * @var string
+	 */
+	protected $format = 'json';
 
 	/**
 	 * The maximum height of the embedded resource.
@@ -58,87 +61,176 @@ class Tx_Mediaoembed_Request_HttpRequest {
 	protected $maxheight;
 
 	/**
-	 * The required response format. When not specified, the provider can return
-	 * any valid response format.
-	 * When specified, the provider must return data in the request format,
-	 * else return an error (see below for error codes). 
+	 * The maximum width of the embedded resource.
+	 * Only applies to some resource types (as specified below).
+	 * For supported resource types, this parameter must be respected by providers.
 	 * This value is optional.
-	 * 
-	 * Important! At the moment, we only handle JSON formatted Responses.
 	 *
 	 * @var string
 	 */
-	protected $format = 'json';
-	
+	protected $maxwidth;
+
 	/**
-	 * The endpoint URL that should be contacted to get the embed
-	 * information.
-	 * 
-	 * @var string
-	 */
-	protected $endpoint;
-	
+     * The URL to retrieve embedding information for.
+     * This value is required.
+     *
+     * @var string
+     */
+	protected $url;
+
 	/**
-	 * Setter for the URL
-	 * 
-	 * @param string $url
+	 * Builds a request url and tries to read the embed information
+	 * from the server. Result should be in json format.
+	 *
+	 * @return string json formatted result from server
 	 */
-	public function setUrl($url) {
-		$this->url = $url;
+	public function sendAndGetResponseData() {
+		$parameters = $this->buildRequestParameterArray();
+		$requestUrl = $this->buildRequestUrl($parameters);
+		$responseData = $this->sendRequest($requestUrl);
+		return $responseData;
 	}
-	
-	/**
-	 * Setter for the maximum width
-	 * 
-	 * @param string $url
-	 */
-	public function setMaxwidth($maxwidth) {
-		$this->maxwidth = $maxwidth;
-	}
-	
-	/**
-	 * Setter for the maximum height
-	 * 
-	 * @param string $url
-	 */
-	public function setMaxheight($maxheight) {
-		$this->maxheight = $maxheight;
-	}
-	
+
 	/**
 	 * Setter for the endpoint URL
-	 * 
+	 *
 	 * @param string $url
 	 */
 	public function setEndpoint($endpoint) {
 		$this->endpoint = $endpoint;
 	}
-	
+
 	/**
-	 * Builds a request url and tries to read the embed information
-	 * from the server. Result should be in json format.
-	 * 
-	 * @return string json formatted result from server
+	 * Setter for the maximum height
+	 *
+	 * @param string $url
 	 */
-	public function sendAndGetResponseData() {
-		$parameters = $this->getRequestParameters();
-		$requestUrl = $this->buildRequestUrl($parameters);
-		$requestUrl = 'http://www.flickr.com/services/oembed/?format=json&url=http%3A//www.flickr.com/photos/bees/2341623661/';
-		$responseData = $this->sendRequest($requestUrl);
-		return $responseData;
+	public function setMaxheight($maxheight) {
+		$this->maxheight = Tx_Mediaoembed_Utility_Validation::getValidWithHeightValue($maxheight);
 	}
-	
+
+	/**
+	 * Setter for the maximum width
+	 *
+	 * @param string $url
+	 */
+	public function setMaxwidth($maxwidth) {
+		$this->maxwidth = Tx_Mediaoembed_Utility_Validation::getValidWithHeightValue($maxwidth);
+	}
+
+	/**
+	 * Setter for the URL
+	 *
+	 * @param string $url
+	 */
+	public function setUrl($url) {
+		$this->url = $url;
+	}
+
+	/**
+	 * Builds an array of parameters that should be attached to the
+	 * endpoint url.
+	 *
+	 * @return array
+	 */
+	protected function buildRequestParameterArray() {
+
+		$parameters = array();
+
+		if (isset($this->maxwidth)) {
+			$parameters['maxwidth'] = $this->maxwidth;
+		}
+
+		if (isset($this->maxheight)) {
+			$parameters['maxheight'] = $this->maxheight;
+		}
+
+		if (isset($this->format)) {
+			$parameters['format'] = $this->format;
+		}
+			// needs to be last parameter
+		$parameters['url'] = $this->url;
+
+		return $parameters;
+	}
+
+	/**
+	 * Builds a request url for the current endpoint based on the
+	 * given parameter array.
+	 *
+	 * If the endpoint URL contains a marker ###FORMAT### or {format}
+	 * it will be replaced with the expected response data format.
+	 *
+	 * @param array $parameters
+	 * @return string
+	 */
+	protected function buildRequestUrl($parameters) {
+
+		if (strstr('?', $this->endpoint)) {
+			$firstParameter = FALSE;
+		}
+		else {
+			$firstParameter = TRUE;
+		}
+
+		$requestUrl = $this->endpoint;
+
+		$requestUrl = t3lib_parsehtml::substituteMarker($requestUrl, '###FORMAT###', $this->format);
+		$requestUrl = t3lib_parsehtml::substituteMarker($requestUrl, '{format}', $this->format);
+
+		foreach ($parameters as $name => $value) {
+
+			$name = urlencode($name);
+			$value = urlencode($value);
+
+			if (!$firstParameter) {
+				$parameterGlue = '&';
+			} else {
+				$parameterGlue = '?';
+				$firstParameter = FALSE;
+			}
+
+			$requestUrl .= $parameterGlue . $name . '=' . $value;
+		}
+
+		return $requestUrl;
+	}
+
+	/**
+	 * Tries to get the real error code from the $report array of
+	 * t3lib_div::getURL()
+	 *
+	 * @param array $report report array of t3lib_div::getURL()
+	 * @return string the error code
+	 * @see t3lib_div::getURL()
+	 */
+	protected function getErrorCode($report) {
+
+		$message = $report['message'];
+		$errorCode = $report['error'];
+
+		if (strstr($message, '404')) {
+			$errorCode = '404';
+		} else if (strstr($message, '501')) {
+			$errorCode = '501';
+		} else if (strstr($message, '401')) {
+			$errorCode = '401';
+		}
+
+		return $errorCode;
+	}
+
 	/**
 	 * Sends a request to the given URL and returns the reponse
 	 * from the server.
-	 * 
+	 *
 	 * @return string response data
 	 */
 	protected function sendRequest($requestUrl) {
-		
+
 		$report = array();
 		$responseData = t3lib_div::getURL($requestUrl, 0, FALSE, $report);
-		
+
 		if ($report['error'] !== 0) {
 			switch ($this->getErrorCode($report)) {
 				case 404;
@@ -155,86 +247,8 @@ class Tx_Mediaoembed_Request_HttpRequest {
 					break;
 			}
 		}
-		
+
 		return $responseData;
 	}
-	
-	
-	protected function getErrorCode($report) {
-		$message = $report['message'];
-		$errorCode = $report['error'];
-		if (strstr($message, '404')) {
-			$errorCode = '404';
-		} else if (strstr($message, '501')) {
-			$errorCode = '501';
-		} else if (strstr($message, '401')) {
-			$errorCode = '401';
-		}
-		return $errorCode;
-	}
-	
-	/**
-	 * Builds an array of parameters that should be attached to the
-	 * endpoint url.
-	 * 
-	 * @return array
-	 */
-	protected function getRequestParameters() {
-		
-		$parameters = array();
-		
-		if (isset($this->maxwidth)) {
-			$parameters['maxwidth'] = $this->maxwidth;
-		}
-		
-		if (isset($this->maxheight)) {
-			$parameters['maxheight'] = $this->maxheight;
-		}
-		
-		if (isset($this->format)) {
-			$parameters['format'] = $this->format;
-		}
-			// needs to be last parameter
-		$parameters['url'] = 'http://www.youtube.com/watch?v=l4drBFV95VE';
-		
-		return $parameters;
-	}
-	
-	/**
-	 * Builds a request url for the current endpoint based on the
-	 * given parameter array.
-	 * 
-	 * @return string
-	 */
-	protected function buildRequestUrl($parameters) {
-	
-		if (strstr('?', $this->endpoint)) {
-			$firstParameter = FALSE;
-		}
-		else {
-			$firstParameter = TRUE;
-		}
-		
-		$requestUrl = $this->endpoint;
-		
-		foreach ($parameters as $name => $value) {
-		
-			$name = urlencode($name);
-			$value = urlencode($value);
-			
-			if (!$firstParameter) {
-				$parameterGlue = '&';
-			} else {
-				$parameterGlue = '?';
-				$firstParameter = FALSE;
-			}
-		
-			$requestUrl .= $parameterGlue . $name . '=' . $value;
-		}
-		
-		return $requestUrl;
-	}
-	
-	
 }
 ?>

@@ -22,18 +22,18 @@
  *                                                                        */
 
 /**
- * 
+ *
  * This type is used for representing playable videos.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
  * If a provider wishes the consumer to just provide a thumbnail, rather than an
  * embeddable player, they should instead return a photo response type.
- * 
+ *
  * @package mediaoembed
  * @subpackage Response
  * @version $Id:$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Response_VideoResponse extends Tx_Mediaoembed_Response_AbstractResponse {
+class Tx_Mediaoembed_Response_VideoResponse extends Tx_Mediaoembed_Response_GenericResponse {
 
 	/**
      * The HTML required to embed a video player.
@@ -61,22 +61,44 @@ class Tx_Mediaoembed_Response_VideoResponse extends Tx_Mediaoembed_Response_Abst
 	 * @var string
 	 */
 	protected $height;
-	
+
 	/**
 	 * Initializes the response parameters that are specific for this
 	 * resource type.
 	 *
 	 * @param object the parsed json response
 	 */
-	public function initResponseParameters($parameters) {
-		$this->html = $parameters->html;
-		$this->width = $parameters->width;
-		$this->height = $parameters->height;
+	public function initializeTypeSpecificResponseData() {
+		$this->html = $this->responseDataArray['html'];
+		$this->width = $this->responseDataArray['width'];
+		$this->height = $this->responseDataArray['height'];
 	}
-	
-	
-	public function render() {
+
+	/**
+	 * Getter for the height in pixels required to display the HTML.
+	 *
+	 * @return string
+	 */
+	public function getHeight() {
+		return $this->height;
+	}
+
+	/**
+	 * Getter for the HTML required to embed a video player.
+	 *
+	 * @return string
+	 */
+	public function getHtml() {
 		return $this->html;
+	}
+
+	/**
+	 * Getter for the width in pixels required to display the HTML.
+	 *
+	 * @return string
+	 */
+	public function getWidth() {
+		return $this->width;
 	}
 }
 ?>

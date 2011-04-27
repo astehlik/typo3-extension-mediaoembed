@@ -24,7 +24,7 @@
 /**
  * This type is used for representing static photos.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
- * 
+ *
  * @package mediaoembed
  * @subpackage Response
  * @version $Id:$
@@ -32,22 +32,40 @@
  */
 class Tx_Mediaoembed_Response_ResponseBuilder {
 
+	/**
+	 * The response that will be build by the response builder
+	 *
+	 * @var Tx_Mediaoembed_Response_GenericResponse
+	 */
 	protected $response;
-	
+
+	/**
+	 * Builds a response object using the reponse data returned
+	 * from the provider.
+	 *
+	 * @param string $responseData Raw response data from the provider
+	 * @return Tx_Mediaoembed_Response_GenericResponse An instance of a response
+	 */
 	public function buildResponse($responseData) {
-		
-		$responseObject = json_decode($responseData);
-		
+
+		$responseData = json_decode($responseData, TRUE);
+
 		$this->createResponseByType($responseObject->type);
-		
-		$this->response->initCommonResponseParameters($responseObject);
-		$this->response->initResponseParameters($responseObject);
-		
+
+		$this->response->initializeResponseData($responseData);
+
 		return $this->response;
 	}
-	
+
+	/**
+	 * Creates an instance of a non abstract response for the
+	 * given response type.
+	 *
+	 * @param string $type
+	 * @return void
+	 */
 	protected function createResponseByType($type) {
-		
+
 		switch ($type) {
 			case 'link':
 				$this->response = t3lib_div::makeInstance('Tx_Mediaoembed_Response_LinkResponse');
@@ -62,8 +80,8 @@ class Tx_Mediaoembed_Response_ResponseBuilder {
 				$this->response = t3lib_div::makeInstance('Tx_Mediaoembed_Response_VideoResponse');
 				break;
 			default:
-				throw new Tx_Mediaoembed_Exception_InvalidResourceTypeException($type);
-				break;	
+				$this->response = t3lib_div::makeInstance('Tx_Mediaoembed_Response_GenericResponse');
+				break;
 		}
 	}
 }

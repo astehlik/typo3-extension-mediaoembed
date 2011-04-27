@@ -24,13 +24,28 @@
 /**
  * This type is used for representing static photos.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
- * 
+ *
  * @package mediaoembed
  * @subpackage Response
  * @version $Id:$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Response_PhotoResponse extends Tx_Mediaoembed_Response_AbstractResponse {
+class Tx_Mediaoembed_Response_PhotoResponse extends Tx_Mediaoembed_Response_GenericResponse {
+	/**
+	 * The height in pixels of the image specified in the url parameter.
+	 * This value is required.
+	 *
+	 * @var string
+	 */
+	protected $height;
+
+	/**
+	 * The width in pixels of the image specified in the url parameter.
+	 * This value is required.
+	 *
+	 * @var string
+	 */
+	protected $width;
 
 	/**
      * The source URL of the image.
@@ -43,35 +58,42 @@ class Tx_Mediaoembed_Response_PhotoResponse extends Tx_Mediaoembed_Response_Abst
 	protected $url;
 
 	/**
-	 * The width in pixels of the image specified in the url parameter.
-	 * This value is required.
-	 *
-	 * @var string
-	 */
-	protected $width;
-
-	/**
-	 * The height in pixels of the image specified in the url parameter.
-	 * This value is required.
-	 *
-	 * @var string
-	 */
-	protected $height;
-	
-	/**
 	 * Initializes the response parameters that are specific for this
 	 * resource type.
 	 *
 	 * @param object the parsed json response
 	 */
-	public function initResponseParameters($parameters) {
-		$this->url = $parameters->url;
-		$this->width = $parameters->width;
-		$this->height = $parameters->height;
+	public function initializeTypeSpecificResponseData() {
+		$this->url = $this->responseDataArray['url'];
+		$this->width = $this->responseDataArray['width'];
+		$this->height = $this->responseDataArray['height'];
 	}
-	
-	public function render() {
-		return sprintf('<img src="%s" width="%s" height="%s" alt="%s">', $this->url, $this->width, $this->height, $this->title);
+
+	/**
+	 * Getter for the height in pixels of the image specified in the url parameter.
+	 *
+	 * @return string
+	 */
+	public function getHeight() {
+		return $this->height;
+	}
+
+	/**
+	 * Getter for the source URL of the image.
+	 *
+	 * @return string
+	 */
+	public function getUrl() {
+		return $this->url;
+	}
+
+	/**
+	 * Getter for the width in pixels of the image specified in the url parameter.
+	 *
+	 * @return string
+	 */
+	public function getWidth() {
+		return $this->width;
 	}
 }
 ?>

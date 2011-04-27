@@ -22,19 +22,95 @@
  *                                                                        */
 
 /**
- * Resolves a matching provider for the given URL
+ * Stores all relevant data for the content REGISTER
  *
  * @package mediaoembed
- * @subpackage Request
+ * @subpackage Content
  * @version $Id:$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Exception_InvalidResponseException extends Tx_Mediaoembed_Exception_OEmbedException {
+class Tx_Mediaoembed_Content_RegisterData {
 
-	public function __construct($response) {
-		$message = 'The server returned an invalid response that could not be parsed. The servers response was: %s';
-		$message = sprintf($message, htmlspecialchars($response));
-		parent::__construct($message, 1303402784);
+	/**
+	 * The provider that was used for the request.
+	 *
+	 * @var Tx_Mediaoembed_Request_Provider
+	 */
+	protected $provider;
+
+	/**
+	 * The request that was send to get the embed code
+	 *
+	 * @var Tx_Mediaoembed_Request_HttpRequest
+	 */
+	protected $request;
+
+	/**
+	 * The response we got from the server
+	 *
+	 * @var Tx_Mediaoembed_Response_GenericResponse
+	 */
+	protected $response;
+
+	/**
+	 * Getter for the provider
+	 *
+	 * @return Tx_Mediaoembed_Request_Provider
+	 */
+	public function getProvider() {
+		return $this->provider;
 	}
+
+	/**
+	 * Getter for the request
+	 *
+	 * @return Tx_Mediaoembed_Request_HttpRequest
+	 */
+	public function getRequest() {
+		return $this->request;
+	}
+
+	/**
+	 * Getter for the response
+	 *
+	 * @return Tx_Mediaoembed_Response_GenericResponse
+	 */
+	public function getReponse() {
+		return $this->response;
+	}
+
+	/**
+	 * Setter for the provider
+	 *
+	 * @param Tx_Mediaoembed_Request_Provider $provider
+	 * @return void
+	 */
+	public function setProvider($provider) {
+		$this->provider = $provider;
+	}
+
+	/**
+	 * Setter for the request
+	 *
+	 * @param Tx_Mediaoembed_Request_HttpRequest $request
+	 * @return void
+	 */
+	public function setRequest($request) {
+		$this->request = $request;
+	}
+
+	/**
+	 * Setter for the response
+	 *
+	 * @param Tx_Mediaoembed_Response_GenericResponse $response
+	 * @return void
+	 */
+	public function setReponse($response) {
+		$this->response = $response;
+	}
+
+
+
+
+
 }
-?>

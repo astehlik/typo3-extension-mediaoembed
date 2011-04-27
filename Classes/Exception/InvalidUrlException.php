@@ -23,14 +23,14 @@
 
 /**
  * Resolves a matching provider for the given URL
- * 
+ *
  * @package mediaoembed
  * @subpackage Request
  * @version $Id:$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
 class Tx_Mediaoembed_Exception_InvalidUrlException extends Tx_Mediaoembed_Exception_OEmbedException {
-	
+
 	public function __construct($url) {
 		$message = 'The media URL %s is not a valid URL. Please make sure the URL is a valid http:// or https:// URL.';
 		$message = sprintf($message, $url);

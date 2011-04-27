@@ -2,7 +2,7 @@
 $TCA['tx_mediaoembed_provider'] = array(
 	'ctrl' => $TCA['tx_mediaoembed_provider']['ctrl'],
 	'interface' => array(
-		'showRecordFieldList' => 'name,hidden,description,url_schemes,endpoint'
+		'showRecordFieldList' => 'name,hidden,is_generic,description,url_schemes,endpoint,use_generic_providers,embedly_shortname'
 	),
 	'columns' => array(
 		'name' => array(
@@ -11,11 +11,17 @@ $TCA['tx_mediaoembed_provider'] = array(
 				'type' => 'input',
 				'size' => '30',
 				'max' => '50',
-				'eval' => 'unique,required'
 			)
 		),
 		'hidden' => array(
 			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.disable',
+			'config' => array(
+				'type' => 'check',
+				'default' => '0'
+			)
+		),
+		'is_generic' => array(
+			'label' => 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xml:tx_mediaoembed_provider.is_generic',
 			'config' => array(
 				'type' => 'check',
 				'default' => '0'
@@ -32,14 +38,9 @@ $TCA['tx_mediaoembed_provider'] = array(
 		'url_schemes' => array(
 			'label' => 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xml:tx_mediaoembed_provider.url_schemes',
 			'config' => array(
-				'type' => 'inline',
-				'foreign_table' => 'tx_mediaoembed_url_scheme',
-				'foreign_field' => 'provider',
-				'foreign_sortby' => 'sorting',
-				'appearance' => array(
-					'collapseAll' => '1',
-					'expandSingle' => '1',
-				),
+				'type' => 'text',
+				'rows' => 5,
+				'cols' => 30
 			)
 		),
 		'endpoint' => array(
@@ -51,42 +52,28 @@ $TCA['tx_mediaoembed_provider'] = array(
 				'eval' => 'trim'
 			)
 		),
-	),
-	'types' => array(
-		'0' => array('showitem' => 'hidden;;;;1-1-1, name;;;;2-2-2, description, url_schemes, endpoint'),
-	),
-);
-
-$TCA['tx_mediaoembed_url_scheme'] = array(
-	'ctrl' => $TCA['tx_mediaoembed_url_scheme']['ctrl'],
-	'interface' => array(
-		'showRecordFieldList' => 'url_scheme,hidden'
-	),
-	'columns' => array(
-		'url_scheme' => array(
-			'label' => 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xml:tx_mediaoembed_url_scheme.url_scheme',
+		'use_generic_providers' => array(
+			'label' => 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xml:tx_mediaoembed_provider.use_generic_providers',
+			'config' => array(
+				'type' => 'select',
+				'size' => '5',
+				'maxitems' => '100',
+				'foreign_table' => 'tx_mediaoembed_provider',
+				'foreign_table_where' => 'AND tx_mediaoembed_provider.is_generic=1',
+			)
+		),
+		'embedly_shortname' => array(
+			'label' => 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xml:tx_mediaoembed_provider.embedly_shortname',
 			'config' => array(
 				'type' => 'input',
-				'size' => '50',
-				'max' => '255',
-				'eval' => 'required'
-			)
-		),
-		'hidden' => array(
-			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.disable',
-			'config' => array(
-				'type' => 'check',
-				'default' => '0'
-			)
-		),
-		'provider' => array(
-			'config' => array(
-				'type' => 'passthrough',
+				'size' => '30',
+				'max' => '50',
+				'eval' => 'unique'
 			)
 		),
 	),
 	'types' => array(
-		'0' => array('showitem' => 'hidden;;;;1-1-1, url_scheme;;;;2-2-2'),
+		'0' => array('showitem' => 'hidden;;;;1-1-1, name;;;;2-2-2, is_generic, description, url_schemes, endpoint, use_generic_providers, embedly_shortname'),
 	),
 );
 ?>

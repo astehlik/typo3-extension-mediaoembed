@@ -13,6 +13,7 @@ return array(
 	'tx_mediaoembed_exception_nomatchingproviderexception' => $extensionClassesPath . 'Exception/NoMatchingProviderException.php',
 	'tx_mediaoembed_exception_oembedexception' => $extensionClassesPath . 'Exception/OEmbedException.php',
 	'tx_mediaoembed_hooks_cmsmediaitems' => $extensionClassesPath . 'Hooks/CmsMediaitems.php',
+	'tx_mediaoembed_hooks_tslibcontentgetdataregisterarray' => $extensionClassesPath . 'Hooks/TslibContentGetDataRegisterArray.php',
 	'tx_mediaoembed_request_httprequest' => $extensionClassesPath . 'Request/HttpRequest.php',
 	'tx_mediaoembed_request_providerresolver' => $extensionClassesPath . 'Request/ProviderResolver.php',
 	'tx_mediaoembed_request_requestbuilder' => $extensionClassesPath . 'Request/RequestBuilder.php',
@@ -22,5 +23,7 @@ return array(
 	'tx_mediaoembed_response_responsebuilder' => $extensionClassesPath . 'Response/ResponseBuilder.php',
 	'tx_mediaoembed_response_richresponse' => $extensionClassesPath . 'Response/RichResponse.php',
 	'tx_mediaoembed_response_videoresponse' => $extensionClassesPath . 'Response/VideoResponse.php',
+	'tx_mediaoembed_tasks_importfromembedlytask' => $extensionClassesPath . 'Tasks/ImportFromEmbedlyTask.php',
+	'tx_mediaoembed_tasks_importfromohhembedtask' => $extensionClassesPath . 'Tasks/ImportFromOhhembedTask.php',
 );
 ?>

@@ -23,53 +23,117 @@
 
 /**
  * Builds a request object based on the (TypoScript) configuration
- * 
+ *
  * @package mediaoembed
  * @subpackage Request
  * @version $Id:$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
 class Tx_Mediaoembed_Request_RequestBuilder {
-	
+
 	/**
-	 * Configuration (from FlexForm)
-	 * 
-	 * @var array
-	 */
-	protected $conf;
-	
-	/**
-	 * Provider data from database
+	 * TypoScript / Flexform configuration
 	 *
-	 * @var array
+	 * @var Tx_Mediaoembed_Content_Configuration
 	 */
-	protected $providerData;
-	
+	protected $configuration;
+
 	/**
 	 * Request object that is build by this request builder
 	 *
 	 * @var Tx_Mediaoembed_Request_HtmlRequest
 	 */
 	protected $request;
-	
+
+	/**
+	 * The provider for which the request will be created
+	 *
+	 * @var Tx_Mediaoembed_Request_Provider
+	 */
+	protected $provider;
+
+	/**
+	 * Array of possible endpoints for the current provider.
+	 *
+	 * @var array
+	 */
+	protected $endpoints;
+
+	/**
+	 * Injector for the TypoScript / Flexform configuration
+	 *
+	 * @param Tx_Mediaoembed_Content_Configuration $configuration
+	 */
+	public function injectConfiguration($configuration) {
+		$this->configuration = $configuration;
+	}
+
+	/**
+	 * Initializes the endpoints for the current provider.
+	 *
+	 * @param boolean $providerChanged if TRUE the endpoints array will be initialized with new endpoints from the current provider, otherwise the array pointer of the endpoints array will be moved forward.
+	 * @return boolean TRUE if endpoints are available, otherwise FALSE
+	 */
+	protected function initializeEndpoints($providerChanged) {
+
+		if ($providerChanged) {
+
+			$this->endpoints = $this->provider->getAllEndpoints();
+
+			if (!count($this->endpoints)) {
+				throw new NoProviderEndpointException($this->provider);
+			}
+
+			reset($this->endpoints);
+
+		} else {
+
+			if (!next($this->endpoints)) {
+				return FALSE;
+			}
+		}
+
+		return TRUE;
+	}
+
+	/**
+	 * Initializes the provider for which the request will be build
+	 *
+	 * @param Tx_Mediaoembed_Request_Provider $provider
+	 * @return boolean TRUE if provider changes, otherwilse FALSE
+	 */
+	protected function initializeProvider($provider) {
+
+		if ($provider->equals($this->provider)) {
+			return FALSE;
+		}
+
+		$this->provider = $provider;
+		return TRUE;
+	}
+
 	/**
 	 * Builds a request using the given configuration and the
 	 * given provider data.
-	 * 
-	 * @param array $conf
-	 * @param array $providerData
-	 * @return Tx_Mediaoembed_Request_HtmlRequest
+	 *
+	 * @param Tx_Mediaoembed_Request_Provider $provider
+	 * @return Tx_Mediaoembed_Request_HtmlRequest or FALSE if no further requests are available
 	 */
-	public function buildRequest($conf, $providerData) {
-		$this->conf = $conf;
-		$this->providerData = $providerData;
+	public function buildNextRequest($provider) {
+		$providerChanged = $this->initializeProvider($provider);
+
+			// If provider has no further endpoints we return FALSE
+		if (!$this->initializeEndpoints($providerChanged)) {
+			return FALSE;
+		}
+
 		$this->initializeNewRequest();
 		return $this->request;
 	}
-	
+
 	/**
 	 * Build a new request in the request property
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function initializeNewRequest() {
@@ -78,7 +142,7 @@ class Tx_Mediaoembed_Request_RequestBuilder {
 		$this->initializeMaxSize();
 		$this->initializeEndpoint();
 	}
-	
+
 	/**
 	 * Creates a new request object
 	 *
@@ -87,26 +151,30 @@ class Tx_Mediaoembed_Request_RequestBuilder {
 	protected function createNewRequest() {
 		$this->request = t3lib_div::makeInstance('Tx_Mediaoembed_Request_HttpRequest');
 	}
-	
+
+	/**
+	 * Initializes the current media URL in the request.
+	 *
+	 * @return void
+	 */
 	protected function initializeUrl() {
-		$this->request->setUrl($this->conf['parameter.']['mmFile']);
+		$this->request->setUrl($this->configuration->getMediaUrl());
 	}
-	
+
 	/**
 	 * Initializes maxwidth and maxheight properties
 	 *
 	 * @return void
 	 */
 	protected function initializeMaxSize() {
-		
-		if (isset($this->conf['width'])) {
-			$this->request->setMaxwidth($this->conf['width']);
-		}
-		if (isset($this->conf['height'])) {
-			$this->request->setMaxheight($this->conf['height']);
-		}
+
+		$maxwidth = Tx_Mediaoembed_Utility_Validation::getValidWithHeightValue($this->configuration->getMaxwidth());
+		$maxheight = Tx_Mediaoembed_Utility_Validation::getValidWithHeightValue($this->configuration->getMaxheight());
+
+		$this->request->setMaxwidth($maxwidth);
+		$this->request->setMaxheight($maxheight);
 	}
-	
+
 	/**
 	 * Initializes the endpoint in the current request
 	 * that was set in the provider data.
@@ -114,8 +182,8 @@ class Tx_Mediaoembed_Request_RequestBuilder {
 	 * @return void
 	 */
 	protected function initializeEndpoint() {
-		$this->request->setEndpoint($this->providerData['endpoint']);
+		$this->request->setEndpoint(current($this->endpoints));
 	}
-	
+
 }
 ?>

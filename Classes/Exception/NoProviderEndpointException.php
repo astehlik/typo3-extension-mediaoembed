@@ -1,5 +1,5 @@
 <?php
-declare(ENCODING = 'utf-8');
+//declare(ENCODING = 'utf-8');
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -22,11 +22,19 @@ declare(ENCODING = 'utf-8');
  *                                                                        */
 
 /**
+ * Resolves a matching provider for the given URL
+ *
  * @package mediaoembed
- * @subpackage Renderer
+ * @subpackage Request
  * @version $Id:$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Renderer_PhotoRenderer {
+class Tx_Mediaoembed_Exception_NoProviderEndpointException extends Tx_Mediaoembed_Exception_OEmbedException {
+
+	public function __construct($provider) {
+		$message = 'No endpoints were found for provider %s. Please make sure you specify at least a native endpoint or enable a generic provider.';
+		$message = sprintf($message, $provider->getName());
+		parent::__construct($message, 1303937972);
+	}
 }
 ?>

@@ -23,130 +23,282 @@
 
 /**
  * Resolves a matching provider for the given URL
- * 
+ *
  * @package mediaoembed
  * @subpackage Request
  * @version $Id:$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
 class Tx_Mediaoembed_Request_ProviderResolver {
-	
+
 	/**
 	 * The parent content object
+	 *
+	 * @var tslib_cObj
 	 */
 	protected $cObj;
-	
+
+	/**
+	 * TypoScript / Flexform configuration
+	 *
+	 * @var Tx_Mediaoembed_Content_Configuration
+	 */
+	protected $configuration;
+
+	/**
+	 * A cache for generic providers, array keys are the UIDs of the providers.
+	 *
+	 * @var array
+	 */
+	protected $genericProviderCache;
+
+	/**
+	 * Statement for fetching a generic provider from the database.
+	 *
+	 * @param t3lib_db_PreparedStatement
+	 */
+	protected $genericProviderStatement;
+
+	/**
+	 * The SQL result of the provider query, should not contain
+	 * all active, non generic providers.
+	 *
+	 * @var mixed
+	 */
+	protected $providerResult;
+
 	/**
 	 * Contains the current media URL
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $url;
-	
-	
-	public function __construct($cObj) {
+
+	/**
+	 * Builds the provider resolver an initializes the generic provider cache.
+	 *
+	 * @return Tx_Mediaoembed_Request_ProviderResolver
+	 */
+	public function __construct() {
+		$this->genericProviderCache = array();
+	}
+
+	/**
+	 * Injector for the current cObj
+	 *
+	 * @param tslib_cObj $cObj
+	 */
+	public function injectCObj($cObj) {
 		$this->cObj = $cObj;
 	}
-	
+
 	/**
-	 * Returns the first provider whos url scheme matches the given
-	 * URL.
-	 * 
-	 * @return array Provider data
-	 * @throws Exception If URL is invalid or no matching provider was found.
+	 * Injector for the TypoScript / Flexform configuration
+	 *
+	 * @param Tx_Mediaoembed_Content_Configuration $configuration
 	 */
-	public function getMatchingProviderData($url) {
+	public function injectConfiguration($configuration) {
+		$this->configuration = $configuration;
+	}
+
+	/**
+	 * Checks, if the url in the configuration is the same as the current url.
+	 * If it has changed the url will be validated and TRUE will be returned.
+	 *
+	 * @return boolean TRUE if URL has changed, FALSE if not
+	 * @throws Tx_Mediaoembed_Exception_InvalidUrlException if URL is invalid
+	 */
+	protected function initializeUrl() {
+
+		if ($this->url === $this->configuration->getMediaUrl()) {
+			return FALSE;
+		}
+
 		$this->url = $url;
 		$this->checkIfUrlIsValid();
-		$providerUid = $this->getMatchingProviderUid();
-		$providerData = $this->fetchProviderDataFromDatabase($providerUid);
-		return $providerData;
+		return TRUE;
 	}
-	
+
+	/**
+	 * Returns the next active provider whos url scheme matches the URL in
+	 * the current configuration
+	 *
+	 * @return Tx_Mediaoembed_Request_Provider The next matching provider
+	 * @throws Exception If URL is invalid or no matching provider was found.
+	 */
+	public function getNextMatchingProvider() {
+
+		$urlHasChanged = $this->initializeUrl();
+
+		if ($urlHasChanged) {
+			$this->fetchSortedProvidersFromDatabase();
+		}
+
+		$providerData = $this->getNextMatchingProvider();
+		$provider = $this->buildProvider($providerData);
+		return $provider;
+	}
+
+	/**
+	 * Fetches the generic provider from the database (if enabled) and creates
+	 * a new provider instance with the fetched data.
+	 *
+	 * @return Tx_Mediaoembed_Request_Provider
+	 */
+	protected function buildGenericProvider($genericProviderUid) {
+
+		if (array_key_exists($genericProviderUid, $this->genericProviderCache)) {
+			return $this->genericProviderCache[$genericProviderUid];
+		}
+
+		$genericProviderData = $this->fetchGenericProviderDataFromDatabase($genericProviderUid);
+		$genericProvider = NULL;
+		
+		if (isset($genericProviderData)) {
+			$genericProvider = t3lib_div::makeInstance('Tx_Mediaoembed_Request_Provider', $genericProviderData);	
+		}
+		
+		$this->genericProviderCache[$genericProviderUid] = $genericProvider;
+		return $this->genericProviderCache[$genericProviderUid];
+	}
+
+	/**
+	 * Builds a provider including the attached generic providers.
+	 *
+	 * @param array $providerData Provider data fetched from the database
+	 * @return Tx_Mediaoembed_Request_Provider
+	 */
+	protected function buildProvider($providerData) {
+
+		$provider = t3lib_div::makeInstance('Tx_Mediaoembed_Request_Provider', $providerData);
+
+		if (empty($providerData['use_generic_providers'])) {
+			return $provider;
+		}
+
+		$genericProviders = array();
+		$genericProviderUidArray = t3lib_div::trimExplode(',', $this->genericEndpoints);
+		foreach ($genericProviderUidArray as $genericProviderUid) {
+			$genericProviders[] = $this->buildGenericProvider($genericProviderUid);
+		}
+		
+		$provider->setGenericProviders($genericProviders);
+		return $provider;
+	}
+
 	/**
 	 * Checks if the current URL is valid
-	 * 
+	 *
 	 * @return void
 	 * @throws Tx_Mediaoembed_Exception_InvalidUrlException if URL is invalid
 	 */
 	protected function checkIfUrlIsValid() {
-		
+
+		$isValid = TRUE;
+
+		if (empty($this->url)) {
+			$isValid = FALSE;
+		}
+
 		if (!t3lib_div::isValidUrl($this->url)) {
+			$isValid = FALSE;
+		}
+
+		if (!$isValid) {
 			throw new Tx_Mediaoembed_Exception_InvalidUrlException($this->url);
 		}
 	}
-	
+
 	/**
 	 * Searches for a url scheme that matches the given url. If
-	 * there is a result, the UID of the matching provider will be returned.
-	 * Otherwise FALSE will be returned.
-	 * 
-	 * @return int UID of the provider or FALSE if none was found
+	 * there is a result, the data of the matching provider will be returned.
+	 *
+	 * @return array Database data of the provider
 	 * @throws Tx_Mediaoembed_Exception_NoMatchingProviderException if no matching provider was found
 	 */
-	protected function getMatchingProviderUid() {
-		
-		$providerUid = FALSE;
-		
-		$urlSchemeResult = $this->fetchSortedUrlSchemesFromDatabase();
-		
-		while ($urlSchemeData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($urlSchemeResult)) {
-			$urlScheme = preg_quote($urlSchemeData['url_scheme'], '/');
-			$urlScheme = str_replace('\*', '.*', $urlScheme);
-			if (preg_match('/' . $urlScheme . '/', $this->url)) {
-				$providerUid = $urlSchemeData['provider_uid'];
-				break;
+	protected function getNextMatchingProvider() {
+
+		$matchingProviderData = FALSE;
+
+		while (($providerData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($this->providerResult)) && ($matchingProviderData === FALSE)) {
+
+				// We don't care about providers that don't have a url scheme
+			if (empty($providerData['url_schemes'])) {
+				continue;
+			}
+
+			$urlSchemes = explode(LF, $providerData['url_schemes']);
+
+			foreach ($urlSchemes as $urlScheme) {
+				$urlScheme = preg_quote($urlScheme, '/');
+				$urlScheme = str_replace('\*', '.*', $urlScheme);
+				if (preg_match('/' . $urlScheme . '/', $this->url)) {
+					$matchingProviderData = $providerData;
+					break;
+				}
 			}
 		}
-		
-		if ($providerUid === FALSE) {
+
+		if ($matchingProviderData === FALSE) {
 			throw new Tx_Mediaoembed_Exception_NoMatchingProviderException($this->url);
 		}
-		
-		return $providerUid;
+
+		return $matchingProviderData;
 	}
-	
+
 	/**
 	 * Fetches all data for the provider from the database.
-	 * 
-	 * @return array Associative array with provider data or NULL
+	 *
+	 * @return array Associative array with provider data
+	 * @throws RuntimeException if provider data can not be fetched
 	 */
-	protected function fetchProviderDataFromDatabase($providerUid) {
-		
-		$providerData = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('*', 'tx_mediaoembed_provider', 'uid = ' . intval($providerUid));
-		
-		if (!isset($providerData)) {
-			throw new RuntimeException('Error retrieving provider data from database.', 1303399235);
+	protected function fetchGenericProviderDataFromDatabase($genericProviderUid) {
+
+		if (!isset($this->genericProviderStatement)) {
+			$this->genericProviderStatement = $GLOBALS['TYPO3_DB']->prepare_SELECTquery(
+				'endpoint',
+				'tx_mediaoembed_provider',
+				'is_generic = 1 AND uid = :genericProviderUid' .
+				$this->cObj->enableFields('tx_mediaoembed_provider'),
+				'',
+				'sorting'
+			);
 		}
-		
-		return $providerData;
+
+		$genericProviderResult = $this->genericProviderStatement->execute(array(':genericProviderUid' => $genericProviderUid));
+
+		if ($genericProviderResult === FALSE) {
+			throw new RuntimeException('Error retrieving generic provider data from database.', 1303399235);
+		}
+
+		if ($GLOBALS['TYPO3_DB']->sql_num_rows($genericProviderResult)) {
+			return NULL;
+		}
+
+		return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($genericProviderResult);
 	}
-	
+
 	/**
 	 * Fetches the regular expressions for the providers from the database.
 	 * Respects the sorting of the providers and of the regular expressions.
-	 * 
+	 *
 	 * @return pointer MySQL result pointer / DBAL object
 	 * @throws RuntimeException If SQL query fails
 	 */
-	protected function fetchSortedUrlSchemesFromDatabase() {
-	
-		$providerRegexResult = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'tx_mediaoembed_provider.uid as provider_uid, ' .
-			'tx_mediaoembed_url_scheme.url_scheme as url_scheme',
-			'tx_mediaoembed_url_scheme, tx_mediaoembed_provider',
-			'tx_mediaoembed_url_scheme.provider = tx_mediaoembed_provider.uid' .
-			$this->cObj->enableFields('tx_mediaoembed_provider') . 
-			$this->cObj->enableFields('tx_mediaoembed_url_scheme'),
-			'',
-			'tx_mediaoembed_provider.sorting, tx_mediaoembed_url_scheme.sorting'
+	protected function fetchSortedProvidersFromDatabase() {
+
+		$providerResult = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'*',
+			'tx_mediaoembed_provider',
+			'is_generic=0 ' . $this->cObj->enableFields('tx_mediaoembed_provider'),
+			'sorting'
 		);
-		
-		if ($providerRegexResult === FALSE) {
-			throw new RuntimeException('Error retrieving regular expressions for providers from database.', 1303109998);
+
+		if ($providerResult === FALSE) {
+			throw new RuntimeException('Error retrieving url schemes of providers from database.', 1303109998);
 		}
-		
-		return $providerRegexResult;
+
+		$this->providerResult = $providerResult;
 	}
 }
 ?>

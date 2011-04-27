@@ -34,8 +34,8 @@
  * @version $Id:$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Exception_UnauthorizedException extends Tx_Mediaoembed_Exception_OEmbedException {
-	
+class Tx_Mediaoembed_Exception_UnauthorizedException extends Tx_Mediaoembed_Exception_RequestException {
+
 public function __construct($mediaUrl, $requestUrl) {
 		$message  = 'The server returned a 401 Unauthorized error for this URL: %s. ';
 		$message .= 'This means that embedding is prohibited for this resource. Please use a direct link instead. ';

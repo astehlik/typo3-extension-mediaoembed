@@ -22,30 +22,18 @@
  *                                                                        */
 
 /**
- * 
+ *
  * Responses of this type allow a provider to return any generic embed data
  * (such as title and author_name), without providing either the url or html
  * parameters.
  * The consumer may then link to the resource, using the URL specified in the
  * original request.
- * 
+ *
  * @package mediaoembed
  * @subpackage Response
  * @version $Id:$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Response_LinkResponse extends Tx_Mediaoembed_Response_AbstractResponse {
-
-	/**
-	 * Initializes the response parameters that are specific for this
-	 * resource type.
-	 */
-	public function initResponseParameters($parameters) {
-	}
-	
-	
-	public function render() {
-		return 'I am a link.';
-	}
+class Tx_Mediaoembed_Response_LinkResponse extends Tx_Mediaoembed_Response_GenericResponse {
 }
 ?>
