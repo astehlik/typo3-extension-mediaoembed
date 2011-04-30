@@ -29,7 +29,7 @@
  * @version $Id:$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Exception_InvalidResponseException extends Tx_Mediaoembed_Exception_OEmbedException {
+class Tx_Mediaoembed_Exception_InvalidResponseException extends Tx_Mediaoembed_Exception_RequestException {
 
 	public function __construct($response) {
 		$message = 'The server returned an invalid response that could not be parsed. The servers response was: %s';

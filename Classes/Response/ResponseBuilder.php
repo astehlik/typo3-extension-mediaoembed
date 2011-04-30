@@ -48,9 +48,14 @@ class Tx_Mediaoembed_Response_ResponseBuilder {
 	 */
 	public function buildResponse($responseData) {
 
-		$responseData = json_decode($responseData, TRUE);
 
-		$this->createResponseByType($responseObject->type);
+		$parsedResponseData = json_decode($responseData, TRUE);
+
+		if ($parsedResponseData === NULL) {
+			throw new Tx_Mediaoembed_Exception_InvalidResponseException($responseData);
+		}
+
+		$this->createResponseByType($parsedResponseData['type']);
 
 		$this->response->initializeResponseData($responseData);
 

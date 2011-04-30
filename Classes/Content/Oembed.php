@@ -59,6 +59,13 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 	protected $requestBuilder;
 
 	/**
+	 * Tries to build a reponse object using the reponse that came from the server.
+	 *
+	 * @var Tx_Mediaoembed_Response_ResponseBuilder
+	 */
+	protected $responseBuilder;
+
+	/**
 	 * @var Tx_Mediaoembed_Content_RegisterData
 	 */
 	protected $registerData;
@@ -72,15 +79,28 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 		$this->parentContent = $parentContent;
 	}
 
+	/**
+	 * Initializes the provider resolver
+	 */
 	protected function initializeProviderResolver() {
 		$this->providerResolver = t3lib_div::makeInstance('Tx_Mediaoembed_Request_ProviderResolver');
 		$this->providerResolver->injectCObj($this->cObj);
 		$this->providerResolver->injectConfiguration($this->configuration);
 	}
 
-	protected function initializeResponseBuilder() {
+	/**
+	 * Initializes the request builder
+	 */
+	protected function initializeRequestBuilder() {
 		$this->requestBuilder = t3lib_div::makeInstance('Tx_Mediaoembed_Request_RequestBuilder');
 		$this->requestBuilder->injectConfiguration($this->configuration);
+	}
+
+	/**
+	 * Initializes the response builder
+	 */
+	protected function initializeResponseBuilder() {
+		$this->responseBuilder = t3lib_div::makeInstance('Tx_Mediaoembed_Response_ResponseBuilder');
 	}
 
 	/**
@@ -103,52 +123,17 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 
 	}
 
+	/**
+	 * Build all data for the register using the embed code reponse
+	 * of a matching provider.
+	 */
 	protected function getEmbedDataFromProvider() {
 
 		$this->initializeProviderResolver();
+		$this->initializeRequestBuilder();
+		$this->initializeResponseBuilder();
 
-		$requestSuccessful = FALSE;
-		$provider = $this->providerResolver->getNextMatchingProviderData();
-		while (!$requestSuccessful && ($provider !== FALSE)) {
-
-			$request = $this->requestBuilder->buildNextRequest($provider);
-			while (!$requestSuccessful && ($request !== FALSE)) {
-
-				try {
-					$responseData = $request->sendAndGetResponseData();
-					$requestSuccessful = TRUE;
-				} catch (Tx_Mediaoembed_Exception_RequestException $exception) {
-					// @TODO record all exceptions and provide that information to the user
-				}
-
-				$request = $this->requestBuilder->buildNextRequest($provider);
-			}
-
-			$provider = $this->providerResolver->getNextMatchingProviderData();
-		}
-
-		$responseBuilder = t3lib_div::makeInstance('Tx_Mediaoembed_Response_ResponseBuilder');
-		$response = $responseBuilder->buildResponse($responseData);
-
-		if ($response->getType() === 'photo') {
-
-			$imageData = t3lib_div::getURL($response['url']);
-
-			$imageFilename = basename($response['url']);
-			$imageFilename = preg_replace('/[^a-z0-9\._-]/i', '', $imageFilename);
-			$imagePrefix = t3lib_div::md5int($imageData);
-			$imageFilename = $imagePrefix . '_' . $imageFilename;
-			$imagePathAndFilename = 'typo3temp/tx_mediaoembed/' . $imageFilename;
-
-			t3lib_div::writeFileToTypo3tempDir(PATH_site . $imagePathAndFilename, $imageData);
-			$response['url_tempimage'] = $imagePathAndFilename;
-		}
-
-		$dataForRegister['provider'] = $providerData;
-		$dataForRegister['response'] = $response;
-		$dataForRegister['request']['url'] = $mediaUrl;
-
-		return $content;
+		$this->startRequestLoop();
 	}
 
 	/**
@@ -160,7 +145,7 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 	protected function setRegisterAndRenderCobj($dataForRegister) {
 
 		array_push($GLOBALS['TSFE']->registerStack, $GLOBALS['TSFE']->register);
-		$GLOBALS['TSFE']->register['tx_mediaoembed'] = $dataForRegister;
+		$GLOBALS['TSFE']->register['tx_mediaoembed'] = $this->registerData;
 
 		$content = $this->cObj->cObjGetSingle(
 			$this->configuration->getRenderItem(),
@@ -172,4 +157,46 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 		return $content;
 	}
 
+	/**
+	 * Loops over all mathing providers and all their endpoint
+	 * until the request was successful or no more providers / endpoints
+	 * are available.
+	 *
+	 * @return Tx_Mediaoembed_Response_GenericResponse A response object initialized with the data the provider returned
+	 * @throws Tx_Mediaoembed_Exception_RequestException If none of the requests returned a vaild result.
+	 */
+	protected function startRequestLoop() {
+
+		$response = NULL;
+		$provider = $this->providerResolver->getNextMatchingProviderData();
+		while (($response === NULL) && ($provider !== FALSE)) {
+
+			$request = $this->requestBuilder->buildNextRequest($provider);
+			while (($response === NULL) && ($request !== FALSE)) {
+
+				try {
+					$responseData = $request->sendAndGetResponseData();
+					$response = $responseBuilder->buildResponse($responseData);
+				} catch (Tx_Mediaoembed_Exception_RequestException $exception) {
+					// @TODO record all exceptions and provide that information to the user
+					$response = NULL;
+				}
+
+				$request = $this->requestBuilder->buildNextRequest($provider);
+			}
+
+			$provider = $this->providerResolver->getNextMatchingProviderData();
+		}
+
+		if ($response === NULL) {
+			throw new Tx_Mediaoembed_Exception_RequestException('No provider returned a valid result. Giving up. Please make sure the URL is valid and you have configured a provider that can handle it.');
+		}
+
+		$this->registerData->setProvider($provider);
+		$this->registerData->setRequest($request);
+		$this->registerData->setReponse($response);
+
+		return $response;
+	}
 }
+?>

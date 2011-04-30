@@ -144,7 +144,7 @@ class Tx_Mediaoembed_Response_GenericResponse {
 	 * @param object the parsed json response
 	 */
 	public function initializeResponseData($responseData) {
-		$this->rawResponseData = $responseData;
+		$this->responseDataArray = $responseData;
 		$this->type = $responseData['type'];
 		$this->version = $responseData['version'];
 		$this->title = $responseData['title'];
@@ -214,7 +214,7 @@ class Tx_Mediaoembed_Response_GenericResponse {
 	}
 
 	/**
-	 * Getter for the url of the resource provider.
+	 * Getter for the the json decoded data of the provider's response
 	 *
 	 * @return array
 	 */

@@ -109,8 +109,4 @@ class Tx_Mediaoembed_Content_RegisterData {
 		$this->response = $response;
 	}
 
-
-
-
-
 }

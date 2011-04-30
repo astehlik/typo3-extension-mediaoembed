@@ -40,6 +40,13 @@ class Tx_Mediaoembed_Response_PhotoResponse extends Tx_Mediaoembed_Response_Gene
 	protected $height;
 
 	/**
+	 * Path to the local version of the photo.
+	 *
+	 * @var string
+	 */
+	protected $localPath;
+
+	/**
 	 * The width in pixels of the image specified in the url parameter.
 	 * This value is required.
 	 *
@@ -67,6 +74,7 @@ class Tx_Mediaoembed_Response_PhotoResponse extends Tx_Mediaoembed_Response_Gene
 		$this->url = $this->responseDataArray['url'];
 		$this->width = $this->responseDataArray['width'];
 		$this->height = $this->responseDataArray['height'];
+		$this->localImagePath = NULL;
 	}
 
 	/**
@@ -76,6 +84,19 @@ class Tx_Mediaoembed_Response_PhotoResponse extends Tx_Mediaoembed_Response_Gene
 	 */
 	public function getHeight() {
 		return $this->height;
+	}
+
+	/**
+	 * Getter for the path to a locally stored version of the image.
+	 *
+	 * @return string
+	 */
+	public function getLocalPath() {
+
+		if (!isset($this->localPath)) {
+			$this->downloadPhoto();
+		}
+		return $this->localPath;
 	}
 
 	/**
@@ -94,6 +115,25 @@ class Tx_Mediaoembed_Response_PhotoResponse extends Tx_Mediaoembed_Response_Gene
 	 */
 	public function getWidth() {
 		return $this->width;
+	}
+
+	/**
+	 * Downloads the photo from the server and stores it in the typo3temp folder.
+	 *
+	 * @return void
+	 */
+	protected function downloadPhoto() {
+
+		$imageData = t3lib_div::getURL($this->getUrl());
+
+		$imageFilename = basename($this->getUrl());
+		$imageFilename = preg_replace('/[^a-z0-9\._-]/i', '', $imageFilename);
+		$imagePrefix = t3lib_div::md5int($imageData);
+		$imageFilename = $imagePrefix . '_' . $imageFilename;
+		$imagePathAndFilename = 'typo3temp/tx_mediaoembed/' . $imageFilename;
+
+		t3lib_div::writeFileToTypo3tempDir(PATH_site . $imagePathAndFilename, $imageData);
+		$this->localPath = $imagePathAndFilename;
 	}
 }
 ?>
