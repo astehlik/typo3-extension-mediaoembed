@@ -45,22 +45,62 @@ class Tx_Mediaoembed_Content_Configuration {
 		$this->conf = $conf;
 	}
 
+	/**
+	 * The maximum height of the embedded resource.
+	 * Only applies to some resource types (as specified below).
+	 * For supported resource types, this parameter must be respected by providers.
+	 * This value is optional.
+	 *
+	 * @var int
+	 */
 	public function getMaxheight() {
-		return $this->conf['height'];
+		if (empty($this->conf['height'])) {
+			return $this->conf['tx_mediaoembed.']['defaultMaxheight'];
+		} else {
+			return $this->conf['height'];
+		}
 	}
 
+	/**
+	 * The maximum width of the embedded resource.
+	 * Only applies to some resource types (as specified below).
+	 * For supported resource types, this parameter must be respected by providers.
+	 * This value is optional.
+	 *
+	 * @var int
+	 */
 	public function getMaxwidth() {
-		return $this->conf['width'];
+		if (empty($this->conf['width'])) {
+			return $this->conf['tx_mediaoembed.']['defaultMaxwidth'];
+		} else {
+			return $this->conf['width'];
+		}
 	}
 
+	/**
+     * The URL to retrieve embedding information for.
+     * This value is required.
+     *
+     * @var string
+     */
 	public function getMediaUrl() {
 		return $this->conf['parameter.']['mmFile'];
 	}
 
+	/**
+	 * TypoScript object for rendering the media item
+	 *
+	 * @return string
+	 */
 	public function getRenderItem() {
 		return $this->conf['tx_mediaoembed.']['renderItem'];
 	}
 
+	/**
+	 * TypoScript configuration for rendering the media item
+	 *
+	 * @return string
+	 */
 	public function getRenderItemConfig() {
 		return $this->conf['tx_mediaoembed.']['renderItem.'];
 	}

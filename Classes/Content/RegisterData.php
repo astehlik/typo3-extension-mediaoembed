@@ -32,6 +32,13 @@
 class Tx_Mediaoembed_Content_RegisterData {
 
 	/**
+	 * The configuration that was used during the request
+	 *
+	 * @var Tx_Mediaoembed_Content_Configuration
+	 */
+	protected $configuration;
+
+	/**
 	 * The provider that was used for the request.
 	 *
 	 * @var Tx_Mediaoembed_Request_Provider
@@ -51,6 +58,24 @@ class Tx_Mediaoembed_Content_RegisterData {
 	 * @var Tx_Mediaoembed_Response_GenericResponse
 	 */
 	protected $response;
+
+	/**
+	 * Creates a new register data object
+	 *
+	 * @param Tx_Mediaoembed_Content_Configuration $configuration
+	 */
+	public function __construct($configuration) {
+		$this->configuration = $configuration;
+	}
+
+	/**
+	 * Getter for the configuration
+	 *
+	 * @return Tx_Mediaoembed_Content_Configuration $configuration
+	 */
+	public function getConfiguration() {
+		return $this->configuration;
+	}
 
 	/**
 	 * Getter for the provider
@@ -75,7 +100,7 @@ class Tx_Mediaoembed_Content_RegisterData {
 	 *
 	 * @return Tx_Mediaoembed_Response_GenericResponse
 	 */
-	public function getReponse() {
+	public function getResponse() {
 		return $this->response;
 	}
 
@@ -105,7 +130,7 @@ class Tx_Mediaoembed_Content_RegisterData {
 	 * @param Tx_Mediaoembed_Response_GenericResponse $response
 	 * @return void
 	 */
-	public function setReponse($response) {
+	public function setResponse($response) {
 		$this->response = $response;
 	}
 

@@ -20,7 +20,8 @@ $TCA['tx_mediaoembed_provider'] = array(
 			'disabled' => 'hidden'
 		),
 		'title' => 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xml:tx_mediaoembed_provider',
-		'dynamicConfigFile' => t3lib_extMgm::extPath('mediaoembed', 'Configuration/TCA.php'),
+		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY, 'Configuration/TCA.php'),
+		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY) . 'Resources/Public/Icons/table_provider.png',
 	)
 );
 

@@ -108,10 +108,10 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 	 *
 	 * @param array $conf Current TypoScript / Flexform configuration
 	 */
-	public function render($conf) {
+	public function render($conf = array()) {
 
 		$this->configuration = t3lib_div::makeInstance('Tx_Mediaoembed_Content_Configuration', $conf);
-		$this->registerData = t3lib_div::makeInstance('Tx_Mediaoembed_Content_RegisterData');
+		$this->registerData = t3lib_div::makeInstance('Tx_Mediaoembed_Content_RegisterData', $this->configuration);
 
 		try {
 			$this->getEmbedDataFromProvider();
@@ -149,7 +149,7 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 
 		$content = $this->cObj->cObjGetSingle(
 			$this->configuration->getRenderItem(),
-			$this->configuration->getRenderItemConf()
+			$this->configuration->getRenderItemConfig()
 		);
 
 		$this->cObj->LOAD_REGISTER(array(), 'RESTORE_REGISTER');
@@ -168,25 +168,36 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 	protected function startRequestLoop() {
 
 		$response = NULL;
-		$provider = $this->providerResolver->getNextMatchingProviderData();
-		while (($response === NULL) && ($provider !== FALSE)) {
 
-			$request = $this->requestBuilder->buildNextRequest($provider);
-			while (($response === NULL) && ($request !== FALSE)) {
+		do {
+
+			$provider = $this->providerResolver->getNextMatchingProvider();
+
+			if ($provider === FALSE) {
+				break;
+			}
+
+			do {
+
+				$request = $this->requestBuilder->buildNextRequest($provider);
+
+				if ($request === FALSE) {
+					break;
+				}
 
 				try {
 					$responseData = $request->sendAndGetResponseData();
-					$response = $responseBuilder->buildResponse($responseData);
+					$response = $this->responseBuilder->buildResponse($responseData);
 				} catch (Tx_Mediaoembed_Exception_RequestException $exception) {
 					// @TODO record all exceptions and provide that information to the user
 					$response = NULL;
 				}
 
 				$request = $this->requestBuilder->buildNextRequest($provider);
-			}
 
-			$provider = $this->providerResolver->getNextMatchingProviderData();
-		}
+			} while ($response === NULL);
+
+		} while ($response === NULL);
 
 		if ($response === NULL) {
 			throw new Tx_Mediaoembed_Exception_RequestException('No provider returned a valid result. Giving up. Please make sure the URL is valid and you have configured a provider that can handle it.');
@@ -194,7 +205,7 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 
 		$this->registerData->setProvider($provider);
 		$this->registerData->setRequest($request);
-		$this->registerData->setReponse($response);
+		$this->registerData->setResponse($response);
 
 		return $response;
 	}

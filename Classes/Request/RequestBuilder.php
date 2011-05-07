@@ -81,7 +81,7 @@ class Tx_Mediaoembed_Request_RequestBuilder {
 			$this->endpoints = $this->provider->getAllEndpoints();
 
 			if (!count($this->endpoints)) {
-				throw new NoProviderEndpointException($this->provider);
+				throw new Tx_Mediaoembed_Exception_NoProviderEndpointException($this->provider);
 			}
 
 			reset($this->endpoints);
@@ -137,53 +137,9 @@ class Tx_Mediaoembed_Request_RequestBuilder {
 	 * @return void
 	 */
 	protected function initializeNewRequest() {
-		$this->createNewRequest();
-		$this->initializeUrl();
-		$this->initializeMaxSize();
-		$this->initializeEndpoint();
-	}
-
-	/**
-	 * Creates a new request object
-	 *
-	 * @return void
-	 */
-	protected function createNewRequest() {
 		$this->request = t3lib_div::makeInstance('Tx_Mediaoembed_Request_HttpRequest');
-	}
-
-	/**
-	 * Initializes the current media URL in the request.
-	 *
-	 * @return void
-	 */
-	protected function initializeUrl() {
-		$this->request->setUrl($this->configuration->getMediaUrl());
-	}
-
-	/**
-	 * Initializes maxwidth and maxheight properties
-	 *
-	 * @return void
-	 */
-	protected function initializeMaxSize() {
-
-		$maxwidth = Tx_Mediaoembed_Utility_Validation::getValidWithHeightValue($this->configuration->getMaxwidth());
-		$maxheight = Tx_Mediaoembed_Utility_Validation::getValidWithHeightValue($this->configuration->getMaxheight());
-
-		$this->request->setMaxwidth($maxwidth);
-		$this->request->setMaxheight($maxheight);
-	}
-
-	/**
-	 * Initializes the endpoint in the current request
-	 * that was set in the provider data.
-	 *
-	 * @return void
-	 */
-	protected function initializeEndpoint() {
+		$this->request->injectConfiguration($this->configuration);
 		$this->request->setEndpoint(current($this->endpoints));
 	}
-
 }
 ?>

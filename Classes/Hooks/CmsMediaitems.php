@@ -1,18 +1,36 @@
 <?php
+/*                                                                        *
+ * This script belongs to the TYPO3 extension "mediaoembed".              *
+ *                                                                        *
+ * It is free software; you can redistribute it and/or modify it under    *
+ * the terms of the GNU General Public License as published by the Free   *
+ * Software Foundation, either version 3 of the License, or (at your      *
+ * option) any later version.                                             *
+ *                                                                        *
+ * This script is distributed in the hope that it will be useful, but     *
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHAN-    *
+ * TABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General      *
+ * Public License for more details.                                       *
+ *                                                                        *
+ * You should have received a copy of the GNU General Public License      *
+ * along with the script.                                                 *
+ * If not, see http://www.gnu.org/licenses/gpl.html                       *
+ *                                                                        *
+ * The TYPO3 project - inspiring people to share!                         *
+ *                                                                        */
 
+/**
+ * @package mediaoembed
+ * @subpackage Hooks
+ * @version $Id:$
+ */
 class Tx_Mediaoembed_Hooks_CmsMediaitems {
 
 	/**
-	 * The current content object
+	 * This is the name of the render type for which this hook will get active.
 	 *
-	 * @var tslib_cObj
+	 * @var string
 	 */
-	protected $cObj;
-
-	protected $providerResult;
-
-	protected $conf;
-
 	protected static $renderType = 'tx_mediaoembed';
 
 	/**
@@ -32,15 +50,12 @@ class Tx_Mediaoembed_Hooks_CmsMediaitems {
 	 *
 	 * @param string $renderType
 	 * @param array $conf
-	 * @param ux_tslib_content_Media $contentObject
+	 * @param ux_tslib_content_Media $parentContent
 	 */
 	public function customMediaRender($renderType, $conf, $parentContent) {
 
 		//var_dump(Tx_Extbase_Utility_Extension::createAutoloadRegistryForExtension('mediaoembed', t3lib_extMgm::extPath('mediaoembed')));
 		//return;
-
-		$this->conf = $conf;
-		$this->cObj = $parentContent->getCObj();
 
 			// @TODO submit TYPO3 patch that we get the current content
 			// that was possibly set by other providers!
@@ -51,9 +66,9 @@ class Tx_Mediaoembed_Hooks_CmsMediaitems {
 			return $currentContent;
 		}
 
-		$content = t3lib_div::makeInstance('Tx_Mediaoembed_Content_OembedHandler', $parentContent->getCObj());
+		$content = t3lib_div::makeInstance('Tx_Mediaoembed_Content_Oembed', $parentContent->getCObj());
 		$content->injectParentContent($parentContent);
-		return $handler->$content($conf);
+		return $content->render($conf);
 	}
 }
 ?>

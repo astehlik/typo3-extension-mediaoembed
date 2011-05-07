@@ -57,7 +57,7 @@ class Tx_Mediaoembed_Response_ResponseBuilder {
 
 		$this->createResponseByType($parsedResponseData['type']);
 
-		$this->response->initializeResponseData($responseData);
+		$this->response->initializeResponseData($parsedResponseData);
 
 		return $this->response;
 	}

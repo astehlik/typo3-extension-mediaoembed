@@ -110,11 +110,13 @@ class Tx_Mediaoembed_Request_ProviderResolver {
 	 */
 	protected function initializeUrl() {
 
-		if ($this->url === $this->configuration->getMediaUrl()) {
+		$newUrl = $this->configuration->getMediaUrl();
+
+		if ($this->url === $newUrl) {
 			return FALSE;
 		}
 
-		$this->url = $url;
+		$this->url = $newUrl;
 		$this->checkIfUrlIsValid();
 		return TRUE;
 	}
@@ -134,7 +136,7 @@ class Tx_Mediaoembed_Request_ProviderResolver {
 			$this->fetchSortedProvidersFromDatabase();
 		}
 
-		$providerData = $this->getNextMatchingProvider();
+		$providerData = $this->getNextMatchingProviderData();
 		$provider = $this->buildProvider($providerData);
 		return $provider;
 	}
@@ -153,11 +155,11 @@ class Tx_Mediaoembed_Request_ProviderResolver {
 
 		$genericProviderData = $this->fetchGenericProviderDataFromDatabase($genericProviderUid);
 		$genericProvider = NULL;
-		
+
 		if (isset($genericProviderData)) {
-			$genericProvider = t3lib_div::makeInstance('Tx_Mediaoembed_Request_Provider', $genericProviderData);	
+			$genericProvider = t3lib_div::makeInstance('Tx_Mediaoembed_Request_Provider', $genericProviderData);
 		}
-		
+
 		$this->genericProviderCache[$genericProviderUid] = $genericProvider;
 		return $this->genericProviderCache[$genericProviderUid];
 	}
@@ -177,11 +179,14 @@ class Tx_Mediaoembed_Request_ProviderResolver {
 		}
 
 		$genericProviders = array();
-		$genericProviderUidArray = t3lib_div::trimExplode(',', $this->genericEndpoints);
+		$genericProviderUidArray = t3lib_div::trimExplode(',', $providerData['use_generic_providers']);
 		foreach ($genericProviderUidArray as $genericProviderUid) {
-			$genericProviders[] = $this->buildGenericProvider($genericProviderUid);
+			$genericProvider = $this->buildGenericProvider($genericProviderUid);
+			if (isset($genericProvider)) {
+				$genericProviders[] = $genericProvider;
+			}
 		}
-		
+
 		$provider->setGenericProviders($genericProviders);
 		return $provider;
 	}
@@ -216,7 +221,7 @@ class Tx_Mediaoembed_Request_ProviderResolver {
 	 * @return array Database data of the provider
 	 * @throws Tx_Mediaoembed_Exception_NoMatchingProviderException if no matching provider was found
 	 */
-	protected function getNextMatchingProvider() {
+	protected function getNextMatchingProviderData() {
 
 		$matchingProviderData = FALSE;
 
@@ -227,7 +232,7 @@ class Tx_Mediaoembed_Request_ProviderResolver {
 				continue;
 			}
 
-			$urlSchemes = explode(LF, $providerData['url_schemes']);
+			$urlSchemes = t3lib_div::trimExplode(LF, $providerData['url_schemes']);
 
 			foreach ($urlSchemes as $urlScheme) {
 				$urlScheme = preg_quote($urlScheme, '/');
@@ -256,7 +261,7 @@ class Tx_Mediaoembed_Request_ProviderResolver {
 
 		if (!isset($this->genericProviderStatement)) {
 			$this->genericProviderStatement = $GLOBALS['TYPO3_DB']->prepare_SELECTquery(
-				'endpoint',
+				'*',
 				'tx_mediaoembed_provider',
 				'is_generic = 1 AND uid = :genericProviderUid' .
 				$this->cObj->enableFields('tx_mediaoembed_provider'),
@@ -271,11 +276,11 @@ class Tx_Mediaoembed_Request_ProviderResolver {
 			throw new RuntimeException('Error retrieving generic provider data from database.', 1303399235);
 		}
 
-		if ($GLOBALS['TYPO3_DB']->sql_num_rows($genericProviderResult)) {
+		if (!$this->genericProviderStatement->rowCount()) {
 			return NULL;
 		}
 
-		return $GLOBALS['TYPO3_DB']->sql_fetch_assoc($genericProviderResult);
+		return $this->genericProviderStatement->fetch();
 	}
 
 	/**

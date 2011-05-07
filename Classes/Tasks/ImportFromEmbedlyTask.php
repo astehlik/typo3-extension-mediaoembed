@@ -86,9 +86,6 @@ class tx_Mediaoembed_Tasks_ImportFromEmbedlyTask extends tx_scheduler_Task {
 					continue;
 				}
 
-				t3lib_div::debug($this->uidEmbedlyProvider);
-				return TRUE;
-
 				if (!t3lib_div::inList($currentProviderData['use_generic_providers'], $this->uidEmbedlyProvider)) {
 					$genericEndpointArray = t3lib_div::intExplode(',', $currentProviderData['use_generic_providers'], TRUE);
 					$genericEndpointArray[] = $this->uidEmbedlyProvider;

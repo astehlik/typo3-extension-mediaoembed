@@ -19,7 +19,7 @@ class Tx_Mediaoembed_Hooks_TslibContentGetDataRegisterArray implements tslib_con
 		$key = trim($parts[1]);
 		$type = strtolower(trim($parts[0]));
 
-		if ((string) $type !== 'tx_oembed') {
+		if ((string) $type !== 'registerobj') {
 			return $returnValue;
 		}
 
@@ -27,7 +27,7 @@ class Tx_Mediaoembed_Hooks_TslibContentGetDataRegisterArray implements tslib_con
 			return $returnValue;
 		}
 
-		$returnValue = $parentObject->getGlobal($key, $GLOBALS['TSFE']->register);
+		$returnValue = $this->getResponseDataFromRegister($key, $GLOBALS['TSFE']->register);
 		return $returnValue;
 	}
 
@@ -41,9 +41,9 @@ class Tx_Mediaoembed_Hooks_TslibContentGetDataRegisterArray implements tslib_con
 	 * @see tslib_cObj::getGlobal()
 	 */
 	protected function getResponseDataFromRegister($keyString, $data) {
-		$keys = explode('|', $keyString);
+		$keys = t3lib_div::trimExplode('|', $keyString);
 		$numberOfLevels = count($keys);
-		$rootKey = trim($keys[0]);
+		$rootKey = $keys[0];
 		$value = $this->getArrayOrObjectValue($rootKey, $data);
 
 		for ($i = 1; $i < $numberOfLevels && isset($value); $i++) {
@@ -72,12 +72,18 @@ class Tx_Mediaoembed_Hooks_TslibContentGetDataRegisterArray implements tslib_con
 		if (is_object($data)) {
 			$getter = 'get' . ucfirst($key);
 			if (method_exists($data, $getter)) {
-				return $data->$getter;
+				return $data->$getter();
+			}  else {
+				throw new Exception(sprintf('Object %s did not have getter function %s', get_class($data), $getter));
 			}
 		} elseif (is_array($data)) {
 			if (array_key_exists($key, $data)) {
 				return $data[$key];
+			} else {
+				throw new Exception(sprintf('array key %s did not exist', $key));
 			}
+		} else {
+			throw new Exception(sprintf('Current data was neither array nor object, key was: %s', $key));
 		}
 
 		return NULL;

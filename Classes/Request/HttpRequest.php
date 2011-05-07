@@ -51,32 +51,13 @@ class Tx_Mediaoembed_Request_HttpRequest {
 	protected $format = 'json';
 
 	/**
-	 * The maximum height of the embedded resource.
-	 * Only applies to some resource types (as specified below).
-	 * For supported resource types, this parameter must be respected by providers.
-	 * This value is optional.
+	 * Injector for the configuration object
 	 *
-	 * @var string
+	 * @param Tx_Mediaoembed_Content_Configuration $configuration
 	 */
-	protected $maxheight;
-
-	/**
-	 * The maximum width of the embedded resource.
-	 * Only applies to some resource types (as specified below).
-	 * For supported resource types, this parameter must be respected by providers.
-	 * This value is optional.
-	 *
-	 * @var string
-	 */
-	protected $maxwidth;
-
-	/**
-     * The URL to retrieve embedding information for.
-     * This value is required.
-     *
-     * @var string
-     */
-	protected $url;
+	public function injectConfiguration($configuration) {
+		$this->configuration = $configuration;
+	}
 
 	/**
 	 * Builds a request url and tries to read the embed information
@@ -101,24 +82,6 @@ class Tx_Mediaoembed_Request_HttpRequest {
 	}
 
 	/**
-	 * Setter for the maximum height
-	 *
-	 * @param string $url
-	 */
-	public function setMaxheight($maxheight) {
-		$this->maxheight = Tx_Mediaoembed_Utility_Validation::getValidWithHeightValue($maxheight);
-	}
-
-	/**
-	 * Setter for the maximum width
-	 *
-	 * @param string $url
-	 */
-	public function setMaxwidth($maxwidth) {
-		$this->maxwidth = Tx_Mediaoembed_Utility_Validation::getValidWithHeightValue($maxwidth);
-	}
-
-	/**
 	 * Setter for the URL
 	 *
 	 * @param string $url
@@ -137,19 +100,21 @@ class Tx_Mediaoembed_Request_HttpRequest {
 
 		$parameters = array();
 
-		if (isset($this->maxwidth)) {
-			$parameters['maxwidth'] = $this->maxwidth;
+		$maxwidth = $this->configuration->getMaxwidth();
+		if (isset($maxwidth)) {
+			$parameters['maxwidth'] = $maxwidth;
 		}
 
-		if (isset($this->maxheight)) {
-			$parameters['maxheight'] = $this->maxheight;
+		$maxheight = $this->configuration->getMaxheight();
+		if (isset($maxheight)) {
+			$parameters['maxheight'] = $maxheight;
 		}
 
 		if (isset($this->format)) {
 			$parameters['format'] = $this->format;
 		}
 			// needs to be last parameter
-		$parameters['url'] = $this->url;
+		$parameters['url'] = $this->configuration->getMediaUrl();
 
 		return $parameters;
 	}
