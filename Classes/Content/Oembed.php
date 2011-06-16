@@ -142,7 +142,7 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 	 *
 	 * @param array $dataForRegister
 	 */
-	protected function setRegisterAndRenderCobj($dataForRegister) {
+	protected function setRegisterAndRenderCobj() {
 
 		array_push($GLOBALS['TSFE']->registerStack, $GLOBALS['TSFE']->register);
 		$GLOBALS['TSFE']->register['tx_mediaoembed'] = $this->registerData;
@@ -207,7 +207,6 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 		$this->registerData->setRequest($request);
 		$this->registerData->setResponse($response);
 
-		return $response;
 	}
 }
 ?>

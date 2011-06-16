@@ -59,7 +59,7 @@ $TCA['tx_mediaoembed_provider'] = array(
 				'size' => '5',
 				'maxitems' => '100',
 				'foreign_table' => 'tx_mediaoembed_provider',
-				'foreign_table_where' => 'AND tx_mediaoembed_provider.is_generic=1',
+				'foreign_table_where' => 'AND tx_mediaoembed_provider.is_generic=1 AND tx_mediaoembed_provider.uid!=###THIS_UID###',
 			)
 		),
 		'embedly_shortname' => array(
