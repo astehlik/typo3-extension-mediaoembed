@@ -206,7 +206,6 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 		$this->registerData->setProvider($provider);
 		$this->registerData->setRequest($request);
 		$this->registerData->setResponse($response);
-
 	}
 }
 ?>

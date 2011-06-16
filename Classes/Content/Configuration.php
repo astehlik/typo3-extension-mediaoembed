@@ -33,13 +33,15 @@ class Tx_Mediaoembed_Content_Configuration {
 
 	/**
 	 * Current TypoScript / Flexform configuration
+	 *
+	 * @var array
 	 */
 	protected $conf;
 
 	/**
 	 * Constructor for the content configuration.
 	 *
-	 * @param $conf Current TypoScript / Flexform configuration
+	 * @param array $conf Current TypoScript / Flexform configuration
 	 */
 	public function __construct($conf) {
 		$this->conf = $conf;
@@ -51,7 +53,7 @@ class Tx_Mediaoembed_Content_Configuration {
 	 * For supported resource types, this parameter must be respected by providers.
 	 * This value is optional.
 	 *
-	 * @var int
+	 * @return int
 	 */
 	public function getMaxheight() {
 		if (empty($this->conf['height'])) {
@@ -67,7 +69,7 @@ class Tx_Mediaoembed_Content_Configuration {
 	 * For supported resource types, this parameter must be respected by providers.
 	 * This value is optional.
 	 *
-	 * @var int
+	 * @return int
 	 */
 	public function getMaxwidth() {
 		if (empty($this->conf['width'])) {
@@ -81,7 +83,7 @@ class Tx_Mediaoembed_Content_Configuration {
      * The URL to retrieve embedding information for.
      * This value is required.
      *
-     * @var string
+     * @return string
      */
 	public function getMediaUrl() {
 		return $this->conf['parameter.']['mmFile'];
