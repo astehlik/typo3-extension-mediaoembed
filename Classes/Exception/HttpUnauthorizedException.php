@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Exception;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -28,13 +28,8 @@
  * The consumer should provide a link directly to the resource instead
  * of any embedding any extra information, and rely on the provider
  * to provide access control.
- *
- * @package mediaoembed
- * @subpackage Request
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Exception_UnauthorizedException extends Tx_Mediaoembed_Exception_RequestException {
+class UnauthorizedException extends RequestException {
 
 public function __construct($mediaUrl, $requestUrl) {
 		$message  = 'The server returned a 401 Unauthorized error for this URL: %s. ';

@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Exception;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -29,13 +29,8 @@
  * and the provider doesn't support XML responses.
  *
  * However, providers are encouraged to support both JSON and XML.
- *
- * @package mediaoembed
- * @subpackage Request
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Exception_HttpNotImplementedException extends Tx_Mediaoembed_Exception_RequestException {
+class HttpNotImplementedException extends RequestException {
 
 	public function __construct($mediaUrl, $requestFormat, $requestUrl) {
 		$message  = 'The server returned a 501 Not Implemented error for this URL: %s. ';

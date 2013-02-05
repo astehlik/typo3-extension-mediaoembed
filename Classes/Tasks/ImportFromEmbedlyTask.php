@@ -1,4 +1,6 @@
 <?php
+namespace Sto\Mediaoembed\Task;
+
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
  *                                                                        *
@@ -22,26 +24,42 @@
 /**
  * This task can create / update providers with the data read from
  * embed.ly
- *
- * @package mediaoembed
- * @subpackage Tasks
- * @version $Id:$
  */
-class tx_Mediaoembed_Tasks_ImportFromEmbedlyTask extends tx_scheduler_Task {
+class ImportFromEmbedlyTask extends \TYPO3\CMS\Extbase\Scheduler\Task {
 
+	/**
+	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected $db;
+
+	/**
+	 * @var string
+	 */
 	protected $embedlyServicesUrl = 'http://api.embed.ly/1/services';
 
+	/**
+	 * @var int
+	 */
 	protected $uidEmbedlyProvider = 1;
 
 	/**
-	 * Function executed from the Scheduler.
-	 * Goes to sleep ;-)
+	 * Initializes the database connection
 	 *
-	 * @return	void
+	 * @return ImportFromEmbedlyTask
+	 */
+	public function __construct() {
+		parent::__construct();
+		$this->db = $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Function executed from the Scheduler.
+	 *
+	 * @return boolean
 	 */
 	public function execute() {
 
-		$json = t3lib_div::getURL($this->embedlyServicesUrl);
+		$json = \TYPO3\CMS\Core\Utility\GeneralUtility::getURL($this->embedlyServicesUrl);
 
 		$services = json_decode($json, TRUE);
 
@@ -57,14 +75,14 @@ class tx_Mediaoembed_Tasks_ImportFromEmbedlyTask extends tx_scheduler_Task {
 
 		foreach ($services as $serviceData) {
 
-			$currentProviderResult = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			$currentProviderResult = $this->db->exec_SELECTquery(
 				'*',
 				'tx_mediaoembed_provider',
-				'embedly_shortname=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($serviceData['name'], 'tx_mediaoembed_provider')
+				'embedly_shortname=' . $this->db->fullQuoteStr($serviceData['name'], 'tx_mediaoembed_provider')
 			);
 
 			if ($currentProviderResult === FALSE) {
-				throw new RuntimeException('Error while getting provider data from database.', 1303848921);
+				throw new \RuntimeException('Error while getting provider data from database.', 1303848921);
 			}
 
 			$urlSchemes = $serviceData['regex'];
@@ -75,21 +93,21 @@ class tx_Mediaoembed_Tasks_ImportFromEmbedlyTask extends tx_scheduler_Task {
 				'sorting' => $sorting,
 			);
 
-			if ($GLOBALS['TYPO3_DB']->sql_num_rows($currentProviderResult)) {
+			if ($this->db->sql_num_rows($currentProviderResult)) {
 
-				$currentProviderData = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($currentProviderResult);
+				$currentProviderData = $this->db->sql_fetch_assoc($currentProviderResult);
 
 				if ($currentProviderData['is_generic']) {
 					continue;
 				}
 
-				if (!t3lib_div::inList($currentProviderData['use_generic_providers'], $this->uidEmbedlyProvider)) {
-					$genericEndpointArray = t3lib_div::intExplode(',', $currentProviderData['use_generic_providers'], TRUE);
+				if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList($currentProviderData['use_generic_providers'], $this->uidEmbedlyProvider)) {
+					$genericEndpointArray = \TYPO3\CMS\Core\Utility\GeneralUtility::intExplode(',', $currentProviderData['use_generic_providers'], TRUE);
 					$genericEndpointArray[] = $this->uidEmbedlyProvider;
 					$updateArray['use_generic_providers'] = implode(',', $genericEndpointArray);
 				}
 
-				$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+				$this->db->exec_UPDATEquery(
 					'tx_mediaoembed_provider',
 					'uid=' . intval($currentProviderData['uid']),
 					$updateArray
@@ -104,7 +122,7 @@ class tx_Mediaoembed_Tasks_ImportFromEmbedlyTask extends tx_scheduler_Task {
 				$insertArray['use_generic_providers'] = $this->uidEmbedlyProvider;
 				$insertArray['url_schemes'] = implode(LF, $urlSchemes);
 
-				$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+				$this->db->exec_INSERTquery(
 					'tx_mediaoembed_provider',
 					$insertArray
 				);
@@ -115,10 +133,6 @@ class tx_Mediaoembed_Tasks_ImportFromEmbedlyTask extends tx_scheduler_Task {
 
 		return TRUE;
 	}
-}
-
-if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/mediaoembed/Classes/Tasks/ImportFromEmbedlyTask.php'])) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/mediaoembed/Classes/Tasks/ImportFromEmbedlyTask.php']);
 }
 
 ?>

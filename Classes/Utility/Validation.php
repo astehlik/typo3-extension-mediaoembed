@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Utility;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -23,20 +23,15 @@
 
 /**
  * Utility class for validating input
- *
- * @package mediaoembed
- * @subpackage Utility
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Utility_Validation {
+class Validation {
 
 	/**
 	 * Gets a valid width or height value, or NULL if none was set.
 	 * Valid values are positive integers or empty values.
 	 *
+	 * @param int $value
 	 * @return int If valid width / height was set, or NULL if value was empty
-	 * @throws InvalidArgumentException if an invalid width or height value was detected.
 	 */
 	public static function getValidWithHeightValue($value) {
 
@@ -46,7 +41,7 @@ class Tx_Mediaoembed_Utility_Validation {
 
 		$value = intval($value);
 		if ($value < 1) {
-			throw new InvalidArgumentException('Invalid width or height value. Only positive integers are allowed.', 1303846809);
+			throw new \InvalidArgumentException('Invalid width or height value. Only positive integers are allowed.', 1303846809);
 		}
 
 		return $value;

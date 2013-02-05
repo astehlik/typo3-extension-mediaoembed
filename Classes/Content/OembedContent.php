@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Content;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -23,23 +23,18 @@
 
 /**
  * Content rendering for oembed media
- *
- * @package mediaoembed
- * @subpackage Content
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
+class OembedContent extends \TYPO3\CMS\Frontend\ContentObject\AbstractContentObject {
 
 	/**
 	 * Current TypoScript / Flexform configuration
 	 *
-	 * @var Tx_Mediaoembed_Content_Configuration
+	 * @var Configuration
 	 */
 	protected $configuration;
 
 	/**
-	 * @var tslib_content_Media
+	 * @var \TYPO3\CMS\Frontend\ContentObject\MediaContentObject
 	 */
 	protected $parentContent;
 
@@ -47,33 +42,33 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 	 * The provider resolver tries to resolve the matching provider
 	 * for the current media URL.
 	 *
-	 * @var Tx_Mediaoembed_Request_ProviderResolver
+	 * @var \Sto\Mediaoembed\Request\ProviderResolver
 	 */
 	protected $providerResolver;
 
 	/**
 	 * Request builder for creating a request to a given endpoint.
 	 *
-	 * @var Tx_Mediaoembed_Request_RequestBuilder
+	 * @var \Sto\Mediaoembed\Request\RequestBuilder
 	 */
 	protected $requestBuilder;
 
 	/**
 	 * Tries to build a reponse object using the reponse that came from the server.
 	 *
-	 * @var Tx_Mediaoembed_Response_ResponseBuilder
+	 * @var \Sto\Mediaoembed\Response\ResponseBuilder
 	 */
 	protected $responseBuilder;
 
 	/**
-	 * @var Tx_Mediaoembed_Content_RegisterData
+	 * @var RegisterData
 	 */
 	protected $registerData;
 
 	/**
 	 * Injects the parent content object
 	 *
-	 * @param tslib_content_Media $parentContent
+	 * @param \TYPO3\CMS\Frontend\ContentObject\MediaContentObject $parentContent
 	 */
 	public function injectParentContent($parentContent) {
 		$this->parentContent = $parentContent;
@@ -83,7 +78,7 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 	 * Initializes the provider resolver
 	 */
 	protected function initializeProviderResolver() {
-		$this->providerResolver = t3lib_div::makeInstance('Tx_Mediaoembed_Request_ProviderResolver');
+		$this->providerResolver = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Request\\ProviderResolver');
 		$this->providerResolver->injectCObj($this->cObj);
 		$this->providerResolver->injectConfiguration($this->configuration);
 	}
@@ -92,7 +87,7 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 	 * Initializes the request builder
 	 */
 	protected function initializeRequestBuilder() {
-		$this->requestBuilder = t3lib_div::makeInstance('Tx_Mediaoembed_Request_RequestBuilder');
+		$this->requestBuilder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Request\\RequestBuilder');
 		$this->requestBuilder->injectConfiguration($this->configuration);
 	}
 
@@ -100,24 +95,25 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 	 * Initializes the response builder
 	 */
 	protected function initializeResponseBuilder() {
-		$this->responseBuilder = t3lib_div::makeInstance('Tx_Mediaoembed_Response_ResponseBuilder');
+		$this->responseBuilder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Response\\ResponseBuilder');
 	}
 
 	/**
 	 * Renders the oembed media item
 	 *
 	 * @param array $conf Current TypoScript / Flexform configuration
+	 * @return string
 	 */
 	public function render($conf = array()) {
 
-		$this->configuration = t3lib_div::makeInstance('Tx_Mediaoembed_Content_Configuration', $conf);
-		$this->registerData = t3lib_div::makeInstance('Tx_Mediaoembed_Content_RegisterData', $this->configuration);
+		$this->configuration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Content\\Configuration', $conf);
+		$this->registerData = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Content\\RegisterData', $this->configuration);
 
 		try {
 			$this->getEmbedDataFromProvider();
 			return $this->setRegisterAndRenderCobj();
 		}
-		catch(Tx_Mediaoembed_Exception_OEmbedException $exception) {
+		catch(\Sto\Mediaoembed\Exception\OEmbedException $exception) {
 			return 'Error: ' . $exception->getMessage();
 		}
 
@@ -140,7 +136,7 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 	 * Renders the renderItem and provides the oembed information in
 	 * a register during the rendering process.
 	 *
-	 * @param array $dataForRegister
+	 * @return string
 	 */
 	protected function setRegisterAndRenderCobj() {
 
@@ -162,15 +158,18 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 	 * until the request was successful or no more providers / endpoints
 	 * are available.
 	 *
-	 * @return Tx_Mediaoembed_Response_GenericResponse A response object initialized with the data the provider returned
-	 * @throws Tx_Mediaoembed_Exception_RequestException If none of the requests returned a vaild result.
+	 * @return \Sto\Mediaoembed\Response\GenericResponse A response object initialized with the data the provider returned
 	 */
 	protected function startRequestLoop() {
 
 		$response = NULL;
+		$request = NULL;
 
 		do {
 
+			/**
+			 * @var \Sto\Mediaoembed\Request\Provider $provider
+			 */
 			$provider = $this->providerResolver->getNextMatchingProvider();
 
 			if ($provider === FALSE) {
@@ -188,7 +187,7 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 				try {
 					$responseData = $request->sendAndGetResponseData();
 					$response = $this->responseBuilder->buildResponse($responseData);
-				} catch (Tx_Mediaoembed_Exception_RequestException $exception) {
+				} catch (\Sto\Mediaoembed\Exception\RequestException $exception) {
 					// @TODO record all exceptions and provide that information to the user
 					$response = NULL;
 				}
@@ -200,7 +199,7 @@ class Tx_Mediaoembed_Content_Oembed extends tslib_content_Abstract {
 		} while ($response === NULL);
 
 		if ($response === NULL) {
-			throw new Tx_Mediaoembed_Exception_RequestException('No provider returned a valid result. Giving up. Please make sure the URL is valid and you have configured a provider that can handle it.');
+			throw new \Sto\Mediaoembed\Exception\RequestException('No provider returned a valid result. Giving up. Please make sure the URL is valid and you have configured a provider that can handle it.');
 		}
 
 		$this->registerData->setProvider($provider);

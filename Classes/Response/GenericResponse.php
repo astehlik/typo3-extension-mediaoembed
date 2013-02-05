@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Response;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -25,13 +25,8 @@
  * Responses can specify a resource type, such as photo or video.
  * Each type has specific parameters associated with it.
  * The parameters in this class are valid for all response types.
- *
- * @package mediaoembed
- * @subpackage Response
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Response_GenericResponse {
+class GenericResponse {
 
 	/**
 	 * The name of the author/owner of the resource.
@@ -141,7 +136,7 @@ class Tx_Mediaoembed_Response_GenericResponse {
 	 * Initializes the response parameters that are valid for all
 	 * response types.
 	 *
-	 * @param object the parsed json response
+	 * @param array $responseData the parsed json response
 	 */
 	public function initializeResponseData($responseData) {
 		$this->responseDataArray = $responseData;
@@ -162,8 +157,6 @@ class Tx_Mediaoembed_Response_GenericResponse {
 	/**
 	 * Initializes the response parameters that are specific for this
 	 * resource type.
-	 *
-	 * @param object the parsed json response
 	 */
 	public function initializeTypeSpecificResponseData() {
 	}

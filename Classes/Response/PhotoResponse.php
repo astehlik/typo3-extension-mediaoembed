@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Response;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -24,13 +24,8 @@
 /**
  * This type is used for representing static photos.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
- *
- * @package mediaoembed
- * @subpackage Response
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Response_PhotoResponse extends Tx_Mediaoembed_Response_GenericResponse {
+class PhotoResponse extends GenericResponse {
 	/**
 	 * The height in pixels of the image specified in the url parameter.
 	 * This value is required.
@@ -67,14 +62,11 @@ class Tx_Mediaoembed_Response_PhotoResponse extends Tx_Mediaoembed_Response_Gene
 	/**
 	 * Initializes the response parameters that are specific for this
 	 * resource type.
-	 *
-	 * @param object the parsed json response
 	 */
 	public function initializeTypeSpecificResponseData() {
 		$this->url = $this->responseDataArray['url'];
 		$this->width = $this->responseDataArray['width'];
 		$this->height = $this->responseDataArray['height'];
-		$this->localImagePath = NULL;
 	}
 
 	/**
@@ -121,18 +113,19 @@ class Tx_Mediaoembed_Response_PhotoResponse extends Tx_Mediaoembed_Response_Gene
 	 * Downloads the photo from the server and stores it in the typo3temp folder.
 	 *
 	 * @return void
+	 * TODO: Use _processed folder
 	 */
 	protected function downloadPhoto() {
 
-		$imageData = t3lib_div::getURL($this->getUrl());
+		$imageData = \TYPO3\CMS\Core\Utility\GeneralUtility::getURL($this->getUrl());
 
 		$imageFilename = basename($this->getUrl());
 		$imageFilename = preg_replace('/[^a-z0-9\._-]/i', '', $imageFilename);
-		$imagePrefix = t3lib_div::md5int($imageData);
+		$imagePrefix = \TYPO3\CMS\Core\Utility\GeneralUtility::md5int($imageData);
 		$imageFilename = $imagePrefix . '_' . $imageFilename;
 		$imagePathAndFilename = 'typo3temp/tx_mediaoembed/' . $imageFilename;
 
-		t3lib_div::writeFileToTypo3tempDir(PATH_site . $imagePathAndFilename, $imageData);
+		\TYPO3\CMS\Core\Utility\GeneralUtility::writeFileToTypo3tempDir(PATH_site . $imagePathAndFilename, $imageData);
 		$this->localPath = $imagePathAndFilename;
 	}
 }

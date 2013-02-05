@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Request;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -23,32 +23,27 @@
 
 /**
  * Builds a request object based on the (TypoScript) configuration
- *
- * @package mediaoembed
- * @subpackage Request
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Request_RequestBuilder {
+class RequestBuilder {
 
 	/**
 	 * TypoScript / Flexform configuration
 	 *
-	 * @var Tx_Mediaoembed_Content_Configuration
+	 * @var \Sto\Mediaoembed\Content\Configuration
 	 */
 	protected $configuration;
 
 	/**
 	 * Request object that is build by this request builder
 	 *
-	 * @var Tx_Mediaoembed_Request_HtmlRequest
+	 * @var HttpRequest
 	 */
 	protected $request;
 
 	/**
 	 * The provider for which the request will be created
 	 *
-	 * @var Tx_Mediaoembed_Request_Provider
+	 * @var Provider
 	 */
 	protected $provider;
 
@@ -62,7 +57,7 @@ class Tx_Mediaoembed_Request_RequestBuilder {
 	/**
 	 * Injector for the TypoScript / Flexform configuration
 	 *
-	 * @param Tx_Mediaoembed_Content_Configuration $configuration
+	 * @param \Sto\Mediaoembed\Content\Configuration $configuration
 	 */
 	public function injectConfiguration($configuration) {
 		$this->configuration = $configuration;
@@ -81,7 +76,7 @@ class Tx_Mediaoembed_Request_RequestBuilder {
 			$this->endpoints = $this->provider->getAllEndpoints();
 
 			if (!count($this->endpoints)) {
-				throw new Tx_Mediaoembed_Exception_NoProviderEndpointException($this->provider);
+				throw new \Sto\Mediaoembed\Exception\NoProviderEndpointException($this->provider);
 			}
 
 			reset($this->endpoints);
@@ -99,7 +94,7 @@ class Tx_Mediaoembed_Request_RequestBuilder {
 	/**
 	 * Initializes the provider for which the request will be build
 	 *
-	 * @param Tx_Mediaoembed_Request_Provider $provider
+	 * @param Provider $provider
 	 * @return boolean TRUE if provider changes, otherwilse FALSE
 	 */
 	protected function initializeProvider($provider) {
@@ -116,8 +111,8 @@ class Tx_Mediaoembed_Request_RequestBuilder {
 	 * Builds a request using the given configuration and the
 	 * given provider data.
 	 *
-	 * @param Tx_Mediaoembed_Request_Provider $provider
-	 * @return Tx_Mediaoembed_Request_HtmlRequest or FALSE if no further requests are available
+	 * @param Provider $provider
+	 * @return HttpRequest or FALSE if no further requests are available
 	 */
 	public function buildNextRequest($provider) {
 		$providerChanged = $this->initializeProvider($provider);
@@ -137,7 +132,12 @@ class Tx_Mediaoembed_Request_RequestBuilder {
 	 * @return void
 	 */
 	protected function initializeNewRequest() {
-		$this->request = t3lib_div::makeInstance('Tx_Mediaoembed_Request_HttpRequest');
+
+		/**
+		 * @var \Sto\Mediaoembed\Request\HttpRequest $request
+		 */
+		$request = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Request\\HttpRequest');
+		$this->request = $request;
 		$this->request->injectConfiguration($this->configuration);
 		$this->request->setEndpoint(current($this->endpoints));
 	}

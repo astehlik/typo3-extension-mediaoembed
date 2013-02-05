@@ -1,4 +1,5 @@
 <?php
+namespace Sto\Mediaoembed\Hooks;
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
  *                                                                        *
@@ -20,23 +21,33 @@
  *                                                                        */
 
 /**
- * @package mediaoembed
- * @subpackage Hooks
- * @version $Id:$
+ * Provides a net getData method called "registerobj"
  */
-class Tx_Mediaoembed_Hooks_TslibContentGetDataRegisterArray implements tslib_content_getDataHook {
+class TslibContentGetDataRegisterArray implements \TYPO3\CMS\Frontend\ContentObject\ContentObjectGetDataHookInterface {
+
+	/**
+	 * @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+	 */
+	protected $tsfe;
+
+	/**
+	 * Initializes the tsfe value
+	 */
+	public function __construct() {
+		$this->tsfe = $GLOBALS['TSFE'];
+	}
 
 	/**
 	 * Extends the getData()-Method of tslib_cObj to process more/other commands
 	 *
-	 * @param	string		full content of getData-request e.g. "TSFE:id // field:title // field:uid"
-	 * @param	array		current field-array
-	 * @param	string		currently examined section value of the getData request e.g. "field:title"
-	 * @param	string		current returnValue that was processed so far by getData
-	 * @param	tslib_cObj	parent content object
-	 * @return	string		get data result
+	 * @param string $getDataString Full content of getData-request e.g. "TSFE:id // field:title // field:uid
+	 * @param array $fields Current field-array
+	 * @param string $sectionValue Currently examined section value of the getData request e.g. "field:title
+	 * @param string $returnValue Current returnValue that was processed so far by getData
+	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $parentObject Parent content object
+	 * @return string Get data result
 	 */
-	public function getDataExtension($getDataString, array $fields, $sectionValue, $returnValue, tslib_cObj &$parentObject) {
+	public function getDataExtension($getDataString, array $fields, $sectionValue, $returnValue, \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer &$parentObject) {
 
 		$parts = explode(':', $sectionValue, 2);
 
@@ -51,7 +62,7 @@ class Tx_Mediaoembed_Hooks_TslibContentGetDataRegisterArray implements tslib_con
 			return $returnValue;
 		}
 
-		$returnValue = $this->getResponseDataFromRegister($key, $GLOBALS['TSFE']->register);
+		$returnValue = $this->getResponseDataFromRegister($key, $this->tsfe->register);
 		return $returnValue;
 	}
 
@@ -65,7 +76,7 @@ class Tx_Mediaoembed_Hooks_TslibContentGetDataRegisterArray implements tslib_con
 	 * @see tslib_cObj::getGlobal()
 	 */
 	protected function getResponseDataFromRegister($keyString, $data) {
-		$keys = t3lib_div::trimExplode('|', $keyString);
+		$keys = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('|', $keyString);
 		$numberOfLevels = count($keys);
 		$rootKey = $keys[0];
 		$value = $this->getArrayOrObjectValue($rootKey, $data);
@@ -90,6 +101,7 @@ class Tx_Mediaoembed_Hooks_TslibContentGetDataRegisterArray implements tslib_con
 	 *
 	 * @param string $key
 	 * @param object|array $data
+	 * @return mixed
 	 */
 	protected function getArrayOrObjectValue($key, $data) {
 
@@ -98,19 +110,17 @@ class Tx_Mediaoembed_Hooks_TslibContentGetDataRegisterArray implements tslib_con
 			if (method_exists($data, $getter)) {
 				return $data->$getter();
 			}  else {
-				throw new Exception(sprintf('Object %s did not have getter function %s', get_class($data), $getter));
+				throw new \Exception(sprintf('Object %s did not have getter function %s', get_class($data), $getter));
 			}
 		} elseif (is_array($data)) {
 			if (array_key_exists($key, $data)) {
 				return $data[$key];
 			} else {
-				throw new Exception(sprintf('array key %s did not exist', $key));
+				throw new \Exception(sprintf('array key %s did not exist', $key));
 			}
 		} else {
-			throw new Exception(sprintf('Current data was neither array nor object, key was: %s', $key));
+			throw new \Exception(sprintf('Current data was neither array nor object, key was: %s', $key));
 		}
-
-		return NULL;
 	}
 }
 

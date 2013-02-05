@@ -1,4 +1,6 @@
 <?php
+namespace Sto\Mediaoembed\Hooks;
+
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
  *                                                                        *
@@ -20,11 +22,9 @@
  *                                                                        */
 
 /**
- * @package mediaoembed
- * @subpackage Hooks
- * @version $Id:$
+ * The oEmbed media item renderer
  */
-class Tx_Mediaoembed_Hooks_CmsMediaitems {
+class CmsMediaitems {
 
 	/**
 	 * This is the name of the render type for which this hook will get active.
@@ -37,6 +37,7 @@ class Tx_Mediaoembed_Hooks_CmsMediaitems {
 	 * Addes oEmbed render type to list of render types
 	 *
 	 * @param array $config The current flexform configuration
+	 * @return array
 	 */
 	public function customMediaRenderTypes($config) {
 
@@ -50,12 +51,10 @@ class Tx_Mediaoembed_Hooks_CmsMediaitems {
 	 *
 	 * @param string $renderType
 	 * @param array $conf
-	 * @param ux_tslib_content_Media $parentContent
+	 * @param \TYPO3\CMS\Frontend\ContentObject\MediaContentObject $parentContent
+	 * @return string
 	 */
 	public function customMediaRender($renderType, $conf, $parentContent) {
-
-		//var_dump(Tx_Extbase_Utility_Extension::createAutoloadRegistryForExtension('mediaoembed', t3lib_extMgm::extPath('mediaoembed')));
-		//return;
 
 			// @TODO submit TYPO3 patch that we get the current content
 			// that was possibly set by other providers!
@@ -66,7 +65,10 @@ class Tx_Mediaoembed_Hooks_CmsMediaitems {
 			return $currentContent;
 		}
 
-		$content = t3lib_div::makeInstance('Tx_Mediaoembed_Content_Oembed', $parentContent->getCObj());
+		/**
+		 * @var \Sto\Mediaoembed\Content\OembedContent $content
+		 */
+		$content = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Content\\OembedContent', $parentContent->getContentObject());
 		$content->injectParentContent($parentContent);
 		return $content->render($conf);
 	}

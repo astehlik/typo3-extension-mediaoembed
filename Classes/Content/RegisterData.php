@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Content;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -23,46 +23,41 @@
 
 /**
  * Stores all relevant data for the content REGISTER
- *
- * @package mediaoembed
- * @subpackage Content
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Content_RegisterData {
+class RegisterData {
 
 	/**
 	 * The configuration that was used during the request
 	 *
-	 * @var Tx_Mediaoembed_Content_Configuration
+	 * @var Configuration
 	 */
 	protected $configuration;
 
 	/**
 	 * The provider that was used for the request.
 	 *
-	 * @var Tx_Mediaoembed_Request_Provider
+	 * @var \Sto\Mediaoembed\Request\Provider
 	 */
 	protected $provider;
 
 	/**
 	 * The request that was send to get the embed code
 	 *
-	 * @var Tx_Mediaoembed_Request_HttpRequest
+	 * @var \Sto\Mediaoembed\Request\HttpRequest
 	 */
 	protected $request;
 
 	/**
 	 * The response we got from the server
 	 *
-	 * @var Tx_Mediaoembed_Response_GenericResponse
+	 * @var \Sto\Mediaoembed\Response\GenericResponse
 	 */
 	protected $response;
 
 	/**
 	 * Creates a new register data object
 	 *
-	 * @param Tx_Mediaoembed_Content_Configuration $configuration
+	 * @param Configuration $configuration
 	 */
 	public function __construct($configuration) {
 		$this->configuration = $configuration;
@@ -71,7 +66,7 @@ class Tx_Mediaoembed_Content_RegisterData {
 	/**
 	 * Getter for the configuration
 	 *
-	 * @return Tx_Mediaoembed_Content_Configuration $configuration
+	 * @return Configuration $configuration
 	 */
 	public function getConfiguration() {
 		return $this->configuration;
@@ -80,7 +75,7 @@ class Tx_Mediaoembed_Content_RegisterData {
 	/**
 	 * Getter for the provider
 	 *
-	 * @return Tx_Mediaoembed_Request_Provider
+	 * @return \Sto\Mediaoembed\Request\Provider
 	 */
 	public function getProvider() {
 		return $this->provider;
@@ -89,7 +84,7 @@ class Tx_Mediaoembed_Content_RegisterData {
 	/**
 	 * Getter for the request
 	 *
-	 * @return Tx_Mediaoembed_Request_HttpRequest
+	 * @return \Sto\Mediaoembed\Request\HttpRequest
 	 */
 	public function getRequest() {
 		return $this->request;
@@ -98,7 +93,7 @@ class Tx_Mediaoembed_Content_RegisterData {
 	/**
 	 * Getter for the response
 	 *
-	 * @return Tx_Mediaoembed_Response_GenericResponse
+	 * @return \Sto\Mediaoembed\Response\GenericResponse
 	 */
 	public function getResponse() {
 		return $this->response;
@@ -107,7 +102,7 @@ class Tx_Mediaoembed_Content_RegisterData {
 	/**
 	 * Setter for the provider
 	 *
-	 * @param Tx_Mediaoembed_Request_Provider $provider
+	 * @param \Sto\Mediaoembed\Request\Provider $provider
 	 * @return void
 	 */
 	public function setProvider($provider) {
@@ -117,7 +112,7 @@ class Tx_Mediaoembed_Content_RegisterData {
 	/**
 	 * Setter for the request
 	 *
-	 * @param Tx_Mediaoembed_Request_HttpRequest $request
+	 * @param \Sto\Mediaoembed\Request\HttpRequest $request
 	 * @return void
 	 */
 	public function setRequest($request) {
@@ -127,7 +122,7 @@ class Tx_Mediaoembed_Content_RegisterData {
 	/**
 	 * Setter for the response
 	 *
-	 * @param Tx_Mediaoembed_Response_GenericResponse $response
+	 * @param \Sto\Mediaoembed\Response\GenericResponse $response
 	 * @return void
 	 */
 	public function setResponse($response) {

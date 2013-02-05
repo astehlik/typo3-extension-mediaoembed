@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Response;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -28,12 +28,7 @@
  * parameters.
  * The consumer may then link to the resource, using the URL specified in the
  * original request.
- *
- * @package mediaoembed
- * @subpackage Response
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Response_LinkResponse extends Tx_Mediaoembed_Response_GenericResponse {
+class LinkResponse extends GenericResponse {
 }
 ?>

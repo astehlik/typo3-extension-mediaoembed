@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Content;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -23,13 +23,8 @@
 
 /**
  * Handels TypoScript and FlexForm configuration
- *
- * @package mediaoembed
- * @subpackage Content
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Content_Configuration {
+class Configuration {
 
 	/**
 	 * Current TypoScript / Flexform configuration

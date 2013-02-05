@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Response;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -24,18 +24,13 @@
 /**
  * This type is used for representing static photos.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
- *
- * @package mediaoembed
- * @subpackage Response
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Response_ResponseBuilder {
+class ResponseBuilder {
 
 	/**
 	 * The response that will be build by the response builder
 	 *
-	 * @var Tx_Mediaoembed_Response_GenericResponse
+	 * @var GenericResponse
 	 */
 	protected $response;
 
@@ -44,7 +39,7 @@ class Tx_Mediaoembed_Response_ResponseBuilder {
 	 * from the provider.
 	 *
 	 * @param string $responseData Raw response data from the provider
-	 * @return Tx_Mediaoembed_Response_GenericResponse An instance of a response
+	 * @return GenericResponse An instance of a response
 	 */
 	public function buildResponse($responseData) {
 
@@ -52,7 +47,7 @@ class Tx_Mediaoembed_Response_ResponseBuilder {
 		$parsedResponseData = json_decode($responseData, TRUE);
 
 		if ($parsedResponseData === NULL) {
-			throw new Tx_Mediaoembed_Exception_InvalidResponseException($responseData);
+			throw new \Sto\Mediaoembed\Exception\InvalidResponseException($responseData);
 		}
 
 		$this->createResponseByType($parsedResponseData['type']);
@@ -73,19 +68,19 @@ class Tx_Mediaoembed_Response_ResponseBuilder {
 
 		switch ($type) {
 			case 'link':
-				$this->response = t3lib_div::makeInstance('Tx_Mediaoembed_Response_LinkResponse');
+				$this->response = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Response\\LinkResponse');
 				break;
 			case 'photo':
-				$this->response = t3lib_div::makeInstance('Tx_Mediaoembed_Response_PhotoResponse');
+				$this->response = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Response\\PhotoResponse');
 				break;
 			case 'rich':
-				$this->response = t3lib_div::makeInstance('Tx_Mediaoembed_Response_RichResponse');
+				$this->response = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Response\\RichResponse');
 				break;
 			case 'video':
-				$this->response = t3lib_div::makeInstance('Tx_Mediaoembed_Response_VideoResponse');
+				$this->response = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Response\\VideoResponse');
 				break;
 			default:
-				$this->response = t3lib_div::makeInstance('Tx_Mediaoembed_Response_GenericResponse');
+				$this->response = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Response\\GenericResponse');
 				break;
 		}
 	}

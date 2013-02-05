@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Exception;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -23,12 +23,7 @@
 
 /**
  * Base class for all possible Exceptions that are not runtime errors.
- *
- * @package mediaoembed
- * @subpackage Exception
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-abstract class Tx_Mediaoembed_Exception_OEmbedException extends t3lib_exception {
+abstract class OEmbedException extends \TYPO3\CMS\Extbase\Exception {
 }
 ?>

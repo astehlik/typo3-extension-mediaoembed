@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Response;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -25,13 +25,8 @@
  * This type is used for rich HTML content that does not fall under one of
  * the other categories.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
- *
- * @package mediaoembed
- * @subpackage Response
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Response_RichResponse extends Tx_Mediaoembed_Response_GenericResponse {
+class RichResponse extends GenericResponse {
 
 	/**
 	 * The height in pixels required to display the HTML.
@@ -64,8 +59,6 @@ class Tx_Mediaoembed_Response_RichResponse extends Tx_Mediaoembed_Response_Gener
 	/**
 	 * Initializes the response parameters that are specific for this
 	 * resource type.
-	 *
-	 * @param object the parsed json response
 	 */
 	public function initializeTypeSpecificResponseData() {
 		$this->html = $this->responseDataArray['html'];

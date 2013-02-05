@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Request;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -23,13 +23,8 @@
 
 /**
  * A oEmbed provider
- *
- * @package mediaoembed
- * @subpackage Request
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Request_Provider {
+class Provider {
 
 	/**
 	 * Description of the provider
@@ -109,11 +104,11 @@ class Tx_Mediaoembed_Request_Provider {
 	/**
 	 * Checks, if the given provider equals this provider.
 	 *
-	 * @param Tx_Mediaoembed_Request_Provider $provider
+	 * @param Provider $provider
 	 * @return boolean TRUE if provider is equal.
 	 */
 	public function equals($provider) {
-		if ($provider instanceof Tx_Mediaoembed_Request_Provider) {
+		if ($provider instanceof Provider) {
 			if ($this->getUid() === $provider->getUid()) {
 				return TRUE;
 			}
@@ -156,6 +151,10 @@ class Tx_Mediaoembed_Request_Provider {
 	 * @return array
 	 */
 	public function getGenericEndpoints() {
+
+		/**
+		 * @var Provider $genericProvider
+		 */
 		$genericEndpoints = array();
 		$genericProviders = $this->getGenericProviders();
 		foreach ($genericProviders as $genericProvider) {

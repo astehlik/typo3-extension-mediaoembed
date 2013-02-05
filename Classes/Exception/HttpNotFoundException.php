@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Exception;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -27,13 +27,8 @@
  * The provider has no response for the requested url parameter.
  * This allows providers to be broad in their URL scheme, and then determine
  * at call time if they have a representation to return.
- *
- * @package mediaoembed
- * @subpackage Request
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Exception_HttpNotFoundException extends Tx_Mediaoembed_Exception_RequestException {
+class HttpNotFoundException extends OEmbedException {
 
 	public function __construct($mediaUrl, $requestUrl) {
 		$message  = 'The server returned a 404 Not Found error for this URL: %s. ';

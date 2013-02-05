@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Exception;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -23,13 +23,8 @@
 
 /**
  * Resolves a matching provider for the given URL
- *
- * @package mediaoembed
- * @subpackage Request
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Exception_InvalidResponseException extends Tx_Mediaoembed_Exception_RequestException {
+class InvalidResponseException extends RequestException {
 
 	public function __construct($response) {
 		$message = 'The server returned an invalid response that could not be parsed. The servers response was: %s';

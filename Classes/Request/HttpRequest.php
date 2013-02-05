@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Request;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -22,12 +22,16 @@
  *                                                                        */
 
 /**
- * @package mediaoembed
- * @subpackage Renderer
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Represents a HTTP request
  */
-class Tx_Mediaoembed_Request_HttpRequest {
+class HttpRequest {
+
+	/**
+	 * The configuration
+	 *
+	 * @var \Sto\Mediaoembed\Content\Configuration
+	 */
+	protected $configuration;
 
 	/**
 	 * The endpoint URL that should be contacted to get the embed
@@ -36,6 +40,13 @@ class Tx_Mediaoembed_Request_HttpRequest {
 	 * @var string
 	 */
 	protected $endpoint;
+
+	/**
+	 * The request URL
+	 *
+	 * @var string
+	 */
+	protected $url;
 
 	/**
 	 * The required response format. When not specified, the provider can return
@@ -53,7 +64,7 @@ class Tx_Mediaoembed_Request_HttpRequest {
 	/**
 	 * Injector for the configuration object
 	 *
-	 * @param Tx_Mediaoembed_Content_Configuration $configuration
+	 * @param \Sto\Mediaoembed\Content\Configuration $configuration
 	 */
 	public function injectConfiguration($configuration) {
 		$this->configuration = $configuration;
@@ -75,7 +86,7 @@ class Tx_Mediaoembed_Request_HttpRequest {
 	/**
 	 * Setter for the endpoint URL
 	 *
-	 * @param string $url
+	 * @param string $endpoint
 	 */
 	public function setEndpoint($endpoint) {
 		$this->endpoint = $endpoint;
@@ -140,8 +151,8 @@ class Tx_Mediaoembed_Request_HttpRequest {
 
 		$requestUrl = $this->endpoint;
 
-		$requestUrl = t3lib_parsehtml::substituteMarker($requestUrl, '###FORMAT###', $this->format);
-		$requestUrl = t3lib_parsehtml::substituteMarker($requestUrl, '{format}', $this->format);
+		$requestUrl = \TYPO3\CMS\Core\Html\HtmlParser::substituteMarker($requestUrl, '###FORMAT###', $this->format);
+		$requestUrl = \TYPO3\CMS\Core\Html\HtmlParser::substituteMarker($requestUrl, '{format}', $this->format);
 
 		foreach ($parameters as $name => $value) {
 
@@ -189,26 +200,27 @@ class Tx_Mediaoembed_Request_HttpRequest {
 	 * Sends a request to the given URL and returns the reponse
 	 * from the server.
 	 *
+	 * @param string $requestUrl
 	 * @return string response data
 	 */
 	protected function sendRequest($requestUrl) {
 
 		$report = array();
-		$responseData = t3lib_div::getURL($requestUrl, 0, FALSE, $report);
+		$responseData = \TYPO3\CMS\Core\Utility\GeneralUtility::getURL($requestUrl, 0, FALSE, $report);
 
 		if ($report['error'] !== 0) {
 			switch ($this->getErrorCode($report)) {
 				case 404;
-					throw new Tx_Mediaoembed_Exception_HttpNotFoundException($this->url, $requestUrl);
+					throw new \Sto\Mediaoembed\Exception\HttpNotFoundException($this->url, $requestUrl);
 					break;
 				case 501:
-					throw new Tx_Mediaoembed_Exception_HttpNotImplementedException($this->url, $this->format, $requestUrl);
+					throw new \Sto\Mediaoembed\Exception\HttpNotImplementedException($this->url, $this->format, $requestUrl);
 					break;
 				case 401:
-					throw new Tx_Mediaoembed_Exception_UnauthorizedException($this->url, $requestUrl);
+					throw new \Sto\Mediaoembed\Exception\UnauthorizedException($this->url, $requestUrl);
 					break;
 				default:
-					throw new RuntimeException('An unknown error occured while contacting the provider: ' . $report['message'] . ' (' . $report['error'] . '). Please make sure CURL use is enabled in the install tool to get valid error codes.', 1303401545);
+					throw new \RuntimeException('An unknown error occured while contacting the provider: ' . $report['message'] . ' (' . $report['error'] . '). Please make sure CURL use is enabled in the install tool to get valid error codes.', 1303401545);
 					break;
 			}
 		}

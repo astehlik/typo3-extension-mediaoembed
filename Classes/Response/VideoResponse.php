@@ -1,5 +1,5 @@
 <?php
-//declare(ENCODING = 'utf-8');
+namespace Sto\Mediaoembed\Response;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -27,13 +27,8 @@
  * Responses of this type must obey the maxwidth and maxheight request parameters.
  * If a provider wishes the consumer to just provide a thumbnail, rather than an
  * embeddable player, they should instead return a photo response type.
- *
- * @package mediaoembed
- * @subpackage Response
- * @version $Id:$
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Tx_Mediaoembed_Response_VideoResponse extends Tx_Mediaoembed_Response_GenericResponse {
+class VideoResponse extends GenericResponse {
 
 	/**
      * The HTML required to embed a video player.
@@ -65,8 +60,6 @@ class Tx_Mediaoembed_Response_VideoResponse extends Tx_Mediaoembed_Response_Gene
 	/**
 	 * Initializes the response parameters that are specific for this
 	 * resource type.
-	 *
-	 * @param object the parsed json response
 	 */
 	public function initializeTypeSpecificResponseData() {
 		$this->html = $this->responseDataArray['html'];
