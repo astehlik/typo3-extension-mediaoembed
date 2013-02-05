@@ -69,7 +69,7 @@ tt_content.media.20.tx_mediaoembed {
 
 				key = {$plugin.tx_mediaoembed.downloadPhoto}
 
-				default = HTML
+				default = TEXT
 				default {
 					value (
 						<img
@@ -78,7 +78,7 @@ tt_content.media.20.tx_mediaoembed {
 						height="{registerobj : tx_mediaoembed|response|height}"
 						alt="{registerobj : tx_mediaoembed|response|title}" />
 					)
-					value.insertData = 1
+					insertData = 1
 				}
 
 				1 = IMAGE
@@ -93,11 +93,11 @@ tt_content.media.20.tx_mediaoembed {
 
 			}
 
-			video = HTML
-			video.value.data = registerobj : tx_mediaoembed|response|html
+			video = TEXT
+			video.data = registerobj : tx_mediaoembed|response|html
 
-			rich = HTML
-			rich.value.data = registerobj : tx_mediaoembed|response|html
+			rich = TEXT
+			rich.data = registerobj : tx_mediaoembed|response|html
 
 		}
 
