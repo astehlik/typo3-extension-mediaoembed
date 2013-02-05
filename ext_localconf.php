@@ -10,7 +10,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/hooks/class.tx_cms_mediaitems.p
 	'Sto\\Mediaoembed\\Hooks\\CmsMediaitems';
 
 $TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['getData'][] =
-	'Sto\\Mediaoembed\\Hooks\\CmsMediaitems';
+	'Sto\\Mediaoembed\\Hooks\\TslibContentGetDataRegisterArray';
 
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Frontend\\MediaWizard\\MediaWizardProvider']['className'] = 'Sto\\Mediaoembed\\Hooks\\DisabledMediaWizardProvider';
 
