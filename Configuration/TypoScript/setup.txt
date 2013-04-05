@@ -11,15 +11,29 @@ plugin.tx_mediaoembed._CSS_DEFAULT_STYLE (
 	}
 )
 
-tt_content.media.20.tx_mediaoembed {
+tt_content.mediaoembed_oembedmediarenderer.20.typoscript_settings {
 
 	secureIframe {
 		baseUrl < config.baseUrl
 		enable = 0
 	}
 
-	defaultMaxwidth = {$styles.content.imgtext.maxW}
-	defaultMaxheight =
+	media {
+
+		url = TEXT
+		url.field = tx_mediaoembed_url
+
+		maxwidth = TEXT
+		maxwidth {
+			field = tx_mediaoembed_maxwidth
+			ifEmpty = {$styles.content.imgtext.maxW}
+		}
+
+		maxheight = TEXT
+		maxheight {
+			field = tx_mediaoembed_maxheight
+		}
+	}
 
 	downloadPhoto = {$plugin.tx_mediaoembed.downloadPhoto}
 

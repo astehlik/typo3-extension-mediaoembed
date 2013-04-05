@@ -112,12 +112,12 @@ class HttpRequest {
 		$parameters = array();
 
 		$maxwidth = $this->configuration->getMaxwidth();
-		if (isset($maxwidth)) {
+		if ($maxwidth > 0) {
 			$parameters['maxwidth'] = $maxwidth;
 		}
 
 		$maxheight = $this->configuration->getMaxheight();
-		if (isset($maxheight)) {
+		if ($maxheight > 0) {
 			$parameters['maxheight'] = $maxheight;
 		}
 

@@ -29,7 +29,8 @@ class RegisterData {
 	/**
 	 * The configuration that was used during the request
 	 *
-	 * @var Configuration
+	 * @var \Sto\Mediaoembed\Content\Configuration
+	 * @inject
 	 */
 	protected $configuration;
 
@@ -53,15 +54,6 @@ class RegisterData {
 	 * @var \Sto\Mediaoembed\Response\GenericResponse
 	 */
 	protected $response;
-
-	/**
-	 * Creates a new register data object
-	 *
-	 * @param Configuration $configuration
-	 */
-	public function __construct($configuration) {
-		$this->configuration = $configuration;
-	}
 
 	/**
 	 * Getter for the configuration

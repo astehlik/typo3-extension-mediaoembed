@@ -1,5 +1,5 @@
 <?php
-namespace Sto\Mediaoembed\Content;
+namespace Sto\Mediaoembed\Controller;
 
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
@@ -21,22 +21,20 @@ namespace Sto\Mediaoembed\Content;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+
 /**
- * Content rendering for oembed media
+ * Controller for rendering oEmbed media
  */
-class OembedContent extends \TYPO3\CMS\Frontend\ContentObject\AbstractContentObject {
+class OembedController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 
 	/**
 	 * Current TypoScript / Flexform configuration
 	 *
-	 * @var Configuration
+	 * @var \Sto\Mediaoembed\Content\Configuration
+	 * @inject
 	 */
 	protected $configuration;
-
-	/**
-	 * @var \TYPO3\CMS\Frontend\ContentObject\MediaContentObject
-	 */
-	protected $parentContent;
 
 	/**
 	 * The provider resolver tries to resolve the matching provider
@@ -61,26 +59,26 @@ class OembedContent extends \TYPO3\CMS\Frontend\ContentObject\AbstractContentObj
 	protected $responseBuilder;
 
 	/**
-	 * @var RegisterData
+	 * @var \Sto\Mediaoembed\Content\RegisterData
 	 */
 	protected $registerData;
 
 	/**
-	 * Injects the parent content object
+	 * Renders the external media
 	 *
-	 * @param \TYPO3\CMS\Frontend\ContentObject\MediaContentObject $parentContent
+	 * @return string
 	 */
-	public function injectParentContent($parentContent) {
-		$this->parentContent = $parentContent;
-	}
+	public function renderMediaAction() {
 
-	/**
-	 * Initializes the provider resolver
-	 */
-	protected function initializeProviderResolver() {
-		$this->providerResolver = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Request\\ProviderResolver');
-		$this->providerResolver->injectCObj($this->cObj);
-		$this->providerResolver->injectConfiguration($this->configuration);
+		$this->registerData = $this->objectManager->create('Sto\\Mediaoembed\\Content\\RegisterData');
+
+		try {
+			$this->getEmbedDataFromProvider();
+			return $this->setRegisterAndRenderCobj();
+		}
+		catch(\Sto\Mediaoembed\Exception\OEmbedException $exception) {
+			return 'Error: ' . $exception->getMessage();
+		}
 	}
 
 	/**
@@ -97,35 +95,13 @@ class OembedContent extends \TYPO3\CMS\Frontend\ContentObject\AbstractContentObj
 	protected function initializeResponseBuilder() {
 		$this->responseBuilder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Response\\ResponseBuilder');
 	}
-
-	/**
-	 * Renders the oembed media item
-	 *
-	 * @param array $conf Current TypoScript / Flexform configuration
-	 * @return string
-	 */
-	public function render($conf = array()) {
-
-		$this->configuration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Content\\Configuration', $conf);
-		$this->registerData = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Content\\RegisterData', $this->configuration);
-
-		try {
-			$this->getEmbedDataFromProvider();
-			return $this->setRegisterAndRenderCobj();
-		}
-		catch(\Sto\Mediaoembed\Exception\OEmbedException $exception) {
-			return 'Error: ' . $exception->getMessage();
-		}
-
-	}
-
 	/**
 	 * Build all data for the register using the embed code reponse
 	 * of a matching provider.
 	 */
 	protected function getEmbedDataFromProvider() {
 
-		$this->initializeProviderResolver();
+		$this->providerResolver = $this->objectManager->create('Sto\\Mediaoembed\\Request\\ProviderResolver');
 		$this->initializeRequestBuilder();
 		$this->initializeResponseBuilder();
 
@@ -143,12 +119,12 @@ class OembedContent extends \TYPO3\CMS\Frontend\ContentObject\AbstractContentObj
 		array_push($GLOBALS['TSFE']->registerStack, $GLOBALS['TSFE']->register);
 		$GLOBALS['TSFE']->register['tx_mediaoembed'] = $this->registerData;
 
-		$content = $this->cObj->cObjGetSingle(
+		$content = $this->configurationManager->getContentObject()->cObjGetSingle(
 			$this->configuration->getRenderItem(),
 			$this->configuration->getRenderItemConfig()
 		);
 
-		$this->cObj->LOAD_REGISTER(array(), 'RESTORE_REGISTER');
+		$this->configurationManager->getContentObject()->LOAD_REGISTER(array(), 'RESTORE_REGISTER');
 
 		return $content;
 	}
@@ -207,4 +183,3 @@ class OembedContent extends \TYPO3\CMS\Frontend\ContentObject\AbstractContentObj
 		$this->registerData->setResponse($response);
 	}
 }
-?>

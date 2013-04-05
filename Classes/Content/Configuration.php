@@ -24,22 +24,35 @@ namespace Sto\Mediaoembed\Content;
 /**
  * Handels TypoScript and FlexForm configuration
  */
-class Configuration {
+class Configuration implements \TYPO3\CMS\Core\SingletonInterface {
 
 	/**
 	 * Current TypoScript / Flexform configuration
 	 *
 	 * @var array
 	 */
-	protected $conf;
+	protected $typoscriptSetup;
 
 	/**
-	 * Constructor for the content configuration.
-	 *
-	 * @param array $conf Current TypoScript / Flexform configuration
+	 * @var \Sto\Mediaoembed\Utility\ContentObjectUtilities
+	 * @inject
 	 */
-	public function __construct($conf) {
-		$this->conf = $conf;
+	protected $contentObjectUtilities;
+
+	/**
+	 * Injects the configuration manager
+	 *
+	 * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
+	 */
+	public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager) {
+
+		$fullTyposcriptSetup = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+
+		if (!isset($fullTyposcriptSetup['tt_content.']['mediaoembed_oembedmediarenderer.']['20.']['typoscript_settings.'])) {
+			throw new \RuntimeException('The configuration at tt_content.mediaoembed_oembedmediarenderer.20.typoscript_settings is missing.');
+		}
+
+		$this->typoscriptSetup = $fullTyposcriptSetup['tt_content.']['mediaoembed_oembedmediarenderer.']['20.']['typoscript_settings.'];
 	}
 
 	/**
@@ -51,11 +64,14 @@ class Configuration {
 	 * @return int
 	 */
 	public function getMaxheight() {
-		if (empty($this->conf['height'])) {
-			return $this->conf['tx_mediaoembed.']['defaultMaxheight'];
-		} else {
-			return $this->conf['height'];
+
+		$maxheight = 0;
+
+		if (isset($this->typoscriptSetup['media.'])) {
+			$maxheight = $this->contentObjectUtilities->getSingleValueOrContentObject($this->typoscriptSetup['media.'], 'maxheight');
 		}
+
+		return intval($maxheight);
 	}
 
 	/**
@@ -67,11 +83,14 @@ class Configuration {
 	 * @return int
 	 */
 	public function getMaxwidth() {
-		if (empty($this->conf['width'])) {
-			return $this->conf['tx_mediaoembed.']['defaultMaxwidth'];
-		} else {
-			return $this->conf['width'];
+
+		$maxwidth = 0;
+
+		if (isset($this->typoscriptSetup['media.'])) {
+			$maxwidth = $this->contentObjectUtilities->getSingleValueOrContentObject($this->typoscriptSetup['media.'], 'maxwidth');
 		}
+
+		return intval($maxwidth);
 	}
 
 	/**
@@ -81,7 +100,14 @@ class Configuration {
      * @return string
      */
 	public function getMediaUrl() {
-		return $this->conf['parameter.']['mmFile'];
+
+		$url = '';
+
+		if (isset($this->typoscriptSetup['media.'])) {
+			$url = $this->contentObjectUtilities->getSingleValueOrContentObject($this->typoscriptSetup['media.'], 'url');
+		}
+
+		return $url;
 	}
 
 	/**
@@ -90,7 +116,7 @@ class Configuration {
 	 * @return string
 	 */
 	public function getRenderItem() {
-		return $this->conf['tx_mediaoembed.']['renderItem'];
+		return $this->typoscriptSetup['renderItem'];
 	}
 
 	/**
@@ -99,6 +125,6 @@ class Configuration {
 	 * @return string
 	 */
 	public function getRenderItemConfig() {
-		return $this->conf['tx_mediaoembed.']['renderItem.'];
+		return $this->typoscriptSetup['renderItem.'];
 	}
 }

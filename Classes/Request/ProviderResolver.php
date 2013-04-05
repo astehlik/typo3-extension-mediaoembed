@@ -44,6 +44,7 @@ class ProviderResolver {
 	 * TypoScript / Flexform configuration
 	 *
 	 * @var \Sto\Mediaoembed\Content\Configuration
+	 * @inject
 	 */
 	protected $configuration;
 
@@ -89,19 +90,10 @@ class ProviderResolver {
 	/**
 	 * Injector for the current cObj
 	 *
-	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $cObj
+	 * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
 	 */
-	public function injectCObj($cObj) {
-		$this->cObj = $cObj;
-	}
-
-	/**
-	 * Injector for the TypoScript / Flexform configuration
-	 *
-	 * @param \Sto\Mediaoembed\Content\Configuration $configuration
-	 */
-	public function injectConfiguration($configuration) {
-		$this->configuration = $configuration;
+	public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager) {
+		$this->cObj = $configurationManager->getContentObject();
 	}
 
 	/**

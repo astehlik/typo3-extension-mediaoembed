@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2011-10-17T20:22:32Z" product-name="css_styled_content">
+		<header/>
+		<body>
+			<trans-unit id="palette.tx_mediaoembed_settings" xml:space="preserve">
+				<source>Media Element</source>
+			</trans-unit>
+			<trans-unit id="tt_content.CType.I.tx_mediaoembed" xml:space="preserve">
+				<source>External media</source>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_mediaoembed_url" xml:space="preserve">
+				<source>Media URL</source>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_mediaoembed_maxwidth" xml:space="preserve">
+				<source>Maximum width</source>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_mediaoembed_maxheight" xml:space="preserve">
+				<source>Maximum height</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
