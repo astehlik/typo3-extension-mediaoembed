@@ -61,7 +61,7 @@ tt_content.mediaoembed_oembedmediarenderer.20.typoscript_settings {
 			30 {
 				data = registerobj : tx_mediaoembed|response|width
 				required = 1
-				noTrimWrap = |style="width: |px;"|
+				noTrimWrap = | style="width: |px;"|
 			}
 
 			40 = TEXT
