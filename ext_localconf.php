@@ -26,4 +26,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Sto\\Mediaoembe
 	'description'      => 'Creates non-existing providers with the name, the url scheme and the endpoint from embed.ly.',
 );
 
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['tx_mediaoembed_migratecontentelements'] = 'Sto\\Mediaoembed\\Install\\MigrateContentElementsUpdate';
+
 ?>
