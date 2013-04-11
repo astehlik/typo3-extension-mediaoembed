@@ -1,4 +1,3 @@
-
 plugin.tx_mediaoembed._CSS_DEFAULT_STYLE (
 
 	div.tx-mediaoembed {
