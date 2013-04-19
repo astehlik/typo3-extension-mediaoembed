@@ -85,6 +85,7 @@ $GLOBALS['TCA']['tt_content']['palettes']['tx_mediaoembed_settings'] = array(
 
 $GLOBALS['TCA']['tt_content']['types']['mediaoembed_oembedmediarenderer']['showitem'] = '
 		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.general;general,
+		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.header;header,
 		--palette--;LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:palette.tx_mediaoembed_settings;tx_mediaoembed_settings,
 	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.appearance,
 		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.frames;frames,
