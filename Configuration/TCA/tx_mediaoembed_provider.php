@@ -1,6 +1,21 @@
 <?php
-$TCA['tx_mediaoembed_provider'] = array(
-	'ctrl' => $TCA['tx_mediaoembed_provider']['ctrl'],
+return array(
+	'ctrl' => array(
+		'label' => 'name',
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'delete' => 'deleted',
+		'sortby' => 'sorting',
+		'prependAtCopy' => 'LLL:EXT:lang/locallang_general.php:LGL.prependAtCopy',
+		'adminOnly' => 1,
+		'rootLevel' => 1,
+		'enablecolumns' => array(
+			'disabled' => 'hidden'
+		),
+		'title' => 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xml:tx_mediaoembed_provider',
+		'iconfile'          => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('mediaoembed') . 'Resources/Public/Icons/table_provider.png',
+	),
 	'interface' => array(
 		'showRecordFieldList' => 'name,hidden,is_generic,description,url_schemes,endpoint,use_generic_providers,embedly_shortname'
 	),
