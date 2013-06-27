@@ -24,7 +24,7 @@ namespace Sto\Mediaoembed\Content;
 /**
  * Handels TypoScript and FlexForm configuration
  */
-class Configuration implements \TYPO3\CMS\Core\SingletonInterface {
+class Configuration {
 
 	/**
 	 * Current TypoScript / Flexform configuration
@@ -35,9 +35,13 @@ class Configuration implements \TYPO3\CMS\Core\SingletonInterface {
 
 	/**
 	 * @var \Sto\Mediaoembed\Utility\ContentObjectUtilities
-	 * @inject
 	 */
 	protected $contentObjectUtilities;
+
+	/**
+	 * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
+	 */
+	protected $objectManager;
 
 	/**
 	 * Injects the configuration manager
@@ -53,6 +57,16 @@ class Configuration implements \TYPO3\CMS\Core\SingletonInterface {
 		}
 
 		$this->typoscriptSetup = $fullTyposcriptSetup['tt_content.']['mediaoembed_oembedmediarenderer.']['20.']['typoscript_settings.'];
+	}
+
+	/**
+	 * Injects the object manager
+	 *
+	 * @param \TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager
+	 */
+	public function injectObjectManager(\TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager) {
+		$this->objectManager = $objectManager;
+		$this->contentObjectUtilities = $this->objectManager->get('Sto\\Mediaoembed\\Utility\\ContentObjectUtilities');
 	}
 
 	/**

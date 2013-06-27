@@ -44,7 +44,6 @@ class ProviderResolver {
 	 * TypoScript / Flexform configuration
 	 *
 	 * @var \Sto\Mediaoembed\Content\Configuration
-	 * @inject
 	 */
 	protected $configuration;
 
@@ -85,6 +84,15 @@ class ProviderResolver {
 	public function __construct() {
 		$this->db = $GLOBALS['TYPO3_DB'];
 		$this->genericProviderCache = array();
+	}
+
+	/**
+	 * Initializes the current configuration
+	 *
+	 * @param \Sto\Mediaoembed\Content\Configuration $configuration
+	 */
+	public function setConfiguration($configuration) {
+		$this->configuration = $configuration;
 	}
 
 	/**

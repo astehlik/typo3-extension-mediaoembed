@@ -59,7 +59,7 @@ class RequestBuilder {
 	 *
 	 * @param \Sto\Mediaoembed\Content\Configuration $configuration
 	 */
-	public function injectConfiguration($configuration) {
+	public function setConfiguration($configuration) {
 		$this->configuration = $configuration;
 	}
 

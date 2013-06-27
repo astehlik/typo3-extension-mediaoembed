@@ -32,7 +32,6 @@ class OembedController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 * Current TypoScript / Flexform configuration
 	 *
 	 * @var \Sto\Mediaoembed\Content\Configuration
-	 * @inject
 	 */
 	protected $configuration;
 
@@ -70,7 +69,8 @@ class OembedController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 */
 	public function renderMediaAction() {
 
-		$this->registerData = $this->objectManager->create('Sto\\Mediaoembed\\Content\\RegisterData');
+		$this->configuration = $this->objectManager->get('Sto\\Mediaoembed\\Content\\Configuration');
+		$this->registerData = $this->objectManager->get('Sto\\Mediaoembed\\Content\\RegisterData');
 
 		try {
 			$this->getEmbedDataFromProvider();
@@ -85,15 +85,15 @@ class OembedController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 * Initializes the request builder
 	 */
 	protected function initializeRequestBuilder() {
-		$this->requestBuilder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Request\\RequestBuilder');
-		$this->requestBuilder->injectConfiguration($this->configuration);
+		$this->requestBuilder = $this->objectManager->get('Sto\\Mediaoembed\\Request\\RequestBuilder');
+		$this->requestBuilder->setConfiguration($this->configuration);
 	}
 
 	/**
 	 * Initializes the response builder
 	 */
 	protected function initializeResponseBuilder() {
-		$this->responseBuilder = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Response\\ResponseBuilder');
+		$this->responseBuilder = $this->objectManager->get('Sto\\Mediaoembed\\Response\\ResponseBuilder');
 	}
 	/**
 	 * Build all data for the register using the embed code reponse
@@ -101,7 +101,8 @@ class OembedController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 */
 	protected function getEmbedDataFromProvider() {
 
-		$this->providerResolver = $this->objectManager->create('Sto\\Mediaoembed\\Request\\ProviderResolver');
+		$this->providerResolver = $this->objectManager->get('Sto\\Mediaoembed\\Request\\ProviderResolver');
+		$this->providerResolver->setConfiguration($this->configuration);
 		$this->initializeRequestBuilder();
 		$this->initializeResponseBuilder();
 

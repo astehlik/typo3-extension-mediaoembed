@@ -25,7 +25,7 @@ namespace Sto\Mediaoembed\Utility;
  * Utility class for simplifying handling of TypoScript object
  * rendering
  */
-class ContentObjectUtilities implements \TYPO3\CMS\Core\SingletonInterface {
+class ContentObjectUtilities {
 
 	/**
 	 * @var \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
