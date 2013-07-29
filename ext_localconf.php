@@ -32,7 +32,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['tx_mediaoemb
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('
 mod.wizards.newContentElement {
 	wizardItems {
-		common.elements {
+		special.elements {
 			mediaoembed_oembedmediarenderer {
 				icon = gfx/c_wiz/multimedia.gif
 				title = LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:tt_content.CType.I.tx_mediaoembed
@@ -42,7 +42,7 @@ mod.wizards.newContentElement {
 				}
 			}
 		}
-		common.show := addToList(mediaoembed_oembedmediarenderer)
+		special.show := addToList(mediaoembed_oembedmediarenderer)
 	}
 }
 ');
