@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2011-10-17T20:22:32Z" product-name="mediaoembed" target-language="de">
+		<header/>
+		<body>
+			<trans-unit id="palette.tx_mediaoembed_settings" xml:space="preserve">
+				<target>Media Element</target>
+			</trans-unit>
+			<trans-unit id="tt_content.CType.I.tx_mediaoembed" xml:space="preserve">
+				<target>Externes Medium</target>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_mediaoembed_url" xml:space="preserve">
+				<target>URL</target>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_mediaoembed_maxwidth" xml:space="preserve">
+				<target>Maximale Breite</target>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_mediaoembed_maxheight" xml:space="preserve">
+				<target>Maximale Höhe</target>
+			</trans-unit>
+			<trans-unit id="new_content_element_wizard_oembedmediarenderer_description" xml:space="preserve">
+				<target>Externes Medium (z.B. YouTube Video) durch einfache Angabe der URL einbinden.</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
