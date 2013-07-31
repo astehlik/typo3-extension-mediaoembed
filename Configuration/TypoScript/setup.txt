@@ -26,7 +26,8 @@ tt_content.mediaoembed_oembedmediarenderer.20.typoscript_settings {
 		maxwidth = TEXT
 		maxwidth {
 			field = tx_mediaoembed_maxwidth
-			ifEmpty = {$styles.content.imgtext.maxW}
+			ifEmpty = {$styles.content.media.defaultVideoWidth}
+			ifEmpty.override = {$plugin.tx_mediaoembed.defaultMaximumMediaWidth}
 		}
 
 		maxheight = TEXT
