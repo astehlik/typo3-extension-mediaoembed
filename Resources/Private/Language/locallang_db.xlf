@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2011-10-17T20:22:32Z" product-name="css_styled_content">
+	<file source-language="en" datatype="plaintext" original="messages" date="2011-10-17T20:22:32Z" product-name="mediaoembed">
 		<header/>
 		<body>
 			<trans-unit id="palette.tx_mediaoembed_settings" xml:space="preserve">
