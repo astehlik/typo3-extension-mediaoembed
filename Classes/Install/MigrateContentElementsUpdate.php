@@ -31,15 +31,16 @@ class MigrateContentElementsUpdate extends \TYPO3\CMS\Install\Updates\AbstractUp
 	const RENDER_TYPE = 'tx_mediaoembed';
 
 	/**
+	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected $db;
+
+	/**
 	 * Title of this update that is displayed in the install tool
 	 * @var string
 	 */
 	protected $title = 'mediaoembed - Migrate content elements';
 
-	/**
-	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected $db;
 
 	/**
 	 * Initializes the database connection
@@ -59,7 +60,13 @@ class MigrateContentElementsUpdate extends \TYPO3\CMS\Install\Updates\AbstractUp
 		their render type will be migrated to "external media" content
 		elements that are used in the current version of mediaoembed.';
 		$res = $this->db->exec_SELECTquery('uid', 'tt_content', 'CType=\'media\' AND pi_flexform LIKE \'%<field index="mmRenderType">%<value index="vDEF">' . self::RENDER_TYPE . '</value>%\'');
-		return $this->db->sql_num_rows($res);
+		$oldRecords = $this->db->sql_num_rows($res);
+		if ($oldRecords) {
+			$description .= '<br />There are currently <strong>' . $oldRecords . '</strong> records to update.<br />';
+			return TRUE;
+		} else {
+			return FALSE;
+		}
 	}
 
 	/**
@@ -71,26 +78,24 @@ class MigrateContentElementsUpdate extends \TYPO3\CMS\Install\Updates\AbstractUp
 	 */
 	public function performUpdate(array &$dbQueries, &$customMessages) {
 
-		$res = $this->db->exec_SELECTquery('uid,pi_flexform', 'tt_content', "CType='media'");
+		$res = $this->db->exec_SELECTquery('uid, pi_flexform', 'tt_content', 'CType=\'media\' AND pi_flexform LIKE \'%<field index="mmRenderType">%<value index="vDEF">' . self::RENDER_TYPE . '</value>%\'');
 		$updateCounter = 0;
+		$hasError = FALSE;
 
 		while ($row = $this->db->sql_fetch_assoc($res)) {
 
 			$flexFormData = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($row['pi_flexform']);
 
 			if (!is_array($flexFormData)) {
-				$customMessages = sprintf('<p>Skipping content element with uid %d because of XML parsing error: %s</p>', $row['uid'], $flexFormData);
-				continue;
-			}
-
-			if (!isset($flexFormData['data']['sGeneral']['lDEF']['mmRenderType']['vDEF'])) {
-				$customMessages = sprintf('<p>Skipping content element with uid %d because mmRenderType is not set</p>', $row['uid']);
+				$customMessages .= sprintf('Skipping content element with uid %d because of XML parsing error: %s' . "\n", $row['uid'], $flexFormData);
+				$hasError = TRUE;
 				continue;
 			}
 
 			if (!isset($flexFormData['data']['sVideo']['lDEF']['mmFile']['vDEF'])
 				|| empty($flexFormData['data']['sVideo']['lDEF']['mmFile']['vDEF'])) {
-				$customMessages = sprintf('<p>Skipping content element with uid %d because mmFile is not set</p>', $row['uid']);
+				$customMessages .= sprintf('Skipping content element with uid %d because mmFile is not set' . "\n", $row['uid']);
+				$hasError = TRUE;
 				continue;
 			}
 
@@ -110,12 +115,29 @@ class MigrateContentElementsUpdate extends \TYPO3\CMS\Install\Updates\AbstractUp
 			);
 
 			$updateQuery = $this->db->UPDATEquery('tt_content', 'uid=' . $row['uid'], $updateData);
-			$dbQueries[] = $updateQuery;
 			$this->db->sql_query($updateQuery);
+			$hasError = ($hasError || $this->hasError($customMessages));
+			$dbQueries[] = $updateQuery;
 			$updateCounter++;
 		}
 
-		$customMessages = sprintf('<p>Migrated %d content elements</p>', $updateCounter);
-		return TRUE;
+		return !$hasError;
+	}
+
+	/**
+	 * @param mixed &$customMessages Custom messages
+	 *
+	 * @return boolean
+	 */
+	protected function hasError(&$customMessages) {
+		$hasError = FALSE;
+		if ($this->db->sql_error()) {
+			$customMessages .= 'SQL-ERROR: ' . $this->db->sql_error() . "\n";
+			$hasError = TRUE;
+		}
+
+		return $hasError;
 	}
 }
+
+?>
