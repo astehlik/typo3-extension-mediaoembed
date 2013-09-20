@@ -1,5 +1,10 @@
 <?php
+
+$languagePrefix = 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
+$languagePrefixColumn = $languagePrefix . 'tx_mediaoembed_provider.';
+
 return array(
+
 	'ctrl' => array(
 		'label' => 'name',
 		'tstamp' => 'tstamp',
@@ -13,21 +18,25 @@ return array(
 		'enablecolumns' => array(
 			'disabled' => 'hidden'
 		),
-		'title' => 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xml:tx_mediaoembed_provider',
+		'title' => $languagePrefix . 'tx_mediaoembed_provider',
 		'iconfile'  => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('mediaoembed') . 'Resources/Public/Icons/table_provider.png',
 	),
+
 	'interface' => array(
 		'showRecordFieldList' => 'name,hidden,is_generic,description,url_schemes,endpoint,use_generic_providers,embedly_shortname'
 	),
+
 	'columns' => array(
+
 		'name' => array(
-			'label' => 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xml:tx_mediaoembed_provider.name',
+			'label' => $languagePrefixColumn . 'name',
 			'config' => array(
 				'type' => 'input',
 				'size' => '30',
 				'max' => '50',
 			)
 		),
+
 		'hidden' => array(
 			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.disable',
 			'config' => array(
@@ -35,13 +44,15 @@ return array(
 				'default' => '0'
 			)
 		),
+
 		'is_generic' => array(
-			'label' => 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xml:tx_mediaoembed_provider.is_generic',
+			'label' => $languagePrefixColumn . 'is_generic',
 			'config' => array(
 				'type' => 'check',
 				'default' => '0'
 			)
 		),
+
 		'description' => array(
 			'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.description',
 			'config' => array(
@@ -50,16 +61,18 @@ return array(
 				'cols' => 30
 			)
 		),
+
 		'url_schemes' => array(
-			'label' => 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xml:tx_mediaoembed_provider.url_schemes',
+			'label' => $languagePrefixColumn . 'url_schemes',
 			'config' => array(
 				'type' => 'text',
 				'rows' => 5,
 				'cols' => 30
 			)
 		),
+
 		'endpoint' => array(
-			'label' => 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xml:tx_mediaoembed_provider.endpoint',
+			'label' => $languagePrefixColumn . 'endpoint',
 			'config' => array(
 				'type' => 'input',
 				'size' => '30',
@@ -67,8 +80,9 @@ return array(
 				'eval' => 'trim'
 			)
 		),
+
 		'use_generic_providers' => array(
-			'label' => 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xml:tx_mediaoembed_provider.use_generic_providers',
+			'label' => $languagePrefixColumn . 'use_generic_providers',
 			'config' => array(
 				'type' => 'select',
 				'size' => '5',
@@ -77,8 +91,9 @@ return array(
 				'foreign_table_where' => 'AND tx_mediaoembed_provider.is_generic=1 AND tx_mediaoembed_provider.uid!=###THIS_UID###',
 			)
 		),
+
 		'embedly_shortname' => array(
-			'label' => 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xml:tx_mediaoembed_provider.embedly_shortname',
+			'label' => $languagePrefixColumn . 'embedly_shortname',
 			'config' => array(
 				'type' => 'input',
 				'size' => '30',

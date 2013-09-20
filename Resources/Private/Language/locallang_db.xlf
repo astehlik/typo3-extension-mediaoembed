@@ -3,6 +3,27 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2011-10-17T20:22:32Z" product-name="mediaoembed">
 		<header/>
 		<body>
+			<trans-unit id="tx_mediaoembed_provider" xml:space="preserve">
+				<source>oEmbed provider</source>
+			</trans-unit>
+			<trans-unit id="tx_mediaoembed_provider.name" xml:space="preserve">
+				<source>Provider name</source>
+			</trans-unit>
+			<trans-unit id="tx_mediaoembed_provider.is_generic" xml:space="preserve">
+				<source>Is generic</source>
+			</trans-unit>
+			<trans-unit id="tx_mediaoembed_provider.url_schemes" xml:space="preserve">
+				<source>URL schemes</source>
+			</trans-unit>
+			<trans-unit id="tx_mediaoembed_provider.endpoint" xml:space="preserve">
+				<source>Endpoint URL</source>
+			</trans-unit>
+			<trans-unit id="tx_mediaoembed_provider.use_generic_providers" xml:space="preserve">
+				<source>Use generic providers</source>
+			</trans-unit>
+			<trans-unit id="tx_mediaoembed_provider.embedly_shortname" xml:space="preserve">
+				<source>embed.ly Shortname</source>
+			</trans-unit>
 			<trans-unit id="palette.tx_mediaoembed_settings" xml:space="preserve">
 				<source>Media Element</source>
 			</trans-unit>
