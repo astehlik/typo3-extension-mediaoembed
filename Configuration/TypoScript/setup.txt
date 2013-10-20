@@ -132,3 +132,17 @@ tt_content.mediaoembed_oembedmediarenderer.20.typoscript_settings {
 		}
 	}
 }
+
+[globalString = IENV:TYPO3_SSL = 1]
+
+// Replace http with https URLs because otherwise the browser
+// will block the embedded content because is is not loaded over
+// a secure connection (WIP)
+tt_content.mediaoembed_oembedmediarenderer.20.typoscript_settings.renderItem.10 {
+	video.replacement.10 {
+		search = src="http://
+		replace = src="https://
+	}
+}
+
+[global]
