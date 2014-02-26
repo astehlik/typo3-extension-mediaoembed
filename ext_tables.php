@@ -68,9 +68,9 @@ $GLOBALS['TCA']['tt_content']['types']['mediaoembed_oembedmediarenderer']['showi
 	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,
 		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.visibility;visibility,
 		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.access;access,
-	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.behaviour,
-		bodytext;LLL:EXT:cms/locallang_ttc.xml:bodytext.ALT.media_formlabel;;richtext:rte_transform[flag=rte_enabled|mode=ts_css],
 	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.extended';
 
+\TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons(array('content-externalmedia' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'ext_icon.gif'), $_EXTKEY);
+$GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes']['mediaoembed_oembedmediarenderer'] = 'extensions-mediaoembed-content-externalmedia';
+
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Media oEmbed');
-?>
