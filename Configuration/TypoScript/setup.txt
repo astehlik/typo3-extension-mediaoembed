@@ -125,7 +125,7 @@ tt_content.mediaoembed_oembedmediarenderer.20.typoscript_settings {
 				data = registerobj : tx_mediaoembed|provider|name
 				override.data = registerobj : tx_mediaoembed|response|providerName
 				noTrimWrap = || |
-				outerWrap = |{LLL:EXT:mediaoembed/Resources/Private/Language/locallang.xml:label-direct_link}
+				outerWrap = |{LLL:EXT:mediaoembed/Resources/Private/Language/locallang.xlf:direct_link}
 				outerWrap.typolink.parameter.data = registerobj : tx_mediaoembed|configuration|mediaUrl
 				outerWrap.insertData = 1
 			}

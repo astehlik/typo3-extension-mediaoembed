@@ -60,15 +60,15 @@ $GLOBALS['TCA']['tt_content']['palettes']['tx_mediaoembed_settings'] = array(
 );
 
 $GLOBALS['TCA']['tt_content']['types']['mediaoembed_oembedmediarenderer']['showitem'] = '
-		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.general;general,
-		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.header;header,
+		--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.general;general,
+		--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.header;header,
 		--palette--;LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:palette.tx_mediaoembed_settings;tx_mediaoembed_settings,
-	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.appearance,
-		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.frames;frames,
-	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,
-		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.visibility;visibility,
-		--palette--;LLL:EXT:cms/locallang_ttc.xml:palette.access;access,
-	--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.extended';
+	--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.appearance,
+		--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.frames;frames,
+	--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,
+		--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.visibility;visibility,
+		--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access,
+	--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.extended';
 
 \TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons(array('content-externalmedia' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'ext_icon.gif'), $_EXTKEY);
 $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes']['mediaoembed_oembedmediarenderer'] = 'extensions-mediaoembed-content-externalmedia';
