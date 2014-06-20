@@ -21,12 +21,12 @@ namespace Sto\Mediaoembed\Controller;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
  * Controller for rendering oEmbed media
  */
-class OembedController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
+class OembedController extends ActionController {
 
 	/**
 	 * Current TypoScript / Flexform configuration
