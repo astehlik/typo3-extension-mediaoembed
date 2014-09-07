@@ -34,11 +34,11 @@ class RequestBuilder {
 	protected $configuration;
 
 	/**
-	 * Request object that is build by this request builder
+	 * Array of possible endpoints for the current provider.
 	 *
-	 * @var HttpRequest
+	 * @var array
 	 */
-	protected $request;
+	protected $endpoints;
 
 	/**
 	 * The provider for which the request will be created
@@ -48,19 +48,45 @@ class RequestBuilder {
 	protected $provider;
 
 	/**
-	 * Array of possible endpoints for the current provider.
+	 * Request object that is build by this request builder
 	 *
-	 * @var array
+	 * @var HttpRequest
 	 */
-	protected $endpoints;
+	protected $request;
 
 	/**
-	 * Injector for the TypoScript / Flexform configuration
+	 * Builds a request using the given configuration and the
+	 * given provider data.
 	 *
-	 * @param \Sto\Mediaoembed\Content\Configuration $configuration
+	 * @param Provider $provider
+	 * @return HttpRequest or FALSE if no further requests are available
 	 */
-	public function setConfiguration($configuration) {
-		$this->configuration = $configuration;
+	public function buildNextRequest($provider) {
+		$providerChanged = $this->initializeProvider($provider);
+
+		// If provider has no further endpoints we return FALSE
+		if (!$this->initializeEndpoints($providerChanged)) {
+			return FALSE;
+		}
+
+		$this->initializeNewRequest();
+		return $this->request;
+	}
+
+	/**
+	 * Initializes the provider for which the request will be build
+	 *
+	 * @param Provider $provider
+	 * @return boolean TRUE if provider changes, otherwilse FALSE
+	 */
+	protected function initializeProvider($provider) {
+
+		if ($provider->equals($this->provider)) {
+			return FALSE;
+		}
+
+		$this->provider = $provider;
+		return TRUE;
 	}
 
 	/**
@@ -68,6 +94,7 @@ class RequestBuilder {
 	 *
 	 * @param boolean $providerChanged if TRUE the endpoints array will be initialized with new endpoints from the current provider, otherwise the array pointer of the endpoints array will be moved forward.
 	 * @return boolean TRUE if endpoints are available, otherwise FALSE
+	 * @throws \Sto\Mediaoembed\Exception\NoProviderEndpointException
 	 */
 	protected function initializeEndpoints($providerChanged) {
 
@@ -92,41 +119,6 @@ class RequestBuilder {
 	}
 
 	/**
-	 * Initializes the provider for which the request will be build
-	 *
-	 * @param Provider $provider
-	 * @return boolean TRUE if provider changes, otherwilse FALSE
-	 */
-	protected function initializeProvider($provider) {
-
-		if ($provider->equals($this->provider)) {
-			return FALSE;
-		}
-
-		$this->provider = $provider;
-		return TRUE;
-	}
-
-	/**
-	 * Builds a request using the given configuration and the
-	 * given provider data.
-	 *
-	 * @param Provider $provider
-	 * @return HttpRequest or FALSE if no further requests are available
-	 */
-	public function buildNextRequest($provider) {
-		$providerChanged = $this->initializeProvider($provider);
-
-			// If provider has no further endpoints we return FALSE
-		if (!$this->initializeEndpoints($providerChanged)) {
-			return FALSE;
-		}
-
-		$this->initializeNewRequest();
-		return $this->request;
-	}
-
-	/**
 	 * Build a new request in the request property
 	 *
 	 * @return void
@@ -141,5 +133,15 @@ class RequestBuilder {
 		$this->request->injectConfiguration($this->configuration);
 		$this->request->setEndpoint(current($this->endpoints));
 	}
+
+	/**
+	 * Injector for the TypoScript / Flexform configuration
+	 *
+	 * @param \Sto\Mediaoembed\Content\Configuration $configuration
+	 */
+	public function setConfiguration($configuration) {
+		$this->configuration = $configuration;
+	}
 }
+
 ?>

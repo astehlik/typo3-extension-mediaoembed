@@ -21,17 +21,12 @@ namespace Sto\Mediaoembed\Content;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+
 /**
  * Handels TypoScript and FlexForm configuration
  */
 class Configuration {
-
-	/**
-	 * Current TypoScript / Flexform configuration
-	 *
-	 * @var array
-	 */
-	protected $typoscriptSetup;
 
 	/**
 	 * @var \Sto\Mediaoembed\Utility\ContentObjectUtilities
@@ -44,13 +39,20 @@ class Configuration {
 	protected $objectManager;
 
 	/**
+	 * Current TypoScript / Flexform configuration
+	 *
+	 * @var array
+	 */
+	protected $typoscriptSetup;
+
+	/**
 	 * Injects the configuration manager
 	 *
 	 * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
 	 */
-	public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager) {
+	public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager) {
 
-		$fullTyposcriptSetup = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+		$fullTyposcriptSetup = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
 
 		if (!isset($fullTyposcriptSetup['tt_content.']['mediaoembed_oembedmediarenderer.']['20.']['typoscript_settings.'])) {
 			throw new \RuntimeException('The configuration at tt_content.mediaoembed_oembedmediarenderer.20.typoscript_settings is missing.');
@@ -108,11 +110,11 @@ class Configuration {
 	}
 
 	/**
-     * The URL to retrieve embedding information for.
-     * This value is required.
-     *
-     * @return string
-     */
+	 * The URL to retrieve embedding information for.
+	 * This value is required.
+	 *
+	 * @return string
+	 */
 	public function getMediaUrl() {
 
 		$url = '';

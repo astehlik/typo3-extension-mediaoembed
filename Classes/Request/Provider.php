@@ -90,7 +90,7 @@ class Provider {
 	 *
 	 * @param array $providerData The associative array with provider data fetched from the database
 	 */
-	public function __construct ($providerData) {
+	public function __construct($providerData) {
 		$this->description = $providerData['description'];
 		$this->embedlyShortname = $providerData['embedly_shortname'];
 		$this->endpoint = $providerData['endpoint'];
@@ -114,6 +114,15 @@ class Provider {
 			}
 		}
 		return FALSE;
+	}
+
+	/**
+	 * Getter for the uid of this provider
+	 *
+	 * @return int
+	 */
+	public function getUid() {
+		return $this->uid;
 	}
 
 	/**
@@ -144,7 +153,6 @@ class Provider {
 		return $this->endpoint;
 	}
 
-
 	/**
 	 * Getter for the generic endpoints this provider should use.
 	 *
@@ -174,24 +182,6 @@ class Provider {
 	}
 
 	/**
-	 * Name of the provider
-	 *
-	 * @return string
-	 */
-	public function getName() {
-		return $this->name;
-	}
-
-	/**
-	 * Getter for the uid of this provider
-	 *
-	 * @return int
-	 */
-	public function getUid() {
-		return $this->uid;
-	}
-
-	/**
 	 * Setter for the generic providers (should only be called from the provider resolver.
 	 *
 	 * @param array
@@ -199,5 +189,13 @@ class Provider {
 	public function setGenericProviders($genericProviders) {
 		$this->genericProviders = $genericProviders;
 	}
+
+	/**
+	 * Name of the provider
+	 *
+	 * @return string
+	 */
+	public function getName() {
+		return $this->name;
+	}
 }
-?>

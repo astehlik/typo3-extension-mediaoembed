@@ -27,4 +27,3 @@ namespace Sto\Mediaoembed\Exception;
  */
 class RequestException extends OEmbedException {
 }
-?>

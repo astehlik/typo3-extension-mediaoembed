@@ -26,6 +26,7 @@ namespace Sto\Mediaoembed\Response;
  * Responses of this type must obey the maxwidth and maxheight request parameters.
  */
 class PhotoResponse extends GenericResponse {
+
 	/**
 	 * The height in pixels of the image specified in the url parameter.
 	 * This value is required.
@@ -42,22 +43,22 @@ class PhotoResponse extends GenericResponse {
 	protected $localPath;
 
 	/**
+	 * The source URL of the image.
+	 * Consumers should be able to insert this URL into an <img> element.
+	 * Only HTTP and HTTPS URLs are valid.
+	 * This value is required.
+	 *
+	 * @var string
+	 */
+	protected $url;
+
+	/**
 	 * The width in pixels of the image specified in the url parameter.
 	 * This value is required.
 	 *
 	 * @var string
 	 */
 	protected $width;
-
-	/**
-     * The source URL of the image.
-     * Consumers should be able to insert this URL into an <img> element.
-     * Only HTTP and HTTPS URLs are valid.
-     * This value is required.
-     *
-     * @var string
-     */
-	protected $url;
 
 	/**
 	 * Initializes the response parameters that are specific for this
@@ -92,24 +93,6 @@ class PhotoResponse extends GenericResponse {
 	}
 
 	/**
-	 * Getter for the source URL of the image.
-	 *
-	 * @return string
-	 */
-	public function getUrl() {
-		return $this->url;
-	}
-
-	/**
-	 * Getter for the width in pixels of the image specified in the url parameter.
-	 *
-	 * @return string
-	 */
-	public function getWidth() {
-		return $this->width;
-	}
-
-	/**
 	 * Downloads the photo from the server and stores it in the typo3temp folder.
 	 *
 	 * @return void
@@ -128,5 +111,22 @@ class PhotoResponse extends GenericResponse {
 		\TYPO3\CMS\Core\Utility\GeneralUtility::writeFileToTypo3tempDir(PATH_site . $imagePathAndFilename, $imageData);
 		$this->localPath = $imagePathAndFilename;
 	}
+
+	/**
+	 * Getter for the source URL of the image.
+	 *
+	 * @return string
+	 */
+	public function getUrl() {
+		return $this->url;
+	}
+
+	/**
+	 * Getter for the width in pixels of the image specified in the url parameter.
+	 *
+	 * @return string
+	 */
+	public function getWidth() {
+		return $this->width;
+	}
 }
-?>

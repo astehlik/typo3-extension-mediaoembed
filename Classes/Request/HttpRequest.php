@@ -42,13 +42,6 @@ class HttpRequest {
 	protected $endpoint;
 
 	/**
-	 * The request URL
-	 *
-	 * @var string
-	 */
-	protected $url;
-
-	/**
 	 * The required response format. When not specified, the provider can return
 	 * any valid response format.
 	 * When specified, the provider must return data in the request format,
@@ -60,6 +53,13 @@ class HttpRequest {
 	 * @var string
 	 */
 	protected $format = 'json';
+
+	/**
+	 * The request URL
+	 *
+	 * @var string
+	 */
+	protected $url;
 
 	/**
 	 * Injector for the configuration object
@@ -81,24 +81,6 @@ class HttpRequest {
 		$requestUrl = $this->buildRequestUrl($parameters);
 		$responseData = $this->sendRequest($requestUrl);
 		return $responseData;
-	}
-
-	/**
-	 * Setter for the endpoint URL
-	 *
-	 * @param string $endpoint
-	 */
-	public function setEndpoint($endpoint) {
-		$this->endpoint = $endpoint;
-	}
-
-	/**
-	 * Setter for the URL
-	 *
-	 * @param string $url
-	 */
-	public function setUrl($url) {
-		$this->url = $url;
 	}
 
 	/**
@@ -124,7 +106,7 @@ class HttpRequest {
 		if (isset($this->format)) {
 			$parameters['format'] = $this->format;
 		}
-			// needs to be last parameter
+		// needs to be last parameter
 		$parameters['url'] = $this->configuration->getMediaUrl();
 
 		return $parameters;
@@ -144,8 +126,7 @@ class HttpRequest {
 
 		if (strstr('?', $this->endpoint)) {
 			$firstParameter = FALSE;
-		}
-		else {
+		} else {
 			$firstParameter = TRUE;
 		}
 
@@ -173,35 +154,14 @@ class HttpRequest {
 	}
 
 	/**
-	 * Tries to get the real error code from the $report array of
-	 * t3lib_div::getURL()
-	 *
-	 * @param array $report report array of t3lib_div::getURL()
-	 * @return string the error code
-	 * @see t3lib_div::getURL()
-	 */
-	protected function getErrorCode($report) {
-
-		$message = $report['message'];
-		$errorCode = $report['error'];
-
-		if (strstr($message, '404')) {
-			$errorCode = '404';
-		} else if (strstr($message, '501')) {
-			$errorCode = '501';
-		} else if (strstr($message, '401')) {
-			$errorCode = '401';
-		}
-
-		return $errorCode;
-	}
-
-	/**
 	 * Sends a request to the given URL and returns the reponse
 	 * from the server.
 	 *
 	 * @param string $requestUrl
 	 * @return string response data
+	 * @throws \Sto\Mediaoembed\Exception\HttpNotFoundException
+	 * @throws \Sto\Mediaoembed\Exception\HttpNotImplementedException
+	 * @throws \Sto\Mediaoembed\Exception\UnauthorizedException
 	 */
 	protected function sendRequest($requestUrl) {
 
@@ -227,5 +187,46 @@ class HttpRequest {
 
 		return $responseData;
 	}
+
+	/**
+	 * Tries to get the real error code from the $report array of
+	 * t3lib_div::getURL()
+	 *
+	 * @param array $report report array of t3lib_div::getURL()
+	 * @return string the error code
+	 * @see t3lib_div::getURL()
+	 */
+	protected function getErrorCode($report) {
+
+		$message = $report['message'];
+		$errorCode = $report['error'];
+
+		if (strstr($message, '404')) {
+			$errorCode = '404';
+		} else if (strstr($message, '501')) {
+			$errorCode = '501';
+		} else if (strstr($message, '401')) {
+			$errorCode = '401';
+		}
+
+		return $errorCode;
+	}
+
+	/**
+	 * Setter for the endpoint URL
+	 *
+	 * @param string $endpoint
+	 */
+	public function setEndpoint($endpoint) {
+		$this->endpoint = $endpoint;
+	}
+
+	/**
+	 * Setter for the URL
+	 *
+	 * @param string $url
+	 */
+	public function setUrl($url) {
+		$this->url = $url;
+	}
 }
-?>

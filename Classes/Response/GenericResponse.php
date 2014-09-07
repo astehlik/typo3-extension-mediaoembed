@@ -116,12 +116,12 @@ class GenericResponse {
 	 */
 	protected $title;
 
-    /**
-     * The resource type. Valid values, along with value-specific parameters, are described below.
-     * This value is required.
-     *
-     * @var string
-     */
+	/**
+	 * The resource type. Valid values, along with value-specific parameters, are described below.
+	 * This value is required.
+	 *
+	 * @var string
+	 */
 	protected $type;
 
 	/**
@@ -269,4 +269,3 @@ class GenericResponse {
 		return $this->version;
 	}
 }
-?>

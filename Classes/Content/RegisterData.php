@@ -74,24 +74,6 @@ class RegisterData {
 	}
 
 	/**
-	 * Getter for the request
-	 *
-	 * @return \Sto\Mediaoembed\Request\HttpRequest
-	 */
-	public function getRequest() {
-		return $this->request;
-	}
-
-	/**
-	 * Getter for the response
-	 *
-	 * @return \Sto\Mediaoembed\Response\GenericResponse
-	 */
-	public function getResponse() {
-		return $this->response;
-	}
-
-	/**
 	 * Setter for the provider
 	 *
 	 * @param \Sto\Mediaoembed\Request\Provider $provider
@@ -102,6 +84,15 @@ class RegisterData {
 	}
 
 	/**
+	 * Getter for the request
+	 *
+	 * @return \Sto\Mediaoembed\Request\HttpRequest
+	 */
+	public function getRequest() {
+		return $this->request;
+	}
+
+	/**
 	 * Setter for the request
 	 *
 	 * @param \Sto\Mediaoembed\Request\HttpRequest $request
@@ -109,6 +100,15 @@ class RegisterData {
 	 */
 	public function setRequest($request) {
 		$this->request = $request;
+	}
+
+	/**
+	 * Getter for the response
+	 *
+	 * @return \Sto\Mediaoembed\Response\GenericResponse
+	 */
+	public function getResponse() {
+		return $this->response;
 	}
 
 	/**

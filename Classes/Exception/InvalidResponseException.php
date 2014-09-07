@@ -22,14 +22,18 @@ namespace Sto\Mediaoembed\Exception;
  *                                                                        */
 
 /**
- * Resolves a matching provider for the given URL
+ * This Exception will be thrown when the server returned a response that could not be parsed.
  */
 class InvalidResponseException extends RequestException {
 
+	/**
+	 * Initializes the Exception with a default message and a default code (1303402784).
+	 *
+	 * @param string $response
+	 */
 	public function __construct($response) {
 		$message = 'The server returned an invalid response that could not be parsed. The servers response was: %s';
 		$message = sprintf($message, htmlspecialchars($response));
 		parent::__construct($message, 1303402784);
 	}
 }
-?>

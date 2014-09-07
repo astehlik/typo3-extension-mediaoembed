@@ -31,4 +31,3 @@ namespace Sto\Mediaoembed\Response;
  */
 class LinkResponse extends GenericResponse {
 }
-?>

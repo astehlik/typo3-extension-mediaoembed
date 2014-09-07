@@ -22,14 +22,18 @@ namespace Sto\Mediaoembed\Exception;
  *                                                                        */
 
 /**
- * Resolves a matching provider for the given URL
+ * This Exception will be thrown if no endpoint can be determined for a provider.
  */
 class NoProviderEndpointException extends OEmbedException {
 
+	/**
+	 * Initializes the Exception with a default message and a default code (1303937972).
+	 *
+	 * @param \Sto\Mediaoembed\Request\Provider $provider
+	 */
 	public function __construct($provider) {
 		$message = 'No endpoints were found for provider %s. Please make sure you specify at least a native endpoint or enable a generic provider.';
 		$message = sprintf($message, $provider->getName());
 		parent::__construct($message, 1303937972);
 	}
 }
-?>

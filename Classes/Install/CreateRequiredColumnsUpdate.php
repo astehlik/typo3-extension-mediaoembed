@@ -21,12 +21,14 @@ namespace Sto\Mediaoembed\Install;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use TYPO3\CMS\Install\Updates\AbstractUpdate;
+
 /**
  * Update class for the install tool that creates the columns in the
  * tt_content table that are required for migrating the media elements
  * to the new format
  */
-class CreateRequiredColumnsUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpdate {
+class CreateRequiredColumnsUpdate extends AbstractUpdate {
 
 	const RENDER_TYPE = 'tx_mediaoembed';
 
@@ -42,6 +44,7 @@ class CreateRequiredColumnsUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpd
 
 	/**
 	 * Title of this update that is displayed in the install tool
+	 *
 	 * @var string
 	 */
 	protected $title = 'mediaoembed - Create required columns';
@@ -56,7 +59,7 @@ class CreateRequiredColumnsUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpd
 	/**
 	 * Checks whether updates are required.
 	 *
-	 * @param string &$description: The description for the update
+	 * @param string &$description : The description for the update
 	 * @return boolean Whether an update is required (TRUE) or not (FALSE)
 	 */
 	public function checkForUpdate(&$description) {
@@ -79,49 +82,6 @@ class CreateRequiredColumnsUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpd
 	}
 
 	/**
-	 * Performs the accordant updates.
-	 *
-	 * @param array &$dbQueries: queries done in this update
-	 * @param mixed &$customMessages: custom messages
-	 * @return boolean Whether everything went smoothly or not
-	 */
-	public function performUpdate(array &$dbQueries, &$customMessages) {
-
-		$hasError = FALSE;
-
-		// First perform all create, add and change queries
-		$updateStatements = $this->getUpdateStatements();
-		foreach ((array) $updateStatements['add'] as $string) {
-			$this->db->admin_query($string);
-			$dbQueries[] = $string;
-			$hasError = ($hasError || $this->hasError($customMessages));
-		}
-		foreach ((array) $updateStatements['change'] as $string) {
-			$this->db->admin_query($string);
-			$dbQueries[] = $string;
-			$hasError = ($hasError || $this->hasError($customMessages));
-		}
-		foreach ((array) $updateStatements['create_table'] as $string) {
-			$this->db->admin_query($string);
-			$dbQueries[] = $string;
-			$hasError = ($hasError || $this->hasError($customMessages));
-		}
-
-		return !$hasError;
-	}
-
-	/**
-	 * @return \TYPO3\CMS\Install\Service\SqlSchemaMigrationService
-	 */
-	protected function getInstallToolSqlParser() {
-		if ($this->installToolSqlParser === NULL) {
-			$this->installToolSqlParser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Install\\Service\\SqlSchemaMigrationService');
-		}
-
-		return $this->installToolSqlParser;
-	}
-
-	/**
 	 * Gets all create, add and change queries from ext_tables.sql
 	 *
 	 * @return array
@@ -139,6 +99,49 @@ class CreateRequiredColumnsUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpd
 		}
 
 		return $updateStatements;
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Install\Service\SqlSchemaMigrationService
+	 */
+	protected function getInstallToolSqlParser() {
+		if ($this->installToolSqlParser === NULL) {
+			$this->installToolSqlParser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Install\\Service\\SqlSchemaMigrationService');
+		}
+
+		return $this->installToolSqlParser;
+	}
+
+	/**
+	 * Performs the accordant updates.
+	 *
+	 * @param array &$dbQueries : queries done in this update
+	 * @param mixed &$customMessages : custom messages
+	 * @return boolean Whether everything went smoothly or not
+	 */
+	public function performUpdate(array &$dbQueries, &$customMessages) {
+
+		$hasError = FALSE;
+
+		// First perform all create, add and change queries
+		$updateStatements = $this->getUpdateStatements();
+		foreach ((array)$updateStatements['add'] as $string) {
+			$this->db->admin_query($string);
+			$dbQueries[] = $string;
+			$hasError = ($hasError || $this->hasError($customMessages));
+		}
+		foreach ((array)$updateStatements['change'] as $string) {
+			$this->db->admin_query($string);
+			$dbQueries[] = $string;
+			$hasError = ($hasError || $this->hasError($customMessages));
+		}
+		foreach ((array)$updateStatements['create_table'] as $string) {
+			$this->db->admin_query($string);
+			$dbQueries[] = $string;
+			$hasError = ($hasError || $this->hasError($customMessages));
+		}
+
+		return !$hasError;
 	}
 
 	/**

@@ -37,15 +37,15 @@ class RichResponse extends GenericResponse {
 	protected $height;
 
 	/**
-     * The HTML required to display the resource.
-     * The HTML should have no padding or margins.
-     * Consumers may wish to load the HTML in an off-domain iframe to avoid
-     * XSS vulnerabilities.
-     * The markup should be valid XHTML 1.0 Basic.
-     * This value is required.
-     *
-     * @var string
-     */
+	 * The HTML required to display the resource.
+	 * The HTML should have no padding or margins.
+	 * Consumers may wish to load the HTML in an off-domain iframe to avoid
+	 * XSS vulnerabilities.
+	 * The markup should be valid XHTML 1.0 Basic.
+	 * This value is required.
+	 *
+	 * @var string
+	 */
 	protected $html;
 
 	/**
@@ -93,4 +93,3 @@ class RichResponse extends GenericResponse {
 		return $this->width;
 	}
 }
-?>

@@ -26,4 +26,3 @@ namespace Sto\Mediaoembed\Exception;
  */
 abstract class OEmbedException extends \TYPO3\CMS\Extbase\Exception {
 }
-?>

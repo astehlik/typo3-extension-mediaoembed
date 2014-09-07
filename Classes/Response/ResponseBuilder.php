@@ -40,6 +40,7 @@ class ResponseBuilder {
 	 *
 	 * @param string $responseData Raw response data from the provider
 	 * @return GenericResponse An instance of a response
+	 * @throws \Sto\Mediaoembed\Exception\InvalidResponseException
 	 */
 	public function buildResponse($responseData) {
 
@@ -85,4 +86,3 @@ class ResponseBuilder {
 		}
 	}
 }
-?>

@@ -34,18 +34,18 @@ class ProviderResolver {
 	protected $cObj;
 
 	/**
-	 * TYPO3 database connection
-	 *
-	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected $db;
-
-	/**
 	 * TypoScript / Flexform configuration
 	 *
 	 * @var \Sto\Mediaoembed\Content\Configuration
 	 */
 	protected $configuration;
+
+	/**
+	 * TYPO3 database connection
+	 *
+	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected $db;
 
 	/**
 	 * A cache for generic providers, array keys are the UIDs of the providers.
@@ -87,40 +87,12 @@ class ProviderResolver {
 	}
 
 	/**
-	 * Initializes the current configuration
-	 *
-	 * @param \Sto\Mediaoembed\Content\Configuration $configuration
-	 */
-	public function setConfiguration($configuration) {
-		$this->configuration = $configuration;
-	}
-
-	/**
 	 * Injector for the current cObj
 	 *
 	 * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
 	 */
 	public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager) {
 		$this->cObj = $configurationManager->getContentObject();
-	}
-
-	/**
-	 * Checks, if the url in the configuration is the same as the current url.
-	 * If it has changed the url will be validated and TRUE will be returned.
-	 *
-	 * @return boolean TRUE if URL has changed, FALSE if not
-	 */
-	protected function initializeUrl() {
-
-		$newUrl = $this->configuration->getMediaUrl();
-
-		if ($this->url === $newUrl) {
-			return FALSE;
-		}
-
-		$this->url = $newUrl;
-		$this->checkIfUrlIsValid();
-		return TRUE;
 	}
 
 	/**
@@ -143,27 +115,104 @@ class ProviderResolver {
 	}
 
 	/**
-	 * Fetches the generic provider from the database (if enabled) and creates
-	 * a new provider instance with the fetched data.
+	 * Checks, if the url in the configuration is the same as the current url.
+	 * If it has changed the url will be validated and TRUE will be returned.
 	 *
-	 * @param int $genericProviderUid
-	 * @return Provider
+	 * @return boolean TRUE if URL has changed, FALSE if not
 	 */
-	protected function buildGenericProvider($genericProviderUid) {
+	protected function initializeUrl() {
 
-		if (array_key_exists($genericProviderUid, $this->genericProviderCache)) {
-			return $this->genericProviderCache[$genericProviderUid];
+		$newUrl = $this->configuration->getMediaUrl();
+
+		if ($this->url === $newUrl) {
+			return FALSE;
 		}
 
-		$genericProviderData = $this->fetchGenericProviderDataFromDatabase($genericProviderUid);
-		$genericProvider = NULL;
+		$this->url = $newUrl;
+		$this->checkIfUrlIsValid();
+		return TRUE;
+	}
 
-		if (isset($genericProviderData)) {
-			$genericProvider = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Request\\Provider', $genericProviderData);
+	/**
+	 * Checks if the current URL is valid
+	 *
+	 * @return void
+	 * @throws \Sto\Mediaoembed\Exception\InvalidUrlException
+	 */
+	protected function checkIfUrlIsValid() {
+
+		$isValid = TRUE;
+
+		if (empty($this->url)) {
+			$isValid = FALSE;
 		}
 
-		$this->genericProviderCache[$genericProviderUid] = $genericProvider;
-		return $this->genericProviderCache[$genericProviderUid];
+		if (!\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($this->url)) {
+			$isValid = FALSE;
+		}
+
+		if (!$isValid) {
+			throw new \Sto\Mediaoembed\Exception\InvalidUrlException($this->url);
+		}
+	}
+
+	/**
+	 * Fetches the regular expressions for the providers from the database.
+	 * Respects the sorting of the providers and of the regular expressions.
+	 *
+	 * @return resource MySQL result pointer / DBAL object
+	 */
+	protected function fetchSortedProvidersFromDatabase() {
+
+		$providerResult = $this->db->exec_SELECTquery(
+			'*',
+			'tx_mediaoembed_provider',
+			'is_generic=0 ' . $this->cObj->enableFields('tx_mediaoembed_provider'),
+			'sorting'
+		);
+
+		if ($providerResult === FALSE) {
+			throw new \RuntimeException('Error retrieving url schemes of providers from database.', 1303109998);
+		}
+
+		$this->providerResult = $providerResult;
+	}
+
+	/**
+	 * Searches for a url scheme that matches the given url. If
+	 * there is a result, the data of the matching provider will be returned.
+	 *
+	 * @return array Database data of the provider
+	 * @throws \Sto\Mediaoembed\Exception\NoMatchingProviderException
+	 */
+	protected function getNextMatchingProviderData() {
+
+		$matchingProviderData = FALSE;
+
+		while (($providerData = $this->db->sql_fetch_assoc($this->providerResult)) && ($matchingProviderData === FALSE)) {
+
+			// We don't care about providers that don't have a url scheme
+			if (empty($providerData['url_schemes'])) {
+				continue;
+			}
+
+			$urlSchemes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(LF, $providerData['url_schemes']);
+
+			foreach ($urlSchemes as $urlScheme) {
+				$urlScheme = preg_quote($urlScheme, '/');
+				$urlScheme = str_replace('\*', '.*', $urlScheme);
+				if (preg_match('/' . $urlScheme . '/', $this->url)) {
+					$matchingProviderData = $providerData;
+					break;
+				}
+			}
+		}
+
+		if ($matchingProviderData === FALSE) {
+			throw new \Sto\Mediaoembed\Exception\NoMatchingProviderException($this->url);
+		}
+
+		return $matchingProviderData;
 	}
 
 	/**
@@ -197,61 +246,27 @@ class ProviderResolver {
 	}
 
 	/**
-	 * Checks if the current URL is valid
+	 * Fetches the generic provider from the database (if enabled) and creates
+	 * a new provider instance with the fetched data.
 	 *
-	 * @return void
+	 * @param int $genericProviderUid
+	 * @return Provider
 	 */
-	protected function checkIfUrlIsValid() {
+	protected function buildGenericProvider($genericProviderUid) {
 
-		$isValid = TRUE;
-
-		if (empty($this->url)) {
-			$isValid = FALSE;
+		if (array_key_exists($genericProviderUid, $this->genericProviderCache)) {
+			return $this->genericProviderCache[$genericProviderUid];
 		}
 
-		if (!\TYPO3\CMS\Core\Utility\GeneralUtility::isValidUrl($this->url)) {
-			$isValid = FALSE;
+		$genericProviderData = $this->fetchGenericProviderDataFromDatabase($genericProviderUid);
+		$genericProvider = NULL;
+
+		if (isset($genericProviderData)) {
+			$genericProvider = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Request\\Provider', $genericProviderData);
 		}
 
-		if (!$isValid) {
-			throw new \Sto\Mediaoembed\Exception\InvalidUrlException($this->url);
-		}
-	}
-
-	/**
-	 * Searches for a url scheme that matches the given url. If
-	 * there is a result, the data of the matching provider will be returned.
-	 *
-	 * @return array Database data of the provider
-	 */
-	protected function getNextMatchingProviderData() {
-
-		$matchingProviderData = FALSE;
-
-		while (($providerData = $this->db->sql_fetch_assoc($this->providerResult)) && ($matchingProviderData === FALSE)) {
-
-				// We don't care about providers that don't have a url scheme
-			if (empty($providerData['url_schemes'])) {
-				continue;
-			}
-
-			$urlSchemes = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(LF, $providerData['url_schemes']);
-
-			foreach ($urlSchemes as $urlScheme) {
-				$urlScheme = preg_quote($urlScheme, '/');
-				$urlScheme = str_replace('\*', '.*', $urlScheme);
-				if (preg_match('/' . $urlScheme . '/', $this->url)) {
-					$matchingProviderData = $providerData;
-					break;
-				}
-			}
-		}
-
-		if ($matchingProviderData === FALSE) {
-			throw new \Sto\Mediaoembed\Exception\NoMatchingProviderException($this->url);
-		}
-
-		return $matchingProviderData;
+		$this->genericProviderCache[$genericProviderUid] = $genericProvider;
+		return $this->genericProviderCache[$genericProviderUid];
 	}
 
 	/**
@@ -287,25 +302,11 @@ class ProviderResolver {
 	}
 
 	/**
-	 * Fetches the regular expressions for the providers from the database.
-	 * Respects the sorting of the providers and of the regular expressions.
+	 * Initializes the current configuration
 	 *
-	 * @return resource MySQL result pointer / DBAL object
+	 * @param \Sto\Mediaoembed\Content\Configuration $configuration
 	 */
-	protected function fetchSortedProvidersFromDatabase() {
-
-		$providerResult = $this->db->exec_SELECTquery(
-			'*',
-			'tx_mediaoembed_provider',
-			'is_generic=0 ' . $this->cObj->enableFields('tx_mediaoembed_provider'),
-			'sorting'
-		);
-
-		if ($providerResult === FALSE) {
-			throw new \RuntimeException('Error retrieving url schemes of providers from database.', 1303109998);
-		}
-
-		$this->providerResult = $providerResult;
+	public function setConfiguration($configuration) {
+		$this->configuration = $configuration;
 	}
 }
-?>

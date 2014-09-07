@@ -21,12 +21,14 @@ namespace Sto\Mediaoembed\Install;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use TYPO3\CMS\Install\Updates\AbstractUpdate;
+
 /**
  * Update class for the install tool that migrates the old media content
  * types with render type tx_mediaoembed to the new external media
  * content element
  */
-class MigrateContentElementsUpdate extends \TYPO3\CMS\Install\Updates\AbstractUpdate {
+class MigrateContentElementsUpdate extends AbstractUpdate {
 
 	const RENDER_TYPE = 'tx_mediaoembed';
 
@@ -37,6 +39,7 @@ class MigrateContentElementsUpdate extends \TYPO3\CMS\Install\Updates\AbstractUp
 
 	/**
 	 * Title of this update that is displayed in the install tool
+	 *
 	 * @var string
 	 */
 	protected $title = 'mediaoembed - Migrate content elements';
@@ -52,7 +55,7 @@ class MigrateContentElementsUpdate extends \TYPO3\CMS\Install\Updates\AbstractUp
 	/**
 	 * Checks whether updates are required.
 	 *
-	 * @param string &$description: The description for the update
+	 * @param string &$description : The description for the update
 	 * @return boolean Whether an update is required (TRUE) or not (FALSE)
 	 */
 	public function checkForUpdate(&$description) {
@@ -72,8 +75,8 @@ class MigrateContentElementsUpdate extends \TYPO3\CMS\Install\Updates\AbstractUp
 	/**
 	 * Performs the accordant updates.
 	 *
-	 * @param array &$dbQueries: queries done in this update
-	 * @param mixed &$customMessages: custom messages
+	 * @param array &$dbQueries : queries done in this update
+	 * @param mixed &$customMessages : custom messages
 	 * @return boolean Whether everything went smoothly or not
 	 */
 	public function performUpdate(array &$dbQueries, &$customMessages) {
@@ -93,7 +96,8 @@ class MigrateContentElementsUpdate extends \TYPO3\CMS\Install\Updates\AbstractUp
 			}
 
 			if (!isset($flexFormData['data']['sVideo']['lDEF']['mmFile']['vDEF'])
-				|| empty($flexFormData['data']['sVideo']['lDEF']['mmFile']['vDEF'])) {
+				|| empty($flexFormData['data']['sVideo']['lDEF']['mmFile']['vDEF'])
+			) {
 				$customMessages .= sprintf('Skipping content element with uid %d because mmFile is not set' . "\n", $row['uid']);
 				$hasError = TRUE;
 				continue;
@@ -139,5 +143,3 @@ class MigrateContentElementsUpdate extends \TYPO3\CMS\Install\Updates\AbstractUp
 		return $hasError;
 	}
 }
-
-?>

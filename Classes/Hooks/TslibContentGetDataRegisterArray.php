@@ -1,5 +1,6 @@
 <?php
 namespace Sto\Mediaoembed\Hooks;
+
 /*                                                                        *
  * This script belongs to the TYPO3 extension "mediaoembed".              *
  *                                                                        *
@@ -20,10 +21,12 @@ namespace Sto\Mediaoembed\Hooks;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use \TYPO3\CMS\Frontend\ContentObject\ContentObjectGetDataHookInterface;
+
 /**
- * Provides a net getData method called "registerobj"
+ * Provides a new getData method called "registerobj"
  */
-class TslibContentGetDataRegisterArray implements \TYPO3\CMS\Frontend\ContentObject\ContentObjectGetDataHookInterface {
+class TslibContentGetDataRegisterArray implements ContentObjectGetDataHookInterface {
 
 	/**
 	 * @var \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
@@ -54,7 +57,7 @@ class TslibContentGetDataRegisterArray implements \TYPO3\CMS\Frontend\ContentObj
 		$key = trim($parts[1]);
 		$type = strtolower(trim($parts[0]));
 
-		if ((string) $type !== 'registerobj') {
+		if ((string)$type !== 'registerobj') {
 			return $returnValue;
 		}
 
@@ -102,6 +105,7 @@ class TslibContentGetDataRegisterArray implements \TYPO3\CMS\Frontend\ContentObj
 	 * @param string $key
 	 * @param object|array $data
 	 * @return mixed
+	 * @throws \Exception
 	 */
 	protected function getArrayOrObjectValue($key, $data) {
 
@@ -109,7 +113,7 @@ class TslibContentGetDataRegisterArray implements \TYPO3\CMS\Frontend\ContentObj
 			$getter = 'get' . ucfirst($key);
 			if (method_exists($data, $getter)) {
 				return $data->$getter();
-			}  else {
+			} else {
 				throw new \Exception(sprintf('Object %s did not have getter function %s', get_class($data), $getter));
 			}
 		} elseif (is_array($data)) {
@@ -123,5 +127,3 @@ class TslibContentGetDataRegisterArray implements \TYPO3\CMS\Frontend\ContentObj
 		}
 	}
 }
-
-?>

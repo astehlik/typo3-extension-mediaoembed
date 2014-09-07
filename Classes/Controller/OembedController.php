@@ -44,6 +44,11 @@ class OembedController extends ActionController {
 	protected $providerResolver;
 
 	/**
+	 * @var \Sto\Mediaoembed\Content\RegisterData
+	 */
+	protected $registerData;
+
+	/**
 	 * Request builder for creating a request to a given endpoint.
 	 *
 	 * @var \Sto\Mediaoembed\Request\RequestBuilder
@@ -58,11 +63,6 @@ class OembedController extends ActionController {
 	protected $responseBuilder;
 
 	/**
-	 * @var \Sto\Mediaoembed\Content\RegisterData
-	 */
-	protected $registerData;
-
-	/**
 	 * Renders the external media
 	 *
 	 * @return string
@@ -75,10 +75,23 @@ class OembedController extends ActionController {
 		try {
 			$this->getEmbedDataFromProvider();
 			return $this->setRegisterAndRenderCobj();
-		}
-		catch(\Sto\Mediaoembed\Exception\OEmbedException $exception) {
+		} catch (\Sto\Mediaoembed\Exception\OEmbedException $exception) {
 			return 'Error: ' . $exception->getMessage();
 		}
+	}
+
+	/**
+	 * Build all data for the register using the embed code reponse
+	 * of a matching provider.
+	 */
+	protected function getEmbedDataFromProvider() {
+
+		$this->providerResolver = $this->objectManager->get('Sto\\Mediaoembed\\Request\\ProviderResolver');
+		$this->providerResolver->setConfiguration($this->configuration);
+		$this->initializeRequestBuilder();
+		$this->initializeResponseBuilder();
+
+		$this->startRequestLoop();
 	}
 
 	/**
@@ -95,46 +108,13 @@ class OembedController extends ActionController {
 	protected function initializeResponseBuilder() {
 		$this->responseBuilder = $this->objectManager->get('Sto\\Mediaoembed\\Response\\ResponseBuilder');
 	}
-	/**
-	 * Build all data for the register using the embed code reponse
-	 * of a matching provider.
-	 */
-	protected function getEmbedDataFromProvider() {
-
-		$this->providerResolver = $this->objectManager->get('Sto\\Mediaoembed\\Request\\ProviderResolver');
-		$this->providerResolver->setConfiguration($this->configuration);
-		$this->initializeRequestBuilder();
-		$this->initializeResponseBuilder();
-
-		$this->startRequestLoop();
-	}
-
-	/**
-	 * Renders the renderItem and provides the oembed information in
-	 * a register during the rendering process.
-	 *
-	 * @return string
-	 */
-	protected function setRegisterAndRenderCobj() {
-
-		array_push($GLOBALS['TSFE']->registerStack, $GLOBALS['TSFE']->register);
-		$GLOBALS['TSFE']->register['tx_mediaoembed'] = $this->registerData;
-
-		$content = $this->configurationManager->getContentObject()->cObjGetSingle(
-			$this->configuration->getRenderItem(),
-			$this->configuration->getRenderItemConfig()
-		);
-
-		$this->configurationManager->getContentObject()->LOAD_REGISTER(array(), 'RESTORE_REGISTER');
-
-		return $content;
-	}
 
 	/**
 	 * Loops over all mathing providers and all their endpoint
 	 * until the request was successful or no more providers / endpoints
 	 * are available.
 	 *
+	 * @throws \Sto\Mediaoembed\Exception\RequestException
 	 * @return \Sto\Mediaoembed\Response\GenericResponse A response object initialized with the data the provider returned
 	 */
 	protected function startRequestLoop() {
@@ -182,5 +162,26 @@ class OembedController extends ActionController {
 		$this->registerData->setProvider($provider);
 		$this->registerData->setRequest($request);
 		$this->registerData->setResponse($response);
+	}
+
+	/**
+	 * Renders the renderItem and provides the oembed information in
+	 * a register during the rendering process.
+	 *
+	 * @return string
+	 */
+	protected function setRegisterAndRenderCobj() {
+
+		array_push($GLOBALS['TSFE']->registerStack, $GLOBALS['TSFE']->register);
+		$GLOBALS['TSFE']->register['tx_mediaoembed'] = $this->registerData;
+
+		$content = $this->configurationManager->getContentObject()->cObjGetSingle(
+			$this->configuration->getRenderItem(),
+			$this->configuration->getRenderItemConfig()
+		);
+
+		$this->configurationManager->getContentObject()->LOAD_REGISTER(array(), 'RESTORE_REGISTER');
+
+		return $content;
 	}
 }

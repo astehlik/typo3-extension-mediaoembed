@@ -31,12 +31,17 @@ namespace Sto\Mediaoembed\Exception;
  */
 class UnauthorizedException extends RequestException {
 
-public function __construct($mediaUrl, $requestUrl) {
-		$message  = 'The server returned a 401 Unauthorized error for this URL: %s. ';
+	/**
+	 * Initializes the Exception with a default message and a default code (1303402203).
+	 *
+	 * @param string $mediaUrl
+	 * @param string $requestUrl
+	 */
+	public function __construct($mediaUrl, $requestUrl) {
+		$message = 'The server returned a 401 Unauthorized error for this URL: %s. ';
 		$message .= 'This means that embedding is prohibited for this resource. Please use a direct link instead. ';
 		$message .= 'The full request to the server was: %s';
 		$message = sprintf($message, $mediaUrl, $requestUrl);
 		parent::__construct($message, 1303402203);
 	}
 }
-?>

@@ -22,7 +22,6 @@ namespace Sto\Mediaoembed\Response;
  *                                                                        */
 
 /**
- *
  * This type is used for representing playable videos.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
  * If a provider wishes the consumer to just provide a thumbnail, rather than an
@@ -31,14 +30,22 @@ namespace Sto\Mediaoembed\Response;
 class VideoResponse extends GenericResponse {
 
 	/**
-     * The HTML required to embed a video player.
-     * The HTML should have no padding or margins.
-     * Consumers may wish to load the HTML in an off-domain iframe to avoid
-     * XSS vulnerabilities.
-     * This value is required.
-     *
-     * @var string
-     */
+	 * The height in pixels required to display the HTML.
+	 * This value is required.
+	 *
+	 * @var string
+	 */
+	protected $height;
+
+	/**
+	 * The HTML required to embed a video player.
+	 * The HTML should have no padding or margins.
+	 * Consumers may wish to load the HTML in an off-domain iframe to avoid
+	 * XSS vulnerabilities.
+	 * This value is required.
+	 *
+	 * @var string
+	 */
 	protected $html;
 
 	/**
@@ -48,14 +55,6 @@ class VideoResponse extends GenericResponse {
 	 * @var string
 	 */
 	protected $width;
-
-	/**
-	 * The height in pixels required to display the HTML.
-	 * This value is required.
-	 *
-	 * @var string
-	 */
-	protected $height;
 
 	/**
 	 * Initializes the response parameters that are specific for this
@@ -94,4 +93,3 @@ class VideoResponse extends GenericResponse {
 		return $this->width;
 	}
 }
-?>
