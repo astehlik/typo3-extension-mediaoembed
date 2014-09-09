@@ -20,6 +20,7 @@ return array(
 		),
 		'title' => $languagePrefix . 'tx_mediaoembed_provider',
 		'iconfile'  => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('mediaoembed') . 'Resources/Public/Icons/table_provider.png',
+		'searchFields' => 'name,description,url_schemes'
 	),
 
 	'interface' => array(
