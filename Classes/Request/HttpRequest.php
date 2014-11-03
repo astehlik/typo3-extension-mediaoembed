@@ -180,7 +180,7 @@ class HttpRequest {
 					throw new \Sto\Mediaoembed\Exception\UnauthorizedException($this->url, $requestUrl);
 					break;
 				default:
-					throw new \RuntimeException('An unknown error occured while contacting the provider: ' . $report['message'] . ' (' . $report['error'] . '). Please make sure CURL use is enabled in the install tool to get valid error codes.', 1303401545);
+					throw new \RuntimeException('An unknown error occurred while contacting the provider: ' . $report['message'] . ' (' . $report['error'] . '). Please make sure CURL use is enabled in the install tool to get valid error codes.', 1303401545);
 					break;
 			}
 		}
