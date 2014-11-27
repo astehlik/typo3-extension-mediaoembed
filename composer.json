@@ -1,0 +1,11 @@
+{
+	"name": "astehlik-typo3-extension/mediaoembed",
+	"description": "External media (YouTube, Flickr, ...) content elements using the http://oembed.com/ standard.",
+	"type": "typo3-cms-extension",
+	"version": "0.2.0",
+	"autoload": {
+		"psr-4": {
+			"Sto\\Mediaoembed\\": "Classes/"
+		}
+	}
+}
