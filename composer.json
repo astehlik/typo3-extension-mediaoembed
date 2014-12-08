@@ -1,0 +1,15 @@
+{
+	"name": "de-swebhosting-typo3-extension/mediaoembed",
+	"description": "External media (YouTube, Flickr, ...) content elements using the http://oembed.com/ standard.",
+	"type": "typo3-cms-extension",
+	"version": "0.2.0",
+	"license": "GPL-3.0+",
+	"replace": {
+		"mediaoembed": "self.version"
+	},
+	"autoload": {
+		"psr-4": {
+			"Sto\\Mediaoembed\\": "Classes/"
+		}
+	}
+}
