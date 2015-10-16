@@ -1,5 +1,5 @@
 <?php
-namespace Sto\Mediaoembed\Exception;
+namespace Sto\Mediaoembed\Domain\Model;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Extension "mediaoembed".              *
@@ -11,21 +11,46 @@ namespace Sto\Mediaoembed\Exception;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use Sto\Mediaoembed\Domain\Model\Provider;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * This Exception will be thrown if no endpoint can be determined for a provider.
+ * A mediaoembed tt_content record.
  */
-class NoProviderEndpointException extends OEmbedException {
+class Content extends AbstractEntity {
 
 	/**
-	 * Initializes the Exception with a default message and a default code (1303937972).
-	 *
-	 * @param Provider $provider
+	 * @var int
 	 */
-	public function __construct($provider) {
-		$message = 'No endpoints were found for provider %s. Please make sure you specify at least a native endpoint or enable a generic provider.';
-		$message = sprintf($message, $provider->getName());
-		parent::__construct($message, 1303937972);
+	protected $maxHeight;
+
+	/**
+	 * @var int
+	 */
+	protected $maxWidth;
+
+	/**
+	 * @var string
+	 */
+	protected $url;
+
+	/**
+	 * @return int
+	 */
+	public function getMaxHeight() {
+		return (int)$this->maxHeight;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getMaxWidth() {
+		return (int)$this->maxWidth;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getUrl() {
+		return $this->url;
 	}
 }

@@ -130,17 +130,17 @@ class GenericResponse {
 	 */
 	public function initializeResponseData($responseData) {
 		$this->responseDataArray = $responseData;
-		$this->type = $responseData['type'];
-		$this->version = $responseData['version'];
-		$this->title = $responseData['title'];
-		$this->author_name = $responseData['author_name'];
-		$this->author_url = $responseData['author_url'];
-		$this->provider_name = $responseData['provider_name'];
-		$this->provider_url = $responseData['provider_url'];
-		$this->cache_age = $responseData['cache_age'];
-		$this->thumbnail_url = $responseData['thumbnail_url'];
-		$this->thumbnail_width = $responseData['thumbnail_width'];
-		$this->thumbnail_height = $responseData['thumbnail_height'];
+		$this->type = $this->getValueFromResponseData('type');
+		$this->version = $this->getValueFromResponseData('version');
+		$this->title = $this->getValueFromResponseData('title');
+		$this->author_name = $this->getValueFromResponseData('author_name');
+		$this->author_url = $this->getValueFromResponseData('author_url');
+		$this->provider_name = $this->getValueFromResponseData('provider_name');
+		$this->provider_url = $this->getValueFromResponseData('provider_url');
+		$this->cache_age = $this->getValueFromResponseData('cache_age');
+		$this->thumbnail_url = $this->getValueFromResponseData('thumbnail_url');
+		$this->thumbnail_width = $this->getValueFromResponseData('thumbnail_width');
+		$this->thumbnail_height = $this->getValueFromResponseData('thumbnail_height');
 		$this->initializeTypeSpecificResponseData();
 	}
 
@@ -251,11 +251,34 @@ class GenericResponse {
 	}
 
 	/**
+	 * Getter for the resource type.
+	 *
+	 * @return string
+	 */
+	public function getTypePartialName() {
+		return ucfirst($this->type);
+	}
+
+	/**
 	 * Getter for the oEmbed version number.
 	 *
 	 * @return string
 	 */
 	public function getVersion() {
 		return $this->version;
+	}
+
+	/**
+	 * Retrieves a value from the response array or returns NULL if the array key is not set.
+	 *
+	 * @param string $key
+	 * @return mixed
+	 */
+	protected function getValueFromResponseData($key) {
+		if (array_key_exists($key, $this->responseDataArray)) {
+			return $this->responseDataArray[$key];
+		} else {
+			return NULL;
+		}
 	}
 }

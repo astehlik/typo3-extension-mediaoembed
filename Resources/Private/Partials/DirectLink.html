@@ -1,0 +1,20 @@
+{namespace mo=Sto\Mediaoembed\ViewHelpers}
+
+<f:if condition="{settings.view.displayDirectLink}">
+
+	<div class="tx-mediaoembed-directlink">
+
+		<mo:link.typolink parameter="{configuration.content.url}">
+
+			<f:if condition="{response.providerName}">
+				<f:then>{response.providerName}</f:then>
+				<f:else>{provider.name}</f:else>
+			</f:if>
+
+			<f:translate id="direct_link" />
+
+		</mo:link.typolink>
+
+	</div>
+
+</f:if>

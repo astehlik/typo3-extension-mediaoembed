@@ -1,5 +1,5 @@
 <?php
-namespace Sto\Mediaoembed\Exception;
+namespace Sto\Mediaoembed\Domain\Repository;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Extension "mediaoembed".              *
@@ -11,21 +11,21 @@ namespace Sto\Mediaoembed\Exception;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use Sto\Mediaoembed\Domain\Model\Provider;
+use Sto\Mediaoembed\Domain\Model\Content;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
- * This Exception will be thrown if no endpoint can be determined for a provider.
+ * Repository for mediaoembed tt_content elements.
+ *
+ * @method Content findByUid($uid)
  */
-class NoProviderEndpointException extends OEmbedException {
+class ContentRepository extends Repository {
 
 	/**
-	 * Initializes the Exception with a default message and a default code (1303937972).
-	 *
-	 * @param Provider $provider
+	 * Make sure we always ignore the storage page config.
 	 */
-	public function __construct($provider) {
-		$message = 'No endpoints were found for provider %s. Please make sure you specify at least a native endpoint or enable a generic provider.';
-		$message = sprintf($message, $provider->getName());
-		parent::__construct($message, 1303937972);
+	public function initializeObject() {
+		$this->defaultQuerySettings = $this->createQuery()->getQuerySettings();
+		$this->defaultQuerySettings->setRespectStoragePage(FALSE);
 	}
 }

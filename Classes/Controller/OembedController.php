@@ -11,6 +11,7 @@ namespace Sto\Mediaoembed\Controller;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
@@ -26,17 +27,18 @@ class OembedController extends ActionController {
 	protected $configuration;
 
 	/**
+	 * @var \Sto\Mediaoembed\Domain\Repository\ContentRepository
+	 * @inject
+	 */
+	protected $contentRepository;
+
+	/**
 	 * The provider resolver tries to resolve the matching provider
 	 * for the current media URL.
 	 *
 	 * @var \Sto\Mediaoembed\Request\ProviderResolver
 	 */
 	protected $providerResolver;
-
-	/**
-	 * @var \Sto\Mediaoembed\Content\RegisterData
-	 */
-	protected $registerData;
 
 	/**
 	 * Request builder for creating a request to a given endpoint.
@@ -59,15 +61,18 @@ class OembedController extends ActionController {
 	 */
 	public function renderMediaAction() {
 
-		$this->configuration = $this->objectManager->get('Sto\\Mediaoembed\\Content\\Configuration');
-		$this->registerData = $this->objectManager->get('Sto\\Mediaoembed\\Content\\RegisterData');
+		$this->configuration = $this->objectManager->get(\Sto\Mediaoembed\Content\Configuration::class);
 
 		try {
 			$this->getEmbedDataFromProvider();
-			return $this->setRegisterAndRenderCobj();
+			$this->view->assign('configuration', $this->configuration);
+			$this->view->assign('isSSLRequest', GeneralUtility::getIndpEnv('TYPO3_SSL'));
+			$result = $this->view->render();
 		} catch (\Sto\Mediaoembed\Exception\OEmbedException $exception) {
-			return 'Error: ' . $exception->getMessage();
+			$result = 'Error: ' . $exception->getMessage();
 		}
+
+		return $result;
 	}
 
 	/**
@@ -76,19 +81,19 @@ class OembedController extends ActionController {
 	 */
 	protected function getEmbedDataFromProvider() {
 
-		$this->providerResolver = $this->objectManager->get('Sto\\Mediaoembed\\Request\\ProviderResolver');
-		$this->providerResolver->setConfiguration($this->configuration);
+		$this->providerResolver = $this->objectManager->get(\Sto\Mediaoembed\Request\ProviderResolver::class);
 		$this->initializeRequestBuilder();
 		$this->initializeResponseBuilder();
 
-		$this->startRequestLoop();
+		$content = $this->contentRepository->findByUid($this->configurationManager->getContentObject()->data['uid']);
+		$this->startRequestLoop($content);
 	}
 
 	/**
 	 * Initializes the request builder
 	 */
 	protected function initializeRequestBuilder() {
-		$this->requestBuilder = $this->objectManager->get('Sto\\Mediaoembed\\Request\\RequestBuilder');
+		$this->requestBuilder = $this->objectManager->get(\Sto\Mediaoembed\Request\RequestBuilder::class);
 		$this->requestBuilder->setConfiguration($this->configuration);
 	}
 
@@ -96,7 +101,7 @@ class OembedController extends ActionController {
 	 * Initializes the response builder
 	 */
 	protected function initializeResponseBuilder() {
-		$this->responseBuilder = $this->objectManager->get('Sto\\Mediaoembed\\Response\\ResponseBuilder');
+		$this->responseBuilder = $this->objectManager->get(\Sto\Mediaoembed\Response\ResponseBuilder::class);
 	}
 
 	/**
@@ -104,20 +109,18 @@ class OembedController extends ActionController {
 	 * until the request was successful or no more providers / endpoints
 	 * are available.
 	 *
+	 * @param \Sto\Mediaoembed\Domain\Model\Content $content
+	 * @return \Sto\Mediaoembed\Response\GenericResponse
 	 * @throws \Sto\Mediaoembed\Exception\RequestException
-	 * @return \Sto\Mediaoembed\Response\GenericResponse A response object initialized with the data the provider returned
 	 */
-	protected function startRequestLoop() {
+	protected function startRequestLoop($content) {
 
 		$response = NULL;
 		$request = NULL;
 
 		do {
 
-			/**
-			 * @var \Sto\Mediaoembed\Request\Provider $provider
-			 */
-			$provider = $this->providerResolver->getNextMatchingProvider();
+			$provider = $this->providerResolver->getNextMatchingProvider($content);
 
 			if ($provider === FALSE) {
 				break;
@@ -149,29 +152,8 @@ class OembedController extends ActionController {
 			throw new \Sto\Mediaoembed\Exception\RequestException('No provider returned a valid result. Giving up. Please make sure the URL is valid and you have configured a provider that can handle it.');
 		}
 
-		$this->registerData->setProvider($provider);
-		$this->registerData->setRequest($request);
-		$this->registerData->setResponse($response);
-	}
-
-	/**
-	 * Renders the renderItem and provides the oembed information in
-	 * a register during the rendering process.
-	 *
-	 * @return string
-	 */
-	protected function setRegisterAndRenderCobj() {
-
-		array_push($GLOBALS['TSFE']->registerStack, $GLOBALS['TSFE']->register);
-		$GLOBALS['TSFE']->register['tx_mediaoembed'] = $this->registerData;
-
-		$content = $this->configurationManager->getContentObject()->cObjGetSingle(
-			$this->configuration->getRenderItem(),
-			$this->configuration->getRenderItemConfig()
-		);
-
-		$this->configurationManager->getContentObject()->LOAD_REGISTER(array(), 'RESTORE_REGISTER');
-
-		return $content;
+		$this->view->assign('provider', $provider);
+		$this->view->assign('request', $request);
+		$this->view->assign('response', $response);
 	}
 }

@@ -1,148 +1,36 @@
 
-plugin.tx_mediaoembed._CSS_DEFAULT_STYLE (
-
-	div.tx-mediaoembed {
-		margin: 0 auto;
-		margin-bottom: {$styles.content.imgtext.rowSpace}px;
+config.tx_extbase {
+	persistence {
+		classes {
+			Sto\Mediaoembed\Domain\Model\Content {
+				mapping {
+					tableName = tt_content
+					columns {
+						tx_mediaoembed_maxwidth.mapOnProperty = maxwidth
+						tx_mediaoembed_maxheight.mapOnProperty = maxheight
+						tx_mediaoembed_response.mapOnProperty = response
+						tx_mediaoembed_thumbnail.mapOnProperty = thumbnail
+						tx_mediaoembed_url.mapOnProperty = url
+					}
+				}
+			}
+			Sto\Mediaoembed\Domain\Model\Provider {
+				mapping {
+					tableName = tx_mediaoembed_provider
+				}
+			}
+		}
 	}
+}
 
-	div.tx-mediaoembed div.tx-mediaoembed-directlink {
-		text-align: right;
-	}
-)
-
-tt_content.mediaoembed_oembedmediarenderer.20.typoscript_settings {
-
-	secureIframe {
-		baseUrl < config.baseUrl
-		enable = 0
-	}
+plugin.tx_mediaoembed.settings {
 
 	media {
-
-		url = TEXT
-		url.field = tx_mediaoembed_url
-
-		maxwidth = TEXT
-		maxwidth {
-			field = tx_mediaoembed_maxwidth
-			ifEmpty = {$styles.content.media.defaultVideoWidth}
-			ifEmpty.override = {$plugin.tx_mediaoembed.defaultMaximumMediaWidth}
-		}
-
-		maxheight = TEXT
-		maxheight {
-			field = tx_mediaoembed_maxheight
-		}
+		maxwidth = {$styles.content.media.defaultVideoWidth}
+		maxheight =
 	}
 
 	downloadPhoto = {$plugin.tx_mediaoembed.downloadPhoto}
 
-	renderItem = COA
-	renderItem {
-
-		stdWrap.outerWrap.cObject = COA
-		stdWrap.outerWrap.cObject {
-
-			10 = TEXT
-			10.value = <div
-
-			20 = TEXT
-			20 {
-				value = tx-mediaoembed-unknown
-				override {
-					data = registerobj : tx_mediaoembed|response|type
-					required = 1
-					wrap = tx-mediaoembed-
-				}
-				noTrimWrap = | class="tx-mediaoembed |"|
-			}
-
-			30 = TEXT
-			30 {
-				data = registerobj : tx_mediaoembed|response|width
-				required = 1
-				noTrimWrap = | style="width: |px;"|
-			}
-
-			40 = TEXT
-			40.value = >|</div>
-		}
-
-		10 = CASE
-		10 {
-
-			key = TEXT
-			key.data = registerobj : tx_mediaoembed|response|type
-
-			default = TEXT
-			default.value = Unknown response type: {registerobj : tx_mediaoembed|response|type}
-			default.insertData = 1
-
-			photo = CASE
-			photo {
-
-				key = {$plugin.tx_mediaoembed.downloadPhoto}
-
-				default = TEXT
-				default {
-					value (
-						<img
-						src="{registerobj : tx_mediaoembed|response|url}"
-						width="{registerobj : tx_mediaoembed|response|width}"
-						height="{registerobj : tx_mediaoembed|response|height}"
-						alt="{registerobj : tx_mediaoembed|response|title}" />
-					)
-					insertData = 1
-				}
-
-				1 = IMAGE
-				1 {
-					file {
-						import.data = registerobj : tx_mediaoembed|response|localPath
-						width.data = registerobj : tx_mediaoembed|response|width
-						height.data = registerobj : tx_mediaoembed|response|height
-					}
-					altText.data = registerobj : tx_mediaoembed|response|title
-				}
-
-			}
-
-			video = TEXT
-			video.data = registerobj : tx_mediaoembed|response|html
-
-			rich = TEXT
-			rich.data = registerobj : tx_mediaoembed|response|html
-
-		}
-
-		20 = COA
-		20 {
-			wrap = <div class="tx-mediaoembed-directlink">|</div>
-
-			10 = TEXT
-			10 {
-				data = registerobj : tx_mediaoembed|provider|name
-				override.data = registerobj : tx_mediaoembed|response|providerName
-				noTrimWrap = || |
-				outerWrap = |{LLL:EXT:mediaoembed/Resources/Private/Language/locallang.xlf:direct_link}
-				outerWrap.typolink.parameter.data = registerobj : tx_mediaoembed|configuration|mediaUrl
-				outerWrap.insertData = 1
-			}
-		}
-	}
+	view.displayDirectLink = 1
 }
-
-[globalString = IENV:TYPO3_SSL = 1]
-
-// Replace http with https URLs because otherwise the browser
-// will block the embedded content because is is not loaded over
-// a secure connection (WIP)
-tt_content.mediaoembed_oembedmediarenderer.20.typoscript_settings.renderItem.10 {
-	video.replacement.10 {
-		search = src="http://
-		replace = src="https://
-	}
-}
-
-[global]

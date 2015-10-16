@@ -19,7 +19,7 @@ return array(
 			'disabled' => 'hidden'
 		),
 		'title' => $languagePrefix . 'tx_mediaoembed_provider',
-		'iconfile'  => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('mediaoembed') . 'Resources/Public/Icons/table_provider.png',
+		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('mediaoembed') . 'Resources/Public/Icons/table_provider.png',
 		'searchFields' => 'name,description,url_schemes'
 	),
 
@@ -107,4 +107,3 @@ return array(
 		'0' => array('showitem' => 'hidden;;;;1-1-1, name;;;;2-2-2, is_generic, description, url_schemes, endpoint, use_generic_providers, embedly_shortname'),
 	),
 );
-?>

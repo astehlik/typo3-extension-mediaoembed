@@ -7,9 +7,17 @@
 	"replace": {
 		"mediaoembed": "self.version"
 	},
+	"require-dev": {
+		"phpunit/phpunit": "*"
+	},
 	"autoload": {
 		"psr-4": {
 			"Sto\\Mediaoembed\\": "Classes/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Sto\\Mediaoembed\\Tests": "Tests/"
 		}
 	}
 }

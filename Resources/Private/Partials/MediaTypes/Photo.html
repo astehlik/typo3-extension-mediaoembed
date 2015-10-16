@@ -1,0 +1,8 @@
+<f:if condition="{settings.downloadPhoto}">
+	<f:then>
+		<f:image src="{response.localPath}"  width="{response.width}" height="{response.height}" alt="{response.title}" />
+	</f:then>
+	<f:else>
+		<img src="{response.url}" width="{response.width}" height="{response.height}" alt="{response.title}" />
+	</f:else>
+</f:if>

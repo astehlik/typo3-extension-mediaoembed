@@ -11,6 +11,10 @@ namespace Sto\Mediaoembed\Request;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Sto\Mediaoembed\Domain\Model\Provider;
+use Sto\Mediaoembed\Exception\NoProviderEndpointException;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Builds a request object based on the (TypoScript) configuration
  */
@@ -64,19 +68,12 @@ class RequestBuilder {
 	}
 
 	/**
-	 * Initializes the provider for which the request will be build
+	 * Injector for the TypoScript / Flexform configuration
 	 *
-	 * @param Provider $provider
-	 * @return boolean TRUE if provider changes, otherwilse FALSE
+	 * @param \Sto\Mediaoembed\Content\Configuration $configuration
 	 */
-	protected function initializeProvider($provider) {
-
-		if ($provider->equals($this->provider)) {
-			return FALSE;
-		}
-
-		$this->provider = $provider;
-		return TRUE;
+	public function setConfiguration($configuration) {
+		$this->configuration = $configuration;
 	}
 
 	/**
@@ -84,7 +81,7 @@ class RequestBuilder {
 	 *
 	 * @param boolean $providerChanged if TRUE the endpoints array will be initialized with new endpoints from the current provider, otherwise the array pointer of the endpoints array will be moved forward.
 	 * @return boolean TRUE if endpoints are available, otherwise FALSE
-	 * @throws \Sto\Mediaoembed\Exception\NoProviderEndpointException
+	 * @throws NoProviderEndpointException
 	 */
 	protected function initializeEndpoints($providerChanged) {
 
@@ -93,7 +90,7 @@ class RequestBuilder {
 			$this->endpoints = $this->provider->getAllEndpoints();
 
 			if (!count($this->endpoints)) {
-				throw new \Sto\Mediaoembed\Exception\NoProviderEndpointException($this->provider);
+				throw new NoProviderEndpointException($this->provider);
 			}
 
 			reset($this->endpoints);
@@ -116,22 +113,27 @@ class RequestBuilder {
 	protected function initializeNewRequest() {
 
 		/**
-		 * @var \Sto\Mediaoembed\Request\HttpRequest $request
+		 * @var HttpRequest $request
 		 */
-		$request = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Request\\HttpRequest');
+		$request = GeneralUtility::makeInstance(HttpRequest::class);
 		$this->request = $request;
 		$this->request->injectConfiguration($this->configuration);
 		$this->request->setEndpoint(current($this->endpoints));
 	}
 
 	/**
-	 * Injector for the TypoScript / Flexform configuration
+	 * Initializes the provider for which the request will be build
 	 *
-	 * @param \Sto\Mediaoembed\Content\Configuration $configuration
+	 * @param Provider $provider
+	 * @return boolean TRUE if provider changes, otherwilse FALSE
 	 */
-	public function setConfiguration($configuration) {
-		$this->configuration = $configuration;
+	protected function initializeProvider($provider) {
+
+		if ($provider->equals($this->provider)) {
+			return FALSE;
+		}
+
+		$this->provider = $provider;
+		return TRUE;
 	}
 }
-
-?>

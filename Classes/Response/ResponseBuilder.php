@@ -11,6 +11,8 @@ namespace Sto\Mediaoembed\Response;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * This type is used for representing static photos.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
@@ -59,19 +61,19 @@ class ResponseBuilder {
 
 		switch ($type) {
 			case 'link':
-				$this->response = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Response\\LinkResponse');
+				$this->response = GeneralUtility::makeInstance(LinkResponse::class);
 				break;
 			case 'photo':
-				$this->response = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Response\\PhotoResponse');
+				$this->response = GeneralUtility::makeInstance(PhotoResponse::class);
 				break;
 			case 'rich':
-				$this->response = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Response\\RichResponse');
+				$this->response = GeneralUtility::makeInstance(RichResponse::class);
 				break;
 			case 'video':
-				$this->response = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Response\\VideoResponse');
+				$this->response = GeneralUtility::makeInstance(VideoResponse::class);
 				break;
 			default:
-				$this->response = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Sto\\Mediaoembed\\Response\\GenericResponse');
+				$this->response = GeneralUtility::makeInstance(GenericResponse::class);
 				break;
 		}
 	}

@@ -19,9 +19,21 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 class Configuration {
 
 	/**
-	 * @var \Sto\Mediaoembed\Utility\ContentObjectUtilities
+	 * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
+	 * @inject
 	 */
-	protected $contentObjectUtilities;
+	protected $configurationManager;
+
+	/**
+	 * @var \Sto\Mediaoembed\Domain\Model\Content
+	 */
+	protected $content;
+
+	/**
+	 * @var \Sto\Mediaoembed\Domain\Repository\ContentRepository
+	 * @inject
+	 */
+	protected $contentRepository;
 
 	/**
 	 * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
@@ -33,32 +45,23 @@ class Configuration {
 	 *
 	 * @var array
 	 */
-	protected $typoscriptSetup;
+	protected $settings;
 
 	/**
-	 * Injects the configuration manager
-	 *
-	 * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
+	 * Initialzes required instance variables after all injects were made.
 	 */
-	public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager) {
-
-		$fullTyposcriptSetup = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
-
-		if (!isset($fullTyposcriptSetup['tt_content.']['mediaoembed_oembedmediarenderer.']['20.']['typoscript_settings.'])) {
-			throw new \RuntimeException('The configuration at tt_content.mediaoembed_oembedmediarenderer.20.typoscript_settings is missing.');
-		}
-
-		$this->typoscriptSetup = $fullTyposcriptSetup['tt_content.']['mediaoembed_oembedmediarenderer.']['20.']['typoscript_settings.'];
+	public function initializeObject() {
+		$this->content = $this->contentRepository->findByUid($this->configurationManager->getContentObject()->data['uid']);
+		$this->settings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
 	}
 
 	/**
-	 * Injects the object manager
+	 * Returns the current tt_content record domain model.
 	 *
-	 * @param \TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager
+	 * @return \Sto\Mediaoembed\Domain\Model\Content
 	 */
-	public function injectObjectManager(\TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager) {
-		$this->objectManager = $objectManager;
-		$this->contentObjectUtilities = $this->objectManager->get('Sto\\Mediaoembed\\Utility\\ContentObjectUtilities');
+	public function getContent() {
+		return $this->content;
 	}
 
 	/**
@@ -72,12 +75,15 @@ class Configuration {
 	public function getMaxheight() {
 
 		$maxheight = 0;
+		$contentMaxHeight = $this->content->getMaxHeight();
 
-		if (isset($this->typoscriptSetup['media.'])) {
-			$maxheight = $this->contentObjectUtilities->getSingleValueOrContentObject($this->typoscriptSetup['media.'], 'maxheight');
+		if (!empty($contentMaxHeight)) {
+			$maxheight = $contentMaxHeight;
+		} elseif (!empty($this->settings['media']['maxheight'])) {
+			$maxheight = (int)$this->settings['media']['maxheight'];
 		}
 
-		return intval($maxheight);
+		return $maxheight;
 	}
 
 	/**
@@ -91,46 +97,14 @@ class Configuration {
 	public function getMaxwidth() {
 
 		$maxwidth = 0;
+		$contentMaxWidth = $this->content->getMaxWidth();
 
-		if (isset($this->typoscriptSetup['media.'])) {
-			$maxwidth = $this->contentObjectUtilities->getSingleValueOrContentObject($this->typoscriptSetup['media.'], 'maxwidth');
+		if (!empty($contentMaxWidth)) {
+			$maxwidth = $contentMaxWidth;
+		} elseif (!empty($this->settings['media']['maxwidth'])) {
+			$maxwidth = (int)$this->settings['media']['maxwidth'];
 		}
 
-		return intval($maxwidth);
-	}
-
-	/**
-	 * The URL to retrieve embedding information for.
-	 * This value is required.
-	 *
-	 * @return string
-	 */
-	public function getMediaUrl() {
-
-		$url = '';
-
-		if (isset($this->typoscriptSetup['media.'])) {
-			$url = $this->contentObjectUtilities->getSingleValueOrContentObject($this->typoscriptSetup['media.'], 'url');
-		}
-
-		return $url;
-	}
-
-	/**
-	 * TypoScript object for rendering the media item
-	 *
-	 * @return string
-	 */
-	public function getRenderItem() {
-		return $this->typoscriptSetup['renderItem'];
-	}
-
-	/**
-	 * TypoScript configuration for rendering the media item
-	 *
-	 * @return string
-	 */
-	public function getRenderItemConfig() {
-		return $this->typoscriptSetup['renderItem.'];
+		return $maxwidth;
 	}
 }

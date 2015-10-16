@@ -11,6 +11,9 @@ namespace Sto\Mediaoembed\Request;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use TYPO3\CMS\Core\Html\HtmlParser;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Represents a HTTP request
  */
@@ -74,6 +77,24 @@ class HttpRequest {
 	}
 
 	/**
+	 * Setter for the endpoint URL
+	 *
+	 * @param string $endpoint
+	 */
+	public function setEndpoint($endpoint) {
+		$this->endpoint = $endpoint;
+	}
+
+	/**
+	 * Setter for the URL
+	 *
+	 * @param string $url
+	 */
+	public function setUrl($url) {
+		$this->url = $url;
+	}
+
+	/**
 	 * Builds an array of parameters that should be attached to the
 	 * endpoint url.
 	 *
@@ -97,7 +118,7 @@ class HttpRequest {
 			$parameters['format'] = $this->format;
 		}
 		// needs to be last parameter
-		$parameters['url'] = $this->configuration->getMediaUrl();
+		$parameters['url'] = $this->configuration->getContent()->getUrl();
 
 		return $parameters;
 	}
@@ -122,8 +143,8 @@ class HttpRequest {
 
 		$requestUrl = $this->endpoint;
 
-		$requestUrl = \TYPO3\CMS\Core\Html\HtmlParser::substituteMarker($requestUrl, '###FORMAT###', $this->format);
-		$requestUrl = \TYPO3\CMS\Core\Html\HtmlParser::substituteMarker($requestUrl, '{format}', $this->format);
+		$requestUrl = HtmlParser::substituteMarker($requestUrl, '###FORMAT###', $this->format);
+		$requestUrl = HtmlParser::substituteMarker($requestUrl, '{format}', $this->format);
 
 		foreach ($parameters as $name => $value) {
 
@@ -144,45 +165,10 @@ class HttpRequest {
 	}
 
 	/**
-	 * Sends a request to the given URL and returns the reponse
-	 * from the server.
-	 *
-	 * @param string $requestUrl
-	 * @return string response data
-	 * @throws \Sto\Mediaoembed\Exception\HttpNotFoundException
-	 * @throws \Sto\Mediaoembed\Exception\HttpNotImplementedException
-	 * @throws \Sto\Mediaoembed\Exception\UnauthorizedException
-	 */
-	protected function sendRequest($requestUrl) {
-
-		$report = array();
-		$responseData = \TYPO3\CMS\Core\Utility\GeneralUtility::getURL($requestUrl, 0, FALSE, $report);
-
-		if ($report['error'] !== 0) {
-			switch ($this->getErrorCode($report)) {
-				case 404;
-					throw new \Sto\Mediaoembed\Exception\HttpNotFoundException($this->url, $requestUrl);
-					break;
-				case 501:
-					throw new \Sto\Mediaoembed\Exception\HttpNotImplementedException($this->url, $this->format, $requestUrl);
-					break;
-				case 401:
-					throw new \Sto\Mediaoembed\Exception\UnauthorizedException($this->url, $requestUrl);
-					break;
-				default:
-					throw new \RuntimeException('An unknown error occurred while contacting the provider: ' . $report['message'] . ' (' . $report['error'] . '). Please make sure CURL use is enabled in the install tool to get valid error codes.', 1303401545);
-					break;
-			}
-		}
-
-		return $responseData;
-	}
-
-	/**
 	 * Tries to get the real error code from the $report array of
-	 * t3lib_div::getURL()
+	 * GeneralUtility::getURL()
 	 *
-	 * @param array $report report array of t3lib_div::getURL()
+	 * @param array $report report array of GeneralUtility::getURL()
 	 * @return string the error code
 	 * @see t3lib_div::getURL()
 	 */
@@ -203,20 +189,37 @@ class HttpRequest {
 	}
 
 	/**
-	 * Setter for the endpoint URL
+	 * Sends a request to the given URL and returns the reponse
+	 * from the server.
 	 *
-	 * @param string $endpoint
+	 * @param string $requestUrl
+	 * @return string response data
+	 * @throws \Sto\Mediaoembed\Exception\HttpNotFoundException
+	 * @throws \Sto\Mediaoembed\Exception\HttpNotImplementedException
+	 * @throws \Sto\Mediaoembed\Exception\UnauthorizedException
 	 */
-	public function setEndpoint($endpoint) {
-		$this->endpoint = $endpoint;
-	}
+	protected function sendRequest($requestUrl) {
 
-	/**
-	 * Setter for the URL
-	 *
-	 * @param string $url
-	 */
-	public function setUrl($url) {
-		$this->url = $url;
+		$report = array();
+		$responseData = GeneralUtility::getURL($requestUrl, 0, FALSE, $report);
+
+		if ($report['error'] !== 0) {
+			switch ($this->getErrorCode($report)) {
+				case 404;
+					throw new \Sto\Mediaoembed\Exception\HttpNotFoundException($this->url, $requestUrl);
+					break;
+				case 501:
+					throw new \Sto\Mediaoembed\Exception\HttpNotImplementedException($this->url, $this->format, $requestUrl);
+					break;
+				case 401:
+					throw new \Sto\Mediaoembed\Exception\UnauthorizedException($this->url, $requestUrl);
+					break;
+				default:
+					throw new \RuntimeException('An unknown error occurred while contacting the provider: ' . $report['message'] . ' (' . $report['error'] . '). Please make sure CURL use is enabled in the install tool to get valid error codes.', 1303401545);
+					break;
+			}
+		}
+
+		return $responseData;
 	}
 }
