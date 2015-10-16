@@ -12,6 +12,7 @@ $ttContentColumns = array(
 	),
 	'tx_mediaoembed_maxwidth' => array(
 		'label' => 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:tt_content.tx_mediaoembed_maxwidth',
+		'exclude' => TRUE,
 		'config' => array(
 			'type' => 'input',
 			'size' => '4',
@@ -26,6 +27,7 @@ $ttContentColumns = array(
 	),
 	'tx_mediaoembed_maxheight' => array(
 		'label' => 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:tt_content.tx_mediaoembed_maxheight',
+		'exclude' => TRUE,
 		'config' => array(
 			'type' => 'input',
 			'size' => '4',
