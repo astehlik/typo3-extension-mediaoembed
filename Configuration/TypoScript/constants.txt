@@ -5,6 +5,6 @@ plugin.tx_mediaoembed {
 	# cat=content/mediaoembed/mo10; type=boolean; label= Download photo: If true external images will be downloaded to the local machine and the embedded in the website. Otherwise the external image will be embedded directly from the external URL.
 	downloadPhoto = 1
 
-	# cat=content/mediaoembed/mo10; type=int+; label= Default max media width: This overwrites the styles.content.media.defaultVideoWidth constant. If a media has no custom max width this one will be used instead.4
-	defaultMaximumMediaWidth =
+	# cat=content/mediaoembed/mo10; type=int+; label= Default max media width: Default setting is based on the styles.content.media.defaultVideoWidth constant. If a media has no custom max width this one will be used instead.
+	defaultMaximumMediaWidth < styles.content.media.defaultVideoWidth
 }
