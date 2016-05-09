@@ -96,9 +96,8 @@ class ProviderResolver {
 		$matchingProvider = FALSE;
 
 		do {
-			/** @var Provider $currentProvider */
 			$currentProvider = $this->providerResult->current();
-			if (!isset($currentProvider)) {
+			if (!$currentProvider instanceof Provider) {
 				break;
 			}
 
