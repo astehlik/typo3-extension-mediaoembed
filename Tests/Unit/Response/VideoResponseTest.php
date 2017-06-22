@@ -12,12 +12,13 @@ namespace Sto\Mediaoembed\Tests\Unit\Response;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use PHPUnit\Framework\TestCase;
 use Sto\Mediaoembed\Response\VideoResponse;
 
 /**
  * Tests for the VideoResponse.
  */
-class VideoResponseTest extends \PHPUnit_Framework_TestCase
+class VideoResponseTest extends TestCase
 {
     /**
      * @var VideoResponse
