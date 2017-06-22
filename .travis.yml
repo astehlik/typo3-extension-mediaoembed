@@ -31,7 +31,7 @@ before_install:
 before_script:
   # Rename our working directory, required for Extension upload to TER.
   - cd .. && mv typo3-extension-mediaoembed mediaoembed && cd mediaoembed
-  - composer require typo3/cms=$TYPO3_VERSION
+  - composer require typo3/cms=$TYPO3
   - export TYPO3_PATH_WEB=$PWD/.Build/Web
   - if [ -d $PWD/.Build/vendor/typo3/cms/components ]; then ln -s "$PWD/.Build/vendor/typo3/cms/components" .Build/Web/components; fi
 
