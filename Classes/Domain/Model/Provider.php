@@ -157,7 +157,7 @@ class Provider extends AbstractEntity
      */
     public function getUrlSchemes()
     {
-        return $this->urlSchemes;
+        return trim($this->urlSchemes);
     }
 
     /**
