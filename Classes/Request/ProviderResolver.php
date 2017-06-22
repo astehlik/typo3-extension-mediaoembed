@@ -115,6 +115,9 @@ class ProviderResolver
             $urlSchemes = GeneralUtility::trimExplode(LF, $urlSchemes);
 
             foreach ($urlSchemes as $urlScheme) {
+                if ($urlScheme === '') {
+                    continue;
+                }
                 $urlScheme = preg_quote($urlScheme, '/');
                 $urlScheme = str_replace('\*', '.*', $urlScheme);
                 if (preg_match('/' . $urlScheme . '/', $this->url)) {
