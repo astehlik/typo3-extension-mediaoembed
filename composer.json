@@ -1,23 +1,56 @@
 {
-	"name": "de-swebhosting-typo3-extension/mediaoembed",
-	"description": "External media (YouTube, Flickr, ...) content elements using the http://oembed.com/ standard.",
-	"type": "typo3-cms-extension",
-	"version": "0.2.0",
-	"license": "GPL-3.0+",
-	"replace": {
-		"mediaoembed": "self.version"
-	},
-	"require-dev": {
-		"phpunit/phpunit": "*"
-	},
-	"autoload": {
-		"psr-4": {
-			"Sto\\Mediaoembed\\": "Classes/"
-		}
-	},
-	"autoload-dev": {
-		"psr-4": {
-			"Sto\\Mediaoembed\\Tests": "Tests/"
-		}
-	}
+    "name": "de-swebhosting-typo3-extension/mediaoembed",
+    "description": "External media (YouTube, Flickr, ...) content elements using the http://oembed.com/ standard.",
+    "type": "typo3-cms-extension",
+    "license": "GPL-3.0+",
+    "authors": [
+        {
+            "name": "Alexander Stehlik",
+            "email": "alexander.stehlik@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Sto\\Mediaoembed\\": "Classes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Sto\\Mediaoembed\\Tests\\": "Tests/",
+            "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/core/Tests/"
+        }
+    },
+    "require": {
+        "php": "^7.0",
+        "typo3/cms-core": "^7.6|^8.0",
+        "typo3/cms": "^7.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "squizlabs/php_codesniffer": "^3.0",
+        "de-swebhosting/php-codestyle": "dev-master"
+    },
+    "replace": {
+        "mediaoembed": "self.version",
+        "typo3-ter/mediaoembed": "self.version"
+    },
+    "config": {
+        "vendor-dir": ".Build/vendor",
+        "bin-dir": ".Build/bin",
+        "preferred-install": {
+            "typo3/cms": "source"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "mkdir -p .Build/Web/typo3conf/ext/",
+            "[ -L .Build/Web/typo3conf/ext/mediaoembed ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/mediaoembed"
+        ]
+    },
+    "extra": {
+        "typo3/cms": {
+            "cms-package-dir": "{$vendor-dir}/typo3/cms",
+            "web-dir": ".Build/Web"
+        }
+    }
 }
