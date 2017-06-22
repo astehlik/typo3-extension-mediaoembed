@@ -117,7 +117,6 @@ class OembedController extends ActionController
      * are available.
      *
      * @param \Sto\Mediaoembed\Domain\Model\Content $content
-     * @return \Sto\Mediaoembed\Response\GenericResponse
      * @throws \Sto\Mediaoembed\Exception\RequestException
      */
     protected function startRequestLoop($content)
