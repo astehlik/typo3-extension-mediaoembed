@@ -1,4 +1,5 @@
 <?php
+
 namespace Sto\Mediaoembed\Domain\Model;
 
 /*                                                                        *
@@ -16,153 +17,162 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 /**
  * An oEmbed provider.
  */
-class Provider extends AbstractEntity {
+class Provider extends AbstractEntity
+{
+    /**
+     * @var string
+     */
+    protected $description;
 
-	/**
-	 * @var string
-	 */
-	protected $description;
+    /**
+     * @var string
+     */
+    protected $embedlyShortname;
 
-	/**
-	 * @var string
-	 */
-	protected $embedlyShortname;
+    /**
+     * @var string
+     */
+    protected $endpoint;
 
-	/**
-	 * @var string
-	 */
-	protected $endpoint;
+    /**
+     * @var bool
+     */
+    protected $isGeneric;
 
-	/**
-	 * @var bool
-	 */
-	protected $isGeneric;
+    /**
+     * @var string
+     */
+    protected $name;
 
-	/**
-	 * @var string
-	 */
-	protected $name;
+    /**
+     * @var int
+     */
+    protected $sorting;
 
-	/**
-	 * @var int
-	 */
-	protected $sorting;
+    /**
+     * @var string
+     */
+    protected $urlSchemes;
 
-	/**
-	 * @var string
-	 */
-	protected $urlSchemes;
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Sto\Mediaoembed\Domain\Model\Provider>
+     * @lazy
+     */
+    protected $useGenericProviders;
 
-	/**
-	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Sto\Mediaoembed\Domain\Model\Provider>
-	 * @lazy
-	 */
-	protected $useGenericProviders;
+    /**
+     * Checks, if the given provider equals this provider.
+     *
+     * @param Provider $provider
+     * @return boolean TRUE if provider is equal.
+     */
+    public function equals($provider)
+    {
+        if ($provider instanceof Provider) {
+            if ($this->getUid() === $provider->getUid()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Checks, if the given provider equals this provider.
-	 *
-	 * @param Provider $provider
-	 * @return boolean TRUE if provider is equal.
-	 */
-	public function equals($provider) {
-		if ($provider instanceof Provider) {
-			if ($this->getUid() === $provider->getUid()) {
-				return TRUE;
-			}
-		}
-		return FALSE;
-	}
+    /**
+     * Getter for all endpoints of this provider (native and generic)
+     *
+     * @return array Array containing all endpoint urls of this provider (native and generic).
+     */
+    public function getAllEndpoints()
+    {
+        $endpoints = [];
 
-	/**
-	 * Getter for all endpoints of this provider (native and generic)
-	 *
-	 * @return array Array containing all endpoint urls of this provider (native and generic).
-	 */
-	public function getAllEndpoints() {
+        $nativeEndpoint = $this->getEndpoint();
+        if (!empty($nativeEndpoint)) {
+            $endpoints[] = $nativeEndpoint;
+        }
 
-		$endpoints = array();
+        $endpoints = array_merge($endpoints, $this->getGenericEndpoints());
 
-		$nativeEndpoint = $this->getEndpoint();
-		if (!empty($nativeEndpoint)) {
-			$endpoints[] = $nativeEndpoint;
-		}
+        return $endpoints;
+    }
 
-		$endpoints = array_merge($endpoints, $this->getGenericEndpoints());
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
 
-		return $endpoints;
-	}
+    /**
+     * @return string
+     */
+    public function getEmbedlyShortname()
+    {
+        return $this->embedlyShortname;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getDescription() {
-		return $this->description;
-	}
+    /**
+     * @return string
+     */
+    public function getEndpoint()
+    {
+        return $this->endpoint;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getEmbedlyShortname() {
-		return $this->embedlyShortname;
-	}
+    /**
+     * Getter for the generic endpoints this provider should use.
+     *
+     * @return array
+     */
+    public function getGenericEndpoints()
+    {
+        /** @var Provider $genericProvider */
+        $genericEndpoints = [];
+        $genericProviders = $this->getUseGenericProviders();
+        foreach ($genericProviders as $genericProvider) {
+            $genericEndpoints[] = $genericProvider->getEndpoint();
+        }
 
-	/**
-	 * @return string
-	 */
-	public function getEndpoint() {
-		return $this->endpoint;
-	}
+        return $genericEndpoints;
+    }
 
-	/**
-	 * Getter for the generic endpoints this provider should use.
-	 *
-	 * @return array
-	 */
-	public function getGenericEndpoints() {
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
-		/** @var Provider $genericProvider */
-		$genericEndpoints = array();
-		$genericProviders = $this->getUseGenericProviders();
-		foreach ($genericProviders as $genericProvider) {
-			$genericEndpoints[] = $genericProvider->getEndpoint();
-		}
+    /**
+     * @return int
+     */
+    public function getSorting()
+    {
+        return $this->sorting;
+    }
 
-		return $genericEndpoints;
-	}
+    /**
+     * @return string
+     */
+    public function getUrlSchemes()
+    {
+        return $this->urlSchemes;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getName() {
-		return $this->name;
-	}
+    /**
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Sto\Mediaoembed\Domain\Model\Provider>
+     */
+    public function getUseGenericProviders()
+    {
+        return $this->useGenericProviders;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getSorting() {
-		return $this->sorting;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getUrlSchemes() {
-		return $this->urlSchemes;
-	}
-
-	/**
-	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Sto\Mediaoembed\Domain\Model\Provider>
-	 */
-	public function getUseGenericProviders() {
-		return $this->useGenericProviders;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isIsGeneric() {
-		return $this->isGeneric;
-	}
+    /**
+     * @return bool
+     */
+    public function isIsGeneric()
+    {
+        return $this->isGeneric;
+    }
 }

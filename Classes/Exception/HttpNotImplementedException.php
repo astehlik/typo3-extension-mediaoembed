@@ -1,4 +1,5 @@
 <?php
+
 namespace Sto\Mediaoembed\Exception;
 
 /*                                                                        *
@@ -20,20 +21,21 @@ namespace Sto\Mediaoembed\Exception;
  *
  * However, providers are encouraged to support both JSON and XML.
  */
-class HttpNotImplementedException extends RequestException {
-
-	/**
-	 * Initializes the Exception with a default message and a default code (1303402211).
-	 *
-	 * @param string $mediaUrl
-	 * @param string $requestFormat
-	 * @param string $requestUrl
-	 */
-	public function __construct($mediaUrl, $requestFormat, $requestUrl) {
-		$message = 'The server returned a 501 Not Implemented error for this URL: %s. ';
-		$message .= 'Please make sure that the data you trying to contact supports the current request format: %s. ';
-		$message .= 'The full request to the server was: %s';
-		$message = sprintf($message, $mediaUrl, $requestFormat, $requestUrl);
-		parent::__construct($message, 1303402211);
-	}
+class HttpNotImplementedException extends RequestException
+{
+    /**
+     * Initializes the Exception with a default message and a default code (1303402211).
+     *
+     * @param string $mediaUrl
+     * @param string $requestFormat
+     * @param string $requestUrl
+     */
+    public function __construct($mediaUrl, $requestFormat, $requestUrl)
+    {
+        $message = 'The server returned a 501 Not Implemented error for this URL: %s. ';
+        $message .= 'Please make sure that the data you trying to contact supports the current request format: %s. ';
+        $message .= 'The full request to the server was: %s';
+        $message = sprintf($message, $mediaUrl, $requestFormat, $requestUrl);
+        parent::__construct($message, 1303402211);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Sto\Mediaoembed\Exception;
 
 /*                                                                        *
@@ -19,19 +20,20 @@ namespace Sto\Mediaoembed\Exception;
  * of any embedding any extra information, and rely on the provider
  * to provide access control.
  */
-class UnauthorizedException extends RequestException {
-
-	/**
-	 * Initializes the Exception with a default message and a default code (1303402203).
-	 *
-	 * @param string $mediaUrl
-	 * @param string $requestUrl
-	 */
-	public function __construct($mediaUrl, $requestUrl) {
-		$message = 'The server returned a 401 Unauthorized error for this URL: %s. ';
-		$message .= 'This means that embedding is prohibited for this resource. Please use a direct link instead. ';
-		$message .= 'The full request to the server was: %s';
-		$message = sprintf($message, $mediaUrl, $requestUrl);
-		parent::__construct($message, 1303402203);
-	}
+class UnauthorizedException extends RequestException
+{
+    /**
+     * Initializes the Exception with a default message and a default code (1303402203).
+     *
+     * @param string $mediaUrl
+     * @param string $requestUrl
+     */
+    public function __construct($mediaUrl, $requestUrl)
+    {
+        $message = 'The server returned a 401 Unauthorized error for this URL: %s. ';
+        $message .= 'This means that embedding is prohibited for this resource. Please use a direct link instead. ';
+        $message .= 'The full request to the server was: %s';
+        $message = sprintf($message, $mediaUrl, $requestUrl);
+        parent::__construct($message, 1303402203);
+    }
 }

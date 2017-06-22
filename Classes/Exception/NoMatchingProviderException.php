@@ -1,4 +1,5 @@
 <?php
+
 namespace Sto\Mediaoembed\Exception;
 
 /*                                                                        *
@@ -14,16 +15,17 @@ namespace Sto\Mediaoembed\Exception;
 /**
  * This Exception will be thrown when no matching provider is found for a given URL.
  */
-class NoMatchingProviderException extends OEmbedException {
-
-	/**
-	 * Initializes the Exception with a default message and a default code (1303248669).
-	 *
-	 * @param string $url
-	 */
-	public function __construct($url) {
-		$message = 'No provider was found for the given URL: %s.';
-		$message = sprintf($message, $url);
-		parent::__construct($message, 1303248669);
-	}
+class NoMatchingProviderException extends OEmbedException
+{
+    /**
+     * Initializes the Exception with a default message and a default code (1303248669).
+     *
+     * @param string $url
+     */
+    public function __construct($url)
+    {
+        $message = 'No provider was found for the given URL: %s.';
+        $message = sprintf($message, $url);
+        parent::__construct($message, 1303248669);
+    }
 }

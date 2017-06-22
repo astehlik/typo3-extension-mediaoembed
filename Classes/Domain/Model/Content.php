@@ -1,4 +1,5 @@
 <?php
+
 namespace Sto\Mediaoembed\Domain\Model;
 
 /*                                                                        *
@@ -16,41 +17,44 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 /**
  * A mediaoembed tt_content record.
  */
-class Content extends AbstractEntity {
+class Content extends AbstractEntity
+{
+    /**
+     * @var int
+     */
+    protected $maxHeight;
 
-	/**
-	 * @var int
-	 */
-	protected $maxHeight;
+    /**
+     * @var int
+     */
+    protected $maxWidth;
 
-	/**
-	 * @var int
-	 */
-	protected $maxWidth;
+    /**
+     * @var string
+     */
+    protected $url;
 
-	/**
-	 * @var string
-	 */
-	protected $url;
+    /**
+     * @return int
+     */
+    public function getMaxHeight()
+    {
+        return (int)$this->maxHeight;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getMaxHeight() {
-		return (int)$this->maxHeight;
-	}
+    /**
+     * @return int
+     */
+    public function getMaxWidth()
+    {
+        return (int)$this->maxWidth;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getMaxWidth() {
-		return (int)$this->maxWidth;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getUrl() {
-		return $this->url;
-	}
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
 }

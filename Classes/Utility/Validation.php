@@ -1,4 +1,5 @@
 <?php
+
 namespace Sto\Mediaoembed\Utility;
 
 /*                                                                        *
@@ -14,26 +15,29 @@ namespace Sto\Mediaoembed\Utility;
 /**
  * Utility class for validating input
  */
-class Validation {
+class Validation
+{
+    /**
+     * Gets a valid width or height value, or NULL if none was set.
+     * Valid values are positive integers or empty values.
+     *
+     * @param int $value
+     * @return int If valid width / height was set, or NULL if value was empty
+     */
+    public static function getValidWithHeightValue($value)
+    {
+        if (empty($value)) {
+            return null;
+        }
 
-	/**
-	 * Gets a valid width or height value, or NULL if none was set.
-	 * Valid values are positive integers or empty values.
-	 *
-	 * @param int $value
-	 * @return int If valid width / height was set, or NULL if value was empty
-	 */
-	public static function getValidWithHeightValue($value) {
+        $value = intval($value);
+        if ($value < 1) {
+            throw new \InvalidArgumentException(
+                'Invalid width or height value. Only positive integers are allowed.',
+                1303846809
+            );
+        }
 
-		if (empty($value)) {
-			return NULL;
-		}
-
-		$value = intval($value);
-		if ($value < 1) {
-			throw new \InvalidArgumentException('Invalid width or height value. Only positive integers are allowed.', 1303846809);
-		}
-
-		return $value;
-	}
+        return $value;
+    }
 }

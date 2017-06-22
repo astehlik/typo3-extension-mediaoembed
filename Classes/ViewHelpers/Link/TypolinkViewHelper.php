@@ -1,4 +1,5 @@
 <?php
+
 namespace Sto\Mediaoembed\ViewHelpers\Link;
 
 /*                                                                        *
@@ -11,80 +12,85 @@ namespace Sto\Mediaoembed\ViewHelpers\Link;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * View helper that accepts a TypoLink parameter
  */
-class TypolinkViewHelper extends AbstractViewHelper {
+class TypolinkViewHelper extends AbstractViewHelper
+{
+    /**
+     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
+     * */
+    protected $configurationManager;
 
-	/**
-	 * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-	 * @inject
-	 */
-	protected $configurationManager;
+    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
+    {
+        $this->configurationManager = $configurationManager;
+    }
 
-	/**
-	 * Renders a TypoLink
-	 *
-	 * @param string $parameter
-	 * @param array $aTagParams
-	 * @param array $configOverride
-	 * @return string
-	 */
-	public function render($parameter, array $aTagParams = NULL, array $configOverride = array()) {
+    /**
+     * Renders a TypoLink
+     *
+     * @param string $parameter
+     * @param array $aTagParams
+     * @param array $configOverride
+     * @return string
+     */
+    public function render($parameter, array $aTagParams = null, array $configOverride = [])
+    {
+        $contentObject = $this->configurationManager->getContentObject();
 
-		$contentObject = $this->configurationManager->getContentObject();
+        $config = ['parameter' => $parameter];
 
-		$config = array(
-			'parameter' => $parameter,
-		);
+        if (isset($aTagParams)) {
+            $config['ATagParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeAttributes($aTagParams);
+        }
 
-		if (isset($aTagParams)) {
-			$config['ATagParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeAttributes($aTagParams);
-		}
+        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($config, $configOverride);
 
-		\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($config, $configOverride);
+        $config = $this->getExternalTarget($config);
 
-		$config = $this->getExternalTarget($config);
+        return $contentObject->typoLink($this->renderChildren(), $config);
+    }
 
-		return $contentObject->typoLink($this->renderChildren(), $config);
-	}
+    /**
+     * Uses the extTarget config from lib.parseFunc.makelinks.http.extTarget
+     * to automatically build the extTarget config for the current typolink.
+     *
+     * @param array $config
+     * @return array
+     */
+    protected function getExternalTarget(array $config)
+    {
+        // If a value was already set we disable the automatic detection.
+        if (isset($config['extTarget.']['override'])) {
+            return $config;
+        }
 
-	/**
-	 * Uses the extTarget config from lib.parseFunc.makelinks.http.extTarget
-	 * to automatically build the extTarget config for the current typolink.
-	 *
-	 * @param array $config
-	 * @return array
-	 */
-	protected function getExternalTarget(array $config) {
+        $tsfe = $this->getTyposcriptFrontendController();
 
-		// If a value was already set we disable the automatic detection.
-		if (isset($config['extTarget.']['override'])) {
-			return $config;
-		}
+        // If no target is configured we do not need to modify the configuration.
+        if (empty($tsfe->tmpl->setup['lib.']['parseFunc.']['makelinks.']['http.']['extTarget.']['override'])) {
+            return $config;
+        }
 
-		$tsfe = $this->getTyposcriptFrontendController();
+        if (!isset($config['extTarget'])) {
+            $config['extTarget'] = '';
+        }
 
-		// If no target is configured we do not need to modify the configuration.
-		if (empty($tsfe->tmpl->setup['lib.']['parseFunc.']['makelinks.']['http.']['extTarget.']['override'])) {
-			return $config;
-		}
+        $config['extTarget.']['override'] =
+            $tsfe->tmpl->setup['lib.']['parseFunc.']['makelinks.']['http.']['extTarget.']['override'];
 
-		if (!isset($config['extTarget'])) {
-			$config['extTarget'] = '';
-		}
+        return $config;
+    }
 
-		$config['extTarget.']['override'] = $tsfe->tmpl->setup['lib.']['parseFunc.']['makelinks.']['http.']['extTarget.']['override'];
-
-		return $config;
-	}
-
-	/**
-	 * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
-	 */
-	protected function getTyposcriptFrontendController() {
-		return $GLOBALS['TSFE'];
-	}
+    /**
+     * @return \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController
+     */
+    protected function getTyposcriptFrontendController()
+    {
+        return $GLOBALS['TSFE'];
+    }
 }

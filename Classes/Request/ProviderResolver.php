@@ -1,4 +1,5 @@
 <?php
+
 namespace Sto\Mediaoembed\Request;
 
 /*                                                                        *
@@ -18,114 +19,117 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Resolves a matching provider for the given URL
  */
-class ProviderResolver {
+class ProviderResolver
+{
+    /**
+     * @var \Sto\Mediaoembed\Domain\Repository\ProviderRepository
+     * */
+    protected $providerRepository;
 
-	/**
-	 * @var \Sto\Mediaoembed\Domain\Repository\ProviderRepository
-	 * @inject
-	 */
-	protected $providerRepository;
+    /**
+     * The SQL result of the provider query, should not contain
+     * all active, non generic providers.
+     *
+     * @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    protected $providerResult;
 
-	/**
-	 * The SQL result of the provider query, should not contain
-	 * all active, non generic providers.
-	 *
-	 * @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-	 */
-	protected $providerResult;
+    /**
+     * Contains the current media URL
+     *
+     * @var string
+     */
+    protected $url;
 
-	/**
-	 * Contains the current media URL
-	 *
-	 * @var string
-	 */
-	protected $url;
+    public function injectProviderRepository(\Sto\Mediaoembed\Domain\Repository\ProviderRepository $providerRepository)
+    {
+        $this->providerRepository = $providerRepository;
+    }
 
-	/**
-	 * Returns the next active provider whos url scheme matches the URL in
-	 * the current configuration
-	 *
-	 * @param \Sto\Mediaoembed\Domain\Model\Content $content
-	 * @return Provider The next matching provider
-	 */
-	public function getNextMatchingProvider($content) {
+    /**
+     * Returns the next active provider whos url scheme matches the URL in
+     * the current configuration
+     *
+     * @param \Sto\Mediaoembed\Domain\Model\Content $content
+     * @return Provider The next matching provider
+     */
+    public function getNextMatchingProvider($content)
+    {
+        $this->url = $content->getUrl();
+        $this->checkIfUrlIsValid();
 
-		$this->url = $content->getUrl();
-		$this->checkIfUrlIsValid();
+        $this->providerResult = $this->providerRepository->findByIsGeneric(false);
+        $this->providerResult->rewind();
 
-		$this->providerResult = $this->providerRepository->findByIsGeneric(FALSE);
-		$this->providerResult->rewind();
+        $provider = $this->detectNextMatchingProvider();
 
-		$provider = $this->detectNextMatchingProvider();
+        return $provider;
+    }
 
-		return $provider;
-	}
+    /**
+     * Checks if the current URL is valid
+     *
+     * @return void
+     * @throws InvalidUrlException
+     */
+    protected function checkIfUrlIsValid()
+    {
+        $isValid = true;
 
-	/**
-	 * Checks if the current URL is valid
-	 *
-	 * @return void
-	 * @throws InvalidUrlException
-	 */
-	protected function checkIfUrlIsValid() {
+        if (empty($this->url)) {
+            $isValid = false;
+        }
 
-		$isValid = TRUE;
+        if (!GeneralUtility::isValidUrl($this->url)) {
+            $isValid = false;
+        }
 
-		if (empty($this->url)) {
-			$isValid = FALSE;
-		}
+        if (!$isValid) {
+            throw new InvalidUrlException($this->url);
+        }
+    }
 
-		if (!GeneralUtility::isValidUrl($this->url)) {
-			$isValid = FALSE;
-		}
+    /**
+     * Searches for a url scheme that matches the given url. If
+     * there is a result, the data of the matching provider will be returned.
+     *
+     * @return Provider
+     * @throws \Sto\Mediaoembed\Exception\NoMatchingProviderException
+     */
+    protected function detectNextMatchingProvider()
+    {
+        $matchingProvider = false;
 
-		if (!$isValid) {
-			throw new InvalidUrlException($this->url);
-		}
-	}
+        do {
+            $currentProvider = $this->providerResult->current();
+            if (!$currentProvider instanceof Provider) {
+                break;
+            }
 
-	/**
-	 * Searches for a url scheme that matches the given url. If
-	 * there is a result, the data of the matching provider will be returned.
-	 *
-	 * @return Provider
-	 * @throws \Sto\Mediaoembed\Exception\NoMatchingProviderException
-	 */
-	protected function detectNextMatchingProvider() {
+            // We don't care about providers that don't have a url scheme
+            $urlSchemes = $currentProvider->getUrlSchemes();
+            if (empty($urlSchemes)) {
+                continue;
+            }
 
-		$matchingProvider = FALSE;
+            $urlSchemes = GeneralUtility::trimExplode(LF, $urlSchemes);
 
-		do {
-			$currentProvider = $this->providerResult->current();
-			if (!$currentProvider instanceof Provider) {
-				break;
-			}
+            foreach ($urlSchemes as $urlScheme) {
+                $urlScheme = preg_quote($urlScheme, '/');
+                $urlScheme = str_replace('\*', '.*', $urlScheme);
+                if (preg_match('/' . $urlScheme . '/', $this->url)) {
+                    $matchingProvider = $currentProvider;
+                    break 2;
+                }
+            }
 
-			// We don't care about providers that don't have a url scheme
-			$urlSchemes = $currentProvider->getUrlSchemes();
-			if (empty($urlSchemes)) {
-				continue;
-			}
+            $this->providerResult->next();
+        } while ($matchingProvider === false);
 
-			$urlSchemes = GeneralUtility::trimExplode(LF, $urlSchemes);
+        if ($matchingProvider === false) {
+            throw new \Sto\Mediaoembed\Exception\NoMatchingProviderException($this->url);
+        }
 
-			foreach ($urlSchemes as $urlScheme) {
-				$urlScheme = preg_quote($urlScheme, '/');
-				$urlScheme = str_replace('\*', '.*', $urlScheme);
-				if (preg_match('/' . $urlScheme . '/', $this->url)) {
-					$matchingProvider = $currentProvider;
-					break 2;
-				}
-			}
-
-			$this->providerResult->next();
-
-		} while ($matchingProvider === FALSE);
-
-		if ($matchingProvider === FALSE) {
-			throw new \Sto\Mediaoembed\Exception\NoMatchingProviderException($this->url);
-		}
-
-		return $matchingProvider;
-	}
+        return $matchingProvider;
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Sto\Mediaoembed\Domain\Repository;
 
 /*                                                                        *
@@ -19,13 +20,14 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * @method Content findByUid($uid)
  */
-class ContentRepository extends Repository {
-
-	/**
-	 * Make sure we always ignore the storage page config.
-	 */
-	public function initializeObject() {
-		$this->defaultQuerySettings = $this->createQuery()->getQuerySettings();
-		$this->defaultQuerySettings->setRespectStoragePage(FALSE);
-	}
+class ContentRepository extends Repository
+{
+    /**
+     * Make sure we always ignore the storage page config.
+     */
+    public function initializeObject()
+    {
+        $this->defaultQuerySettings = $this->createQuery()->getQuerySettings();
+        $this->defaultQuerySettings->setRespectStoragePage(false);
+    }
 }

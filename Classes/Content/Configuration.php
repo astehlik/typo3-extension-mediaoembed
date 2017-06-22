@@ -1,4 +1,5 @@
 <?php
+
 namespace Sto\Mediaoembed\Content;
 
 /*                                                                        *
@@ -16,95 +17,101 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 /**
  * Handels TypoScript and FlexForm configuration
  */
-class Configuration {
+class Configuration
+{
+    /**
+     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
+     * @inject
+     */
+    protected $configurationManager;
 
-	/**
-	 * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-	 * @inject
-	 */
-	protected $configurationManager;
+    /**
+     * @var \Sto\Mediaoembed\Domain\Model\Content
+     */
+    protected $content;
 
-	/**
-	 * @var \Sto\Mediaoembed\Domain\Model\Content
-	 */
-	protected $content;
+    /**
+     * @var \Sto\Mediaoembed\Domain\Repository\ContentRepository
+     * @inject
+     */
+    protected $contentRepository;
 
-	/**
-	 * @var \Sto\Mediaoembed\Domain\Repository\ContentRepository
-	 * @inject
-	 */
-	protected $contentRepository;
+    /**
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
+     */
+    protected $objectManager;
 
-	/**
-	 * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-	 */
-	protected $objectManager;
+    /**
+     * Current TypoScript / Flexform configuration
+     *
+     * @var array
+     */
+    protected $settings;
 
-	/**
-	 * Current TypoScript / Flexform configuration
-	 *
-	 * @var array
-	 */
-	protected $settings;
+    /**
+     * Initialzes required instance variables after all injects were made.
+     */
+    public function initializeObject()
+    {
+        $this->content = $this->contentRepository->findByUid(
+            $this->configurationManager->getContentObject()->data['uid']
+        );
+        $this->settings = $this->configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
+        );
+    }
 
-	/**
-	 * Initialzes required instance variables after all injects were made.
-	 */
-	public function initializeObject() {
-		$this->content = $this->contentRepository->findByUid($this->configurationManager->getContentObject()->data['uid']);
-		$this->settings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
-	}
+    /**
+     * Returns the current tt_content record domain model.
+     *
+     * @return \Sto\Mediaoembed\Domain\Model\Content
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
 
-	/**
-	 * Returns the current tt_content record domain model.
-	 *
-	 * @return \Sto\Mediaoembed\Domain\Model\Content
-	 */
-	public function getContent() {
-		return $this->content;
-	}
+    /**
+     * The maximum height of the embedded resource.
+     * Only applies to some resource types (as specified below).
+     * For supported resource types, this parameter must be respected by providers.
+     * This value is optional.
+     *
+     * @return int
+     */
+    public function getMaxheight()
+    {
+        $maxheight = 0;
+        $contentMaxHeight = $this->content->getMaxHeight();
 
-	/**
-	 * The maximum height of the embedded resource.
-	 * Only applies to some resource types (as specified below).
-	 * For supported resource types, this parameter must be respected by providers.
-	 * This value is optional.
-	 *
-	 * @return int
-	 */
-	public function getMaxheight() {
+        if (!empty($contentMaxHeight)) {
+            $maxheight = $contentMaxHeight;
+        } elseif (!empty($this->settings['media']['maxheight'])) {
+            $maxheight = (int)$this->settings['media']['maxheight'];
+        }
 
-		$maxheight = 0;
-		$contentMaxHeight = $this->content->getMaxHeight();
+        return $maxheight;
+    }
 
-		if (!empty($contentMaxHeight)) {
-			$maxheight = $contentMaxHeight;
-		} elseif (!empty($this->settings['media']['maxheight'])) {
-			$maxheight = (int)$this->settings['media']['maxheight'];
-		}
+    /**
+     * The maximum width of the embedded resource.
+     * Only applies to some resource types (as specified below).
+     * For supported resource types, this parameter must be respected by providers.
+     * This value is optional.
+     *
+     * @return int
+     */
+    public function getMaxwidth()
+    {
+        $maxwidth = 0;
+        $contentMaxWidth = $this->content->getMaxWidth();
 
-		return $maxheight;
-	}
+        if (!empty($contentMaxWidth)) {
+            $maxwidth = $contentMaxWidth;
+        } elseif (!empty($this->settings['media']['maxwidth'])) {
+            $maxwidth = (int)$this->settings['media']['maxwidth'];
+        }
 
-	/**
-	 * The maximum width of the embedded resource.
-	 * Only applies to some resource types (as specified below).
-	 * For supported resource types, this parameter must be respected by providers.
-	 * This value is optional.
-	 *
-	 * @return int
-	 */
-	public function getMaxwidth() {
-
-		$maxwidth = 0;
-		$contentMaxWidth = $this->content->getMaxWidth();
-
-		if (!empty($contentMaxWidth)) {
-			$maxwidth = $contentMaxWidth;
-		} elseif (!empty($this->settings['media']['maxwidth'])) {
-			$maxwidth = (int)$this->settings['media']['maxwidth'];
-		}
-
-		return $maxwidth;
-	}
+        return $maxwidth;
+    }
 }

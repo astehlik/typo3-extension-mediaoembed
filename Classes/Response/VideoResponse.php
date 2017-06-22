@@ -1,4 +1,5 @@
 <?php
+
 namespace Sto\Mediaoembed\Response;
 
 /*                                                                        *
@@ -17,126 +18,132 @@ namespace Sto\Mediaoembed\Response;
  * If a provider wishes the consumer to just provide a thumbnail, rather than an
  * embeddable player, they should instead return a photo response type.
  */
-class VideoResponse extends GenericResponse {
+class VideoResponse extends GenericResponse
+{
+    const ASPECT_RATIO_16TO9 = '16to9';
 
-	const ASPECT_RATIO_16TO9 = '16to9';
+    const ASPECT_RATIO_4TO3 = '4to3';
 
-	const ASPECT_RATIO_4TO3 = '4to3';
+    /**
+     * The height in pixels required to display the HTML.
+     * This value is required.
+     *
+     * @var string
+     */
+    protected $height;
 
-	/**
-	 * The height in pixels required to display the HTML.
-	 * This value is required.
-	 *
-	 * @var string
-	 */
-	protected $height;
+    /**
+     * The HTML required to embed a video player.
+     * The HTML should have no padding or margins.
+     * Consumers may wish to load the HTML in an off-domain iframe to avoid
+     * XSS vulnerabilities.
+     * This value is required.
+     *
+     * @var string
+     */
+    protected $html;
 
-	/**
-	 * The HTML required to embed a video player.
-	 * The HTML should have no padding or margins.
-	 * Consumers may wish to load the HTML in an off-domain iframe to avoid
-	 * XSS vulnerabilities.
-	 * This value is required.
-	 *
-	 * @var string
-	 */
-	protected $html;
+    /**
+     * The width in pixels required to display the HTML.
+     * This value is required.
+     *
+     * @var string
+     */
+    protected $width;
 
-	/**
-	 * The width in pixels required to display the HTML.
-	 * This value is required.
-	 *
-	 * @var string
-	 */
-	protected $width;
+    /**
+     * Initializes the response parameters that are specific for this
+     * resource type.
+     */
+    public function initializeTypeSpecificResponseData()
+    {
+        $this->html = $this->responseDataArray['html'];
+        $this->width = $this->responseDataArray['width'];
+        $this->height = $this->responseDataArray['height'];
+    }
 
-	/**
-	 * Initializes the response parameters that are specific for this
-	 * resource type.
-	 */
-	public function initializeTypeSpecificResponseData() {
-		$this->html = $this->responseDataArray['html'];
-		$this->width = $this->responseDataArray['width'];
-		$this->height = $this->responseDataArray['height'];
-	}
+    /**
+     * Returns the current aspect ratio.
+     *
+     * @return float
+     */
+    public function getAspectRatio()
+    {
+        if ($this->getHeight() === 0) {
+            return 0;
+        }
 
-	/**
-	 * Returns the current aspect ratio.
-	 *
-	 * @return float
-	 */
-	public function getAspectRatio() {
+        return $this->getWidth() / $this->getHeight();
+    }
 
-		if ($this->getHeight() === 0) {
-			return 0;
-		}
+    /**
+     * Returns TRUE if the current aspect ratio looks like 16 to 9.
+     *
+     * @return bool
+     */
+    public function getAspectRatioIs16To9()
+    {
+        return $this->getAspectRatioType() === static::ASPECT_RATIO_16TO9;
+    }
 
-		return $this->getWidth() / $this->getHeight();
-	}
+    /**
+     * Returns TRUE if the current aspect ratio looks like 4 to 3.
+     *
+     * @return bool
+     */
+    public function getAspectRatioIs4To3()
+    {
+        return $this->getAspectRatioType() === static::ASPECT_RATIO_4TO3;
+    }
 
-	/**
-	 * Returns TRUE if the current aspect ratio looks like 16 to 9.
-	 *
-	 * @return bool
-	 */
-	public function getAspectRatioIs16To9() {
-		return $this->getAspectRatioType() === static::ASPECT_RATIO_16TO9;
-	}
+    /**
+     * Returns one of the ASPECT_RATIO_* constants depending on the current aspect ratio.
+     *
+     * @return string
+     */
+    public function getAspectRatioType()
+    {
+        $ratio4To3 = 4 / 3;
+        $ratio16To9 = 16 / 9;
+        $currentRatio = $this->getAspectRatio();
 
-	/**
-	 * Returns TRUE if the current aspect ratio looks like 4 to 3.
-	 *
-	 * @return bool
-	 */
-	public function getAspectRatioIs4To3() {
-		return $this->getAspectRatioType() === static::ASPECT_RATIO_4TO3;
-	}
+        $ratioDiff4To3 = $currentRatio - $ratio4To3;
+        $ratioDiff16To9 = $currentRatio - $ratio16To9;
 
-	/**
-	 * Returns one of the ASPECT_RATIO_* constants depending on the current aspect ratio.
-	 *
-	 * @return string
-	 */
-	public function getAspectRatioType() {
+        if (abs($ratioDiff4To3) < abs($ratioDiff16To9)) {
+            return static::ASPECT_RATIO_4TO3;
+        } else {
+            return static::ASPECT_RATIO_16TO9;
+        }
+    }
 
-		$ratio4To3 = 4 / 3;
-		$ratio16To9 = 16 / 9;
-		$currentRatio = $this->getAspectRatio();
+    /**
+     * Getter for the height in pixels required to display the HTML.
+     *
+     * @return int
+     */
+    public function getHeight()
+    {
+        return (int)$this->height;
+    }
 
-		$ratioDiff4To3 = $currentRatio - $ratio4To3;
-		$ratioDiff16To9 = $currentRatio - $ratio16To9;
+    /**
+     * Getter for the HTML required to embed a video player.
+     *
+     * @return string
+     */
+    public function getHtml()
+    {
+        return $this->html;
+    }
 
-		if (abs($ratioDiff4To3) < abs($ratioDiff16To9)) {
-			return static::ASPECT_RATIO_4TO3;
-		} else {
-			return static::ASPECT_RATIO_16TO9;
-		}
-	}
-
-	/**
-	 * Getter for the height in pixels required to display the HTML.
-	 *
-	 * @return int
-	 */
-	public function getHeight() {
-		return (int)$this->height;
-	}
-
-	/**
-	 * Getter for the HTML required to embed a video player.
-	 *
-	 * @return string
-	 */
-	public function getHtml() {
-		return $this->html;
-	}
-
-	/**
-	 * Getter for the width in pixels required to display the HTML.
-	 *
-	 * @return int
-	 */
-	public function getWidth() {
-		return (int)$this->width;
-	}
+    /**
+     * Getter for the width in pixels required to display the HTML.
+     *
+     * @return int
+     */
+    public function getWidth()
+    {
+        return (int)$this->width;
+    }
 }

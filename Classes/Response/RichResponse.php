@@ -1,4 +1,5 @@
 <?php
+
 namespace Sto\Mediaoembed\Response;
 
 /*                                                                        *
@@ -16,70 +17,74 @@ namespace Sto\Mediaoembed\Response;
  * the other categories.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
  */
-class RichResponse extends GenericResponse {
+class RichResponse extends GenericResponse
+{
+    /**
+     * The height in pixels required to display the HTML.
+     * This value is required.
+     *
+     * @var string
+     */
+    protected $height;
 
-	/**
-	 * The height in pixels required to display the HTML.
-	 * This value is required.
-	 *
-	 * @var string
-	 */
-	protected $height;
+    /**
+     * The HTML required to display the resource.
+     * The HTML should have no padding or margins.
+     * Consumers may wish to load the HTML in an off-domain iframe to avoid
+     * XSS vulnerabilities.
+     * The markup should be valid XHTML 1.0 Basic.
+     * This value is required.
+     *
+     * @var string
+     */
+    protected $html;
 
-	/**
-	 * The HTML required to display the resource.
-	 * The HTML should have no padding or margins.
-	 * Consumers may wish to load the HTML in an off-domain iframe to avoid
-	 * XSS vulnerabilities.
-	 * The markup should be valid XHTML 1.0 Basic.
-	 * This value is required.
-	 *
-	 * @var string
-	 */
-	protected $html;
+    /**
+     * The width in pixels required to display the HTML.
+     * This value is required.
+     *
+     * @var string
+     */
+    protected $width;
 
-	/**
-	 * The width in pixels required to display the HTML.
-	 * This value is required.
-	 *
-	 * @var string
-	 */
-	protected $width;
+    /**
+     * Initializes the response parameters that are specific for this
+     * resource type.
+     */
+    public function initializeTypeSpecificResponseData()
+    {
+        $this->html = $this->responseDataArray['html'];
+        $this->width = $this->responseDataArray['width'];
+        $this->height = $this->responseDataArray['height'];
+    }
 
-	/**
-	 * Initializes the response parameters that are specific for this
-	 * resource type.
-	 */
-	public function initializeTypeSpecificResponseData() {
-		$this->html = $this->responseDataArray['html'];
-		$this->width = $this->responseDataArray['width'];
-		$this->height = $this->responseDataArray['height'];
-	}
+    /**
+     * Getter for the height in pixels required to display the HTML.
+     *
+     * @return string
+     */
+    public function getHeight()
+    {
+        return $this->height;
+    }
 
-	/**
-	 * Getter for the height in pixels required to display the HTML.
-	 *
-	 * @return string
-	 */
-	public function getHeight() {
-		return $this->height;
-	}
+    /**
+     * Getter for the HTML required to display the resource.
+     *
+     * @return string
+     */
+    public function getHtml()
+    {
+        return $this->html;
+    }
 
-	/**
-	 * Getter for the HTML required to display the resource.
-	 *
-	 * @return string
-	 */
-	public function getHtml() {
-		return $this->html;
-	}
-
-	/**
-	 * Getter for the width in pixels required to display the HTML.
-	 *
-	 * @return string
-	 */
-	public function getWidth() {
-		return $this->width;
-	}
+    /**
+     * Getter for the width in pixels required to display the HTML.
+     *
+     * @return string
+     */
+    public function getWidth()
+    {
+        return $this->width;
+    }
 }

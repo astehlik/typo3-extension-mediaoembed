@@ -1,4 +1,5 @@
 <?php
+
 namespace Sto\Mediaoembed\Domain\Repository;
 
 /*                                                                        *
@@ -19,30 +20,32 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  * @method \Sto\Mediaoembed\Domain\Model\Provider findByUid($uid)
  * @method \TYPO3\CMS\Extbase\Persistence\QueryResultInterface findByIsGeneric($isGeneric)
  */
-class ProviderRepository extends Repository {
+class ProviderRepository extends Repository
+{
+    /**
+     * Make sure we always ignore the storage page config.
+     */
+    public function initializeObject()
+    {
+        $this->defaultQuerySettings = $this->createQuery()->getQuerySettings();
+        $this->defaultQuerySettings->setRespectStoragePage(false);
+    }
 
-	/**
-	 * Make sure we always ignore the storage page config.
-	 */
-	public function initializeObject() {
-		$this->defaultQuerySettings = $this->createQuery()->getQuerySettings();
-		$this->defaultQuerySettings->setRespectStoragePage(FALSE);
-	}
-
-	/**
-	 * Searches for a provider by the given UID. Only returns a result if the found provider is generic.
-	 *
-	 * @param int $uid
-	 * @return \Sto\Mediaoembed\Domain\Model\Provider|NULL
-	 */
-	public function findGenericByUid($uid) {
-		$provider = $this->findByUid($uid);
-		if (!isset($provider)) {
-			return NULL;
-		}
-		if (!$provider->isIsGeneric()) {
-			return NULL;
-		}
-		return $provider;
-	}
+    /**
+     * Searches for a provider by the given UID. Only returns a result if the found provider is generic.
+     *
+     * @param int $uid
+     * @return \Sto\Mediaoembed\Domain\Model\Provider|NULL
+     */
+    public function findGenericByUid($uid)
+    {
+        $provider = $this->findByUid($uid);
+        if (!isset($provider)) {
+            return null;
+        }
+        if (!$provider->isIsGeneric()) {
+            return null;
+        }
+        return $provider;
+    }
 }

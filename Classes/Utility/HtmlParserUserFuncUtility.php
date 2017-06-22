@@ -1,4 +1,5 @@
 <?php
+
 namespace Sto\Mediaoembed\Utility;
 
 /*                                                                        *
@@ -17,56 +18,60 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Utility class containing methods that can be called with the USER
  * content object.
  */
-class HtmlParserUserFuncUtility {
+class HtmlParserUserFuncUtility
+{
+    /**
+     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
+     */
+    protected $configurationManager;
 
-	/**
-	 * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-	 */
-	protected $configurationManager;
+    /**
+     * Reads the "attributeValue" value from the given configuration
+     * and if "stdWrap." is a non empty array the configuration below
+     * and the attribute content will be passed to stdWrap.
+     *
+     * The context of stdWrap is the ContentObject renderer of the
+     * OembedController.
+     *
+     * @param string|array $configuration
+     * @param \TYPO3\CMS\Core\Html\HtmlParser $htmlParser
+     * @return string
+     */
+    public function attributeStdWrap(
+        $configuration,
+        /** @noinspection PhpUnusedParameterInspection */
+        $htmlParser
+    ) {
+        if (!is_array($configuration)) {
+            return $configuration;
+        }
 
-	/**
-	 * Reads the "attributeValue" value from the given configuration
-	 * and if "stdWrap." is a non empty array the configuration below
-	 * and the attribute content will be passed to stdWrap.
-	 *
-	 * The context of stdWrap is the ContentObject renderer of the
-	 * OembedController.
-	 *
-	 * @param string|array $configuration
-	 * @param \TYPO3\CMS\Core\Html\HtmlParser $htmlParser
-	 * @return string
-	 */
-	public function attributeStdWrap(
-		$configuration,
-		/** @noinspection PhpUnusedParameterInspection */
-		$htmlParser
-	) {
-		if (!is_array($configuration)) {
-			return $configuration;
-		}
+        $content = $configuration['attributeValue'];
 
-		$content = $configuration['attributeValue'];
+        if (isset($configuration['stdWrap.']) && is_array($configuration['stdWrap.'])
+            && !empty($configuration['stdWrap.'])
+        ) {
+            $this->initialize();
+            $content = $this->configurationManager->getContentObject()->stdWrap($content, $configuration['stdWrap.']);
+        }
 
-		if (isset($configuration['stdWrap.']) && is_array($configuration['stdWrap.']) && !empty($configuration['stdWrap.'])) {
-			$this->initialize();
-			$content = $this->configurationManager->getContentObject()->stdWrap($content, $configuration['stdWrap.']);
-		}
+        return $content;
+    }
 
-		return $content;
-	}
+    /**
+     * Initializes required objects.
+     */
+    protected function initialize()
+    {
+        if (isset($this->configurationManager)) {
+            return;
+        }
 
-	/**
-	 * Initializes required objects.
-	 */
-	protected function initialize() {
-
-		if (isset($this->configurationManager)) {
-			return;
-		}
-
-		/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-		$objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-		/** @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager */
-		$this->configurationManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManagerInterface');
-	}
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        /** @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager */
+        $this->configurationManager = $objectManager->get(
+            'TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManagerInterface'
+        );
+    }
 }

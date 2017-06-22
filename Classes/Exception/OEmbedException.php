@@ -1,4 +1,5 @@
 <?php
+
 namespace Sto\Mediaoembed\Exception;
 
 /*                                                                        *
@@ -14,5 +15,6 @@ namespace Sto\Mediaoembed\Exception;
 /**
  * Base class for all possible Exceptions that are not runtime errors.
  */
-abstract class OEmbedException extends \TYPO3\CMS\Extbase\Exception {
+abstract class OEmbedException extends \TYPO3\CMS\Extbase\Exception
+{
 }
