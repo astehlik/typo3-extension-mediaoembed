@@ -1,18 +1,22 @@
 language: php
 
-php:
-  - 7
+matrix:
+  fast_finish: true
+  include:
+    - php: 7.1
+      env: TYPO3=^8.0 PHP_CS=yes PHP_LINT=yes PHPUNIT_TESTS=yes
+    - php: 7.0
+      env: TYPO3=^8.0 PHP_LINT=yes PHPUNIT_TESTS=yes
+    - php: 7.1
+      env: TYPO3=^7.6 PHPUNIT_TESTS=yes
+    - php: 7.0
+      env: TYPO3=^7.6 PHPUNIT_TESTS=yes
 
-env:
-  - TYPO3_VERSION=^7.6.0
-  - TYPO3_VERSION=^8.0.0
-  - TYPO3_VERSION=dev-master
-
-sudo: false
 cache:
   directories:
     - $HOME/.composer/cache
-    - $HOME/.cache/composer
+
+sudo: false
 
 addons:
   apt:
@@ -33,15 +37,27 @@ before_script:
 
 script:
   - >
-    echo;
-    echo "Running phpcs";
-    .Build/bin/phpcs --config-set installed_paths $PWD/.Build/vendor/de-swebhosting/php-codestyle/PhpCodeSniffer
-    .Build/bin/phpcs --standard=PSRDefault Classes Configuration/TCA Tests/Unit ext_emconf.php ext_localconf.php
+    if [ "$PHP_CS" == "yes" ]; then
+      echo;
+      echo "Running phpcs";
+      echo;
+      echo;
+      .Build/bin/phpcs --config-set installed_paths $PWD/.Build/vendor/de-swebhosting/php-codestyle/PhpCodeSniffer
+      .Build/bin/phpcs --standard=PSRDefault Classes Configuration/TCA Tests/Unit ext_emconf.php ext_localconf.php
+    fi
   - >
-    echo;
-    echo "Running unit tests";
-    .Build/bin/phpunit  Tests/Unit/;
+    if [ "$PHPUNIT_TESTS" == "yes" ]; then
+      echo;
+      echo "Running unit tests";
+      echo;
+      echo;
+      .Build/bin/phpunit  Tests/Unit/;
+    fi
   - >
-    echo;
-    echo "Running php lint";
-    find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
+    if [ "$PHP_LINT" == "yes" ]; then
+      echo;
+      echo "Running php lint";
+      echo;
+      echo;
+      find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
+    fi
