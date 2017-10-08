@@ -11,6 +11,8 @@ matrix:
       env: TYPO3=^7.6 PHPUNIT_TESTS=yes
     - php: 7.0
       env: TYPO3=^7.6 PHPUNIT_TESTS=yes
+    - php: 5.6
+      env: TYPO3=^6.2 PHP_LINT=yes PHPUNIT_TESTS=yes
 
 cache:
   directories:
