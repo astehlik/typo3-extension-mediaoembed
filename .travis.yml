@@ -33,7 +33,6 @@ before_install:
 before_script:
   # Rename our working directory, required for Extension upload to TER.
   - cd .. && mv typo3-extension-mediaoembed mediaoembed && cd mediaoembed
-  - composer require typo3/cms=$TYPO3
   - export TYPO3_PATH_WEB=$PWD/.Build/Web
   - if [ -d $PWD/.Build/vendor/typo3/cms/components ]; then ln -s "$PWD/.Build/vendor/typo3/cms/components" .Build/Web/components; fi
 
@@ -44,6 +43,7 @@ script:
       echo "Running phpcs";
       echo;
       echo;
+      composer require typo3/cms=$TYPO3
       .Build/bin/phpcs --config-set installed_paths $PWD/.Build/vendor/de-swebhosting/php-codestyle/PhpCodeSniffer
       .Build/bin/phpcs --standard=PSRDefault Classes Configuration/TCA Tests/Unit ext_emconf.php ext_localconf.php
     fi
@@ -53,6 +53,7 @@ script:
       echo "Running unit tests";
       echo;
       echo;
+      composer require typo3/cms=$TYPO3
       .Build/bin/phpunit  Tests/Unit/;
     fi
   - >
@@ -61,6 +62,7 @@ script:
       echo "Running unit tests";
       echo;
       echo;
+      composer require typo3/cms=$TYPO3 --ignore-platform-reqs
       composer remove --dev phpunit/phpunit
       composer require --dev phpunit/phpunit:^5.7
       .Build/bin/phpunit  Tests/Unit/;
@@ -71,5 +73,6 @@ script:
       echo "Running php lint";
       echo;
       echo;
+      composer require typo3/cms=$TYPO3
       find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
     fi
