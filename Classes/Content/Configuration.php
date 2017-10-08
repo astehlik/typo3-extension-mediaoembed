@@ -12,6 +12,7 @@ namespace Sto\Mediaoembed\Content;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Sto\Mediaoembed\Domain\Repository\ContentRepository;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
@@ -20,8 +21,7 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 class Configuration
 {
     /**
-     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-     * @inject
+     * @var ConfigurationManagerInterface
      */
     protected $configurationManager;
 
@@ -31,8 +31,7 @@ class Configuration
     protected $content;
 
     /**
-     * @var \Sto\Mediaoembed\Domain\Repository\ContentRepository
-     * @inject
+     * @var ContentRepository
      */
     protected $contentRepository;
 
@@ -59,6 +58,16 @@ class Configuration
         $this->settings = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
         );
+    }
+
+    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
+    {
+        $this->configurationManager = $configurationManager;
+    }
+
+    public function injectContentRepository(ContentRepository $contentRepository)
+    {
+        $this->contentRepository = $contentRepository;
     }
 
     /**
