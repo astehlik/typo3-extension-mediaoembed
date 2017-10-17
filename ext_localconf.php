@@ -1,6 +1,6 @@
 <?php
 
-(function () {
+$bootMediaoembed = function () {
     if (!defined('TYPO3_MODE')) {
         die('Access denied.');
     }
@@ -40,4 +40,7 @@ mod.wizards.newContentElement {
 }
 '
     );
-})();
+};
+
+$bootMediaoembed();
+unset($bootMediaoembed);
