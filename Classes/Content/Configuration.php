@@ -53,8 +53,8 @@ class Configuration
      */
     public function initializeObject()
     {
-        $this->content = $this->contentRepository->findByUid(
-            $this->configurationManager->getContentObject()->data['uid']
+        $this->content = $this->contentRepository->buildFromContentObjectData(
+            $this->configurationManager->getContentObject()->data
         );
         $this->settings = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS

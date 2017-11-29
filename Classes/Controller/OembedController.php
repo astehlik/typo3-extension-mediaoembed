@@ -91,7 +91,9 @@ class OembedController extends ActionController
         $this->initializeRequestBuilder();
         $this->initializeResponseBuilder();
 
-        $content = $this->contentRepository->findByUid($this->configurationManager->getContentObject()->data['uid']);
+        $content = $this->contentRepository->buildFromContentObjectData(
+            $this->configurationManager->getContentObject()->data
+        );
         $this->startRequestLoop($content);
     }
 

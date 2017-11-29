@@ -14,21 +14,32 @@ namespace Sto\Mediaoembed\Domain\Repository;
  *                                                                        */
 
 use Sto\Mediaoembed\Domain\Model\Content;
-use TYPO3\CMS\Extbase\Persistence\Repository;
+use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Repository for mediaoembed tt_content elements.
- *
- * @method Content findByUid($uid)
  */
-class ContentRepository extends Repository
+class ContentRepository implements SingletonInterface
 {
     /**
-     * Make sure we always ignore the storage page config.
-     */
-    public function initializeObject()
+     * @var ObjectManagerInterface
+     * */
+    protected $objectManager;
+
+    public function injectObjectManager(ObjectManagerInterface $objectManager)
     {
-        $this->defaultQuerySettings = $this->createQuery()->getQuerySettings();
-        $this->defaultQuerySettings->setRespectStoragePage(false);
+        $this->objectManager = $objectManager;
+    }
+
+    public function buildFromContentObjectData(array $contentObjectData): Content
+    {
+        $content = $this->objectManager->get(Content::class);
+
+        $content->setMaxHeight((int)$contentObjectData['tx_mediaoembed_maxheight'] ?? 0);
+        $content->setMaxWidth((int)$contentObjectData['tx_mediaoembed_maxwidth'] ?? 0);
+        $content->setUrl((string)$contentObjectData['tx_mediaoembed_url'] ?? '');
+
+        return $content;
     }
 }
