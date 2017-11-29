@@ -106,7 +106,7 @@ class HttpRequest
      *
      * @return array
      */
-    protected function buildRequestParameterArray()
+    protected function buildRequestParameterArray(): array
     {
         $parameters = [];
 
@@ -139,7 +139,7 @@ class HttpRequest
      * @param array $parameters
      * @return string
      */
-    protected function buildRequestUrl($parameters)
+    protected function buildRequestUrl(array $parameters): string
     {
         if (strstr('?', $this->endpoint)) {
             $firstParameter = false;
@@ -177,24 +177,23 @@ class HttpRequest
      * @return string the error code
      * @see t3lib_div::getURL()
      */
-    protected function getErrorCode($report)
+    protected function getErrorCode(array $report): string
     {
         $message = $report['message'];
-        $errorCode = $report['error'];
 
         if (strstr($message, '404')) {
-            $errorCode = '404';
-        } else {
-            if (strstr($message, '501')) {
-                $errorCode = '501';
-            } else {
-                if (strstr($message, '401')) {
-                    $errorCode = '401';
-                }
-            }
+            return '404';
         }
 
-        return $errorCode;
+        if (strstr($message, '501')) {
+            return '501';
+        }
+
+        if (strstr($message, '401')) {
+            return '401';
+        }
+
+        return (string)$report['error'];
     }
 
     /**
@@ -207,10 +206,10 @@ class HttpRequest
      * @throws \Sto\Mediaoembed\Exception\HttpNotImplementedException
      * @throws \Sto\Mediaoembed\Exception\UnauthorizedException
      */
-    protected function sendRequest($requestUrl)
+    protected function sendRequest($requestUrl): string
     {
         $report = [];
-        $responseData = GeneralUtility::getURL($requestUrl, 0, false, $report);
+        $responseData = (string)GeneralUtility::getURL($requestUrl, 0, false, $report);
 
         if ($report['error'] !== 0) {
             switch ($this->getErrorCode($report)) {
