@@ -154,7 +154,7 @@ class HttpRequest
 
         foreach ($parameters as $name => $value) {
             $name = urlencode($name);
-            $value = urlencode($value);
+            $value = urlencode((string)$value);
 
             if (!$firstParameter) {
                 $parameterGlue = '&';
