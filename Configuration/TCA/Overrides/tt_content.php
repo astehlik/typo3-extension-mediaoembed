@@ -20,7 +20,7 @@ $ttContentColumns = [
             'eval' => 'int',
             'range' => [
                 'upper' => '999',
-                'lower' => '25',
+                'lower' => '0',
             ],
             'default' => 0,
         ],
@@ -35,7 +35,7 @@ $ttContentColumns = [
             'eval' => 'int',
             'range' => [
                 'upper' => '999',
-                'lower' => '25',
+                'lower' => '0',
             ],
             'default' => 0,
         ],
@@ -68,9 +68,9 @@ $GLOBALS['TCA']['tt_content']['types']['mediaoembed_oembedmediarenderer']['showi
 		--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.general;general,
 		--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.header;header,
 		--palette--;' . $lllPrefix . 'palette.tx_mediaoembed_settings;tx_mediaoembed_settings,
-	--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.appearance,
+	--div--;LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:tabs.appearance,
 		--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.frames;frames,
-	--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,
+	--div--;LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:tabs.access,
 		--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.visibility;visibility,
 		--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access,
 	--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.extended';

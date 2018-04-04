@@ -27,6 +27,12 @@
 			<trans-unit id="palette.tx_mediaoembed_settings" xml:space="preserve">
 				<source>Media Element</source>
 			</trans-unit>
+			<trans-unit id="tabs.appearance" xml:space="preserve">
+				<source>Apparence</source>
+			</trans-unit>
+			<trans-unit id="tabs.access" xml:space="preserve">
+				<source>Access</source>
+			</trans-unit>
 			<trans-unit id="tt_content.CType.I.tx_mediaoembed" xml:space="preserve">
 				<source>External media</source>
 			</trans-unit>
