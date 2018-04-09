@@ -28,7 +28,7 @@ mod.wizards.newContentElement {
 	wizardItems {
 		special.elements {
 			mediaoembed_oembedmediarenderer {
-				iconIdentifier = content-special-media
+				iconIdentifier = extensions-mediaoembed-content-externalmedia
 				title = ' . $lllPrefix . 'tt_content.CType.I.tx_mediaoembed
 				description = ' . $lllPrefix . 'new_content_element_wizard_oembedmediarenderer_description
 				tt_content_defValues {
