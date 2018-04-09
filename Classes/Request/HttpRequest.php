@@ -149,8 +149,16 @@ class HttpRequest
 
         $requestUrl = $this->endpoint;
 
-        $requestUrl = HtmlParser::substituteMarker($requestUrl, '###FORMAT###', $this->format);
-        $requestUrl = HtmlParser::substituteMarker($requestUrl, '{format}', $this->format);
+        // Is true for TYPO3 v8 and upward
+        if (class_exists('\TYPO3\CMS\Core\Service\MarkerBasedTemplateService')) {
+            $markerService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Service\MarkerBasedTemplateService::class);
+            $requestUrl = $markerService->substituteMarker($requestUrl, '###FORMAT###', $this->format);
+            $requestUrl = $markerService->substituteMarker($requestUrl, '{format}', $this->format);
+        } else {
+            $requestUrl = HtmlParser::substituteMarker($requestUrl, '###FORMAT###', $this->format);
+            $requestUrl = HtmlParser::substituteMarker($requestUrl, '{format}', $this->format);
+        }
+
 
         foreach ($parameters as $name => $value) {
             $name = urlencode($name);

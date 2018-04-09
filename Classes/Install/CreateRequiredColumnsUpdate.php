@@ -64,7 +64,7 @@ class CreateRequiredColumnsUpdate extends AbstractUpdate
 
         // First check necessary database update
         $updateStatements = $this->getUpdateStatements();
-        if (empty($updateStatements)) {
+        if (empty($updateStatements) || $this->checkValidStatements($updateStatements)) {
             // Check for repository database table
             $databaseTables = $this->db->admin_get_tables();
             if (!isset($databaseTables['tt_content'])) {
@@ -75,6 +75,32 @@ class CreateRequiredColumnsUpdate extends AbstractUpdate
         }
 
         return $result;
+    }
+
+    /**
+     * As experimented in TYPO3 v8, TYPO3 transforms the instruction from ext_tables.sql from:
+     *
+     * "hidden tinyint(3) unsigned DEFAULT '0' NOT NULL"
+     * -> into:
+     * "smallint(5) unsigned NOT NULL default '0'"
+     *
+     * If so, we want to inform TYPO3, there is nothing to do in the Install Wizard and we keep the database as it is.
+     * Otherwise, we enter an infinite "loop" where the Install Wizard is changing the table structure towards "smallint" and the
+     * "Compare current database with specification" is changing back towards "tinyint"
+     *
+     * @param array $updateStatements
+     * @return bool
+     */
+    public function checkValidStatements(array $updateStatements) : bool
+    {
+        if (isset($updateStatements['change_currentValue']) && \is_array($updateStatements['change_currentValue'])) {
+            foreach ($updateStatements['change_currentValue'] as $statement) {
+                if (!preg_match('/smallint(5) unsigned NOT NULL default/', $statement)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

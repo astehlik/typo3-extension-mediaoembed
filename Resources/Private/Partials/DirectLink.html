@@ -4,16 +4,18 @@
 
 	<div class="tx-mediaoembed-directlink">
 
-		<mo:link.typolink parameter="{configuration.content.url}">
+		<f:format.raw>
+			<mo:link.typolink parameter="{configuration.content.url}">
 
-			<f:if condition="{response.providerName}">
-				<f:then>{response.providerName}</f:then>
-				<f:else>{provider.name}</f:else>
-			</f:if>
+				<f:if condition="{response.providerName}">
+					<f:then>{response.providerName}</f:then>
+					<f:else>{provider.name}</f:else>
+				</f:if>
 
-			<f:translate id="direct_link" />
+				<f:translate id="direct_link" />
 
-		</mo:link.typolink>
+			</mo:link.typolink>
+		</f:format.raw>
 
 	</div>
 
