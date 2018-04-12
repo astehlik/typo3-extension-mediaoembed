@@ -152,8 +152,9 @@ class HttpRequest
 
         $requestUrl = $this->endpoint;
 
-        $requestUrl = HtmlParser::substituteMarker($requestUrl, '###FORMAT###', $this->format);
-        $requestUrl = HtmlParser::substituteMarker($requestUrl, '{format}', $this->format);
+        $markerService = GeneralUtility::makeInstance(MarkerBasedTemplateService::class);
+        $requestUrl = $markerService->substituteMarker($requestUrl, '###FORMAT###', $this->format);
+        $requestUrl = $markerService->substituteMarker($requestUrl, '{format}', $this->format);
 
         foreach ($parameters as $name => $value) {
             $name = urlencode($name);
