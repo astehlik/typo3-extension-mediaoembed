@@ -7,7 +7,7 @@ $bootMediaoembed = function () {
     }
 
     $_EXTKEY = 'mediaoembed';
-    $lllPrefix = 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
+    $lllPrefix = 'LLL:' . 'EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
         'Sto.' . $_EXTKEY,

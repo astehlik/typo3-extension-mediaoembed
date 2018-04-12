@@ -1,6 +1,6 @@
 <?php
 
-$languagePrefix = 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
+$languagePrefix = 'LLL:' . 'EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
 $languagePrefixColumn = $languagePrefix . 'tx_mediaoembed_provider.';
 $showRecordFieldList = 'name,hidden,is_generic,description,url_schemes,endpoint'
     . ',use_generic_providers,embedly_shortname';
@@ -14,7 +14,7 @@ return [
         'cruser_id' => 'cruser_id',
         'delete' => 'deleted',
         'sortby' => 'sorting',
-        'prependAtCopy' => 'LLL:EXT:lang/locallang_general.php:LGL.prependAtCopy',
+        'prependAtCopy' => 'EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.prependAtCopy',
         'adminOnly' => 1,
         'rootLevel' => 1,
         'enablecolumns' => ['disabled' => 'hidden'],
@@ -38,7 +38,7 @@ return [
         ],
 
         'hidden' => [
-            'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.disable',
+            'label' => 'EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.disable',
             'config' => [
                 'type' => 'check',
                 'default' => '0',
@@ -54,7 +54,7 @@ return [
         ],
 
         'description' => [
-            'label' => 'LLL:EXT:lang/locallang_general.xml:LGL.description',
+            'label' => 'EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.description',
             'config' => [
                 'type' => 'text',
                 'rows' => 5,

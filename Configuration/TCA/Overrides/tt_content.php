@@ -1,7 +1,7 @@
 <?php
 defined('TYPO3_MODE') or die();
 
-$lllPrefix = 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
+$lllPrefix = 'LLL:' . 'EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
 
 $ttContentColumns = [
     'tx_mediaoembed_url' => [
@@ -63,12 +63,12 @@ $GLOBALS['TCA']['tt_content']['palettes']['tx_mediaoembed_settings'] = [
 ];
 
 $GLOBALS['TCA']['tt_content']['types']['mediaoembed_oembedmediarenderer']['showitem'] = '
-		--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.general;general,
-		--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.header;header,
+		--palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general;general,
+		--palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.header;header,
 		--palette--;' . $lllPrefix . 'palette.tx_mediaoembed_settings;tx_mediaoembed_settings,
-	--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.appearance,
-		--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.frames;frames,
-	--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,
-		--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.visibility;visibility,
-		--palette--;LLL:EXT:cms/locallang_ttc.xlf:palette.access;access,
-	--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.extended';
+	--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.appearance,
+		--palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.frames;frames,
+	--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,
+		--palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.visibility;visibility,
+		--palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access;access,
+	--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.extended';
