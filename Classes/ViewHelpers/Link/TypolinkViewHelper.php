@@ -13,6 +13,8 @@ namespace Sto\Mediaoembed\ViewHelpers\Link;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -25,6 +27,10 @@ class TypolinkViewHelper extends AbstractViewHelper
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
      * */
     protected $configurationManager;
+
+    protected $escapeOutput = false;
+
+    protected $escapingInterceptorEnabled = false;
 
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
     {
@@ -46,10 +52,10 @@ class TypolinkViewHelper extends AbstractViewHelper
         $config = ['parameter' => $parameter];
 
         if (isset($aTagParams)) {
-            $config['ATagParams'] = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeAttributes($aTagParams);
+            $config['ATagParams'] = GeneralUtility::implodeAttributes($aTagParams);
         }
 
-        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($config, $configOverride);
+        ArrayUtility::mergeRecursiveWithOverrule($config, $configOverride);
 
         $config = $this->getExternalTarget($config);
 

@@ -14,7 +14,9 @@ namespace Sto\Mediaoembed\Request;
  *                                                                        */
 
 use Sto\Mediaoembed\Domain\Model\Provider;
+use Sto\Mediaoembed\Domain\Repository\ProviderRepository;
 use Sto\Mediaoembed\Exception\InvalidUrlException;
+use Sto\Mediaoembed\Exception\NoMatchingProviderException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -42,7 +44,7 @@ class ProviderResolver
      */
     protected $url;
 
-    public function injectProviderRepository(\Sto\Mediaoembed\Domain\Repository\ProviderRepository $providerRepository)
+    public function injectProviderRepository(ProviderRepository $providerRepository)
     {
         $this->providerRepository = $providerRepository;
     }
@@ -131,7 +133,7 @@ class ProviderResolver
         } while ($matchingProvider === false);
 
         if ($matchingProvider === false) {
-            throw new \Sto\Mediaoembed\Exception\NoMatchingProviderException($this->url);
+            throw new NoMatchingProviderException($this->url);
         }
 
         return $matchingProvider;

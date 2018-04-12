@@ -14,6 +14,8 @@ namespace Sto\Mediaoembed\Utility;
  *                                                                        */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Utility class containing methods that can be called with the USER
@@ -69,10 +71,8 @@ class HtmlParserUserFuncUtility
         }
 
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         /** @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager */
-        $this->configurationManager = $objectManager->get(
-            'TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManagerInterface'
-        );
+        $this->configurationManager = $objectManager->get(ConfigurationManagerInterface::class);
     }
 }

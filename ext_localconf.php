@@ -1,4 +1,5 @@
 <?php
+defined('TYPO3_MODE') or die();
 
 $bootMediaoembed = function () {
     if (!defined('TYPO3_MODE')) {
@@ -6,7 +7,7 @@ $bootMediaoembed = function () {
     }
 
     $_EXTKEY = 'mediaoembed';
-    $lllPrefix = 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
+    $lllPrefix = 'LLL:' . 'EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
         'Sto.' . $_EXTKEY,
@@ -27,7 +28,7 @@ mod.wizards.newContentElement {
 	wizardItems {
 		special.elements {
 			mediaoembed_oembedmediarenderer {
-				iconIdentifier = content-special-media
+				iconIdentifier = extensions-mediaoembed-content-externalmedia
 				title = ' . $lllPrefix . 'tt_content.CType.I.tx_mediaoembed
 				description = ' . $lllPrefix . 'new_content_element_wizard_oembedmediarenderer_description
 				tt_content_defValues {

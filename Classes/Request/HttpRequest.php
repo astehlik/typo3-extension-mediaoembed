@@ -13,7 +13,10 @@ namespace Sto\Mediaoembed\Request;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use TYPO3\CMS\Core\Html\HtmlParser;
+use Sto\Mediaoembed\Exception\HttpNotFoundException;
+use Sto\Mediaoembed\Exception\HttpNotImplementedException;
+use Sto\Mediaoembed\Exception\UnauthorizedException;
+use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -149,8 +152,9 @@ class HttpRequest
 
         $requestUrl = $this->endpoint;
 
-        $requestUrl = HtmlParser::substituteMarker($requestUrl, '###FORMAT###', $this->format);
-        $requestUrl = HtmlParser::substituteMarker($requestUrl, '{format}', $this->format);
+        $markerService = GeneralUtility::makeInstance(MarkerBasedTemplateService::class);
+        $requestUrl = $markerService->substituteMarker($requestUrl, '###FORMAT###', $this->format);
+        $requestUrl = $markerService->substituteMarker($requestUrl, '{format}', $this->format);
 
         foreach ($parameters as $name => $value) {
             $name = urlencode($name);
@@ -214,17 +218,17 @@ class HttpRequest
         if ($report['error'] !== 0) {
             switch ($this->getErrorCode($report)) {
                 case 404:
-                    throw new \Sto\Mediaoembed\Exception\HttpNotFoundException($this->url, $requestUrl);
+                    throw new HttpNotFoundException($this->url, $requestUrl);
                     break;
                 case 501:
-                    throw new \Sto\Mediaoembed\Exception\HttpNotImplementedException(
+                    throw new HttpNotImplementedException(
                         $this->url,
                         $this->format,
                         $requestUrl
                     );
                     break;
                 case 401:
-                    throw new \Sto\Mediaoembed\Exception\UnauthorizedException($this->url, $requestUrl);
+                    throw new UnauthorizedException($this->url, $requestUrl);
                     break;
                 default:
                     throw new \RuntimeException(

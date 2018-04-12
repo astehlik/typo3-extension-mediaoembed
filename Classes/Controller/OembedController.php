@@ -13,6 +13,13 @@ namespace Sto\Mediaoembed\Controller;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Sto\Mediaoembed\Content\Configuration;
+use Sto\Mediaoembed\Domain\Repository\ContentRepository;
+use Sto\Mediaoembed\Exception\OEmbedException;
+use Sto\Mediaoembed\Exception\RequestException;
+use Sto\Mediaoembed\Request\ProviderResolver;
+use Sto\Mediaoembed\Request\RequestBuilder;
+use Sto\Mediaoembed\Response\ResponseBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
@@ -55,7 +62,7 @@ class OembedController extends ActionController
      */
     protected $responseBuilder;
 
-    public function injectContentRepository(\Sto\Mediaoembed\Domain\Repository\ContentRepository $contentRepository)
+    public function injectContentRepository(ContentRepository $contentRepository)
     {
         $this->contentRepository = $contentRepository;
     }
@@ -67,14 +74,14 @@ class OembedController extends ActionController
      */
     public function renderMediaAction()
     {
-        $this->configuration = $this->objectManager->get(\Sto\Mediaoembed\Content\Configuration::class);
+        $this->configuration = $this->objectManager->get(Configuration::class);
 
         try {
             $this->getEmbedDataFromProvider();
             $this->view->assign('configuration', $this->configuration);
             $this->view->assign('isSSLRequest', GeneralUtility::getIndpEnv('TYPO3_SSL'));
             $result = $this->view->render();
-        } catch (\Sto\Mediaoembed\Exception\OEmbedException $exception) {
+        } catch (OEmbedException $exception) {
             $result = 'Error: ' . $exception->getMessage();
         }
 
@@ -87,7 +94,7 @@ class OembedController extends ActionController
      */
     protected function getEmbedDataFromProvider()
     {
-        $this->providerResolver = $this->objectManager->get(\Sto\Mediaoembed\Request\ProviderResolver::class);
+        $this->providerResolver = $this->objectManager->get(ProviderResolver::class);
         $this->initializeRequestBuilder();
         $this->initializeResponseBuilder();
 
@@ -102,7 +109,7 @@ class OembedController extends ActionController
      */
     protected function initializeRequestBuilder()
     {
-        $this->requestBuilder = $this->objectManager->get(\Sto\Mediaoembed\Request\RequestBuilder::class);
+        $this->requestBuilder = $this->objectManager->get(RequestBuilder::class);
         $this->requestBuilder->setConfiguration($this->configuration);
     }
 
@@ -111,7 +118,7 @@ class OembedController extends ActionController
      */
     protected function initializeResponseBuilder()
     {
-        $this->responseBuilder = $this->objectManager->get(\Sto\Mediaoembed\Response\ResponseBuilder::class);
+        $this->responseBuilder = $this->objectManager->get(ResponseBuilder::class);
     }
 
     /**
@@ -144,7 +151,7 @@ class OembedController extends ActionController
                 try {
                     $responseData = $request->sendAndGetResponseData();
                     $response = $this->responseBuilder->buildResponse($responseData);
-                } catch (\Sto\Mediaoembed\Exception\RequestException $exception) {
+                } catch (RequestException $exception) {
                     // @TODO record all exceptions and provide that information to the user
                     $response = null;
                 }
@@ -154,7 +161,7 @@ class OembedController extends ActionController
         } while ($response === null);
 
         if ($response === null) {
-            throw new \Sto\Mediaoembed\Exception\RequestException(
+            throw new RequestException(
                 'No provider returned a valid result. Giving up.'
                 . ' Please make sure the URL is valid and you have configured a provider that can handle it.'
             );
