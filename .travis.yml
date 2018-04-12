@@ -11,8 +11,6 @@ matrix:
       env: TYPO3=^7.6 PHPUNIT_TESTS=yes
     - php: 7.0
       env: TYPO3=^7.6 PHPUNIT_TESTS=yes
-    - php: 5.6
-      env: TYPO3=^6.2 PHP_LINT=yes PHPUNIT5_TESTS=yes
 
 cache:
   directories:
@@ -53,16 +51,6 @@ script:
       echo "Running unit tests";
       echo;
       echo;
-      .Build/bin/phpunit  Tests/Unit/;
-    fi
-  - >
-    if [ "$PHPUNIT5_TESTS" == "yes" ]; then
-      echo;
-      echo "Running unit tests";
-      echo;
-      echo;
-      composer remove --dev phpunit/phpunit
-      composer require --dev phpunit/phpunit:^5.7
       .Build/bin/phpunit  Tests/Unit/;
     fi
   - >
