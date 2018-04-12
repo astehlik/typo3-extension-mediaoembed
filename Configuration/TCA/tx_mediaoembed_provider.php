@@ -32,8 +32,8 @@ return [
             'label' => $languagePrefixColumn . 'name',
             'config' => [
                 'type' => 'input',
-                'size' => '30',
-                'max' => '50',
+                'size' => 30,
+                'max' => 50,
             ],
         ],
 
@@ -75,8 +75,8 @@ return [
             'label' => $languagePrefixColumn . 'endpoint',
             'config' => [
                 'type' => 'input',
-                'size' => '30',
-                'max' => '255',
+                'size' => 30,
+                'max' => 255,
                 'eval' => 'trim',
             ],
         ],
@@ -85,8 +85,8 @@ return [
             'label' => $languagePrefixColumn . 'use_generic_providers',
             'config' => [
                 'type' => 'select',
-                'size' => '5',
-                'maxitems' => '100',
+                'size' => 5,
+                'maxitems' => 100,
                 'foreign_table' => 'tx_mediaoembed_provider',
                 'foreign_table_where' => 'AND tx_mediaoembed_provider.is_generic=1'
                     . ' AND tx_mediaoembed_provider.uid!=###THIS_UID###',
@@ -97,8 +97,8 @@ return [
             'label' => $languagePrefixColumn . 'embedly_shortname',
             'config' => [
                 'type' => 'input',
-                'size' => '30',
-                'max' => '50',
+                'size' => 30,
+                'max' => 50,
                 'eval' => 'unique',
             ],
         ],
