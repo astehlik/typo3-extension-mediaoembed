@@ -47,15 +47,13 @@ $ttContentColumns = [
     'CType',
     [
         $lllPrefix . 'tt_content.CType.I.tx_mediaoembed',
-        'mediaoembed_oembedmediarenderer',
-        'i/tt_content_mm.gif',
+        'mediaoembed_oembedmediarenderer'
     ],
     'media',
     'after'
 );
 
-$GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes']['mediaoembed_oembedmediarenderer'] =
-    'extensions-mediaoembed-content-externalmedia';
+$GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes']['mediaoembed_oembedmediarenderer'] = 'content-media';
 
 $GLOBALS['TCA']['tt_content']['palettes']['tx_mediaoembed_settings'] = [
     'showitem' => 'tx_mediaoembed_url, --linebreak--, tx_mediaoembed_maxwidth, tx_mediaoembed_maxheight',
