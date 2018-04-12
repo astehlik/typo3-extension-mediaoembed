@@ -23,6 +23,8 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class TypolinkViewHelper extends AbstractViewHelper
 {
+    protected $escapingInterceptorEnabled = false;
+
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
      * */
