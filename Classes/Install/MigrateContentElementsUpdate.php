@@ -13,6 +13,7 @@ namespace Sto\Mediaoembed\Install;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\AbstractUpdate;
 
 /**
@@ -91,7 +92,7 @@ class MigrateContentElementsUpdate extends AbstractUpdate
         $hasError = false;
 
         while ($row = $this->db->sql_fetch_assoc($res)) {
-            $flexFormData = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($row['pi_flexform']);
+            $flexFormData = GeneralUtility::xml2array($row['pi_flexform']);
 
             if (!is_array($flexFormData)) {
                 $customMessages .= sprintf(

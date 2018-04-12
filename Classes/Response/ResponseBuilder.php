@@ -13,6 +13,7 @@ namespace Sto\Mediaoembed\Response;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Sto\Mediaoembed\Exception\InvalidResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -41,7 +42,7 @@ class ResponseBuilder
         $parsedResponseData = json_decode($responseData, true);
 
         if ($parsedResponseData === null) {
-            throw new \Sto\Mediaoembed\Exception\InvalidResponseException($responseData);
+            throw new InvalidResponseException($responseData);
         }
 
         $this->createResponseByType($parsedResponseData['type']);

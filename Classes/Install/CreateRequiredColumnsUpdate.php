@@ -13,6 +13,8 @@ namespace Sto\Mediaoembed\Install;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\AbstractUpdate;
 
 /**
@@ -115,7 +117,7 @@ class CreateRequiredColumnsUpdate extends AbstractUpdate
     protected function getInstallToolSqlParser()
     {
         if ($this->installToolSqlParser === null) {
-            $this->installToolSqlParser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            $this->installToolSqlParser = GeneralUtility::makeInstance(
                 'TYPO3\\CMS\\Install\\Service\\SqlSchemaMigrationService'
             );
         }
@@ -133,8 +135,8 @@ class CreateRequiredColumnsUpdate extends AbstractUpdate
         $updateStatements = [];
 
         // Get all necessary statements for ext_tables.sql file
-        $rawDefinitions = \TYPO3\CMS\Core\Utility\GeneralUtility::getUrl(
-            \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('mediaoembed') . '/ext_tables.sql'
+        $rawDefinitions = GeneralUtility::getUrl(
+            ExtensionManagementUtility::extPath('mediaoembed') . '/ext_tables.sql'
         );
         $fieldDefinitionsFromFile = $this->getInstallToolSqlParser()->getFieldDefinitions_fileContent($rawDefinitions);
         if (count($fieldDefinitionsFromFile)) {

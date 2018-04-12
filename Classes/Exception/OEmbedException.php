@@ -13,9 +13,11 @@ namespace Sto\Mediaoembed\Exception;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use TYPO3\CMS\Extbase\Exception;
+
 /**
  * Base class for all possible Exceptions that are not runtime errors.
  */
-abstract class OEmbedException extends \TYPO3\CMS\Extbase\Exception
+abstract class OEmbedException extends Exception
 {
 }

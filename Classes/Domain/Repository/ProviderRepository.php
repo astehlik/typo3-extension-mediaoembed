@@ -13,13 +13,15 @@ namespace Sto\Mediaoembed\Domain\Repository;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Sto\Mediaoembed\Domain\Model\Provider;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * Repository for mediaoembed tt_content elements.
  *
- * @method \Sto\Mediaoembed\Domain\Model\Provider findByUid($uid)
- * @method \TYPO3\CMS\Extbase\Persistence\QueryResultInterface findByIsGeneric($isGeneric)
+ * @method Provider findByUid($uid)
+ * @method QueryResultInterface findByIsGeneric($isGeneric)
  */
 class ProviderRepository extends Repository
 {
