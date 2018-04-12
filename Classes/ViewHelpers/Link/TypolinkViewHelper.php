@@ -23,12 +23,14 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class TypolinkViewHelper extends AbstractViewHelper
 {
-    protected $escapingInterceptorEnabled = false;
-
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
      * */
     protected $configurationManager;
+
+    protected $escapeOutput = false;
+
+    protected $escapingInterceptorEnabled = false;
 
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
     {
