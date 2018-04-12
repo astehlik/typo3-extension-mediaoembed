@@ -18,7 +18,7 @@ $ttContentColumns = [
             'eval' => 'int',
             'range' => [
                 'upper' => '999',
-                'lower' => '25',
+                'lower' => '0',
             ],
             'default' => 0,
         ],
@@ -33,7 +33,7 @@ $ttContentColumns = [
             'eval' => 'int',
             'range' => [
                 'upper' => '999',
-                'lower' => '25',
+                'lower' => '0',
             ],
             'default' => 0,
         ],
