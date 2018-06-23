@@ -1,20 +1,9 @@
 language: php
 
-matrix:
-  fast_finish: true
-  include:
-    - php: 7.1
-      env: TYPO3=^8.0 PHP_CS=yes PHP_LINT=yes PHPUNIT_TESTS=yes
-    - php: 7.0
-      env: TYPO3=^8.0 PHP_LINT=yes PHPUNIT_TESTS=yes
-    - php: 7.1
-      env: TYPO3=^7.6 PHPUNIT_TESTS=yes
-    - php: 7.0
-      env: TYPO3=^7.6 PHPUNIT_TESTS=yes
-
 cache:
   directories:
     - $HOME/.composer/cache
+    - $HOME/.cache/composer
 
 sudo: false
 
@@ -29,35 +18,53 @@ before_install:
   - if [ "$GITHUB_COMPOSER_AUTH" ]; then composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH; fi
 
 before_script:
-  # Rename our working directory, required for Extension upload to TER.
-  - cd .. && mv typo3-extension-mediaoembed mediaoembed && cd mediaoembed
   - export TYPO3_PATH_WEB=$PWD/.Build/Web
-  - if [ -d $PWD/.Build/vendor/typo3/cms/components ]; then ln -s "$PWD/.Build/vendor/typo3/cms/components" .Build/Web/components; fi
-  - if [ "$PHPUNIT5_TESTS" == "yes" ]; then composer require typo3/cms=$TYPO3 --ignore-platform-reqs; else composer require typo3/cms=$TYPO3; fi
+  - chmod +x ./.travis/*.sh
 
-script:
-  - >
-    if [ "$PHP_CS" == "yes" ]; then
-      echo;
-      echo "Running phpcs";
-      echo;
-      echo;
-      .Build/bin/phpcs --config-set installed_paths $PWD/.Build/vendor/de-swebhosting/php-codestyle/PhpCodeSniffer
-      .Build/bin/phpcs --standard=PSRDefault Classes Configuration/TCA Tests/Unit ext_emconf.php ext_localconf.php
-    fi
-  - >
-    if [ "$PHPUNIT_TESTS" == "yes" ]; then
-      echo;
-      echo "Running unit tests";
-      echo;
-      echo;
-      .Build/bin/phpunit  Tests/Unit/;
-    fi
-  - >
-    if [ "$PHP_LINT" == "yes" ]; then
-      echo;
-      echo "Running php lint";
-      echo;
-      echo;
-      find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
-    fi
+jobs:
+  include:
+    - stage: test
+      script: ./.travis/test_phpcs.sh
+      env: BUILD_TYPE="PHP code sniffer"
+      php: 7.2
+
+    - script: ./.travis/test_phpunit.sh
+      php: 7.0
+      env: BUILD_TYPE="Unit tests" TYPO3_VERSION="typo3/cms=^7.6"
+    - script: ./.travis/test_phpunit.sh
+      php: 7.1
+      env: BUILD_TYPE="Unit tests" TYPO3_VERSION="typo3/cms=^8.7" UPLOAD_CODE_COVERAGE=yes
+    - script: ./.travis/test_phpunit.sh
+      php: 7.2
+      env: BUILD_TYPE="Unit tests" TYPO3_VERSION="typo3/minimal=^9.3"
+    - script: ./.travis/test_phpunit.sh
+      php: 7.2
+      env: BUILD_TYPE="Unit tests" TYPO3_VERSION="typo3/minimal=dev-master"
+
+    - script: ./.travis/test_lint.sh
+      php: 7.0
+      env: BUILD_TYPE="PHP lint"
+    - script: ./.travis/test_lint.sh
+      php: 7.1
+      env: BUILD_TYPE="PHP lint"
+    - script: ./.travis/test_lint.sh
+      php: 7.2
+      env: BUILD_TYPE="PHP lint"
+
+    - script: ./.travis/test_functional.sh
+      php: 7.0
+      env: BUILD_TYPE="Functional tests" TYPO3_VERSION="typo3/cms=^7.6" NIMUT_TESTING_FRAMEWORK="nimut/testing-framework"
+    - script: ./.travis/test_functional.sh
+      php: 7.1
+      env: BUILD_TYPE="Functional tests" TYPO3_VERSION="typo3/cms=^8.7" NIMUT_TESTING_FRAMEWORK="nimut/testing-framework"
+    - script: ./.travis/test_functional.sh
+      php: 7.2
+      env: BUILD_TYPE="Functional tests" TYPO3_VERSION="typo3/minimal=^9.3" NIMUT_TESTING_FRAMEWORK="nimut/testing-framework=dev-master"
+    - script: ./.travis/test_functional.sh
+      php: 7.2
+      env: BUILD_TYPE="Functional tests" TYPO3_VERSION="typo3/minimal=dev-master" NIMUT_TESTING_FRAMEWORK="nimut/testing-framework=dev-master"
+
+    - stage: deploy
+      script: ./.travis/deploy_ter.sh
+      env: BUILD_TYPE="TER upload"
+      php: 7.1
