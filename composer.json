@@ -2,7 +2,7 @@
     "name": "de-swebhosting-typo3-extension/mediaoembed",
     "description": "External media (YouTube, Flickr, ...) content elements using the http://oembed.com/ standard.",
     "type": "typo3-cms-extension",
-    "license": "GPL-3.0+",
+    "license": "GPL-3.0-or-later",
     "authors": [
         {
             "name": "Alexander Stehlik",
