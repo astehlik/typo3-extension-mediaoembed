@@ -1,36 +1,36 @@
-
 config.tx_extbase {
-	persistence {
-		classes {
-			Sto\Mediaoembed\Domain\Model\Content {
-				mapping {
-					tableName = tt_content
-					columns {
-						tx_mediaoembed_maxwidth.mapOnProperty = maxwidth
-						tx_mediaoembed_maxheight.mapOnProperty = maxheight
-						tx_mediaoembed_response.mapOnProperty = response
-						tx_mediaoembed_thumbnail.mapOnProperty = thumbnail
-						tx_mediaoembed_url.mapOnProperty = url
-					}
-				}
-			}
-			Sto\Mediaoembed\Domain\Model\Provider {
-				mapping {
-					tableName = tx_mediaoembed_provider
-				}
-			}
-		}
-	}
+    persistence {
+        classes {
+            Sto\Mediaoembed\Domain\Model\Content {
+                mapping {
+                    tableName = tt_content
+                    columns {
+                        tx_mediaoembed_maxwidth.mapOnProperty = maxwidth
+                        tx_mediaoembed_maxheight.mapOnProperty = maxheight
+                        tx_mediaoembed_response.mapOnProperty = response
+                        tx_mediaoembed_thumbnail.mapOnProperty = thumbnail
+                        tx_mediaoembed_url.mapOnProperty = url
+                    }
+                }
+            }
+
+            Sto\Mediaoembed\Domain\Model\Provider {
+                mapping {
+                    tableName = tx_mediaoembed_provider
+                }
+            }
+        }
+    }
 }
 
 plugin.tx_mediaoembed.settings {
 
-	media {
-		maxwidth = {$plugin.tx_mediaoembed.defaultMaximumMediaWidth}
-		maxheight =
-	}
+    media {
+        maxwidth = {$plugin.tx_mediaoembed.defaultMaximumMediaWidth}
+        maxheight =
+    }
 
-	downloadPhoto = {$plugin.tx_mediaoembed.downloadPhoto}
+    downloadPhoto = {$plugin.tx_mediaoembed.downloadPhoto}
 
-	view.displayDirectLink = 1
+    view.displayDirectLink = 1
 }
