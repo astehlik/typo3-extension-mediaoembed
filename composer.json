@@ -16,8 +16,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Sto\\Mediaoembed\\Tests\\": "Tests/",
-            "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/core/Tests/"
+            "Sto\\Mediaoembed\\Tests\\": "Tests/"
         }
     },
     "require": {
