@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Response;
 
@@ -12,13 +13,13 @@ namespace Sto\Mediaoembed\Tests\Unit\Response;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use PHPUnit\Framework\TestCase;
 use Sto\Mediaoembed\Response\VideoResponse;
+use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
 
 /**
  * Tests for the VideoResponse.
  */
-class VideoResponseTest extends TestCase
+class VideoResponseTest extends AbstractUnitTest
 {
     /**
      * @var VideoResponse

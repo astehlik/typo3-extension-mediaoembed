@@ -2,9 +2,6 @@
 
 set -ev
 
-echo "No Unit tests yet :("
-exit 0
-
 echo "Running unit tests";
 
 if [ ${TYPO3_VERSION} = "typo3/minimal=dev-master" ]; then
