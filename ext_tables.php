@@ -6,7 +6,7 @@ $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\
 $iconRegistry->registerIcon(
     'extensions-mediaoembed-content-externalmedia',
     \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-    ['source' => 'EXT:mediaoembed/Resources/Public/Icons/ContentMedia.svg',]
+    ['source' => 'EXT:mediaoembed/Resources/Public/Icons/ContentMedia.svg']
 );
 
 unset($iconRegistry);
