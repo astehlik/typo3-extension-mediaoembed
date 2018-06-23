@@ -2,7 +2,7 @@
 defined('TYPO3_MODE') or die();
 
 $lllPrefix = 'LLL:' . 'EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
-$lllPrefixTtc = 'LLL:'. 'EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:';
+$lllPrefixTtc = 'LLL:' . 'EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:';
 
 $ttContentColumns = [
     'tx_mediaoembed_url' => [
