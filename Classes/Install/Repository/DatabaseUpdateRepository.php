@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Install\Repository;
 
+use TYPO3\CMS\Core\Database\DatabaseConnection;
+
 class DatabaseUpdateRepository extends AbstractUpdateRepository implements UpdateRepository
 {
     public function countOldRecords(): int
@@ -21,11 +23,11 @@ class DatabaseUpdateRepository extends AbstractUpdateRepository implements Updat
         $updateQuery = $this->getUpdateQuery($contentUid, $updateData);
         $dbQueries[] = $updateQuery;
 
-        $this->getDatabaseConnection()->query($updateQuery);
+        $this->getDatabaseConnection()->sql_query($updateQuery);
         return $this->getDatabaseConnection()->sql_error();
     }
 
-    public function fetchResultRow($result): array
+    public function fetchResultRow($result)
     {
         return $this->getDatabaseConnection()->sql_fetch_assoc($result);
     }
