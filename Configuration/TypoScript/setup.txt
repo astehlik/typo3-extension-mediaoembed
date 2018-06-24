@@ -13,12 +13,6 @@ config.tx_extbase {
                     }
                 }
             }
-
-            Sto\Mediaoembed\Domain\Model\Provider {
-                mapping {
-                    tableName = tx_mediaoembed_provider
-                }
-            }
         }
     }
 }
