@@ -14,21 +14,15 @@ namespace Sto\Mediaoembed\Response;
  *                                                                        */
 
 use Sto\Mediaoembed\Exception\InvalidResponseException;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This type is used for representing static photos.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
  */
-class ResponseBuilder
+class ResponseBuilder implements SingletonInterface
 {
-    /**
-     * The response that will be build by the response builder
-     *
-     * @var GenericResponse
-     */
-    protected $response;
-
     /**
      * Builds a response object using the reponse data returned
      * from the provider.
@@ -37,7 +31,7 @@ class ResponseBuilder
      * @return GenericResponse An instance of a response
      * @throws \Sto\Mediaoembed\Exception\InvalidResponseException
      */
-    public function buildResponse($responseData)
+    public function buildResponse(string $responseData): GenericResponse
     {
         $parsedResponseData = json_decode($responseData, true);
 
@@ -45,11 +39,11 @@ class ResponseBuilder
             throw new InvalidResponseException($responseData);
         }
 
-        $this->createResponseByType($parsedResponseData['type']);
+        $response = $this->createResponseByType($parsedResponseData['type']);
 
-        $this->response->initializeResponseData($parsedResponseData);
+        $response->initializeResponseData($parsedResponseData);
 
-        return $this->response;
+        return $response;
     }
 
     /**
@@ -57,26 +51,27 @@ class ResponseBuilder
      * given response type.
      *
      * @param string $type
-     * @return void
+     * @return \Sto\Mediaoembed\Response\GenericResponse
      */
-    protected function createResponseByType($type)
+    protected function createResponseByType(string $type): GenericResponse
     {
         switch ($type) {
             case 'link':
-                $this->response = GeneralUtility::makeInstance(LinkResponse::class);
+                $response = GeneralUtility::makeInstance(LinkResponse::class);
                 break;
             case 'photo':
-                $this->response = GeneralUtility::makeInstance(PhotoResponse::class);
+                $response = GeneralUtility::makeInstance(PhotoResponse::class);
                 break;
             case 'rich':
-                $this->response = GeneralUtility::makeInstance(RichResponse::class);
+                $response = GeneralUtility::makeInstance(RichResponse::class);
                 break;
             case 'video':
-                $this->response = GeneralUtility::makeInstance(VideoResponse::class);
+                $response = GeneralUtility::makeInstance(VideoResponse::class);
                 break;
             default:
-                $this->response = GeneralUtility::makeInstance(GenericResponse::class);
+                $response = GeneralUtility::makeInstance(GenericResponse::class);
                 break;
         }
+        return $response;
     }
 }
