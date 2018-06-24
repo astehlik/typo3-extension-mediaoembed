@@ -2,10 +2,6 @@
 defined('TYPO3_MODE') or die();
 
 $bootMediaoembed = function () {
-    if (!defined('TYPO3_MODE')) {
-        die('Access denied.');
-    }
-
     $_EXTKEY = 'mediaoembed';
     $lllPrefix = 'LLL:' . 'EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
 
