@@ -3,57 +3,42 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Request;
 
+use Prophecy\Prophecy\ObjectProphecy;
 use Sto\Mediaoembed\Domain\Model\Provider;
-use Sto\Mediaoembed\Domain\Repository\ProviderRepository;
 use Sto\Mediaoembed\Request\ProviderResolver;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
 
 class ProviderResolverTest extends AbstractUnitTest
 {
     /**
-     * @var ProviderRepository|\Prophecy\Prophecy\ObjectProphecy
-     */
-    private $providerRepositoryProphecy;
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->providerRepositoryProphecy = $this->prophesize(ProviderRepository::class);
-    }
-
-    /**
      * @test
-     * @throws \Sto\Mediaoembed\Exception\NoMatchingProviderException
-     * @throws \Sto\Mediaoembed\Exception\InvalidConfigurationException
      */
     public function resolverReturnsSecondMatchingProviderOnSecondCall()
     {
-        $firstProviderProphecy = $this->prophesize(Provider::class);
-        $firstProviderProphecy->isResponsibleForUrl('testurl')->willReturn(true);
+        $firstProviderProphecy = $this->getProviderProphecy('nomatch');
+        $secondProviderProphecy = $this->getProviderProphecy('testurl');
 
-        $secondProviderProphecy = $this->prophesize(Provider::class);
-        $secondProviderProphecy->isResponsibleForUrl('testurl')->willReturn(true);
-
-        $providerArray = [
+        $providerList = [
             $firstProviderProphecy->reveal(),
             $secondProviderProphecy->reveal(),
         ];
 
-        $this->providerRepositoryProphecy->findAll()->willReturn($providerArray);
-
-        $providerResolver = $this->getProviderResolver();
+        $providerResolver = new ProviderResolver($providerList);
         $providerResolver->getNextMatchingProvider('testurl');
         $secondProvider = $providerResolver->getNextMatchingProvider('testurl');
 
-        $this->assertSame($providerArray[1], $secondProvider);
+        $this->assertSame($providerList[1], $secondProvider);
     }
 
     /**
-     * @return \Sto\Mediaoembed\Request\ProviderResolver
-     * @throws \Sto\Mediaoembed\Exception\InvalidConfigurationException
+     * @param string $urlScheme
+     * @return \Prophecy\Prophecy\ObjectProphecy|\Sto\Mediaoembed\Domain\Model\Provider
      */
-    private function getProviderResolver(): ProviderResolver
+    protected function getProviderProphecy(string $urlScheme): ObjectProphecy
     {
-        return new ProviderResolver($this->providerRepositoryProphecy->reveal());
+        $firstProviderProphecy = $this->prophesize(Provider::class);
+        $firstProviderProphecy->getUrlSchemes()->willReturn([$urlScheme]);
+        $firstProviderProphecy->hasRegexUrlSchemes()->willReturn(false);
+        return $firstProviderProphecy;
     }
 }
