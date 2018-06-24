@@ -26,5 +26,15 @@ plugin.tx_mediaoembed.settings {
 
     downloadPhoto = {$plugin.tx_mediaoembed.downloadPhoto}
 
-    view.displayDirectLink = 1
+    view {
+        displayDirectLink = 1
+
+        directLink {
+            target = _blank
+
+            // Security! Do not change this, if you use target=_blank, see:
+            // https://www.jitbit.com/alexblog/256-targetblank---the-most-underestimated-vulnerability-ever/
+            rel = noreferrer noopener
+        }
+    }
 }
