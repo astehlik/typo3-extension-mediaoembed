@@ -12,7 +12,7 @@ $bootMediaoembed = function () {
         [],
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
-    
+
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['tx_mediaoembed_migratecontentelements'] =
         \Sto\Mediaoembed\Install\MigrateContentElementsUpdate::class;
 
