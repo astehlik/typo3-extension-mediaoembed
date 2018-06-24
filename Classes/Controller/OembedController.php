@@ -14,11 +14,12 @@ namespace Sto\Mediaoembed\Controller;
  *                                                                        */
 
 use Sto\Mediaoembed\Content\Configuration;
-use Sto\Mediaoembed\Domain\Repository\ContentRepository;
+use Sto\Mediaoembed\Domain\Repository\ProviderRepository;
+use Sto\Mediaoembed\Exception\InvalidUrlException;
 use Sto\Mediaoembed\Exception\OEmbedException;
 use Sto\Mediaoembed\Exception\RequestException;
+use Sto\Mediaoembed\Request\HttpRequest;
 use Sto\Mediaoembed\Request\ProviderResolver;
-use Sto\Mediaoembed\Request\RequestBuilder;
 use Sto\Mediaoembed\Response\ResponseBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -29,42 +30,33 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 class OembedController extends ActionController
 {
     /**
-     * Current TypoScript / Flexform configuration
-     *
-     * @var \Sto\Mediaoembed\Content\Configuration
+     * @var Configuration
      */
-    protected $configuration;
+    private $configuration;
 
     /**
-     * @var \Sto\Mediaoembed\Domain\Repository\ContentRepository
-     * */
-    protected $contentRepository;
+     * @var ProviderRepository
+     */
+    private $providerRepository;
 
     /**
-     * The provider resolver tries to resolve the matching provider
-     * for the current media URL.
-     *
-     * @var \Sto\Mediaoembed\Request\ProviderResolver
+     * @var ResponseBuilder
      */
-    protected $providerResolver;
+    private $responseBuilder;
 
-    /**
-     * Request builder for creating a request to a given endpoint.
-     *
-     * @var \Sto\Mediaoembed\Request\RequestBuilder
-     */
-    protected $requestBuilder;
-
-    /**
-     * Tries to build a reponse object using the reponse that came from the server.
-     *
-     * @var \Sto\Mediaoembed\Response\ResponseBuilder
-     */
-    protected $responseBuilder;
-
-    public function injectContentRepository(ContentRepository $contentRepository)
+    public function injectConfiguration(Configuration $configuration)
     {
-        $this->contentRepository = $contentRepository;
+        $this->configuration = $configuration;
+    }
+
+    public function injectProviderRepository(ProviderRepository $providerRepository)
+    {
+        $this->providerRepository = $providerRepository;
+    }
+
+    public function injectResponseBuilder(ResponseBuilder $responseBuilder)
+    {
+        $this->responseBuilder = $responseBuilder;
     }
 
     /**
@@ -74,8 +66,6 @@ class OembedController extends ActionController
      */
     public function renderMediaAction()
     {
-        $this->configuration = $this->objectManager->get(Configuration::class);
-
         try {
             $this->getEmbedDataFromProvider();
             $this->view->assign('configuration', $this->configuration);
@@ -94,71 +84,59 @@ class OembedController extends ActionController
      */
     protected function getEmbedDataFromProvider()
     {
-        $this->providerResolver = $this->objectManager->get(ProviderResolver::class);
-        $this->initializeRequestBuilder();
-        $this->initializeResponseBuilder();
-
-        $content = $this->contentRepository->buildFromContentObjectData(
-            $this->configurationManager->getContentObject()->data
-        );
-        $this->startRequestLoop($content);
+        $this->startRequestLoop();
     }
 
     /**
-     * Initializes the request builder
+     * Checks if the current URL is valid
+     *
+     * @param string $url
+     * @throws \Sto\Mediaoembed\Exception\InvalidUrlException
      */
-    protected function initializeRequestBuilder()
+    private function checkIfUrlIsValid(string $url)
     {
-        $this->requestBuilder = $this->objectManager->get(RequestBuilder::class);
-        $this->requestBuilder->setConfiguration($this->configuration);
-    }
+        $isValid = true;
 
-    /**
-     * Initializes the response builder
-     */
-    protected function initializeResponseBuilder()
-    {
-        $this->responseBuilder = $this->objectManager->get(ResponseBuilder::class);
+        if (empty($url)) {
+            $isValid = false;
+        }
+
+        if (!GeneralUtility::isValidUrl($url)) {
+            $isValid = false;
+        }
+
+        if (!$isValid) {
+            throw new InvalidUrlException($url);
+        }
     }
 
     /**
      * Loops over all mathing providers and all their endpoint
      * until the request was successful or no more providers / endpoints
      * are available.
-     *
-     * @param \Sto\Mediaoembed\Domain\Model\Content $content
-     * @throws \Sto\Mediaoembed\Exception\RequestException
      */
-    protected function startRequestLoop($content)
+    private function startRequestLoop()
     {
         $response = null;
         $request = null;
 
-        do {
-            $provider = $this->providerResolver->getNextMatchingProvider($content);
+        $url = $this->configuration->getMediaUrl();
+        $this->checkIfUrlIsValid($url);
 
-            if ($provider === false) {
+        $providerResolver = new ProviderResolver($this->providerRepository->findAll());
+
+        while ($provider = $providerResolver->getNextMatchingProvider($url)) {
+            $request = new HttpRequest($this->configuration, $provider->getEndpoint());
+
+            try {
+                $responseData = $request->sendAndGetResponseData();
+                $response = $this->responseBuilder->buildResponse($responseData);
                 break;
+            } catch (RequestException $exception) {
+                // @TODO record all exceptions and provide that information to the user
+                $response = null;
             }
-
-            do {
-                $request = $this->requestBuilder->buildNextRequest($provider);
-
-                if ($request === false) {
-                    break;
-                }
-
-                try {
-                    $responseData = $request->sendAndGetResponseData();
-                    $response = $this->responseBuilder->buildResponse($responseData);
-                } catch (RequestException $exception) {
-                    // @TODO record all exceptions and provide that information to the user
-                    $response = null;
-                }
-
-                $request = $this->requestBuilder->buildNextRequest($provider);
-            } while ($response === null);
-        } while ($response === null);
+        }
 
         if ($response === null) {
             throw new RequestException(

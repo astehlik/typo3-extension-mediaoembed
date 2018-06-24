@@ -17,68 +17,30 @@ use Sto\Mediaoembed\Domain\Repository\ContentRepository;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
- * Handels TypoScript and FlexForm configuration
+ * Handels TypoScript and content object configuration
  */
 class Configuration
 {
     /**
-     * @var ConfigurationManagerInterface
-     */
-    protected $configurationManager;
-
-    /**
-     * @var \Sto\Mediaoembed\Domain\Model\Content
-     */
-    protected $content;
-
-    /**
      * @var ContentRepository
      */
-    protected $contentRepository;
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-     */
-    protected $objectManager;
+    private $contentRepository;
 
     /**
      * Current TypoScript / Flexform configuration
      *
      * @var array
      */
-    protected $settings;
+    private $settings;
 
-    /**
-     * Initialzes required instance variables after all injects were made.
-     */
-    public function initializeObject()
-    {
-        $this->content = $this->contentRepository->buildFromContentObjectData(
-            $this->configurationManager->getContentObject()->data
-        );
-        $this->settings = $this->configurationManager->getConfiguration(
+    public function __construct(
+        ConfigurationManagerInterface $configurationManager,
+        ContentRepository $contentRepository
+    ) {
+        $this->settings = $configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
         );
-    }
-
-    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
-    {
-        $this->configurationManager = $configurationManager;
-    }
-
-    public function injectContentRepository(ContentRepository $contentRepository)
-    {
         $this->contentRepository = $contentRepository;
-    }
-
-    /**
-     * Returns the current tt_content record domain model.
-     *
-     * @return \Sto\Mediaoembed\Domain\Model\Content
-     */
-    public function getContent()
-    {
-        return $this->content;
     }
 
     /**
@@ -89,18 +51,18 @@ class Configuration
      *
      * @return int
      */
-    public function getMaxheight()
+    public function getMaxheight(): int
     {
-        $maxheight = 0;
-        $contentMaxHeight = $this->content->getMaxHeight();
-
+        $contentMaxHeight = $this->getContent()->getMaxHeight();
         if (!empty($contentMaxHeight)) {
-            $maxheight = $contentMaxHeight;
-        } elseif (!empty($this->settings['media']['maxheight'])) {
-            $maxheight = (int)$this->settings['media']['maxheight'];
+            return $contentMaxHeight;
         }
 
-        return $maxheight;
+        if (!empty($this->settings['media']['maxheight'])) {
+            return (int)$this->settings['media']['maxheight'];
+        }
+
+        return 0;
     }
 
     /**
@@ -111,17 +73,32 @@ class Configuration
      *
      * @return int
      */
-    public function getMaxwidth()
+    public function getMaxwidth(): int
     {
-        $maxwidth = 0;
-        $contentMaxWidth = $this->content->getMaxWidth();
-
+        $contentMaxWidth = $this->getContent()->getMaxWidth();
         if (!empty($contentMaxWidth)) {
-            $maxwidth = $contentMaxWidth;
-        } elseif (!empty($this->settings['media']['maxwidth'])) {
-            $maxwidth = (int)$this->settings['media']['maxwidth'];
+            return $contentMaxWidth;
         }
 
-        return $maxwidth;
+        if (!empty($this->settings['media']['maxwidth'])) {
+            return (int)$this->settings['media']['maxwidth'];
+        }
+
+        return 0;
+    }
+
+    public function getMediaUrl(): string
+    {
+        return $this->getContent()->getUrl();
+    }
+
+    /**
+     * Returns the current tt_content record domain model.
+     *
+     * @return \Sto\Mediaoembed\Domain\Model\Content
+     */
+    private function getContent()
+    {
+        return $this->contentRepository->getCurrentContent();
     }
 }

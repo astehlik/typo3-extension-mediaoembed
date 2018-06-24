@@ -13,6 +13,7 @@ namespace Sto\Mediaoembed\Request;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Exception\HttpNotFoundException;
 use Sto\Mediaoembed\Exception\HttpNotImplementedException;
 use Sto\Mediaoembed\Exception\UnauthorizedException;
@@ -29,7 +30,7 @@ class HttpRequest
      *
      * @var \Sto\Mediaoembed\Content\Configuration
      */
-    protected $configuration;
+    private $configuration;
 
     /**
      * The endpoint URL that should be contacted to get the embed
@@ -37,7 +38,7 @@ class HttpRequest
      *
      * @var string
      */
-    protected $endpoint;
+    private $endpoint;
 
     /**
      * The required response format. When not specified, the provider can return
@@ -50,23 +51,12 @@ class HttpRequest
      *
      * @var string
      */
-    protected $format = 'json';
+    private $format = 'json';
 
-    /**
-     * The request URL
-     *
-     * @var string
-     */
-    protected $url;
-
-    /**
-     * Injector for the configuration object
-     *
-     * @param \Sto\Mediaoembed\Content\Configuration $configuration
-     */
-    public function injectConfiguration($configuration)
+    public function __construct(Configuration $configuration, string $endpoint)
     {
         $this->configuration = $configuration;
+        $this->endpoint = $endpoint;
     }
 
     /**
@@ -81,26 +71,6 @@ class HttpRequest
         $requestUrl = $this->buildRequestUrl($parameters);
         $responseData = $this->sendRequest($requestUrl);
         return $responseData;
-    }
-
-    /**
-     * Setter for the endpoint URL
-     *
-     * @param string $endpoint
-     */
-    public function setEndpoint($endpoint)
-    {
-        $this->endpoint = $endpoint;
-    }
-
-    /**
-     * Setter for the URL
-     *
-     * @param string $url
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
     }
 
     /**
@@ -127,7 +97,7 @@ class HttpRequest
             $parameters['format'] = $this->format;
         }
         // Needs to be last parameter
-        $parameters['url'] = $this->configuration->getContent()->getUrl();
+        $parameters['url'] = $this->configuration->getMediaUrl();
 
         return $parameters;
     }
@@ -214,21 +184,22 @@ class HttpRequest
     {
         $report = [];
         $responseData = (string)GeneralUtility::getURL($requestUrl, 0, false, $report);
+        $mediaUrl = $this->configuration->getMediaUrl();
 
         if ($report['error'] !== 0) {
             switch ($this->getErrorCode($report)) {
                 case 404:
-                    throw new HttpNotFoundException($this->url, $requestUrl);
+                    throw new HttpNotFoundException($mediaUrl, $requestUrl);
                     break;
                 case 501:
                     throw new HttpNotImplementedException(
-                        $this->url,
+                        $mediaUrl,
                         $this->format,
                         $requestUrl
                     );
                     break;
                 case 401:
-                    throw new UnauthorizedException($this->url, $requestUrl);
+                    throw new UnauthorizedException($mediaUrl, $requestUrl);
                     break;
                 default:
                     throw new \RuntimeException(

@@ -15,7 +15,7 @@ namespace Sto\Mediaoembed\Domain\Repository;
 
 use Sto\Mediaoembed\Domain\Model\Content;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * Repository for mediaoembed tt_content elements.
@@ -23,22 +23,27 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 class ContentRepository implements SingletonInterface
 {
     /**
-     * @var ObjectManagerInterface
-     * */
-    protected $objectManager;
+     * @var ConfigurationManagerInterface
+     */
+    private $configurationManager;
 
-    public function injectObjectManager(ObjectManagerInterface $objectManager)
+    public function __construct(ConfigurationManagerInterface $configurationManager)
     {
-        $this->objectManager = $objectManager;
+        $this->configurationManager = $configurationManager;
     }
 
-    public function buildFromContentObjectData(array $contentObjectData): Content
+    public function getCurrentContent(): Content
     {
-        $content = $this->objectManager->get(Content::class);
+        // We must rebuild the content object because it might have changed when the plugin
+        // is added multiple sites on one page.
+        $contentObjectData = $this->configurationManager->getContentObject()->data;
 
-        $content->setMaxHeight((int)$contentObjectData['tx_mediaoembed_maxheight'] ?? 0);
-        $content->setMaxWidth((int)$contentObjectData['tx_mediaoembed_maxwidth'] ?? 0);
-        $content->setUrl((string)$contentObjectData['tx_mediaoembed_url'] ?? '');
+        $content = new Content(
+            (int)$contentObjectData['uid'],
+            (string)$contentObjectData['tx_mediaoembed_url'],
+            (int)$contentObjectData['tx_mediaoembed_maxheight'],
+            (int)$contentObjectData['tx_mediaoembed_maxwidth']
+        );
 
         return $content;
     }

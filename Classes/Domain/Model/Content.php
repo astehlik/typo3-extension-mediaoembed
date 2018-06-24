@@ -21,51 +21,48 @@ class Content
     /**
      * @var int
      */
-    protected $maxHeight;
+    private $maxHeight;
 
     /**
      * @var int
      */
-    protected $maxWidth;
+    private $maxWidth;
+
+    /**
+     * @var int
+     */
+    private $uid;
 
     /**
      * @var string
      */
-    protected $url;
+    private $url;
 
-    /**
-     * @return int
-     */
+    public function __construct(int $uid, string $url, int $maxHeight, int $maxWidth)
+    {
+        $this->maxHeight = $maxHeight;
+        $this->maxWidth = $maxWidth;
+        $this->uid = $uid;
+        $this->url = $url;
+    }
+
     public function getMaxHeight(): int
     {
         return $this->maxHeight;
     }
 
-    /**
-     * @return int
-     */
     public function getMaxWidth(): int
     {
         return $this->maxWidth;
     }
 
+    public function getUid(): int
+    {
+        return $this->uid;
+    }
+
     public function getUrl(): string
     {
         return $this->url;
-    }
-
-    public function setMaxHeight(int $maxHeight)
-    {
-        $this->maxHeight = $maxHeight;
-    }
-
-    public function setMaxWidth(int $maxWidth)
-    {
-        $this->maxWidth = $maxWidth;
-    }
-
-    public function setUrl(string $url)
-    {
-        $this->url = $url;
     }
 }
