@@ -2,9 +2,6 @@
 
 set -ev
 
-echo "No functional tests yet :("
-exit 0
-
 echo "Funning functional tests..."
 
 phpenv config-rm xdebug.ini
