@@ -34,9 +34,7 @@ class EndpointCollectorTest extends TestCase
     public function testCollectEndpointCollectsEndpointUrls()
     {
         $this->providerEndpointsProphecy->getEndpoints()->willReturn(
-            [
-                'https://some.existing.endpoint/' => 'name',
-            ]
+            ['https://some.existing.endpoint/' => 'name']
         );
         $this->providerUrlsProphecy->getUrls()->willReturn(
             [
