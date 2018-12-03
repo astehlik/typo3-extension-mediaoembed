@@ -35,6 +35,7 @@ class ProviderResolver
     public function __construct(array $providerList)
     {
         $this->providerList = $providerList;
+        reset($this->providerList);
     }
 
     /**
@@ -47,7 +48,7 @@ class ProviderResolver
      */
     public function getNextMatchingProvider(string $url): Provider
     {
-        foreach ($this->providerList as $provider) {
+        while ($provider = next($this->providerList)) {
             if ($this->isResponsibleForUrl($provider, $url)) {
                 return $provider;
             }
