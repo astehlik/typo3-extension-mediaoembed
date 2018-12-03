@@ -14,8 +14,10 @@ namespace Sto\Mediaoembed\Controller;
  *                                                                        */
 
 use Sto\Mediaoembed\Content\Configuration;
+use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Domain\Repository\ProviderRepository;
 use Sto\Mediaoembed\Exception\InvalidUrlException;
+use Sto\Mediaoembed\Exception\NoMatchingProviderException;
 use Sto\Mediaoembed\Exception\OEmbedException;
 use Sto\Mediaoembed\Exception\RequestException;
 use Sto\Mediaoembed\Request\HttpRequest;
@@ -111,6 +113,20 @@ class OembedController extends ActionController
     }
 
     /**
+     * @param ProviderResolver $providerResolver
+     * @param string $url
+     * @return Provider|null
+     */
+    private function getNextMatchingProvider(ProviderResolver $providerResolver, string $url)
+    {
+        try {
+            return $providerResolver->getNextMatchingProvider($url);
+        } catch (NoMatchingProviderException $e) {
+            return null;
+        }
+    }
+
+    /**
      * Loops over all mathing providers and all their endpoint
      * until the request was successful or no more providers / endpoints
      * are available.
@@ -125,7 +141,9 @@ class OembedController extends ActionController
 
         $providerResolver = new ProviderResolver($this->providerRepository->findAll());
 
-        while ($provider = $providerResolver->getNextMatchingProvider($url)) {
+        $providerExceptions = [];
+
+        while ($provider = $this->getNextMatchingProvider($providerResolver, $url)) {
             $request = new HttpRequest($this->configuration, $provider->getEndpoint());
 
             try {
@@ -133,20 +151,22 @@ class OembedController extends ActionController
                 $response = $this->responseBuilder->buildResponse($responseData);
                 break;
             } catch (RequestException $exception) {
-                // @TODO record all exceptions and provide that information to the user
+                $providerExceptions[] = [
+                    'provider' => $provider,
+                    'exception' => $exception,
+                ];
                 $response = null;
             }
         }
 
         if ($response === null) {
-            throw new RequestException(
-                'No provider returned a valid result. Giving up.'
-                . ' Please make sure the URL is valid and you have configured a provider that can handle it.'
-            );
+            $this->view->assign('hasErrors', true);
+            $this->view->assign('providerExceptions', $providerExceptions);
+            return;
         }
 
-        $this->view->assign('provider', $provider);
         $this->view->assign('request', $request);
+        $this->view->assign('provider', $provider);
         $this->view->assign('response', $response);
     }
 }
