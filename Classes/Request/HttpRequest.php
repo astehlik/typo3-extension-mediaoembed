@@ -16,7 +16,7 @@ namespace Sto\Mediaoembed\Request;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Exception\HttpNotFoundException;
 use Sto\Mediaoembed\Exception\HttpNotImplementedException;
-use Sto\Mediaoembed\Exception\UnauthorizedException;
+use Sto\Mediaoembed\Exception\HttpUnauthorizedException;
 use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -178,7 +178,7 @@ class HttpRequest
      * @return string response data
      * @throws \Sto\Mediaoembed\Exception\HttpNotFoundException
      * @throws \Sto\Mediaoembed\Exception\HttpNotImplementedException
-     * @throws \Sto\Mediaoembed\Exception\UnauthorizedException
+     * @throws \Sto\Mediaoembed\Exception\HttpUnauthorizedException
      */
     protected function sendRequest($requestUrl): string
     {
@@ -199,7 +199,7 @@ class HttpRequest
                     );
                     break;
                 case 401:
-                    throw new UnauthorizedException($mediaUrl, $requestUrl);
+                    throw new HttpUnauthorizedException($mediaUrl, $requestUrl);
                     break;
                 default:
                     throw new \RuntimeException(

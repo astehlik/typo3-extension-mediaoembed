@@ -21,7 +21,7 @@ namespace Sto\Mediaoembed\Exception;
  * of any embedding any extra information, and rely on the provider
  * to provide access control.
  */
-class UnauthorizedException extends RequestException
+class HttpUnauthorizedException extends RequestException
 {
     /**
      * Initializes the Exception with a default message and a default code (1303402203).
