@@ -48,7 +48,8 @@ class ProviderResolver
      */
     public function getNextMatchingProvider(string $url): Provider
     {
-        while ($provider = next($this->providerList)) {
+        while ($provider = current($this->providerList)) {
+            next($this->providerList);
             if ($this->isResponsibleForUrl($provider, $url)) {
                 return $provider;
             }
