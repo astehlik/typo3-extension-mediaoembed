@@ -5,6 +5,7 @@ namespace Sto\Mediaoembed\Install\Repository;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\FetchMode;
+use PDO;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -41,7 +42,7 @@ class DoctrineUpdateRepository extends AbstractUpdateRepository implements Updat
             throw new \InvalidArgumentException('This method only supports doctrine results.');
         }
 
-        return $result->fetch(FetchMode::ASSOCIATIVE);
+        return $result->fetch(PDO::FETCH_ASSOC);
     }
 
     public function findAllRecordsThatNeedUpgrading()
@@ -66,7 +67,7 @@ class DoctrineUpdateRepository extends AbstractUpdateRepository implements Updat
         $builder->where(
             $builder->expr()->eq(
                 'uid',
-                $builder->createNamedParameter($contentUid, \PDO::PARAM_INT)
+                $builder->createNamedParameter($contentUid, PDO::PARAM_INT)
             )
         );
 
