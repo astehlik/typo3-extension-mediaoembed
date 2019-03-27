@@ -46,6 +46,11 @@ class MigrateContentElementsUpdate extends AbstractUpdate
         return $this->getFlexFormUpdateHandler()->checkForUpdate($description);
     }
 
+    public function getDescription(): string
+    {
+        return $this->getFlexFormUpdateHandler()->getDescription();
+    }
+
     /**
      * Performs the accordant updates.
      *

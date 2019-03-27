@@ -9,12 +9,19 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class FlexFormUpdateHandler
 {
     /**
+     * @var int
+     */
+    private $oldRecordCount;
+
+    /**
      * @var UpdateRepository
      */
     private $updateRepository;
 
     public function __construct(UpdateRepository $updateRepository)
     {
+        $this->oldRecordCount = $updateRepository->countOldRecords();
+
         $this->updateRepository = $updateRepository;
     }
 
@@ -26,17 +33,23 @@ class FlexFormUpdateHandler
      */
     public function checkForUpdate(&$description)
     {
-        $description = 'All media content elements that use oEmbed as their render type will be migrated'
-            . ' to mediaoembed content elements to be compatible with the current version.';
+        $description = $this->getDescription();
 
-        $oldRecords = $this->updateRepository->countOldRecords();
-
-        if ($oldRecords > 0) {
-            $description .= '<br />There are currently <strong>' . $oldRecords . '</strong> records to update.<br />';
+        if ($this->oldRecordCount > 0) {
             return true;
         } else {
             return false;
         }
+    }
+
+    public function getDescription(): string
+    {
+        $description = 'All media content elements that use oEmbed as their render type will be migrated'
+            . ' to mediaoembed content elements to be compatible with the current version.';
+
+        $description .= ' There are currently ' . $this->oldRecordCount . ' records to update.';
+
+        return $description;
     }
 
     /**
