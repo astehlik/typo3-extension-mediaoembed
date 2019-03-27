@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Sto\Mediaoembed\Install\Repository;
 
 use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\FetchMode;
 use PDO;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
