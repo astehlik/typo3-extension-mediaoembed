@@ -18,7 +18,6 @@ config.tx_extbase {
 }
 
 plugin.tx_mediaoembed.settings {
-
     media {
         maxwidth = {$plugin.tx_mediaoembed.defaultMaximumMediaWidth}
         maxheight =
