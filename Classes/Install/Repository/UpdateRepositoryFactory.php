@@ -5,7 +5,10 @@ namespace Sto\Mediaoembed\Install\Repository;
 
 class UpdateRepositoryFactory
 {
-    public static function getUpdateRepository()
+    /**
+     * @return UpdateRepository
+     */
+    public static function getUpdateRepository(): UpdateRepository
     {
         if (class_exists('TYPO3\\CMS\\Core\\Database\\Connection')) {
             return new DoctrineUpdateRepository();

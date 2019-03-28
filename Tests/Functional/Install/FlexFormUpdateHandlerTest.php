@@ -3,22 +3,22 @@
 namespace Sto\Mediaoembed\Tests\Functional\Install;
 
 use Sto\Mediaoembed\Install\FlexFormUpdateHandler;
+use Sto\Mediaoembed\Install\Repository\UpdateRepository;
 use Sto\Mediaoembed\Install\Repository\UpdateRepositoryFactory;
 use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTest;
 
 class FlexFormUpdateHandlerTest extends AbstractFunctionalTest
 {
     /**
-     * @var FlexFormUpdateHandler
+     * @var UpdateRepository
      */
-    private $flexFormUpdateHandler;
+    private $updateRepository;
 
     public function setUp()
     {
         parent::setUp();
 
-        $updateRepository = UpdateRepositoryFactory::getUpdateRepository();
-        $this->flexFormUpdateHandler = new FlexFormUpdateHandler($updateRepository);
+        $this->updateRepository = UpdateRepositoryFactory::getUpdateRepository();
     }
 
     public function testCheckForUpdateWithExistingLegacyContents()
@@ -26,7 +26,8 @@ class FlexFormUpdateHandlerTest extends AbstractFunctionalTest
         $this->importDataSet(__DIR__ . '/../Fixtures/LegacyContentElements.xml');
 
         $description = '';
-        $result = $this->flexFormUpdateHandler->checkForUpdate($description);
+        $flexFormUpdateHandler = new FlexFormUpdateHandler($this->updateRepository);
+        $result = $flexFormUpdateHandler->checkForUpdate($description);
 
         $this->assertTrue($result);
         $this->assertContains('<strong>4</strong>', $description);
@@ -35,7 +36,8 @@ class FlexFormUpdateHandlerTest extends AbstractFunctionalTest
     public function testCheckForUpdateWithoutLegacyContents()
     {
         $description = '';
-        $result = $this->flexFormUpdateHandler->checkForUpdate($description);
+        $flexFormUpdateHandler = new FlexFormUpdateHandler($this->updateRepository);
+        $result = $flexFormUpdateHandler->checkForUpdate($description);
 
         $this->assertFalse($result);
         $this->assertNotContains('<strong>', $description);
@@ -47,7 +49,8 @@ class FlexFormUpdateHandlerTest extends AbstractFunctionalTest
 
         $dbQueries = [];
         $customMessages = '';
-        $result = $this->flexFormUpdateHandler->performUpdate($dbQueries, $customMessages);
+        $flexFormUpdateHandler = new FlexFormUpdateHandler($this->updateRepository);
+        $result = $flexFormUpdateHandler->performUpdate($dbQueries, $customMessages);
 
         $this->assertContains('Skipping content element with uid 4 because mmFile is not set', $customMessages);
         $this->assertContains('Tried to update 3 records.', $customMessages);
