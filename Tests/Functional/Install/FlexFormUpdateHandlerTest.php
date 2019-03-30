@@ -30,7 +30,7 @@ class FlexFormUpdateHandlerTest extends AbstractFunctionalTest
         $result = $flexFormUpdateHandler->checkForUpdate($description);
 
         $this->assertTrue($result);
-        $this->assertContains('<strong>4</strong>', $description);
+        $this->assertContains('There are currently 4', $description);
     }
 
     public function testCheckForUpdateWithoutLegacyContents()
@@ -40,7 +40,7 @@ class FlexFormUpdateHandlerTest extends AbstractFunctionalTest
         $result = $flexFormUpdateHandler->checkForUpdate($description);
 
         $this->assertFalse($result);
-        $this->assertNotContains('<strong>', $description);
+        $this->assertNotContains('There are currently', $description);
     }
 
     public function testPerformUpdate()

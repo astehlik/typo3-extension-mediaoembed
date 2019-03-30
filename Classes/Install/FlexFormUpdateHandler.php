@@ -47,7 +47,9 @@ class FlexFormUpdateHandler
         $description = 'All media content elements that use oEmbed as their render type will be migrated'
             . ' to mediaoembed content elements to be compatible with the current version.';
 
-        $description .= ' There are currently ' . $this->oldRecordCount . ' records to update.';
+        if ($this->oldRecordCount > 0) {
+            $description .= ' There are currently ' . $this->oldRecordCount . ' records to update.';
+        }
 
         return $description;
     }
