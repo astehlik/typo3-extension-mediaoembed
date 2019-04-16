@@ -12,6 +12,11 @@ addons:
     packages:
       - parallel
 
+stages:
+  - test
+  - name: deploy
+    if: tag
+
 before_install:
   - composer self-update
   - composer --version
