@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2011-10-17T20:22:32Z" product-name="mediaoembed">
+	<file source-language="en" datatype="plaintext" original="messages" date="2011-10-17T20:22:32Z"
+		  product-name="mediaoembed">
 		<header/>
 		<body>
+			<trans-unit id="error" xml:space="preserve">
+				<source>Error!</source>
+			</trans-unit>
+			<trans-unit id="error_label_url" xml:space="preserve">
+				<source>No embed code could be retrieved for this URL:</source>
+			</trans-unit>
+			<trans-unit id="error_label_error" xml:space="preserve">
+				<source>Error:</source>
+			</trans-unit>
+			<trans-unit id="error_label_provider" xml:space="preserve">
+				<source>Provider:</source>
+			</trans-unit>
 			<trans-unit id="direct_link" xml:space="preserve">
 				<source>direct link</source>
 			</trans-unit>

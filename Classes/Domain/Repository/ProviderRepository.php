@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Domain\Repository;
 
@@ -12,40 +13,87 @@ namespace Sto\Mediaoembed\Domain\Repository;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use TYPO3\CMS\Extbase\Persistence\Repository;
+use Sto\Mediaoembed\Domain\Model\Provider;
+use Sto\Mediaoembed\Exception\InvalidConfigurationException;
+use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
- * Repository for mediaoembed tt_content elements.
- *
- * @method \Sto\Mediaoembed\Domain\Model\Provider findByUid($uid)
- * @method \TYPO3\CMS\Extbase\Persistence\QueryResultInterface findByIsGeneric($isGeneric)
+ * Repository for fetching providers from the configuration.
  */
-class ProviderRepository extends Repository
+class ProviderRepository implements SingletonInterface
 {
     /**
-     * Make sure we always ignore the storage page config.
+     * @var array
      */
-    public function initializeObject()
+    private $providersConfig;
+
+    public function __construct(ConfigurationManagerInterface $configurationManager)
     {
-        $this->defaultQuerySettings = $this->createQuery()->getQuerySettings();
-        $this->defaultQuerySettings->setRespectStoragePage(false);
+        $settings = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
+        $this->providersConfig = (array)$settings['providers'] ?? [];
     }
 
     /**
-     * Searches for a provider by the given UID. Only returns a result if the found provider is generic.
-     *
-     * @param int $uid
-     * @return \Sto\Mediaoembed\Domain\Model\Provider|NULL
+     * @return Provider[]|array
+     * @throws \Sto\Mediaoembed\Exception\InvalidConfigurationException
      */
-    public function findGenericByUid($uid)
+    public function findAll(): array
     {
-        $provider = $this->findByUid($uid);
-        if (!isset($provider)) {
-            return null;
+        $providers = [];
+        foreach ($this->providersConfig as $providerName => $providerConfig) {
+            $providers[] = $this->createProvider($providerName, $providerConfig);
         }
-        if (!$provider->isIsGeneric()) {
-            return null;
+        return $providers;
+    }
+
+    /**
+     * @param string $providerName
+     * @param array $providerConfig
+     * @return \Sto\Mediaoembed\Domain\Model\Provider
+     * @throws \Sto\Mediaoembed\Exception\InvalidConfigurationException
+     */
+    private function createProvider(string $providerName, array $providerConfig): Provider
+    {
+        if ($providerName === '') {
+            throw new InvalidConfigurationException('Provider name must not be empty');
         }
-        return $provider;
+
+        $endpoint = trim($providerConfig['endpoint']);
+
+        if ($endpoint === '') {
+            throw new InvalidConfigurationException(sprintf('Endpoint of provider %s is empty.', $providerName));
+        }
+
+        if (!GeneralUtility::isValidUrl($endpoint)) {
+            throw new InvalidConfigurationException(
+                sprintf('Endpoint of provider %s is an invalid URL.', $providerName)
+            );
+        }
+
+        $hasRegexUrlSchemes = true;
+        $urlSchemes = (array)$providerConfig['urlRegexes'] ?? [];
+        if ($urlSchemes === []) {
+            $urlSchemes = (array)$providerConfig['urlSchemes'] ?? [];
+            $hasRegexUrlSchemes = false;
+        }
+
+        if ($hasRegexUrlSchemes && !empty($providerConfig['urlSchemes'])) {
+            throw new InvalidConfigurationException(
+                sprintf('A provider can have either urlRegexes or urlSchemes. The provider %s has both.', $providerName)
+            );
+        }
+
+        if ($urlSchemes === []) {
+            throw new InvalidConfigurationException(sprintf('The provider %s has no URL schemes.', $providerName));
+        }
+
+        return new Provider(
+            $providerName,
+            $endpoint,
+            $urlSchemes,
+            $hasRegexUrlSchemes
+        );
     }
 }

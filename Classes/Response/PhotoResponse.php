@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Response;
 
@@ -11,6 +12,8 @@ namespace Sto\Mediaoembed\Response;
  *                                                                        *
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
+
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This type is used for representing static photos.
@@ -113,15 +116,15 @@ class PhotoResponse extends GenericResponse
      */
     protected function downloadPhoto()
     {
-        $imageData = \TYPO3\CMS\Core\Utility\GeneralUtility::getURL($this->getUrl());
+        $imageData = GeneralUtility::getURL($this->getUrl());
 
         $imageFilename = basename($this->getUrl());
         $imageFilename = preg_replace('/[^a-z0-9\._-]/i', '', $imageFilename);
-        $imagePrefix = \TYPO3\CMS\Core\Utility\GeneralUtility::md5int($imageData);
+        $imagePrefix = GeneralUtility::md5int($imageData);
         $imageFilename = $imagePrefix . '_' . $imageFilename;
         $imagePathAndFilename = 'typo3temp/tx_mediaoembed/' . $imageFilename;
 
-        \TYPO3\CMS\Core\Utility\GeneralUtility::writeFileToTypo3tempDir(PATH_site . $imagePathAndFilename, $imageData);
+        GeneralUtility::writeFileToTypo3tempDir(PATH_site . $imagePathAndFilename, $imageData);
         $this->localPath = $imagePathAndFilename;
     }
 }

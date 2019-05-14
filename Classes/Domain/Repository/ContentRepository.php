@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Domain\Repository;
 
@@ -13,21 +14,37 @@ namespace Sto\Mediaoembed\Domain\Repository;
  *                                                                        */
 
 use Sto\Mediaoembed\Domain\Model\Content;
-use TYPO3\CMS\Extbase\Persistence\Repository;
+use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * Repository for mediaoembed tt_content elements.
- *
- * @method Content findByUid($uid)
  */
-class ContentRepository extends Repository
+class ContentRepository implements SingletonInterface
 {
     /**
-     * Make sure we always ignore the storage page config.
+     * @var ConfigurationManagerInterface
      */
-    public function initializeObject()
+    private $configurationManager;
+
+    public function __construct(ConfigurationManagerInterface $configurationManager)
     {
-        $this->defaultQuerySettings = $this->createQuery()->getQuerySettings();
-        $this->defaultQuerySettings->setRespectStoragePage(false);
+        $this->configurationManager = $configurationManager;
+    }
+
+    public function getCurrentContent(): Content
+    {
+        // We must rebuild the content object because it might have changed when the plugin
+        // is added multiple sites on one page.
+        $contentObjectData = $this->configurationManager->getContentObject()->data;
+
+        $content = new Content(
+            (int)$contentObjectData['uid'],
+            (string)$contentObjectData['tx_mediaoembed_url'],
+            (int)$contentObjectData['tx_mediaoembed_maxheight'],
+            (int)$contentObjectData['tx_mediaoembed_maxwidth']
+        );
+
+        return $content;
     }
 }

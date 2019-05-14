@@ -1,22 +1,9 @@
 language: php
 
-matrix:
-  fast_finish: true
-  include:
-    - php: 7.1
-      env: TYPO3=^8.0 PHP_CS=yes PHP_LINT=yes PHPUNIT_TESTS=yes
-    - php: 7.0
-      env: TYPO3=^8.0 PHP_LINT=yes PHPUNIT_TESTS=yes
-    - php: 7.1
-      env: TYPO3=^7.6 PHPUNIT_TESTS=yes
-    - php: 7.0
-      env: TYPO3=^7.6 PHPUNIT_TESTS=yes
-    - php: 5.6
-      env: TYPO3=^6.2 PHP_LINT=yes PHPUNIT5_TESTS=yes
-
 cache:
   directories:
     - $HOME/.composer/cache
+    - $HOME/.cache/composer
 
 sudo: false
 
@@ -25,51 +12,78 @@ addons:
     packages:
       - parallel
 
+stages:
+  - test
+  - name: deploy
+    if: tag
+
 before_install:
   - composer self-update
   - composer --version
   - if [ "$GITHUB_COMPOSER_AUTH" ]; then composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH; fi
 
 before_script:
-  # Rename our working directory, required for Extension upload to TER.
-  - cd .. && mv typo3-extension-mediaoembed mediaoembed && cd mediaoembed
   - export TYPO3_PATH_WEB=$PWD/.Build/Web
-  - if [ -d $PWD/.Build/vendor/typo3/cms/components ]; then ln -s "$PWD/.Build/vendor/typo3/cms/components" .Build/Web/components; fi
-  - if [ "$PHPUNIT5_TESTS" == "yes" ]; then composer require typo3/cms=$TYPO3 --ignore-platform-reqs; else composer require typo3/cms=$TYPO3; fi
+  - chmod +x ./.travis/*.sh
 
-script:
-  - >
-    if [ "$PHP_CS" == "yes" ]; then
-      echo;
-      echo "Running phpcs";
-      echo;
-      echo;
-      .Build/bin/phpcs --config-set installed_paths $PWD/.Build/vendor/de-swebhosting/php-codestyle/PhpCodeSniffer
-      .Build/bin/phpcs --standard=PSRDefault Classes Configuration/TCA Tests/Unit ext_emconf.php ext_localconf.php
-    fi
-  - >
-    if [ "$PHPUNIT_TESTS" == "yes" ]; then
-      echo;
-      echo "Running unit tests";
-      echo;
-      echo;
-      .Build/bin/phpunit  Tests/Unit/;
-    fi
-  - >
-    if [ "$PHPUNIT5_TESTS" == "yes" ]; then
-      echo;
-      echo "Running unit tests";
-      echo;
-      echo;
-      composer remove --dev phpunit/phpunit
-      composer require --dev phpunit/phpunit:^5.7
-      .Build/bin/phpunit  Tests/Unit/;
-    fi
-  - >
-    if [ "$PHP_LINT" == "yes" ]; then
-      echo;
-      echo "Running php lint";
-      echo;
-      echo;
-      find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
-    fi
+jobs:
+  include:
+    - stage: test
+      name: "Composer validate"
+      php: "7.3"
+      script: composer validate
+    - name: "PHP code sniffer"
+      php: "7.3"
+      script: ./.travis/test_phpcs.sh
+
+    - name: "Unit tests PHP 7.0 TYPO3 7"
+      php: "7.0"
+      env: TYPO3_VERSION="typo3/cms=^7.6"
+      script: ./.travis/test_phpunit.sh
+    - name: "Unit tests PHP 7.1 TYPO3 8"
+      php: "7.1"
+      env: TYPO3_VERSION="typo3/cms=^8.7" UPLOAD_CODE_COVERAGE=yes
+      script: ./.travis/test_phpunit.sh
+    - name: "Unit tests PHP 7.2 TYPO3 9"
+      php: "7.2"
+      env: TYPO3_VERSION="typo3/minimal=^9.3"
+      script: ./.travis/test_phpunit.sh
+    - name: "Unit tests PHP 7.3 TYPO3 master"
+      php: "7.3"
+      env: TYPO3_VERSION="typo3/minimal=dev-master"
+      script: ./.travis/test_phpunit.sh
+
+    - name: "PHP linting PHP 7.0"
+      php: "7.0"
+      script: ./.travis/test_lint.sh
+    - name: "PHP linting PHP 7.1"
+      php: "7.1"
+      script: ./.travis/test_lint.sh
+    - name: "PHP linting PHP 7.2"
+      php: "7.2"
+      script: ./.travis/test_lint.sh
+    - name: "PHP linting PHP 7.3"
+      php: "7.3"
+      script: ./.travis/test_lint.sh
+
+    - name: "Functional tests PHP 7.0 TYPO3 7"
+      php: "7.0"
+      env: TYPO3_VERSION="typo3/cms=^7.6"
+      script: ./.travis/test_functional.sh
+    - name: "Functional tests PHP 7.1 TYPO3 8"
+      php: "7.1"
+      env: TYPO3_VERSION="typo3/cms=^8.7"
+      script: ./.travis/test_functional.sh
+    - name: "Functional tests PHP 7.2 TYPO3 9"
+      php: "7.2"
+      env: TYPO3_VERSION="typo3/minimal=^9.3"
+      script: ./.travis/test_functional.sh
+    - name: "Functional tests PHP 7.3 TYPO3 master"
+      php: "7.3"
+      env: TYPO3_VERSION="typo3/minimal=dev-master"
+      script: ./.travis/test_functional.sh
+
+    - stage: deploy
+      name: "Deploy to TER"
+      php: "7.3"
+      script: ./.travis/deploy_ter.sh

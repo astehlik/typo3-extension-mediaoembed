@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Request;
 
@@ -12,7 +13,11 @@ namespace Sto\Mediaoembed\Request;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use TYPO3\CMS\Core\Html\HtmlParser;
+use Sto\Mediaoembed\Content\Configuration;
+use Sto\Mediaoembed\Exception\HttpNotFoundException;
+use Sto\Mediaoembed\Exception\HttpNotImplementedException;
+use Sto\Mediaoembed\Exception\HttpUnauthorizedException;
+use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -25,7 +30,7 @@ class HttpRequest
      *
      * @var \Sto\Mediaoembed\Content\Configuration
      */
-    protected $configuration;
+    private $configuration;
 
     /**
      * The endpoint URL that should be contacted to get the embed
@@ -33,7 +38,7 @@ class HttpRequest
      *
      * @var string
      */
-    protected $endpoint;
+    private $endpoint;
 
     /**
      * The required response format. When not specified, the provider can return
@@ -46,23 +51,12 @@ class HttpRequest
      *
      * @var string
      */
-    protected $format = 'json';
+    private $format = 'json';
 
-    /**
-     * The request URL
-     *
-     * @var string
-     */
-    protected $url;
-
-    /**
-     * Injector for the configuration object
-     *
-     * @param \Sto\Mediaoembed\Content\Configuration $configuration
-     */
-    public function injectConfiguration($configuration)
+    public function __construct(Configuration $configuration, string $endpoint)
     {
         $this->configuration = $configuration;
+        $this->endpoint = $endpoint;
     }
 
     /**
@@ -80,32 +74,12 @@ class HttpRequest
     }
 
     /**
-     * Setter for the endpoint URL
-     *
-     * @param string $endpoint
-     */
-    public function setEndpoint($endpoint)
-    {
-        $this->endpoint = $endpoint;
-    }
-
-    /**
-     * Setter for the URL
-     *
-     * @param string $url
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
-    }
-
-    /**
      * Builds an array of parameters that should be attached to the
      * endpoint url.
      *
      * @return array
      */
-    protected function buildRequestParameterArray()
+    protected function buildRequestParameterArray(): array
     {
         $parameters = [];
 
@@ -123,7 +97,7 @@ class HttpRequest
             $parameters['format'] = $this->format;
         }
         // Needs to be last parameter
-        $parameters['url'] = $this->configuration->getContent()->getUrl();
+        $parameters['url'] = $this->configuration->getMediaUrl();
 
         return $parameters;
     }
@@ -138,7 +112,7 @@ class HttpRequest
      * @param array $parameters
      * @return string
      */
-    protected function buildRequestUrl($parameters)
+    protected function buildRequestUrl(array $parameters): string
     {
         if (strstr('?', $this->endpoint)) {
             $firstParameter = false;
@@ -148,12 +122,13 @@ class HttpRequest
 
         $requestUrl = $this->endpoint;
 
-        $requestUrl = HtmlParser::substituteMarker($requestUrl, '###FORMAT###', $this->format);
-        $requestUrl = HtmlParser::substituteMarker($requestUrl, '{format}', $this->format);
+        $markerService = GeneralUtility::makeInstance(MarkerBasedTemplateService::class);
+        $requestUrl = $markerService->substituteMarker($requestUrl, '###FORMAT###', $this->format);
+        $requestUrl = $markerService->substituteMarker($requestUrl, '{format}', $this->format);
 
         foreach ($parameters as $name => $value) {
             $name = urlencode($name);
-            $value = urlencode($value);
+            $value = urlencode((string)$value);
 
             if (!$firstParameter) {
                 $parameterGlue = '&';
@@ -176,24 +151,23 @@ class HttpRequest
      * @return string the error code
      * @see t3lib_div::getURL()
      */
-    protected function getErrorCode($report)
+    protected function getErrorCode(array $report): string
     {
         $message = $report['message'];
-        $errorCode = $report['error'];
 
         if (strstr($message, '404')) {
-            $errorCode = '404';
-        } else {
-            if (strstr($message, '501')) {
-                $errorCode = '501';
-            } else {
-                if (strstr($message, '401')) {
-                    $errorCode = '401';
-                }
-            }
+            return '404';
         }
 
-        return $errorCode;
+        if (strstr($message, '501')) {
+            return '501';
+        }
+
+        if (strstr($message, '401')) {
+            return '401';
+        }
+
+        return (string)$report['error'];
     }
 
     /**
@@ -204,27 +178,28 @@ class HttpRequest
      * @return string response data
      * @throws \Sto\Mediaoembed\Exception\HttpNotFoundException
      * @throws \Sto\Mediaoembed\Exception\HttpNotImplementedException
-     * @throws \Sto\Mediaoembed\Exception\UnauthorizedException
+     * @throws \Sto\Mediaoembed\Exception\HttpUnauthorizedException
      */
-    protected function sendRequest($requestUrl)
+    protected function sendRequest($requestUrl): string
     {
         $report = [];
-        $responseData = GeneralUtility::getURL($requestUrl, 0, false, $report);
+        $responseData = (string)GeneralUtility::getURL($requestUrl, 0, false, $report);
+        $mediaUrl = $this->configuration->getMediaUrl();
 
         if ($report['error'] !== 0) {
             switch ($this->getErrorCode($report)) {
                 case 404:
-                    throw new \Sto\Mediaoembed\Exception\HttpNotFoundException($this->url, $requestUrl);
+                    throw new HttpNotFoundException($mediaUrl, $requestUrl);
                     break;
                 case 501:
-                    throw new \Sto\Mediaoembed\Exception\HttpNotImplementedException(
-                        $this->url,
+                    throw new HttpNotImplementedException(
+                        $mediaUrl,
                         $this->format,
                         $requestUrl
                     );
                     break;
                 case 401:
-                    throw new \Sto\Mediaoembed\Exception\UnauthorizedException($this->url, $requestUrl);
+                    throw new HttpUnauthorizedException($mediaUrl, $requestUrl);
                     break;
                 default:
                     throw new \RuntimeException(

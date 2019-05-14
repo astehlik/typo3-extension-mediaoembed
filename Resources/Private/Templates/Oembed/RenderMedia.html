@@ -1,4 +1,23 @@
-
 <div class="tx-mediaoembed tx-mediaoembed-{f:if(condition: '{response.type}', then: '{response.type}', else: 'unknown')}">
-	<f:render partial="MediaTypes/{response.typePartialName}" arguments="{_all}" />
+	<f:if condition="{hasErrors}">
+		<f:then><f:render arguments="{_all}" section="error"/></f:then>
+		<f:else><f:render arguments="{_all}" partial="MediaTypes/{response.typePartialName}"/></f:else>
+	</f:if>
 </div>
+
+<f:section name="error">
+<p>
+	<b>{f:translate(key: 'error')}</b> {f:translate(key: 'error_label_url')}
+	<a href="{configuration.mediaUrl}">{configuration.mediaUrl}</a>
+</p>
+<f:if condition="{providerExceptions}">
+	<ul>
+		<f:for each="{providerExceptions}" as="providerException">
+			<li>
+				{f:translate(key: 'error_label_provider')} {providerException.provider.name}<br/>
+				{f:translate(key: 'error_label_error')} {providerException.exception.message}
+			</li>
+		</f:for>
+	</ul>
+</f:if>
+</f:section>

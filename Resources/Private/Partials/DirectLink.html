@@ -4,16 +4,18 @@
 
 	<div class="tx-mediaoembed-directlink">
 
-		<mo:link.typolink parameter="{configuration.content.url}">
+		<f:link.external uri="{configuration.mediaUrl}"
+				target="{settings.view.directLink.target}"
+				rel="{settings.view.directLink.rel}">
 
 			<f:if condition="{response.providerName}">
 				<f:then>{response.providerName}</f:then>
 				<f:else>{provider.name}</f:else>
 			</f:if>
 
-			<f:translate id="direct_link" />
+			<f:translate id="direct_link"/>
 
-		</mo:link.typolink>
+		</f:link.external>
 
 	</div>
 

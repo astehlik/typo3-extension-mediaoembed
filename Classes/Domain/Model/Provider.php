@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Domain\Model;
 
@@ -12,32 +13,15 @@ namespace Sto\Mediaoembed\Domain\Model;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
-
 /**
  * An oEmbed provider.
  */
-class Provider extends AbstractEntity
+class Provider
 {
     /**
      * @var string
      */
-    protected $description;
-
-    /**
-     * @var string
-     */
-    protected $embedlyShortname;
-
-    /**
-     * @var string
-     */
     protected $endpoint;
-
-    /**
-     * @var bool
-     */
-    protected $isGeneric;
 
     /**
      * @var string
@@ -45,134 +29,40 @@ class Provider extends AbstractEntity
     protected $name;
 
     /**
-     * @var int
-     */
-    protected $sorting;
-
-    /**
-     * @var string
+     * @var array
      */
     protected $urlSchemes;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Sto\Mediaoembed\Domain\Model\Provider>
-     * @lazy
+     * @var bool
      */
-    protected $useGenericProviders;
+    private $hasRegexUrlSchemes;
 
-    /**
-     * Checks, if the given provider equals this provider.
-     *
-     * @param Provider $provider
-     * @return boolean TRUE if provider is equal.
-     */
-    public function equals($provider)
+    public function __construct(string $name, string $endpoint, array $urlSchemes, bool $hasRegexUrlSchemes)
     {
-        if ($provider instanceof Provider) {
-            if ($this->getUid() === $provider->getUid()) {
-                return true;
-            }
-        }
-        return false;
+        $this->name = $name;
+        $this->endpoint = $endpoint;
+        $this->urlSchemes = $urlSchemes;
+        $this->hasRegexUrlSchemes = $hasRegexUrlSchemes;
     }
 
-    /**
-     * Getter for all endpoints of this provider (native and generic)
-     *
-     * @return array Array containing all endpoint urls of this provider (native and generic).
-     */
-    public function getAllEndpoints()
-    {
-        $endpoints = [];
-
-        $nativeEndpoint = $this->getEndpoint();
-        if (!empty($nativeEndpoint)) {
-            $endpoints[] = $nativeEndpoint;
-        }
-
-        $endpoints = array_merge($endpoints, $this->getGenericEndpoints());
-
-        return $endpoints;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmbedlyShortname()
-    {
-        return $this->embedlyShortname;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEndpoint()
+    public function getEndpoint(): string
     {
         return $this->endpoint;
     }
 
-    /**
-     * Getter for the generic endpoints this provider should use.
-     *
-     * @return array
-     */
-    public function getGenericEndpoints()
-    {
-        /** @var Provider $genericProvider */
-        $genericEndpoints = [];
-        $genericProviders = $this->getUseGenericProviders();
-        foreach ($genericProviders as $genericProvider) {
-            $genericEndpoints[] = $genericProvider->getEndpoint();
-        }
-
-        return $genericEndpoints;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return int
-     */
-    public function getSorting()
+    public function getUrlSchemes(): array
     {
-        return $this->sorting;
+        return $this->urlSchemes;
     }
 
-    /**
-     * @return string
-     */
-    public function getUrlSchemes()
+    public function hasRegexUrlSchemes(): bool
     {
-        return trim($this->urlSchemes);
-    }
-
-    /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Sto\Mediaoembed\Domain\Model\Provider>
-     */
-    public function getUseGenericProviders()
-    {
-        return $this->useGenericProviders;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isIsGeneric()
-    {
-        return $this->isGeneric;
+        return $this->hasRegexUrlSchemes;
     }
 }
