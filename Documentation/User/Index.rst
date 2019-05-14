@@ -1,14 +1,10 @@
-﻿.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
-
-.. include:: ../Includes.txt
+﻿.. include:: ../Includes.txt
 
 
-.. _users-manual:
+.. _user-manual:
 
-Users manual
+============
+Users Manual
 ============
 
 Using this extension is quite simple. You start editing or creating a content element and select

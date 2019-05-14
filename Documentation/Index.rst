@@ -1,10 +1,8 @@
-﻿.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
+﻿.. include:: Includes.txt
 
-.. include:: Includes.txt
 
+.. Every manual should have a start label for cross-referencing to
+.. start page. Do not remove this!
 
 .. _start:
 
@@ -14,49 +12,54 @@ mediaoembed
 
 .. only:: html
 
-	:Version:
-		|release|
+   :Classification:
+      mediaoembed
 
-	:Language:
-		en
+   :Version:
+      |release|
 
-	:Description:
-		Manual covering TYPO3 extension mediaoembed
+   :Language:
+      en
 
-	:Keywords:
-		oembed, video, audio, image, youtube, flickr, external
+   :Description:
+      Manual covering TYPO3 extension mediaoembed
 
-	:Copyright:
-		2014
+   :Keywords:
+      oembed, video, audio, image, youtube, flickr, external
 
-	:Author:
-		Alexander Stehlik
+   :Copyright:
+      2013-2019
 
-	:Email:
-		alexander.stehlik.deleteme@gmail.com
+   :Author:
+      Alexander Stehlik
 
-	:License:
-		This document is published under the Open Content License
-		available from http://www.opencontent.org/opl.shtml
+   :Email:
+      alexander.stehlik.deleteme@gmail.com
 
-	:Rendered:
-		|today|
+   :License:
+      This document is published under the Open Publication License
+      available from http://www.opencontent.org/openpub/
 
-	The content of this document is related to TYPO3,
-	a GNU/GPL CMS/Framework available from `www.typo3.org <http://www.typo3.org/>`_.
+   :Rendered:
+      |today|
+
+   The content of this document is related to TYPO3,
+   a GNU/GPL CMS/Framework available from `www.typo3.org <https://typo3.org/>`__.
 
 
-	**Table of Contents**
+   **Table of Contents**
 
 .. toctree::
-	:maxdepth: 5
-	:titlesonly:
-	:glob:
+   :maxdepth: 3
 
-	Introduction/Index
-	UsersManual/Index
-	Administrator/Index
-	Configuration/Index
-	KnownProblems/Index
-	ToDoList/Index
-	Targets
+
+   Introduction/Index
+   User/Index
+   Installation/Index
+   Configuration/Index
+   Developer/Index
+   KnownProblems/Index
+   ToDoList/Index
+   ChangeLog/Index
+   Support/Index
+   Links
