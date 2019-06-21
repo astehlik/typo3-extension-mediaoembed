@@ -54,7 +54,7 @@ class RequestBuilder
      * given provider data.
      *
      * @param Provider $provider
-     * @return HttpRequest or FALSE if no further requests are available
+     * @return HttpRequest|bool or FALSE if no further requests are available
      */
     public function buildNextRequest($provider)
     {

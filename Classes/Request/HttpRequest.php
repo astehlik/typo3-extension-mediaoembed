@@ -204,7 +204,7 @@ class HttpRequest
      * @return string response data
      * @throws \Sto\Mediaoembed\Exception\HttpNotFoundException
      * @throws \Sto\Mediaoembed\Exception\HttpNotImplementedException
-     * @throws \Sto\Mediaoembed\Exception\UnauthorizedException
+     * @throws \Sto\Mediaoembed\Exception\HttpUnauthorizedException
      */
     protected function sendRequest($requestUrl)
     {
@@ -224,7 +224,7 @@ class HttpRequest
                     );
                     break;
                 case 401:
-                    throw new \Sto\Mediaoembed\Exception\UnauthorizedException($this->url, $requestUrl);
+                    throw new \Sto\Mediaoembed\Exception\HttpUnauthorizedException($this->url, $requestUrl);
                     break;
                 default:
                     throw new \RuntimeException(

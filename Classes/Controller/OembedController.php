@@ -124,8 +124,10 @@ class OembedController extends ActionController
         $response = null;
         $request = null;
 
+        $this->providerResolver->initialize($content);
+
         do {
-            $provider = $this->providerResolver->getNextMatchingProvider($content);
+            $provider = $this->providerResolver->getNextMatchingProvider();
 
             if ($provider === false) {
                 break;
@@ -147,13 +149,16 @@ class OembedController extends ActionController
                 }
 
                 $request = $this->requestBuilder->buildNextRequest($provider);
-            } while ($response === null);
+            } while ($response === null && $request);
         } while ($response === null);
 
         if ($response === null) {
             throw new \Sto\Mediaoembed\Exception\RequestException(
-                'No provider returned a valid result. Giving up.'
-                . ' Please make sure the URL is valid and you have configured a provider that can handle it.'
+                'No provider returned a valid result. Giving up.' .
+                sprintf(
+                    ' Please make sure the URL %s is valid and you have configured a provider that can handle it.',
+                    $content->getUrl()
+                )
             );
         }
 

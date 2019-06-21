@@ -47,23 +47,27 @@ class ProviderResolver
     }
 
     /**
-     * Returns the next active provider whos url scheme matches the URL in
-     * the current configuration
+     * Initializes the resolver for the given content.
      *
      * @param \Sto\Mediaoembed\Domain\Model\Content $content
-     * @return Provider The next matching provider
      */
-    public function getNextMatchingProvider($content)
-    {
+    public function initialize($content) {
         $this->url = $content->getUrl();
         $this->checkIfUrlIsValid();
 
         $this->providerResult = $this->providerRepository->findByIsGeneric(false);
         $this->providerResult->rewind();
+    }
 
-        $provider = $this->detectNextMatchingProvider();
-
-        return $provider;
+    /**
+     * Returns the next active provider whos url scheme matches the URL in
+     * the current configuration
+     *
+     * @return Provider|false The next matching provider
+     */
+    public function getNextMatchingProvider()
+    {
+        return $this->detectNextMatchingProvider();
     }
 
     /**
@@ -122,16 +126,12 @@ class ProviderResolver
                 $urlScheme = str_replace('\*', '.*', $urlScheme);
                 if (preg_match('/' . $urlScheme . '/', $this->url)) {
                     $matchingProvider = $currentProvider;
-                    break 2;
+                    break;
                 }
             }
 
             $this->providerResult->next();
         } while ($matchingProvider === false);
-
-        if ($matchingProvider === false) {
-            throw new \Sto\Mediaoembed\Exception\NoMatchingProviderException($this->url);
-        }
 
         return $matchingProvider;
     }
