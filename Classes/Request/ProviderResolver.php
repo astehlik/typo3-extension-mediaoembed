@@ -51,7 +51,8 @@ class ProviderResolver
      *
      * @param \Sto\Mediaoembed\Domain\Model\Content $content
      */
-    public function initialize($content) {
+    public function initialize($content)
+    {
         $this->url = $content->getUrl();
         $this->checkIfUrlIsValid();
 
