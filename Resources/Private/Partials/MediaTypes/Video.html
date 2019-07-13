@@ -1,4 +1,6 @@
+<html data-namespace-typo3-fluid="true" xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
 <div class="embed-responsive embed-responsive-{f:if(condition: '{response.aspectRatioIs4To3}', then: '4by3', else: '16by9')}">
-	<f:format.raw>{response.html}</f:format.raw>
+    <f:format.raw>{response.html}</f:format.raw>
 </div>
-<f:render partial="DirectLink" arguments="{_all}" />
+<f:render partial="DirectLink" arguments="{_all}"/>
+</html>

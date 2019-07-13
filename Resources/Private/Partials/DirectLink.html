@@ -1,22 +1,23 @@
-{namespace mo=Sto\Mediaoembed\ViewHelpers}
+<html data-namespace-typo3-fluid="true" xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
 
 <f:if condition="{settings.view.displayDirectLink}">
 
-	<div class="tx-mediaoembed-directlink">
+    <div class="tx-mediaoembed-directlink">
 
-		<f:link.external uri="{configuration.mediaUrl}"
-				target="{settings.view.directLink.target}"
-				rel="{settings.view.directLink.rel}">
+        <f:link.external rel="{settings.view.directLink.rel}"
+            target="{settings.view.directLink.target}"
+            uri="{configuration.mediaUrl}">
 
-			<f:if condition="{response.providerName}">
-				<f:then>{response.providerName}</f:then>
-				<f:else>{provider.name}</f:else>
-			</f:if>
+            <f:if condition="{response.providerName}">
+                <f:then>{response.providerName}</f:then>
+                <f:else>{provider.name}</f:else>
+            </f:if>
 
-			<f:translate id="direct_link"/>
+            <f:translate id="direct_link"/>
 
-		</f:link.external>
+        </f:link.external>
 
-	</div>
+    </div>
 
 </f:if>
+</html>
