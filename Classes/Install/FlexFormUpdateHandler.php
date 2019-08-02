@@ -28,13 +28,10 @@ class FlexFormUpdateHandler
     /**
      * Checks whether updates are required.
      *
-     * @param string &$description : The description for the update
      * @return boolean Whether an update is required (TRUE) or not (FALSE)
      */
-    public function checkForUpdate(&$description)
+    public function checkForUpdate()
     {
-        $description = $this->getDescription();
-
         if ($this->oldRecordCount > 0) {
             return true;
         } else {

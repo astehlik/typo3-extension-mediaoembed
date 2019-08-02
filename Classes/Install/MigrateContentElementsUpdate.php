@@ -13,38 +13,17 @@ namespace Sto\Mediaoembed\Install;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use Sto\Mediaoembed\Install\Repository\UpdateRepositoryFactory;
-use TYPO3\CMS\Install\Updates\AbstractUpdate;
+use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
+use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 /**
  * Update class for the install tool that migrates the old media content
  * types with render type tx_mediaoembed to the new external media
  * content element
  */
-class MigrateContentElementsUpdate extends AbstractUpdate
+class MigrateContentElementsUpdate implements UpgradeWizardInterface
 {
-    /**
-     * Title of this update that is displayed in the install tool
-     *
-     * @var string
-     */
-    protected $title = 'mediaoembed - Migrate content elements';
-
-    /**
-     * @var FlexFormUpdateHandler
-     */
-    private $flexFormUpdateHandler;
-
-    /**
-     * Checks whether updates are required.
-     *
-     * @param string &$description : The description for the update
-     * @return boolean Whether an update is required (TRUE) or not (FALSE)
-     */
-    public function checkForUpdate(&$description)
-    {
-        return $this->getFlexFormUpdateHandler()->checkForUpdate($description);
-    }
+    use MigrateContentElementsUpdateTrait;
 
     public function getDescription(): string
     {
@@ -52,25 +31,64 @@ class MigrateContentElementsUpdate extends AbstractUpdate
     }
 
     /**
-     * Performs the accordant updates.
+     * Return the identifier for this wizard
+     * This should be the same string as used in the ext_localconf class registration
      *
-     * @param array &$dbQueries : queries done in this update
-     * @param mixed &$customMessages : custom messages
-     * @return boolean Whether everything went smoothly or not
+     * @return string
      */
-    public function performUpdate(array &$dbQueries, &$customMessages)
+    public function getIdentifier(): string
     {
+        return 'tx_mediaoembed_migratecontentelements';
+    }
+
+    /**
+     * Return the speaking name of this wizard
+     *
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return 'mediaoembed - Migrate content elements';
+    }
+
+    /**
+     * Execute the update
+     *
+     * Called when a wizard reports that an update is necessary
+     *
+     * @return bool
+     */
+    public function executeUpdate(): bool
+    {
+        $dbQueries = [];
+        $customMessages = '';
         return $this->getFlexFormUpdateHandler()->performUpdate($dbQueries, $customMessages);
     }
 
-    private function getFlexFormUpdateHandler()
+    /**
+     * Is an update necessary?
+     *
+     * Is used to determine whether a wizard needs to be run.
+     * Check if data for migration exists.
+     *
+     * @return bool
+     */
+    public function updateNecessary(): bool
     {
-        if ($this->flexFormUpdateHandler) {
-            return $this->flexFormUpdateHandler;
-        }
+        return true;
+        return $this->getFlexFormUpdateHandler()->checkForUpdate();
+    }
 
-        $updateRepository = UpdateRepositoryFactory::getUpdateRepository();
-        $this->flexFormUpdateHandler = new FlexFormUpdateHandler($updateRepository);
-        return $this->flexFormUpdateHandler;
+    /**
+     * Returns an array of class names of Prerequisite classes
+     *
+     * This way a wizard can define dependencies like "database up-to-date" or
+     * "reference index updated"
+     *
+     * @return string[]
+     */
+    public function getPrerequisites(): array
+    {
+        return [DatabaseUpdatedPrerequisite::class];
     }
 }

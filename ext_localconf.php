@@ -1,7 +1,11 @@
 <?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @noinspection PhpMissingStrictTypesDeclarationInspection */
+
 defined('TYPO3_MODE') or die();
 
 $bootMediaoembed = function () {
+    $currentVersion = \TYPO3\CMS\Core\Utility\VersionNumberUtility::getNumericTypo3Version();
     $_EXTKEY = 'mediaoembed';
     $lllPrefix = 'LLL:' . 'EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
 
@@ -12,9 +16,13 @@ $bootMediaoembed = function () {
         [],
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
+    $hasNewUpgradeWizard = version_compare($currentVersion, '9.4.0', '>=');
+    $upgradeWizardClass = $hasNewUpgradeWizard
+        ? \Sto\Mediaoembed\Install\MigrateContentElementsUpdate::class
+        : \Sto\Mediaoembed\Install\MigrateContentElementsUpdateLegacy::class;
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['tx_mediaoembed_migratecontentelements'] =
-        \Sto\Mediaoembed\Install\MigrateContentElementsUpdate::class;
+        $upgradeWizardClass;
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
         '
