@@ -10,6 +10,6 @@ plugin.tx_mediaoembed {
     # cat=content/mediaoembed/mo30; type=string; label=Download photo folder identifier: The identifier of the folder in which the local images should be stored.
     downloadPhotoSettings.folderIdentifier = mediaoembed/photos
 
-    # cat=content/mediaoembed/mo10; type=int+; label= Default max media width: Default setting is based on the styles.content.media.defaultVideoWidth constant. If a media has no custom max width this one will be used instead.
-    defaultMaximumMediaWidth < styles.content.media.defaultVideoWidth
+    # cat=content/mediaoembed/mo100; type=int+; label=Default max media width: If a media has no custom max width this one will be used instead.
+    defaultMaximumMediaWidth =
 }
