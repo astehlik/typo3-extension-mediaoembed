@@ -1,21 +1,14 @@
 <?php
+/** @noinspection PhpMissingStrictTypesDeclarationInspection */
 
-//
-// Extension Manager/Repository config file for ext "mediaoembed".
-//
-// Auto generated 16-06-2011 23:48
-//
-// Manual updates:
-// Only the data in the array - everything else is removed by next
-// writing. "version" and "dependencies" must not be touched!
-//
+/** @var string $_EXTKEY */
 $EM_CONF[$_EXTKEY] = [
     'title' => 'External media (oEmbed)',
     'description' => 'External media (YouTube, Flickr, ...) content elements using the http://oembed.com/ standard.',
     'category' => 'fe',
     'constraints' => [
         'depends' => [
-            'typo3' => '7.6.0-9.5.99',
+            'typo3' => '7.6.0-10.0.99',
             'extbase' => '',
         ],
         'conflicts' => [],
@@ -29,5 +22,5 @@ $EM_CONF[$_EXTKEY] = [
     'author' => 'Alexander Stehlik',
     'author_email' => 'alexander.stehlik.deleteme@gmail.com',
     'author_company' => '',
-    'version' => '1.0.0-dev',
+    'version' => '1.1.0-dev',
 ];
