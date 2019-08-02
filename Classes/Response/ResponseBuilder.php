@@ -14,8 +14,9 @@ namespace Sto\Mediaoembed\Response;
  *                                                                        */
 
 use Sto\Mediaoembed\Exception\InvalidResponseException;
+use Sto\Mediaoembed\Service\PhotoDownloadService;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * This type is used for representing static photos.
@@ -24,14 +25,31 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ResponseBuilder implements SingletonInterface
 {
     /**
+     * @var ObjectManagerInterface
+     */
+    private $objectManager;
+
+    /**
+     * @var PhotoDownloadService
+     */
+    private $photoDownloadService;
+
+    public function __construct(ObjectManagerInterface $objectManager, PhotoDownloadService $photoDownloadService)
+    {
+        $this->objectManager = $objectManager;
+        $this->photoDownloadService = $photoDownloadService;
+    }
+
+    /**
      * Builds a response object using the reponse data returned
      * from the provider.
      *
+     * @param string $embedUrl The URL provided by the editor that is sent to the oEmbed endpoint.
      * @param string $responseData Raw response data from the provider
      * @return GenericResponse An instance of a response
      * @throws \Sto\Mediaoembed\Exception\InvalidResponseException
      */
-    public function buildResponse(string $responseData): GenericResponse
+    public function buildResponse(string $embedUrl, string $responseData): GenericResponse
     {
         $parsedResponseData = json_decode($responseData, true);
 
@@ -39,9 +57,9 @@ class ResponseBuilder implements SingletonInterface
             throw new InvalidResponseException($responseData);
         }
 
-        $response = $this->createResponseByType($parsedResponseData['type']);
+        $parsedResponseData['embedUrl'] = $embedUrl;
 
-        $response->initializeResponseData($parsedResponseData);
+        $response = $this->createResponseByType($parsedResponseData);
 
         return $response;
     }
@@ -50,28 +68,36 @@ class ResponseBuilder implements SingletonInterface
      * Creates an instance of a non abstract response for the
      * given response type.
      *
-     * @param string $type
+     * @param array $parsedResponseData
      * @return \Sto\Mediaoembed\Response\GenericResponse
      */
-    protected function createResponseByType(string $type): GenericResponse
+    protected function createResponseByType(array $parsedResponseData): GenericResponse
     {
-        switch ($type) {
+        $finalResponseData = $parsedResponseData;
+
+        switch ((string)$parsedResponseData['type']) {
             case 'link':
-                $response = GeneralUtility::makeInstance(LinkResponse::class);
+                $response = $this->objectManager->get(LinkResponse::class);
                 break;
             case 'photo':
-                $response = GeneralUtility::makeInstance(PhotoResponse::class);
+                $finalResponseData['localFile'] = $this->photoDownloadService->downloadPhoto(
+                    $finalResponseData['embedUrl'],
+                    $finalResponseData['url']
+                );
+                $response = $this->objectManager->get(PhotoResponse::class);
                 break;
             case 'rich':
-                $response = GeneralUtility::makeInstance(RichResponse::class);
+                $response = $this->objectManager->get(RichResponse::class);
                 break;
             case 'video':
-                $response = GeneralUtility::makeInstance(VideoResponse::class);
+                $response = $this->objectManager->get(VideoResponse::class);
                 break;
             default:
-                $response = GeneralUtility::makeInstance(GenericResponse::class);
+                $response = $this->objectManager->get(GenericResponse::class);
                 break;
         }
+
+        $response->initializeResponseData($finalResponseData);
         return $response;
     }
 }

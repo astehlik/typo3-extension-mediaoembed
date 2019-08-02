@@ -148,7 +148,7 @@ class OembedController extends ActionController
 
             try {
                 $responseData = $request->sendAndGetResponseData();
-                $response = $this->responseBuilder->buildResponse($responseData);
+                $response = $this->responseBuilder->buildResponse($url, $responseData);
                 break;
             } catch (RequestException $exception) {
                 $providerExceptions[] = [

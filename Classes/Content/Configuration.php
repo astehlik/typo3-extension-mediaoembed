@@ -14,6 +14,7 @@ namespace Sto\Mediaoembed\Content;
  *                                                                        */
 
 use Sto\Mediaoembed\Domain\Repository\ContentRepository;
+use Sto\Mediaoembed\Service\ConfigurationService;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
@@ -22,24 +23,18 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 class Configuration
 {
     /**
+     * @var \Sto\Mediaoembed\Service\ConfigurationService
+     */
+    private $configurationService;
+
+    /**
      * @var ContentRepository
      */
     private $contentRepository;
 
-    /**
-     * Current TypoScript / Flexform configuration
-     *
-     * @var array
-     */
-    private $settings;
-
-    public function __construct(
-        ConfigurationManagerInterface $configurationManager,
-        ContentRepository $contentRepository
-    ) {
-        $this->settings = $configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
-        );
+    public function __construct(ConfigurationService $configurationService, ContentRepository $contentRepository)
+    {
+        $this->configurationService = $configurationService;
         $this->contentRepository = $contentRepository;
     }
 
@@ -58,11 +53,7 @@ class Configuration
             return $contentMaxHeight;
         }
 
-        if (!empty($this->settings['media']['maxheight'])) {
-            return (int)$this->settings['media']['maxheight'];
-        }
-
-        return 0;
+        return $this->configurationService->getMaxHeight();
     }
 
     /**
@@ -80,11 +71,7 @@ class Configuration
             return $contentMaxWidth;
         }
 
-        if (!empty($this->settings['media']['maxwidth'])) {
-            return (int)$this->settings['media']['maxwidth'];
-        }
-
-        return 0;
+        return $this->configurationService->getMaxWidth();
     }
 
     public function getMediaUrl(): string
