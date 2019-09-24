@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Service;
 
-use GuzzleHttp\Exception\RequestException;
 use SplFileInfo;
 use Sto\Mediaoembed\Exception\PhotoDownload\NotAnImageFileException;
 use Sto\Mediaoembed\Exception\PhotoDownloadException;
+use Sto\Mediaoembed\Exception\RequestException;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
 
@@ -44,7 +44,7 @@ class PhotoDownloadService
      * @param string $downloadUrl The media URL returned by the oEmbed Service.
      * @return \TYPO3\CMS\Core\Resource\File|null
      */
-    public function downloadPhoto(string $embedUrl, string $downloadUrl): ?File
+    public function downloadPhoto(string $embedUrl, string $downloadUrl)
     {
         if (!$downloadUrl) {
             return null;
@@ -96,7 +96,7 @@ class PhotoDownloadService
      * @param \TYPO3\CMS\Core\Resource\File $file
      * @throws \Sto\Mediaoembed\Exception\PhotoDownload\NotAnImageFileException
      */
-    public function validateMimeType(string $downloadUrl, File $file): void
+    public function validateMimeType(string $downloadUrl, File $file)
     {
         if ($file->getType() !== File::FILETYPE_IMAGE) {
             $mimeType = $file->getMimeType();
