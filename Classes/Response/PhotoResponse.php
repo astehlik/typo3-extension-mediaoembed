@@ -81,9 +81,9 @@ class PhotoResponse extends GenericResponse
     /**
      * Getter for the path to a locally stored version of the image.
      *
-     * @return FileInterface
+     * @return FileInterface|null
      */
-    public function getLocalFile(): ?FileInterface
+    public function getLocalFile()
     {
         return $this->localFile;
     }
