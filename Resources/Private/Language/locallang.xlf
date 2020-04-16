@@ -16,6 +16,12 @@
 			<trans-unit id="error_label_provider" xml:space="preserve">
 				<source>Provider:</source>
 			</trans-unit>
+			<trans-unit id="error_message_invalid_url" xml:space="preserve">
+				<source>The configured URL &quot;%s&quot; is empty or invalid.</source>
+			</trans-unit>
+			<trans-unit id="error_message_unknown" xml:space="preserve">
+				<source>An unexpected error occured: %s</source>
+			</trans-unit>
 			<trans-unit id="direct_link" xml:space="preserve">
 				<source>direct link</source>
 			</trans-unit>

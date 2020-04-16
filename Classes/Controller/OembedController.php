@@ -25,6 +25,7 @@ use Sto\Mediaoembed\Request\ProviderResolver;
 use Sto\Mediaoembed\Response\ResponseBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Controller for rendering oEmbed media
@@ -73,8 +74,10 @@ class OembedController extends ActionController
             $this->view->assign('configuration', $this->configuration);
             $this->view->assign('isSSLRequest', GeneralUtility::getIndpEnv('TYPO3_SSL'));
             $result = $this->view->render();
+        } catch (InvalidUrlException $invalidUrlException) {
+            $result = $this->renderErrorMessage('error_message_invalid_url', [$invalidUrlException->getUrl()]);
         } catch (OEmbedException $exception) {
-            $result = 'Error: ' . $exception->getMessage();
+            $result = $this->renderErrorMessage('error_message_unknown', [$exception->getMessage()]);
         }
 
         return $result;
@@ -93,7 +96,7 @@ class OembedController extends ActionController
      * Checks if the current URL is valid
      *
      * @param string $url
-     * @throws \Sto\Mediaoembed\Exception\InvalidUrlException
+     * @throws InvalidUrlException
      */
     private function checkIfUrlIsValid(string $url)
     {
@@ -103,7 +106,7 @@ class OembedController extends ActionController
             $isValid = false;
         }
 
-        if (!GeneralUtility::isValidUrl($url)) {
+        if ($isValid && !GeneralUtility::isValidUrl($url)) {
             $isValid = false;
         }
 
@@ -124,6 +127,12 @@ class OembedController extends ActionController
         } catch (NoMatchingProviderException $e) {
             return null;
         }
+    }
+
+    private function renderErrorMessage(string $translationKey, array $arguments): string
+    {
+        $message = $this->translate($translationKey, $arguments);
+        return '<div class="alert alert-warning">' . htmlspecialchars($message) . '</div>';
     }
 
     /**
@@ -168,5 +177,10 @@ class OembedController extends ActionController
         $this->view->assign('request', $request);
         $this->view->assign('provider', $provider);
         $this->view->assign('response', $response);
+    }
+
+    private function translate(string $key, $arguments = null)
+    {
+        return LocalizationUtility::translate($key, null, $arguments);
     }
 }

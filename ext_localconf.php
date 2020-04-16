@@ -12,6 +12,7 @@ $bootMediaoembed = function () {
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'Sto.Mediaoembed',
             'OembedMediaRenderer',
+            /** @uses \Sto\Mediaoembed\Controller\OembedController::renderMediaAction() */
             ['Oembed' => 'renderMedia'],
             [],
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
@@ -22,6 +23,7 @@ $bootMediaoembed = function () {
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'Mediaoembed',
             'OembedMediaRenderer',
+            /** @uses \Sto\Mediaoembed\Controller\OembedController::renderMediaAction() */
             [\Sto\Mediaoembed\Controller\OembedController::class => 'renderMedia'],
             [],
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
