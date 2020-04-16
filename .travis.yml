@@ -5,12 +5,13 @@ cache:
     - $HOME/.composer/cache
     - $HOME/.cache/composer
 
-sudo: false
-
 addons:
   apt:
     packages:
       - parallel
+
+services:
+  - mysql
 
 stages:
   - test
