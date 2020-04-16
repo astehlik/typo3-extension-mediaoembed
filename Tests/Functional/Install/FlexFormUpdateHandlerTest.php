@@ -25,9 +25,9 @@ class FlexFormUpdateHandlerTest extends AbstractFunctionalTest
     {
         $this->importDataSet(__DIR__ . '/../Fixtures/LegacyContentElements.xml');
 
-        $description = '';
         $flexFormUpdateHandler = new FlexFormUpdateHandler($this->updateRepository);
-        $result = $flexFormUpdateHandler->checkForUpdate($description);
+        $result = $flexFormUpdateHandler->checkForUpdate();
+        $description = $flexFormUpdateHandler->getDescription();
 
         $this->assertTrue($result);
         $this->assertContains('There are currently 4', $description);
@@ -35,9 +35,9 @@ class FlexFormUpdateHandlerTest extends AbstractFunctionalTest
 
     public function testCheckForUpdateWithoutLegacyContents()
     {
-        $description = '';
         $flexFormUpdateHandler = new FlexFormUpdateHandler($this->updateRepository);
-        $result = $flexFormUpdateHandler->checkForUpdate($description);
+        $result = $flexFormUpdateHandler->checkForUpdate();
+        $description = $flexFormUpdateHandler->getDescription();
 
         $this->assertFalse($result);
         $this->assertNotContains('There are currently', $description);
