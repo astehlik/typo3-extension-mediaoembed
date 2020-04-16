@@ -28,7 +28,6 @@
         "nimut/testing-framework": "^4.1.5|^5.0"
     },
     "replace": {
-        "mediaoembed": "self.version",
         "typo3-ter/mediaoembed": "self.version"
     },
     "config": {
