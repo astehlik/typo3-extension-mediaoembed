@@ -181,6 +181,6 @@ class OembedController extends ActionController
 
     private function translate(string $key, $arguments = null)
     {
-        return LocalizationUtility::translate($key, null, $arguments);
+        return LocalizationUtility::translate($key, 'Mediaoembed', $arguments);
     }
 }
