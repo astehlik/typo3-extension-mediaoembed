@@ -69,8 +69,7 @@ class HttpRequest
     {
         $parameters = $this->buildRequestParameterArray();
         $requestUrl = $this->buildRequestUrl($parameters);
-        $responseData = $this->sendRequest($requestUrl);
-        return $responseData;
+        return $this->sendRequest($requestUrl);
     }
 
     /**

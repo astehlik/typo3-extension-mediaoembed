@@ -20,7 +20,7 @@ namespace Sto\Mediaoembed\Exception;
  * This allows providers to be broad in their URL scheme, and then determine
  * at call time if they have a representation to return.
  */
-class HttpNotFoundException extends OEmbedException
+class HttpNotFoundException extends RequestException
 {
     /**
      * Initializes the Exception with a default message and a default code (1303401860).

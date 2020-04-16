@@ -1,27 +1,8 @@
 <html data-namespace-typo3-fluid="true" xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
-
 <div class="tx-mediaoembed tx-mediaoembed-{f:if(condition: '{response.type}', then: '{response.type}', else: 'unknown')}">
     <f:if condition="{hasErrors}">
-        <f:then><f:render section="error" arguments="{_all}"/></f:then>
+        <f:then><f:render partial="Errors" arguments="{_all}"/></f:then>
         <f:else><f:render partial="MediaTypes/{response.typePartialName}" arguments="{_all}"/></f:else>
     </f:if>
 </div>
-
-<f:section name="error">
-<p>
-    <b>{f:translate(key: 'error')}</b> {f:translate(key: 'error_label_url')}
-    <a href="{configuration.mediaUrl}">{configuration.mediaUrl}</a>
-</p>
-<f:if condition="{providerExceptions}">
-    <ul>
-        <f:for each="{providerExceptions}" as="providerException">
-            <li>
-                {f:translate(key: 'error_label_provider')} {providerException.provider.name}<br/>
-                {f:translate(key: 'error_label_error')} {providerException.exception.message}
-            </li>
-        </f:for>
-    </ul>
-</f:if>
-</f:section>
-
 </html>
