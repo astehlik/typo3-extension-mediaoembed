@@ -30,7 +30,7 @@ $bootMediaoembed = function () {
         );
     };
 
-    $usesNewPluginRegistration = version_compare($currentVersion, '9.4.0', '>=');
+    $usesNewPluginRegistration = version_compare($currentVersion, '10.0.0', '>=');
     $pluginRegistrationMethod = $usesNewPluginRegistration ? $registerPlugin : $registerPluginLegacy;
     $pluginRegistrationMethod();
 
