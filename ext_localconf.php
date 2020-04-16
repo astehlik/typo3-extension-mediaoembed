@@ -1,20 +1,46 @@
 <?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+/** @noinspection PhpMissingStrictTypesDeclarationInspection */
+
 defined('TYPO3_MODE') or die();
 
 $bootMediaoembed = function () {
-    $_EXTKEY = 'mediaoembed';
+    $currentVersion = \TYPO3\CMS\Core\Utility\VersionNumberUtility::getNumericTypo3Version();
     $lllPrefix = 'LLL:' . 'EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
 
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'Sto.' . $_EXTKEY,
-        'OembedMediaRenderer',
-        ['Oembed' => 'renderMedia'],
-        [],
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
-    );
+    $registerPluginLegacy = function () {
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'Sto.Mediaoembed',
+            'OembedMediaRenderer',
+            /** @uses \Sto\Mediaoembed\Controller\OembedController::renderMediaAction() */
+            ['Oembed' => 'renderMedia'],
+            [],
+            \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+        );
+    };
+
+    $registerPlugin = function () {
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'Mediaoembed',
+            'OembedMediaRenderer',
+            /** @uses \Sto\Mediaoembed\Controller\OembedController::renderMediaAction() */
+            [\Sto\Mediaoembed\Controller\OembedController::class => 'renderMedia'],
+            [],
+            \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+        );
+    };
+
+    $usesNewPluginRegistration = version_compare($currentVersion, '10.0.0', '>=');
+    $pluginRegistrationMethod = $usesNewPluginRegistration ? $registerPlugin : $registerPluginLegacy;
+    $pluginRegistrationMethod();
+
+    $hasNewUpgradeWizard = version_compare($currentVersion, '9.4.0', '>=');
+    $upgradeWizardClass = $hasNewUpgradeWizard
+        ? \Sto\Mediaoembed\Install\MigrateContentElementsUpdate::class
+        : \Sto\Mediaoembed\Install\MigrateContentElementsUpdateLegacy::class;
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['tx_mediaoembed_migratecontentelements'] =
-        \Sto\Mediaoembed\Install\MigrateContentElementsUpdate::class;
+        $upgradeWizardClass;
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
         '

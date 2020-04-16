@@ -6,11 +6,11 @@ use PHPUnit\Framework\TestCase;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Domain\Model\Content;
 use Sto\Mediaoembed\Domain\Repository\ContentRepository;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use Sto\Mediaoembed\Service\ConfigurationService;
 
 class ConfigurationTest extends TestCase
 {
-    private $configurationManagerProphecy;
+    private $configurationServiceProphecy;
 
     private $contentProphecy;
 
@@ -22,7 +22,7 @@ class ConfigurationTest extends TestCase
         $this->contentRepositoryProphecy = $this->prophesize(ContentRepository::class);
         $this->contentRepositoryProphecy->getCurrentContent()->willReturn($this->contentProphecy->reveal());
 
-        $this->configurationManagerProphecy = $this->prophesize(ConfigurationManagerInterface::class);
+        $this->configurationServiceProphecy = $this->prophesize(ConfigurationService::class);
     }
 
     public function getMaxWidthHeightDataProvider()
@@ -60,9 +60,7 @@ class ConfigurationTest extends TestCase
     public function testGetMaxheight(int $contentValue, int $settingsValue, int $expectedValue)
     {
         $this->contentProphecy->getMaxHeight()->willReturn($contentValue);
-        $this->configurationManagerProphecy
-            ->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
-            ->willReturn(['media' => ['maxheight' => $settingsValue]]);
+        $this->configurationServiceProphecy->getMaxHeight()->willReturn($settingsValue);
 
         $this->assertEquals($expectedValue, $this->getConfiguration()->getMaxheight());
     }
@@ -76,9 +74,7 @@ class ConfigurationTest extends TestCase
     public function testGetMaxwidth(int $contentValue, int $settingsValue, int $expectedValue)
     {
         $this->contentProphecy->getMaxWidth()->willReturn($contentValue);
-        $this->configurationManagerProphecy
-            ->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
-            ->willReturn(['media' => ['maxwidth' => $settingsValue]]);
+        $this->configurationServiceProphecy->getMaxWidth()->willReturn($settingsValue);
 
         $this->assertEquals($expectedValue, $this->getConfiguration()->getMaxwidth());
     }
@@ -93,7 +89,7 @@ class ConfigurationTest extends TestCase
     protected function getConfiguration(): Configuration
     {
         return new Configuration(
-            $this->configurationManagerProphecy->reveal(),
+            $this->configurationServiceProphecy->reveal(),
             $this->contentRepositoryProphecy->reveal()
         );
     }

@@ -1,8 +1,10 @@
-<f:if condition="{settings.downloadPhoto}">
-	<f:then>
-		<f:image src="{response.localPath}"  width="{response.width}" height="{response.height}" alt="{response.title}" />
-	</f:then>
-	<f:else>
-		<img src="{response.url}" width="{response.width}" height="{response.height}" alt="{response.title}" />
-	</f:else>
+<html data-namespace-typo3-fluid="true" xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
+<f:if condition="{response.localFile}">
+    <f:then>
+        <f:image alt="{response.title}" height="{response.height}" image="{response.localFile}" width="{response.width}"/>
+    </f:then>
+    <f:else>
+        <img alt="{response.title}" height="{response.height}" src="{response.url}" width="{response.width}"/>
+    </f:else>
 </f:if>
+</html>

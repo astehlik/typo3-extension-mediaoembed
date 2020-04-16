@@ -6,7 +6,7 @@
     "authors": [
         {
             "name": "Alexander Stehlik",
-            "email": "alexander.stehlik@gmail.com"
+            "email": "alexander.stehlik.deleteme@gmail.com"
         }
     ],
     "autoload": {
@@ -21,14 +21,13 @@
     },
     "require": {
         "php": "^7.0",
-        "typo3/cms-core": "^7.6|^8.7|^9.3"
+        "typo3/cms-core": "^7.6|^8.7|^9.3|^10.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.0",
-        "nimut/testing-framework": "^4.1.5"
+        "nimut/testing-framework": "^4.1.5|^5.0"
     },
     "replace": {
-        "mediaoembed": "self.version",
         "typo3-ter/mediaoembed": "self.version"
     },
     "config": {

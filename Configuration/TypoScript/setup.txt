@@ -24,6 +24,10 @@ plugin.tx_mediaoembed.settings {
     }
 
     downloadPhoto = {$plugin.tx_mediaoembed.downloadPhoto}
+    downloadPhotoSettings {
+        storageUid = {$plugin.tx_mediaoembed.downloadPhotoSettings.storageUid}
+        folderIdentifier = {$plugin.tx_mediaoembed.downloadPhotoSettings.folderIdentifier}
+    }
 
     view {
         displayDirectLink = 1

@@ -18,6 +18,8 @@ namespace Sto\Mediaoembed\Exception;
  */
 class InvalidUrlException extends OEmbedException
 {
+    private $url;
+
     /**
      * Initializes the Exception with a default message and a default code (1303248111).
      *
@@ -28,5 +30,12 @@ class InvalidUrlException extends OEmbedException
         $message = 'The media URL %s is not a valid URL. Please make sure the URL is a valid http:// or https:// URL.';
         $message = sprintf($message, $url);
         parent::__construct($message, 1303248111);
+
+        $this->url = $url;
+    }
+
+    public function getUrl(): string
+    {
+        return $this->url;
     }
 }

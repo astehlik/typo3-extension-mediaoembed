@@ -5,12 +5,13 @@ cache:
     - $HOME/.composer/cache
     - $HOME/.cache/composer
 
-sudo: false
-
 addons:
   apt:
     packages:
       - parallel
+
+services:
+  - mysql
 
 stages:
   - test
@@ -48,9 +49,9 @@ jobs:
       php: "7.2"
       env: TYPO3_VERSION="typo3/minimal=^9.3"
       script: ./.travis/test_phpunit.sh
-    - name: "Unit tests PHP 7.3 TYPO3 master"
+    - name: "Unit tests PHP 7.3 TYPO3 10"
       php: "7.3"
-      env: TYPO3_VERSION="typo3/minimal=dev-master"
+      env: TYPO3_VERSION="typo3/minimal=^10.3"
       script: ./.travis/test_phpunit.sh
 
     - name: "PHP linting PHP 7.0"
@@ -78,9 +79,9 @@ jobs:
       php: "7.2"
       env: TYPO3_VERSION="typo3/minimal=^9.3"
       script: ./.travis/test_functional.sh
-    - name: "Functional tests PHP 7.3 TYPO3 master"
+    - name: "Functional tests PHP 7.3 TYPO3 10"
       php: "7.3"
-      env: TYPO3_VERSION="typo3/minimal=dev-master"
+      env: TYPO3_VERSION="typo3/minimal=^10.3"
       script: ./.travis/test_functional.sh
 
     - stage: deploy

@@ -13,7 +13,7 @@ namespace Sto\Mediaoembed\Response;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Resource\FileInterface;
 
 /**
  * This type is used for representing static photos.
@@ -32,9 +32,9 @@ class PhotoResponse extends GenericResponse
     /**
      * Path to the local version of the photo.
      *
-     * @var string
+     * @var FileInterface
      */
-    protected $localPath;
+    protected $localFile;
 
     /**
      * The source URL of the image.
@@ -61,8 +61,11 @@ class PhotoResponse extends GenericResponse
     public function initializeTypeSpecificResponseData()
     {
         $this->url = $this->responseDataArray['url'];
-        $this->width = $this->responseDataArray['width'];
+
         $this->height = $this->responseDataArray['height'];
+        $this->width = $this->responseDataArray['width'];
+
+        $this->localFile = $this->responseDataArray['localFile'];
     }
 
     /**
@@ -78,14 +81,11 @@ class PhotoResponse extends GenericResponse
     /**
      * Getter for the path to a locally stored version of the image.
      *
-     * @return string
+     * @return FileInterface|null
      */
-    public function getLocalPath()
+    public function getLocalFile()
     {
-        if (!isset($this->localPath)) {
-            $this->downloadPhoto();
-        }
-        return $this->localPath;
+        return $this->localFile;
     }
 
     /**
@@ -106,25 +106,5 @@ class PhotoResponse extends GenericResponse
     public function getWidth()
     {
         return $this->width;
-    }
-
-    /**
-     * Downloads the photo from the server and stores it in the typo3temp folder.
-     *
-     * @return void
-     * TODO: Use _processed folder
-     */
-    protected function downloadPhoto()
-    {
-        $imageData = GeneralUtility::getURL($this->getUrl());
-
-        $imageFilename = basename($this->getUrl());
-        $imageFilename = preg_replace('/[^a-z0-9\._-]/i', '', $imageFilename);
-        $imagePrefix = GeneralUtility::md5int($imageData);
-        $imageFilename = $imagePrefix . '_' . $imageFilename;
-        $imagePathAndFilename = 'typo3temp/tx_mediaoembed/' . $imageFilename;
-
-        GeneralUtility::writeFileToTypo3tempDir(PATH_site . $imagePathAndFilename, $imageData);
-        $this->localPath = $imagePathAndFilename;
     }
 }

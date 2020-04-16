@@ -1,0 +1,12 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<div class="alert alert-warning">
+    <b>{f:translate(key: 'error')}</b> {f:translate(key: 'error_label_url')}
+    <a href="{configuration.mediaUrl}">{configuration.mediaUrl}</a>
+</div>
+<f:for each="{providerExceptions}" as="providerException">
+    <div class="alert alert-warning">
+        <strong>{f:translate(key: 'error_label_provider')}</strong> {providerException.provider.name}<br/>
+        <strong>{f:translate(key: 'error_label_error')}</strong> {providerException.exception.message}
+    </div>
+</f:for>
+</html>
