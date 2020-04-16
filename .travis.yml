@@ -51,7 +51,7 @@ jobs:
       script: ./.travis/test_phpunit.sh
     - name: "Unit tests PHP 7.3 TYPO3 master"
       php: "7.3"
-      env: TYPO3_VERSION="typo3/minimal=dev-master"
+      env: TYPO3_VERSION="typo3/minimal=^10.3"
       script: ./.travis/test_phpunit.sh
 
     - name: "PHP linting PHP 7.0"
@@ -81,7 +81,7 @@ jobs:
       script: ./.travis/test_functional.sh
     - name: "Functional tests PHP 7.3 TYPO3 master"
       php: "7.3"
-      env: TYPO3_VERSION="typo3/minimal=dev-master"
+      env: TYPO3_VERSION="typo3/minimal=^10.3"
       script: ./.travis/test_functional.sh
 
     - stage: deploy
