@@ -11,7 +11,7 @@ use Sto\Mediaoembed\Response\VideoResponse;
 
 class YoutubeNocookieProcessor implements ResponseProcessorInterface
 {
-    public function processResponse(GenericResponse $response): void
+    public function processResponse(GenericResponse $response)
     {
         if (!$response instanceof VideoResponse) {
             throw new InvalidArgumentException('This processor only works with video responses!');

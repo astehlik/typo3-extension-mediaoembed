@@ -79,7 +79,7 @@ class Provider
         return $this->hasRegexUrlSchemes;
     }
 
-    public function withProcessor(string $processorClass): void
+    public function withProcessor(string $processorClass)
     {
         $this->processors[] = $processorClass;
     }

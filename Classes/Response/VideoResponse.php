@@ -150,7 +150,7 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
         return (int)$this->width;
     }
 
-    public function setHtml(string $html): void
+    public function setHtml(string $html)
     {
         $this->html = $html;
     }

@@ -6,5 +6,5 @@ use Sto\Mediaoembed\Response\GenericResponse;
 
 interface ResponseProcessorInterface
 {
-    public function processResponse(GenericResponse $response): void;
+    public function processResponse(GenericResponse $response);
 }

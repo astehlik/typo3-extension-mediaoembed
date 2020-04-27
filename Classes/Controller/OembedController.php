@@ -131,7 +131,7 @@ class OembedController extends ActionController
         }
     }
 
-    private function processResponse(Provider $provider, GenericResponse $response): void
+    private function processResponse(Provider $provider, GenericResponse $response)
     {
         foreach ($provider->getProcessors() as $processorClass) {
             /** @var ResponseProcessorInterface $processor */
