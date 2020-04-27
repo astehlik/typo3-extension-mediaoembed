@@ -13,13 +13,15 @@ namespace Sto\Mediaoembed\Response;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
+
 /**
  * This type is used for representing playable videos.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
  * If a provider wishes the consumer to just provide a thumbnail, rather than an
  * embeddable player, they should instead return a photo response type.
  */
-class VideoResponse extends GenericResponse
+class VideoResponse extends GenericResponse implements AspectRatioAwareResponseInterface
 {
     const ASPECT_RATIO_16TO9 = '16to9';
 
@@ -68,7 +70,7 @@ class VideoResponse extends GenericResponse
      *
      * @return float
      */
-    public function getAspectRatio()
+    public function getAspectRatio(): float
     {
         if ($this->getHeight() === 0) {
             return 0;
