@@ -37,7 +37,6 @@ class ProviderRepository implements SingletonInterface
 
     /**
      * @return Provider[]|array
-     * @throws \Sto\Mediaoembed\Exception\InvalidConfigurationException
      */
     public function findAll(): array
     {
@@ -48,12 +47,6 @@ class ProviderRepository implements SingletonInterface
         return $providers;
     }
 
-    /**
-     * @param string $providerName
-     * @param array $providerConfig
-     * @return \Sto\Mediaoembed\Domain\Model\Provider
-     * @throws \Sto\Mediaoembed\Exception\InvalidConfigurationException
-     */
     private function createProvider(string $providerName, array $providerConfig): Provider
     {
         if ($providerName === '') {
@@ -89,11 +82,20 @@ class ProviderRepository implements SingletonInterface
             throw new InvalidConfigurationException(sprintf('The provider %s has no URL schemes.', $providerName));
         }
 
-        return new Provider(
+        $provider = new Provider(
             $providerName,
             $endpoint,
             $urlSchemes,
             $hasRegexUrlSchemes
         );
+
+        $processors = (array)$providerConfig['processors'] ?? [];
+        if ($processors !== []) {
+            foreach ($processors as $processor) {
+                $provider->withProcessor($processor);
+            }
+        }
+
+        return $provider;
     }
 }

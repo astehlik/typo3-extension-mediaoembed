@@ -38,6 +38,11 @@ class Provider
      */
     private $hasRegexUrlSchemes;
 
+    /**
+     * @var array
+     */
+    private $processors = [];
+
     public function __construct(string $name, string $endpoint, array $urlSchemes, bool $hasRegexUrlSchemes)
     {
         $this->name = $name;
@@ -56,6 +61,14 @@ class Provider
         return $this->name;
     }
 
+    /**
+     * @return string[]|array
+     */
+    public function getProcessors(): array
+    {
+        return $this->processors;
+    }
+
     public function getUrlSchemes(): array
     {
         return $this->urlSchemes;
@@ -64,5 +77,10 @@ class Provider
     public function hasRegexUrlSchemes(): bool
     {
         return $this->hasRegexUrlSchemes;
+    }
+
+    public function withProcessor(string $processorClass): void
+    {
+        $this->processors[] = $processorClass;
     }
 }
