@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 defined('TYPO3_MODE') or die();
 
 $lllPrefix = 'LLL:' . 'EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
@@ -7,7 +8,10 @@ $lllPrefixTtc = 'LLL:' . 'EXT:frontend/Resources/Private/Language/locallang_ttc.
 $ttContentColumns = [
     'tx_mediaoembed_url' => [
         'label' => $lllPrefix . 'tt_content.tx_mediaoembed_url',
-        'config' => ['type' => 'input'],
+        'config' => [
+            'type' => 'input',
+            'behaviour' => ['allowLanguageSynchronization' => true]
+        ],
     ],
     'tx_mediaoembed_maxwidth' => [
         'label' => $lllPrefix . 'tt_content.tx_mediaoembed_maxwidth',
@@ -22,6 +26,7 @@ $ttContentColumns = [
                 'lower' => '0',
             ],
             'default' => 0,
+            'behaviour' => ['allowLanguageSynchronization' => true]
         ],
     ],
     'tx_mediaoembed_maxheight' => [
@@ -37,6 +42,7 @@ $ttContentColumns = [
                 'lower' => '0',
             ],
             'default' => 0,
+            'behaviour' => ['allowLanguageSynchronization' => true]
         ],
     ],
 ];
