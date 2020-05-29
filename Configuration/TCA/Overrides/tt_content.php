@@ -1,5 +1,9 @@
 <?php
 declare(strict_types=1);
+
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
+
 defined('TYPO3_MODE') or die();
 
 $lllPrefix = 'LLL:' . 'EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
@@ -47,9 +51,9 @@ $ttContentColumns = [
     ],
 ];
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('tt_content', $ttContentColumns);
+ExtensionManagementUtility::addTCAcolumns('tt_content', $ttContentColumns);
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTcaSelectItem(
+ExtensionManagementUtility::addTcaSelectItem(
     'tt_content',
     'CType',
     [
@@ -90,7 +94,7 @@ $GLOBALS['TCA']['tt_content']['types']['mediaoembed_oembedmediarenderer']['showi
 ';
 
 // Use old structure before TCA was streamlined in 8.5.0 (https://forge.typo3.org/issues/78383)
-if (\TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version) < 8005000) {
+if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version) < 8005000) {
     $GLOBALS['TCA']['tt_content']['types']['mediaoembed_oembedmediarenderer']['showitem'] = '
         --palette--;' . $lllPrefixTtc . 'palette.general;general,
         --palette--;' . $lllPrefixTtc . 'palette.header;header,rowDescription,
