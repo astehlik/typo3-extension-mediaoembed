@@ -21,7 +21,9 @@ class GetUrlHttpClient implements HttpClientInterface
         }
 
         throw new HttpClientRequestException(
-            $report['message'], $this->getErrorCode($report), null,
+            $report['message'],
+            $this->getErrorCode($report),
+            null,
             $report['error']
         );
     }
