@@ -7,7 +7,7 @@ use DOMElement;
 use InvalidArgumentException;
 use Sto\Mediaoembed\Exception\ProcessorException;
 use Sto\Mediaoembed\Response\GenericResponse;
-use Sto\Mediaoembed\Response\Processor\YoutubeNocookieProcessor;
+use Sto\Mediaoembed\Response\Processor\NocookieProcessor;
 use Sto\Mediaoembed\Response\VideoResponse;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
 
@@ -24,7 +24,7 @@ class YoutubeNocookieProcessorTest extends AbstractUnitTest
         $videoProphecy->getHtml()->shouldBeCalledOnce()->willReturn($videoHtml);
         $videoProphecy->setHtml($expectedHtml)->shouldBeCalledOnce();
 
-        $processor = new YoutubeNocookieProcessor();
+        $processor = new NocookieProcessor();
         $processor->processResponse($videoProphecy->reveal());
     }
 }

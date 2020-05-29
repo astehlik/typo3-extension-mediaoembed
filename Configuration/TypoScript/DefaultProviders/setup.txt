@@ -299,6 +299,6 @@ plugin.tx_mediaoembed.settings.providers {
             30 = #https?://youtu\.be/.*#i
         }
 
-        processors.10 = Sto\Mediaoembed\Response\Processor\YoutubeNocookieProcessor
+        processors.10 = Sto\Mediaoembed\Response\Processor\Youtube\NocookieProcessor
     }
 }
