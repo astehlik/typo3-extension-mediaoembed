@@ -1,5 +1,13 @@
+page >
 page = PAGE
-page.100 < styles.content.get
+
+page.10 = CONTENT
+page.10 {
+    table = tt_content
+    select {
+        orderBy = sorting
+    }
+}
 
 tt_content >
 tt_content = USER
@@ -7,5 +15,5 @@ tt_content {
     userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
     extensionName = Mediaoembed
     pluginName = OembedMediaRenderer
+    vendorName = Sto
 }
-
