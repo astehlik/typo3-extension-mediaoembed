@@ -1,17 +1,12 @@
 <?php
 
-namespace Sto\Mediaoembed\Tests\Unit\Response\Processor;
+namespace Sto\Mediaoembed\Tests\Unit\Response\Processor\YouTube;
 
-use DOMDocument;
-use DOMElement;
-use InvalidArgumentException;
-use Sto\Mediaoembed\Exception\ProcessorException;
-use Sto\Mediaoembed\Response\GenericResponse;
-use Sto\Mediaoembed\Response\Processor\NocookieProcessor;
+use Sto\Mediaoembed\Response\Processor\YouTube\NocookieProcessor;
 use Sto\Mediaoembed\Response\VideoResponse;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
 
-class YoutubeNocookieProcessorTest extends AbstractUnitTest
+class NocookieProcessorTest extends AbstractUnitTest
 {
     public function testProcessResponse()
     {
