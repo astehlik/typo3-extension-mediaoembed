@@ -14,7 +14,7 @@ class ContentTest extends TestCase
 
     public function setUp()
     {
-        $this->content = new Content(10, 'http://the.media.url', 12, 43);
+        $this->content = new Content(10, 'http://the.media.url', 12, 43, false);
     }
 
     public function testGetMaxHeight()
@@ -35,5 +35,10 @@ class ContentTest extends TestCase
     public function testGetUrl()
     {
         $this->assertEquals('http://the.media.url', $this->content->getUrl());
+    }
+
+    public function testShouldPlayRelated()
+    {
+        $this->assertEquals(false, $this->content->shouldPlayRelated());
     }
 }
