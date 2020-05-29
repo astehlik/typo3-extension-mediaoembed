@@ -300,5 +300,6 @@ plugin.tx_mediaoembed.settings.providers {
         }
 
         processors.10 = Sto\Mediaoembed\Response\Processor\YouTube\NocookieProcessor
+        processors.20 = Sto\Mediaoembed\Response\Processor\YouTube\PlayRelatedProcessor
     }
 }

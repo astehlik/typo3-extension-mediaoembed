@@ -49,6 +49,14 @@ $ttContentColumns = [
             'behaviour' => ['allowLanguageSynchronization' => true],
         ],
     ],
+    'tx_mediaoembed_youtube_rel' => [
+        'label' => $lllPrefix . 'tt_content.tx_mediaoembed_youtube_rel',
+        'exclude' => true,
+        'config' => [
+            'type' => 'check',
+            'default' => 1,
+        ],
+    ],
 ];
 
 ExtensionManagementUtility::addTCAcolumns('tt_content', $ttContentColumns);
@@ -69,7 +77,9 @@ $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes']['mediaoembed_oembedmed
     'extensions-mediaoembed-content-externalmedia';
 
 $GLOBALS['TCA']['tt_content']['palettes']['tx_mediaoembed_settings'] = [
-    'showitem' => 'tx_mediaoembed_url, --linebreak--, tx_mediaoembed_maxwidth, tx_mediaoembed_maxheight',
+    'showitem' => 'tx_mediaoembed_url,
+    --linebreak--, tx_mediaoembed_maxwidth, tx_mediaoembed_maxheight,
+    --linebreak--, tx_mediaoembed_youtube_rel',
     'canNotCollapse' => 1,
 ];
 

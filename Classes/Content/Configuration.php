@@ -79,6 +79,11 @@ class Configuration
         return $this->getContent()->getUrl();
     }
 
+    public function shouldPlayRelated(): bool
+    {
+        return $this->contentRepository->getCurrentContent()->shouldPlayRelated();
+    }
+
     /**
      * Returns the current tt_content record domain model.
      *
