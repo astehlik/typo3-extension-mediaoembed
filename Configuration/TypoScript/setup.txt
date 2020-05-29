@@ -1,4 +1,6 @@
 plugin.tx_mediaoembed.settings {
+    httpClient = Sto\Mediaoembed\Request\HttpClient\GetUrlHttpClient
+
     media {
         maxwidth = {$plugin.tx_mediaoembed.defaultMaximumMediaWidth}
         maxheight =

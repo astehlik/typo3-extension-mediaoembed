@@ -164,7 +164,9 @@ class OembedController extends ActionController
         $providerExceptions = [];
 
         while ($provider = $this->getNextMatchingProvider($providerResolver, $url)) {
-            $request = new HttpRequest($this->configuration, $provider->getEndpoint());
+            /** @var HttpRequest $request */
+            /** @noinspection PhpParamsInspection */
+            $request = $this->objectManager->get(HttpRequest::class, $this->configuration, $provider->getEndpoint());
 
             try {
                 $responseData = $request->sendAndGetResponseData();

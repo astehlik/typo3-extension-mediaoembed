@@ -13,10 +13,14 @@ namespace Sto\Mediaoembed\Request;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use RuntimeException;
 use Sto\Mediaoembed\Content\Configuration;
+use Sto\Mediaoembed\Exception\HttpClientRequestException;
 use Sto\Mediaoembed\Exception\HttpNotFoundException;
 use Sto\Mediaoembed\Exception\HttpNotImplementedException;
 use Sto\Mediaoembed\Exception\HttpUnauthorizedException;
+use Sto\Mediaoembed\Request\HttpClient\HttpClientFactory;
+use Sto\Mediaoembed\Request\HttpClient\HttpClientInterface;
 use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -28,7 +32,7 @@ class HttpRequest
     /**
      * The configuration
      *
-     * @var \Sto\Mediaoembed\Content\Configuration
+     * @var Configuration
      */
     private $configuration;
 
@@ -53,10 +57,17 @@ class HttpRequest
      */
     private $format = 'json';
 
+    private $httpClientFactory;
+
     public function __construct(Configuration $configuration, string $endpoint)
     {
         $this->configuration = $configuration;
         $this->endpoint = $endpoint;
+    }
+
+    public function injectHttpClientFactory(HttpClientFactory $httpClientFactory)
+    {
+        $this->httpClientFactory = $httpClientFactory;
     }
 
     /**
@@ -143,74 +154,52 @@ class HttpRequest
     }
 
     /**
-     * Tries to get the real error code from the $report array of
-     * GeneralUtility::getURL()
-     *
-     * @param array $report report array of GeneralUtility::getURL()
-     * @return string the error code
-     * @see t3lib_div::getURL()
-     */
-    protected function getErrorCode(array $report): string
-    {
-        $message = $report['message'];
-
-        if (strstr($message, '404')) {
-            return '404';
-        }
-
-        if (strstr($message, '501')) {
-            return '501';
-        }
-
-        if (strstr($message, '401')) {
-            return '401';
-        }
-
-        return (string)$report['error'];
-    }
-
-    /**
      * Sends a request to the given URL and returns the reponse
      * from the server.
      *
      * @param string $requestUrl
      * @return string response data
-     * @throws \Sto\Mediaoembed\Exception\HttpNotFoundException
-     * @throws \Sto\Mediaoembed\Exception\HttpNotImplementedException
-     * @throws \Sto\Mediaoembed\Exception\HttpUnauthorizedException
+     * @throws HttpNotFoundException
+     * @throws HttpNotImplementedException
+     * @throws HttpUnauthorizedException
      */
     protected function sendRequest($requestUrl): string
     {
-        $report = [];
-        $responseData = (string)GeneralUtility::getURL($requestUrl, 0, false, $report);
-        $mediaUrl = $this->configuration->getMediaUrl();
-
-        if ($report['error'] !== 0) {
-            switch ($this->getErrorCode($report)) {
-                case 404:
-                    throw new HttpNotFoundException($mediaUrl, $requestUrl);
-                    break;
-                case 501:
-                    throw new HttpNotImplementedException(
-                        $mediaUrl,
-                        $this->format,
-                        $requestUrl
-                    );
-                    break;
-                case 401:
-                    throw new HttpUnauthorizedException($mediaUrl, $requestUrl);
-                    break;
-                default:
-                    throw new \RuntimeException(
-                        'An unknown error occurred while contacting the provider: '
-                        . $report['message'] . ' (' . $report['error'] . ').'
-                        . ' Please make sure CURL use is enabled in the install tool to get valid error codes.',
-                        1303401545
-                    );
-                    break;
-            }
+        $requestException = null;
+        try {
+            return $this->getHttpClient()->executeGetRequest($requestUrl);
+        } catch (HttpClientRequestException $e) {
+            $requestException = $e;
         }
 
-        return $responseData;
+        $mediaUrl = $this->configuration->getMediaUrl();
+        switch ($requestException->getCode()) {
+            case 404:
+                throw new HttpNotFoundException($mediaUrl, $requestUrl);
+                break;
+            case 501:
+                throw new HttpNotImplementedException(
+                    $mediaUrl,
+                    $this->format,
+                    $requestUrl
+                );
+                break;
+            case 401:
+                throw new HttpUnauthorizedException($mediaUrl, $requestUrl);
+                break;
+            default:
+                throw new RuntimeException(
+                    'An unknown error occurred while contacting the provider: '
+                    . $requestException->getMessage() . ' (' . $requestException->getErrorDetails() . ').'
+                    . ' Please make sure CURL use is enabled in the install tool to get valid error codes.',
+                    1303401545
+                );
+                break;
+        }
+    }
+
+    private function getHttpClient(): HttpClientInterface
+    {
+        return $this->httpClientFactory->getHttpClient();
     }
 }
