@@ -4,8 +4,8 @@ namespace Sto\Mediaoembed\ViewHelpers;
 
 use Closure;
 use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 class EmbedResponsivePaddingViewHelper extends AbstractViewHelper
 {
@@ -29,5 +29,10 @@ class EmbedResponsivePaddingViewHelper extends AbstractViewHelper
     private static function getResponse(array $arguments): AspectRatioAwareResponseInterface
     {
         return $arguments['response'];
+    }
+
+    public function render()
+    {
+        return self::renderStatic($this->arguments, $this->buildRenderChildrenClosure(), $this->renderingContext);
     }
 }
