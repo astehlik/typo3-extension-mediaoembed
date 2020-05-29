@@ -10,7 +10,7 @@ $ttContentColumns = [
         'label' => $lllPrefix . 'tt_content.tx_mediaoembed_url',
         'config' => [
             'type' => 'input',
-            'behaviour' => ['allowLanguageSynchronization' => true]
+            'behaviour' => ['allowLanguageSynchronization' => true],
         ],
     ],
     'tx_mediaoembed_maxwidth' => [
@@ -26,7 +26,7 @@ $ttContentColumns = [
                 'lower' => '0',
             ],
             'default' => 0,
-            'behaviour' => ['allowLanguageSynchronization' => true]
+            'behaviour' => ['allowLanguageSynchronization' => true],
         ],
     ],
     'tx_mediaoembed_maxheight' => [
@@ -42,7 +42,7 @@ $ttContentColumns = [
                 'lower' => '0',
             ],
             'default' => 0,
-            'behaviour' => ['allowLanguageSynchronization' => true]
+            'behaviour' => ['allowLanguageSynchronization' => true],
         ],
     ],
 ];
