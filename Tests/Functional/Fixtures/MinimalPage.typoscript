@@ -1,0 +1,11 @@
+page = PAGE
+page.100 < styles.content.get
+
+tt_content >
+tt_content = USER
+tt_content {
+    userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+    extensionName = Mediaoembed
+    pluginName = OembedMediaRenderer
+}
+

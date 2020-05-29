@@ -1,0 +1,2 @@
+plugin.tx_mediaoembed.settings.httpClient = Sto\Mediaoembed\Tests\Functional\Fixtures\DummyHttpClient
+

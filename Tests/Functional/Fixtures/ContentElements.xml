@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<tt_content>
+		<uid>1</uid>
+		<pid>2</pid>
+		<CType>mediaoembed_oembedmediarenderer</CType>
+		<header>YouTube Element</header>
+		<tx_mediaoembed_url>https://www.youtube.com/watch?v=iwGFalTRHDA</tx_mediaoembed_url>
+		<sorting>10</sorting>
+	</tt_content>
+	<tt_content>
+		<uid>2</uid>
+		<pid>3</pid>
+		<CType>mediaoembed_oembedmediarenderer</CType>
+		<header>YouTube Element without related</header>
+		<tx_mediaoembed_url>https://www.youtube.com/watch?v=iwGFalTRHDA</tx_mediaoembed_url>
+		<sorting>20</sorting>
+		<tx_mediaoembed_play_related>0</tx_mediaoembed_play_related>
+	</tt_content>
+</dataset>
