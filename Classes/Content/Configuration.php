@@ -13,9 +13,9 @@ namespace Sto\Mediaoembed\Content;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Sto\Mediaoembed\Domain\Model\Content;
 use Sto\Mediaoembed\Domain\Repository\ContentRepository;
 use Sto\Mediaoembed\Service\ConfigurationService;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * Handels TypoScript and content object configuration
@@ -23,7 +23,7 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 class Configuration
 {
     /**
-     * @var \Sto\Mediaoembed\Service\ConfigurationService
+     * @var ConfigurationService
      */
     private $configurationService;
 
@@ -82,9 +82,9 @@ class Configuration
     /**
      * Returns the current tt_content record domain model.
      *
-     * @return \Sto\Mediaoembed\Domain\Model\Content
+     * @return Content
      */
-    private function getContent()
+    private function getContent(): Content
     {
         return $this->contentRepository->getCurrentContent();
     }
