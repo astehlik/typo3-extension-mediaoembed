@@ -1,22 +1,3 @@
-config.tx_extbase {
-    persistence {
-        classes {
-            Sto\Mediaoembed\Domain\Model\Content {
-                mapping {
-                    tableName = tt_content
-                    columns {
-                        tx_mediaoembed_maxwidth.mapOnProperty = maxwidth
-                        tx_mediaoembed_maxheight.mapOnProperty = maxheight
-                        tx_mediaoembed_response.mapOnProperty = response
-                        tx_mediaoembed_thumbnail.mapOnProperty = thumbnail
-                        tx_mediaoembed_url.mapOnProperty = url
-                    }
-                }
-            }
-        }
-    }
-}
-
 plugin.tx_mediaoembed.settings {
     media {
         maxwidth = {$plugin.tx_mediaoembed.defaultMaximumMediaWidth}
