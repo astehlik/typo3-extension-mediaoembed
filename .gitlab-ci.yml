@@ -1,5 +1,8 @@
 image: intera/docker-ci-php:7.4-ubuntu
 
+variables:
+  MYSQL_DATABASE: "typo3"
+
 stages:
   - build
   - test
@@ -46,10 +49,14 @@ test:unit:
 
 test:functional:
   stage: test
+  services:
+    - mysql:5.7
   dependencies:
     - build:composer
     - build:cc-reporter
   script:
+    - export typo3DatabaseName="$MYSQL_DATABASE"
+    - export typo3DatabasePassword="$MYSQL_ROOT_PASSWORD"
     - phpenmod xdebug
     - .Build/bin/phpunit --coverage-clover .Build/Logs/clover.xml --whitelist Classes Tests/Functional/ -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml
     - ./cc-test-reporter format-coverage -t clover -o .Build/Logs/clover-functional.json .Build/Logs/clover.xml
@@ -57,6 +64,9 @@ test:functional:
     expire_in: 1 hour
     paths:
       - .Build/Logs/clover-functional.json
+  variables:
+    typo3DatabaseHost: localhost
+    typo3DatabaseUsername: root
 
 report:codecoverage:
   stage: report
