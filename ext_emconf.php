@@ -2,6 +2,7 @@
 /** @noinspection PhpMissingStrictTypesDeclarationInspection */
 
 /** @var string $_EXTKEY */
+// phpcs:ignore Squiz.NamingConventions.ValidVariableName
 $EM_CONF[$_EXTKEY] = [
     'title' => 'External media (oEmbed)',
     'description' => 'External media (YouTube, Flickr, ...) content elements using the http://oembed.com/ standard.',
