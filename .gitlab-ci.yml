@@ -51,7 +51,8 @@ test:unit:
 test:functional:
   stage: test
   services:
-    - mysql:5.7
+    - name: mysql:5.7
+      alias: db
   dependencies:
     - build:composer
     - build:cc-reporter
@@ -66,7 +67,7 @@ test:functional:
     paths:
       - .Build/Logs/clover-functional.json
   variables:
-    typo3DatabaseHost: localhost
+    typo3DatabaseHost: db
     typo3DatabaseUsername: root
 
 report:codecoverage:
