@@ -2,6 +2,7 @@ image: intera/docker-ci-php:7.4-ubuntu
 
 variables:
   MYSQL_DATABASE: "typo3"
+  MYSQL_ROOT_PASSWORD: "MyRootPass"
 
 stages:
   - build
