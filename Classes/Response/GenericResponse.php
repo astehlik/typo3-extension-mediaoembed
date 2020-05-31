@@ -26,7 +26,7 @@ class GenericResponse
      *
      * @var string
      */
-    protected $author_name;
+    protected $authorName;
 
     /**
      * A URL for the author/owner of the resource.
@@ -34,7 +34,7 @@ class GenericResponse
      *
      * @var string
      */
-    protected $author_url;
+    protected $authorUrl;
 
     /**
      * The suggested cache lifetime for this resource, in seconds.
@@ -43,7 +43,7 @@ class GenericResponse
      *
      * @var string
      */
-    protected $cache_age;
+    protected $cacheAge;
 
     /**
      * The name of the resource provider.
@@ -51,7 +51,7 @@ class GenericResponse
      *
      * @var string
      */
-    protected $provider_name;
+    protected $providerName;
 
     /**
      * The url of the resource provider.
@@ -59,7 +59,7 @@ class GenericResponse
      *
      * @var string
      */
-    protected $provider_url;
+    protected $providerUrl;
 
     /**
      * Array containing the json decoded data of the provider's response
@@ -76,7 +76,7 @@ class GenericResponse
      *
      * @var string
      */
-    protected $thumbnail_height;
+    protected $thumbnailHeight;
 
     /**
      * A URL to a thumbnail image representing the resource.
@@ -88,7 +88,7 @@ class GenericResponse
      *
      * @var string
      */
-    protected $thumbnail_url;
+    protected $thumbnailUrl;
 
     /**
      * The width of the optional thumbnail.
@@ -98,7 +98,7 @@ class GenericResponse
      *
      * @var string
      */
-    protected $thumbnail_width;
+    protected $thumbnailWidth;
 
     /**
      * A text title, describing the resource.
@@ -136,14 +136,14 @@ class GenericResponse
         $this->type = $this->getValueFromResponseData('type');
         $this->version = $this->getValueFromResponseData('version');
         $this->title = $this->getValueFromResponseData('title');
-        $this->author_name = $this->getValueFromResponseData('author_name');
-        $this->author_url = $this->getValueFromResponseData('author_url');
-        $this->provider_name = $this->getValueFromResponseData('provider_name');
-        $this->provider_url = $this->getValueFromResponseData('provider_url');
-        $this->cache_age = $this->getValueFromResponseData('cache_age');
-        $this->thumbnail_url = $this->getValueFromResponseData('thumbnail_url');
-        $this->thumbnail_width = $this->getValueFromResponseData('thumbnail_width');
-        $this->thumbnail_height = $this->getValueFromResponseData('thumbnail_height');
+        $this->authorName = $this->getValueFromResponseData('author_name');
+        $this->authorUrl = $this->getValueFromResponseData('author_url');
+        $this->providerName = $this->getValueFromResponseData('provider_name');
+        $this->providerUrl = $this->getValueFromResponseData('provider_url');
+        $this->cacheAge = $this->getValueFromResponseData('cache_age');
+        $this->thumbnailUrl = $this->getValueFromResponseData('thumbnail_url');
+        $this->thumbnailWidth = $this->getValueFromResponseData('thumbnail_width');
+        $this->thumbnailHeight = $this->getValueFromResponseData('thumbnail_height');
         $this->initializeTypeSpecificResponseData();
     }
 
@@ -162,7 +162,7 @@ class GenericResponse
      */
     public function getAuthorName()
     {
-        return $this->author_name;
+        return $this->authorName;
     }
 
     /**
@@ -172,7 +172,7 @@ class GenericResponse
      */
     public function getAuthorUrl()
     {
-        return $this->author_url;
+        return $this->authorUrl;
     }
 
     /**
@@ -182,7 +182,7 @@ class GenericResponse
      */
     public function getCacheAge()
     {
-        return $this->cache_age;
+        return $this->cacheAge;
     }
 
     /**
@@ -192,7 +192,7 @@ class GenericResponse
      */
     public function getProviderName()
     {
-        return $this->provider_name;
+        return $this->providerName;
     }
 
     /**
@@ -202,7 +202,7 @@ class GenericResponse
      */
     public function getProviderUrl()
     {
-        return $this->provider_url;
+        return $this->providerUrl;
     }
 
     /**
@@ -222,7 +222,7 @@ class GenericResponse
      */
     public function getThumbnailHeight()
     {
-        return $this->thumbnail_height;
+        return $this->thumbnailHeight;
     }
 
     /**
@@ -232,7 +232,7 @@ class GenericResponse
      */
     public function getThumbnailUrl()
     {
-        return $this->thumbnail_url;
+        return $this->thumbnailUrl;
     }
 
     /**
@@ -242,7 +242,7 @@ class GenericResponse
      */
     public function getThumbnailWidth()
     {
-        return $this->thumbnail_width;
+        return $this->thumbnailWidth;
     }
 
     /**
