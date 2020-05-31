@@ -34,6 +34,16 @@ class ResponseBuilder implements SingletonInterface
      */
     private $photoDownloadService;
 
+    /**
+     * @var string[]
+     */
+    private $responseTypes = [
+        'link',
+        'photo',
+        'rich',
+        'video',
+    ];
+
     public function __construct(ObjectManagerInterface $objectManager, PhotoDownloadService $photoDownloadService)
     {
         $this->objectManager = $objectManager;
@@ -73,29 +83,59 @@ class ResponseBuilder implements SingletonInterface
     {
         $finalResponseData = $parsedResponseData;
 
-        switch ((string)$parsedResponseData['type']) {
-            case 'link':
-                $response = $this->objectManager->get(LinkResponse::class);
-                break;
-            case 'photo':
-                $finalResponseData['localFile'] = $this->photoDownloadService->downloadPhoto(
-                    $finalResponseData['embedUrl'],
-                    $finalResponseData['url']
-                );
-                $response = $this->objectManager->get(PhotoResponse::class);
-                break;
-            case 'rich':
-                $response = $this->objectManager->get(RichResponse::class);
-                break;
-            case 'video':
-                $response = $this->objectManager->get(VideoResponse::class);
-                break;
-            default:
-                $response = $this->objectManager->get(GenericResponse::class);
-                break;
-        }
+        $responseType = (string)$parsedResponseData['type'];
+        $createMethod = in_array($responseType, $this->responseTypes, true)
+            ? 'createResponse' . ucfirst($responseType)
+            : 'createResponseGeneric';
 
-        $response->initializeResponseData($finalResponseData);
+        /**
+         * @uses createResponseGeneric()
+         * @uses createResponseLink()
+         * @uses createResponsePhoto()
+         * @uses createResponseRich()
+         * @uses createResponseVideo()
+         */
+        return $this->$createMethod($finalResponseData);
+    }
+
+    protected function createResponseGeneric(array $responseData): GenericResponse
+    {
+        return $this->createResponseWithData(GenericResponse::class, $responseData);
+    }
+
+    protected function createResponseLink(array $responseData): LinkResponse
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->createResponseWithData(LinkResponse::class, $responseData);
+    }
+
+    protected function createResponsePhoto(array $responseData): PhotoResponse
+    {
+        $responseData['localFile'] = $this->photoDownloadService->downloadPhoto(
+            $responseData['embedUrl'],
+            $responseData['url']
+        );
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->createResponseWithData(PhotoResponse::class, $responseData);
+    }
+
+    protected function createResponseRich(array $responseData): RichResponse
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->createResponseWithData(RichResponse::class, $responseData);
+    }
+
+    protected function createResponseVideo(array $responseData): VideoResponse
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->createResponseWithData(VideoResponse::class, $responseData);
+    }
+
+    protected function createResponseWithData(string $responseClass, array $responseData): GenericResponse
+    {
+        /** @var GenericResponse $response */
+        $response = $this->objectManager->get($responseClass);
+        $response->initializeResponseData($responseData);
         return $response;
     }
 }
