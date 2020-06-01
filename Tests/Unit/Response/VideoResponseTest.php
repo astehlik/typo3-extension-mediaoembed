@@ -81,6 +81,11 @@ class VideoResponseTest extends AbstractUnitTest
             ]
         );
         $this->assertEquals($expectedRatioType, $this->videoResponse->getAspectRatioType());
+
+        $is4To3 = $expectedRatioType === VideoResponse::ASPECT_RATIO_4TO3;
+        $is16To9 = $expectedRatioType === VideoResponse::ASPECT_RATIO_16TO9;
+        $this->assertEquals($is4To3, $this->videoResponse->getAspectRatioIs4To3());
+        $this->assertEquals($is16To9, $this->videoResponse->getAspectRatioIs16To9());
     }
 
     /**
@@ -97,5 +102,16 @@ class VideoResponseTest extends AbstractUnitTest
             ]
         );
         $this->assertEquals(160 / 190, $this->videoResponse->getAspectRatio());
+    }
+
+    public function testAspectRatioDoesNotDivideByZero()
+    {
+        $this->assertEquals(0, $this->videoResponse->getAspectRatio());
+    }
+
+    public function testSetHtml()
+    {
+        $this->videoResponse->setHtml('the new html');
+        $this->assertEquals('the new html', $this->videoResponse->getHtml());
     }
 }

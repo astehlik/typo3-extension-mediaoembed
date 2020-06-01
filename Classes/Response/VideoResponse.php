@@ -115,9 +115,9 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
 
         if (abs($ratioDiff4To3) < abs($ratioDiff16To9)) {
             return static::ASPECT_RATIO_4TO3;
-        } else {
-            return static::ASPECT_RATIO_16TO9;
         }
+
+        return static::ASPECT_RATIO_16TO9;
     }
 
     /**
