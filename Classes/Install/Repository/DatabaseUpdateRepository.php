@@ -9,13 +9,13 @@ class DatabaseUpdateRepository extends AbstractUpdateRepository implements Updat
 {
     public function countOldRecords(): int
     {
-        $db = $this->getDatabaseConnection();
-        $res = $db->exec_SELECTquery(
+        $connection = $this->getDatabaseConnection();
+        $res = $connection->exec_SELECTquery(
             'uid',
             'tt_content',
             $this->getWhereForRecordsThatNeedUpgrading()
         );
-        return (int)$db->sql_num_rows($res);
+        return (int)$connection->sql_num_rows($res);
     }
 
     public function executeUpdateQuery(int $contentUid, array $updateData, array &$dbQueries): string
@@ -34,7 +34,7 @@ class DatabaseUpdateRepository extends AbstractUpdateRepository implements Updat
 
     public function findAllRecordsThatNeedUpgrading()
     {
-        return $res = $this->getDatabaseConnection()->exec_SELECTquery(
+        return $this->getDatabaseConnection()->exec_SELECTquery(
             'uid, pi_flexform',
             'tt_content',
             $this->getWhereForRecordsThatNeedUpgrading()
