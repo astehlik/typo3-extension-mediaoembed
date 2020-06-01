@@ -73,6 +73,12 @@ class GenericResponseTest extends TestCase
         $this->assertEquals('Generic', $response->getTypePartialName());
     }
 
+    public function testGetValueFromResponseDataDefaultsToNull()
+    {
+        $response = $this->createResponse([]);
+        $this->assertNull($response->getAuthorName());
+    }
+
     public function testGetVersion()
     {
         $response = $this->createResponse(['version' => '1.0']);
