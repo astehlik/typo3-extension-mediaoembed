@@ -62,6 +62,12 @@ class HttpRequest
      */
     private $httpClientFactory;
 
+    private $httpErrorHandlers = [
+        401,
+        404,
+        501,
+    ];
+
     public function __construct(Configuration $configuration, string $endpoint)
     {
         $this->configuration = $configuration;
@@ -176,6 +182,54 @@ class HttpRequest
         return $endpointBaseUrl . '?' . $queryString;
     }
 
+    protected function handleError401(string $requestUrl)
+    {
+        throw new HttpUnauthorizedException($this->configuration->getMediaUrl(), $requestUrl);
+    }
+
+    protected function handleError404(string $requestUrl)
+    {
+        throw new HttpNotFoundException($this->configuration->getMediaUrl(), $requestUrl);
+    }
+
+    protected function handleError501(string $requestUrl)
+    {
+        throw new HttpNotImplementedException(
+            $this->configuration->getMediaUrl(),
+            $this->format,
+            $requestUrl
+        );
+    }
+
+    /**
+     * @param $requestException
+     */
+    protected function handleErrorUnknown($requestException)
+    {
+        throw new RuntimeException(
+            'An unknown error occurred while contacting the provider: '
+            . $requestException->getMessage() . ' (' . $requestException->getErrorDetails() . ').'
+            . ' Please make sure CURL use is enabled in the install tool to get valid error codes.',
+            1303401545
+        );
+    }
+
+    protected function handleRequestError(HttpClientRequestException $requestException, string $requestUrl)
+    {
+        $errorCode = $requestException->getCode();
+        if (!in_array($errorCode, $this->httpErrorHandlers, true)) {
+            $this->handleErrorUnknown($requestException);
+        }
+
+        /**
+         * @uses handleError401()
+         * @uses handleError404()
+         * @uses handleError501()
+         */
+        $errorHandlerMethod = 'handleError' . $errorCode;
+        $this->$errorHandlerMethod($requestUrl);
+    }
+
     /**
      * @param string $requestUrl
      * @return string|string[]
@@ -193,9 +247,6 @@ class HttpRequest
      *
      * @param string $requestUrl
      * @return string response data
-     * @throws HttpNotFoundException
-     * @throws HttpNotImplementedException
-     * @throws HttpUnauthorizedException
      */
     protected function sendRequest($requestUrl): string
     {
@@ -206,30 +257,9 @@ class HttpRequest
             $requestException = $e;
         }
 
-        $mediaUrl = $this->configuration->getMediaUrl();
-        switch ($requestException->getCode()) {
-            case 404:
-                throw new HttpNotFoundException($mediaUrl, $requestUrl);
-                break;
-            case 501:
-                throw new HttpNotImplementedException(
-                    $mediaUrl,
-                    $this->format,
-                    $requestUrl
-                );
-                break;
-            case 401:
-                throw new HttpUnauthorizedException($mediaUrl, $requestUrl);
-                break;
-            default:
-                throw new RuntimeException(
-                    'An unknown error occurred while contacting the provider: '
-                    . $requestException->getMessage() . ' (' . $requestException->getErrorDetails() . ').'
-                    . ' Please make sure CURL use is enabled in the install tool to get valid error codes.',
-                    1303401545
-                );
-                break;
-        }
+        $this->handleRequestError($requestException, $requestUrl);
+
+        throw new RuntimeException('This step should never be reached!');
     }
 
     private function getHttpClient(): HttpClientInterface
