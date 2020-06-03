@@ -21,7 +21,7 @@ use Sto\Mediaoembed\Exception\HttpNotImplementedException;
 use Sto\Mediaoembed\Exception\HttpUnauthorizedException;
 use Sto\Mediaoembed\Request\HttpClient\HttpClientFactory;
 use Sto\Mediaoembed\Request\HttpClient\HttpClientInterface;
-use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -57,6 +57,9 @@ class HttpRequest
      */
     private $format = 'json';
 
+    /**
+     * @var HttpClientFactory
+     */
     private $httpClientFactory;
 
     public function __construct(Configuration $configuration, string $endpoint)
@@ -83,6 +86,42 @@ class HttpRequest
         return $this->sendRequest($requestUrl);
     }
 
+    protected function addRequestParameterFormat(array &$parameters)
+    {
+        if (isset($this->format)) {
+            $parameters['format'] = $this->format;
+        }
+    }
+
+    protected function addRequestParameterMaxHeight(array &$parameters)
+    {
+        $maxheight = $this->configuration->getMaxheight();
+        if ($maxheight > 0) {
+            $parameters['maxheight'] = $maxheight;
+        }
+    }
+
+    protected function addRequestParameterMaxWidth(array &$parameters)
+    {
+        $maxwidth = $this->configuration->getMaxwidth();
+        if ($maxwidth > 0) {
+            $parameters['maxwidth'] = $maxwidth;
+        }
+    }
+
+    protected function buildQueryStringParameters(string $endpointQueryParameters, array $parameters): array
+    {
+        $baseUrlParameters = [];
+        if ($endpointQueryParameters) {
+            parse_str($endpointQueryParameters, $baseUrlParameters);
+        }
+
+        $finalParameters = $baseUrlParameters;
+        ArrayUtility::mergeRecursiveWithOverrule($finalParameters, $parameters);
+
+        return $finalParameters;
+    }
+
     /**
      * Builds an array of parameters that should be attached to the
      * endpoint url.
@@ -93,19 +132,10 @@ class HttpRequest
     {
         $parameters = [];
 
-        $maxwidth = $this->configuration->getMaxwidth();
-        if ($maxwidth > 0) {
-            $parameters['maxwidth'] = $maxwidth;
-        }
+        $this->addRequestParameterMaxWidth($parameters);
+        $this->addRequestParameterMaxHeight($parameters);
+        $this->addRequestParameterFormat($parameters);
 
-        $maxheight = $this->configuration->getMaxheight();
-        if ($maxheight > 0) {
-            $parameters['maxheight'] = $maxheight;
-        }
-
-        if (isset($this->format)) {
-            $parameters['format'] = $this->format;
-        }
         // Needs to be last parameter
         $parameters['url'] = $this->configuration->getMediaUrl();
 
@@ -124,32 +154,36 @@ class HttpRequest
      */
     protected function buildRequestUrl(array $parameters): string
     {
-        if (strstr('?', $this->endpoint)) {
-            $firstParameter = false;
-        } else {
-            $firstParameter = true;
-        }
-
         $requestUrl = $this->endpoint;
+        $requestUrl = $this->replaceFormatPlaceholders($requestUrl);
 
-        $markerService = GeneralUtility::makeInstance(MarkerBasedTemplateService::class);
-        $requestUrl = $markerService->substituteMarker($requestUrl, '###FORMAT###', $this->format);
-        $requestUrl = $markerService->substituteMarker($requestUrl, '{format}', $this->format);
+        $urlParts = explode('?', $requestUrl, 2);
+        $endpointBaseUrl = $urlParts[0];
+        $endpointQueryParameters = $urlParts[1] ?? '';
 
-        foreach ($parameters as $name => $value) {
-            $name = urlencode($name);
-            $value = urlencode((string)$value);
-
-            if (!$firstParameter) {
-                $parameterGlue = '&';
-            } else {
-                $parameterGlue = '?';
-                $firstParameter = false;
-            }
-
-            $requestUrl .= $parameterGlue . $name . '=' . $value;
+        $finalParameters = $this->buildQueryStringParameters($endpointQueryParameters, $parameters);
+        if (count($finalParameters) === 0) {
+            return $endpointBaseUrl;
         }
 
+        return $this->buildUrlWithQueryString($endpointBaseUrl, $finalParameters);
+    }
+
+    protected function buildUrlWithQueryString(string $endpointBaseUrl, array $finalParameters): string
+    {
+        $queryString = GeneralUtility::implodeArrayForUrl('', $finalParameters);
+        $queryString = ltrim($queryString, '&');
+        return $endpointBaseUrl . '?' . $queryString;
+    }
+
+    /**
+     * @param string $requestUrl
+     * @return string|string[]
+     */
+    protected function replaceFormatPlaceholders(string $requestUrl)
+    {
+        $requestUrl = str_replace('###FORMAT###', $this->format, $requestUrl);
+        $requestUrl = str_replace('{format}', $this->format, $requestUrl);
         return $requestUrl;
     }
 
