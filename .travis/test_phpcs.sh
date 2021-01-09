@@ -4,16 +4,20 @@ set -ev
 
 echo "Running phpcs"
 
-phpenv config-rm xdebug.ini
+if [[ -x "$(command -v phpenv)" ]]; then
+    phpenv config-rm xdebug.ini
+fi
 
-composer create-project --no-dev squizlabs/php_codesniffer:^3.3 codesniffer
+if [[ ! -d "codesniffer" ]]; then
+    composer create-project --no-dev squizlabs/php_codesniffer:^3.3 codesniffer
+fi
 
-cd codesniffer
+if [[ ! -d "codesniffer/vendor/de-swebhosting" ]]; then
+    cd codesniffer
+    composer require --update-no-dev de-swebhosting/php-codestyle:dev-master
+    cd ..
+fi
 
-composer require --update-no-dev de-swebhosting/php-codestyle:dev-master
+./codesniffer/bin/phpcs --config-set installed_paths $PWD/codesniffer/vendor/de-swebhosting/php-codestyle/PhpCodeSniffer,$PWD/Tests/CodeSniffer
 
-cd ..
-
-./codesniffer/bin/phpcs --config-set installed_paths $PWD/codesniffer/vendor/de-swebhosting/php-codestyle/PhpCodeSniffer
-
-./codesniffer/bin/phpcs --standard=PSRDefault Classes Configuration/TCA Tests ext_*.php
+./codesniffer/bin/phpcs --standard=PSRMediaoembed Classes Configuration/TCA Tests ext_*.php

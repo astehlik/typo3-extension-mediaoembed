@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Service;
@@ -13,7 +14,7 @@ use TYPO3\CMS\Core\Resource\Folder;
 class PhotoDownloadService
 {
     /**
-     * @var \Sto\Mediaoembed\Service\ConfigurationService
+     * @var ConfigurationService
      */
     private $configurationService;
 
@@ -42,7 +43,7 @@ class PhotoDownloadService
      *
      * @param string $embedUrl The URL specified by the editor that should be embedded.
      * @param string $downloadUrl The media URL returned by the oEmbed Service.
-     * @return \TYPO3\CMS\Core\Resource\File|null
+     * @return File|null
      */
     public function downloadPhoto(string $embedUrl, string $downloadUrl)
     {
@@ -80,7 +81,7 @@ class PhotoDownloadService
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Resource\Folder
+     * @return Folder
      */
     public function getTargetFolder(): Folder
     {
@@ -93,8 +94,8 @@ class PhotoDownloadService
 
     /**
      * @param string $downloadUrl
-     * @param \TYPO3\CMS\Core\Resource\File $file
-     * @throws \Sto\Mediaoembed\Exception\PhotoDownload\NotAnImageFileException
+     * @param File $file
+     * @throws NotAnImageFileException
      */
     public function validateMimeType(string $downloadUrl, File $file)
     {

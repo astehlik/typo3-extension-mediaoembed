@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Domain\Repository;
@@ -38,13 +39,12 @@ class ContentRepository implements SingletonInterface
         // is added multiple sites on one page.
         $contentObjectData = $this->configurationManager->getContentObject()->data;
 
-        $content = new Content(
+        return new Content(
             (int)$contentObjectData['uid'],
             (string)$contentObjectData['tx_mediaoembed_url'],
             (int)$contentObjectData['tx_mediaoembed_maxheight'],
-            (int)$contentObjectData['tx_mediaoembed_maxwidth']
+            (int)$contentObjectData['tx_mediaoembed_maxwidth'],
+            (bool)$contentObjectData['tx_mediaoembed_play_related']
         );
-
-        return $content;
     }
 }

@@ -6,11 +6,7 @@ echo "Funning functional tests..."
 
 phpenv config-rm xdebug.ini
 
-if [ ${TYPO3_VERSION} = "typo3/minimal=dev-master" ]; then
-    composer config minimum-stability dev && composer require ${TYPO3_VERSION} --prefer-stable --prefer-dist
-else
-    composer require ${TYPO3_VERSION}
-fi
+composer require ${TYPO3_VERSION}
 
 mkdir -p ".Build/Web/typo3temp/var/tests"
 

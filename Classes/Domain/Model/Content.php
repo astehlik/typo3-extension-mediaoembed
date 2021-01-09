@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Domain\Model;
@@ -29,6 +30,11 @@ class Content
     private $maxWidth;
 
     /**
+     * @var bool
+     */
+    private $playRelated;
+
+    /**
      * @var int
      */
     private $uid;
@@ -38,12 +44,13 @@ class Content
      */
     private $url;
 
-    public function __construct(int $uid, string $url, int $maxHeight, int $maxWidth)
+    public function __construct(int $uid, string $url, int $maxHeight, int $maxWidth, bool $playRelated)
     {
         $this->maxHeight = $maxHeight;
         $this->maxWidth = $maxWidth;
         $this->uid = $uid;
         $this->url = $url;
+        $this->playRelated = $playRelated;
     }
 
     public function getMaxHeight(): int
@@ -64,5 +71,10 @@ class Content
     public function getUrl(): string
     {
         return $this->url;
+    }
+
+    public function shouldPlayRelated(): bool
+    {
+        return $this->playRelated;
     }
 }

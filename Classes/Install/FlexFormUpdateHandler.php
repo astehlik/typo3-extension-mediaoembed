@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Install;
@@ -80,7 +81,8 @@ class FlexFormUpdateHandler
                 continue;
             }
 
-            if (!isset($flexFormData['data']['sVideo']['lDEF']['mmFile']['vDEF'])
+            if (
+                !isset($flexFormData['data']['sVideo']['lDEF']['mmFile']['vDEF'])
                 || empty($flexFormData['data']['sVideo']['lDEF']['mmFile']['vDEF'])
             ) {
                 $customMessages .= sprintf(

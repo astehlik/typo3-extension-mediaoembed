@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Request;
@@ -13,11 +14,15 @@ namespace Sto\Mediaoembed\Request;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use RuntimeException;
 use Sto\Mediaoembed\Content\Configuration;
+use Sto\Mediaoembed\Exception\HttpClientRequestException;
 use Sto\Mediaoembed\Exception\HttpNotFoundException;
 use Sto\Mediaoembed\Exception\HttpNotImplementedException;
 use Sto\Mediaoembed\Exception\HttpUnauthorizedException;
-use TYPO3\CMS\Core\Service\MarkerBasedTemplateService;
+use Sto\Mediaoembed\Request\HttpClient\HttpClientFactory;
+use Sto\Mediaoembed\Request\HttpClient\HttpClientInterface;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -28,7 +33,7 @@ class HttpRequest
     /**
      * The configuration
      *
-     * @var \Sto\Mediaoembed\Content\Configuration
+     * @var Configuration
      */
     private $configuration;
 
@@ -53,10 +58,26 @@ class HttpRequest
      */
     private $format = 'json';
 
+    /**
+     * @var HttpClientFactory
+     */
+    private $httpClientFactory;
+
+    private $httpErrorHandlers = [
+        401,
+        404,
+        501,
+    ];
+
     public function __construct(Configuration $configuration, string $endpoint)
     {
         $this->configuration = $configuration;
         $this->endpoint = $endpoint;
+    }
+
+    public function injectHttpClientFactory(HttpClientFactory $httpClientFactory)
+    {
+        $this->httpClientFactory = $httpClientFactory;
     }
 
     /**
@@ -72,6 +93,42 @@ class HttpRequest
         return $this->sendRequest($requestUrl);
     }
 
+    protected function addRequestParameterFormat(array &$parameters)
+    {
+        if (isset($this->format)) {
+            $parameters['format'] = $this->format;
+        }
+    }
+
+    protected function addRequestParameterMaxHeight(array &$parameters)
+    {
+        $maxheight = $this->configuration->getMaxheight();
+        if ($maxheight > 0) {
+            $parameters['maxheight'] = $maxheight;
+        }
+    }
+
+    protected function addRequestParameterMaxWidth(array &$parameters)
+    {
+        $maxwidth = $this->configuration->getMaxwidth();
+        if ($maxwidth > 0) {
+            $parameters['maxwidth'] = $maxwidth;
+        }
+    }
+
+    protected function buildQueryStringParameters(string $endpointQueryParameters, array $parameters): array
+    {
+        $baseUrlParameters = [];
+        if ($endpointQueryParameters) {
+            parse_str($endpointQueryParameters, $baseUrlParameters);
+        }
+
+        $finalParameters = $baseUrlParameters;
+        ArrayUtility::mergeRecursiveWithOverrule($finalParameters, $parameters);
+
+        return $finalParameters;
+    }
+
     /**
      * Builds an array of parameters that should be attached to the
      * endpoint url.
@@ -82,19 +139,10 @@ class HttpRequest
     {
         $parameters = [];
 
-        $maxwidth = $this->configuration->getMaxwidth();
-        if ($maxwidth > 0) {
-            $parameters['maxwidth'] = $maxwidth;
-        }
+        $this->addRequestParameterMaxWidth($parameters);
+        $this->addRequestParameterMaxHeight($parameters);
+        $this->addRequestParameterFormat($parameters);
 
-        $maxheight = $this->configuration->getMaxheight();
-        if ($maxheight > 0) {
-            $parameters['maxheight'] = $maxheight;
-        }
-
-        if (isset($this->format)) {
-            $parameters['format'] = $this->format;
-        }
         // Needs to be last parameter
         $parameters['url'] = $this->configuration->getMediaUrl();
 
@@ -113,60 +161,85 @@ class HttpRequest
      */
     protected function buildRequestUrl(array $parameters): string
     {
-        if (strstr('?', $this->endpoint)) {
-            $firstParameter = false;
-        } else {
-            $firstParameter = true;
-        }
-
         $requestUrl = $this->endpoint;
+        $requestUrl = $this->replaceFormatPlaceholders($requestUrl);
 
-        $markerService = GeneralUtility::makeInstance(MarkerBasedTemplateService::class);
-        $requestUrl = $markerService->substituteMarker($requestUrl, '###FORMAT###', $this->format);
-        $requestUrl = $markerService->substituteMarker($requestUrl, '{format}', $this->format);
+        $urlParts = explode('?', $requestUrl, 2);
+        $endpointBaseUrl = $urlParts[0];
+        $endpointQueryParameters = $urlParts[1] ?? '';
 
-        foreach ($parameters as $name => $value) {
-            $name = urlencode($name);
-            $value = urlencode((string)$value);
-
-            if (!$firstParameter) {
-                $parameterGlue = '&';
-            } else {
-                $parameterGlue = '?';
-                $firstParameter = false;
-            }
-
-            $requestUrl .= $parameterGlue . $name . '=' . $value;
+        $finalParameters = $this->buildQueryStringParameters($endpointQueryParameters, $parameters);
+        if (count($finalParameters) === 0) {
+            return $endpointBaseUrl;
         }
 
-        return $requestUrl;
+        return $this->buildUrlWithQueryString($endpointBaseUrl, $finalParameters);
+    }
+
+    protected function buildUrlWithQueryString(string $endpointBaseUrl, array $finalParameters): string
+    {
+        $queryString = GeneralUtility::implodeArrayForUrl('', $finalParameters);
+        $queryString = ltrim($queryString, '&');
+        return $endpointBaseUrl . '?' . $queryString;
+    }
+
+    protected function handleError401(string $requestUrl)
+    {
+        throw new HttpUnauthorizedException($this->configuration->getMediaUrl(), $requestUrl);
+    }
+
+    protected function handleError404(string $requestUrl)
+    {
+        throw new HttpNotFoundException($this->configuration->getMediaUrl(), $requestUrl);
+    }
+
+    protected function handleError501(string $requestUrl)
+    {
+        throw new HttpNotImplementedException(
+            $this->configuration->getMediaUrl(),
+            $this->format,
+            $requestUrl
+        );
     }
 
     /**
-     * Tries to get the real error code from the $report array of
-     * GeneralUtility::getURL()
-     *
-     * @param array $report report array of GeneralUtility::getURL()
-     * @return string the error code
-     * @see t3lib_div::getURL()
+     * @param $requestException
      */
-    protected function getErrorCode(array $report): string
+    protected function handleErrorUnknown($requestException)
     {
-        $message = $report['message'];
+        throw new RuntimeException(
+            'An unknown error occurred while contacting the provider: '
+            . $requestException->getMessage() . ' (' . $requestException->getErrorDetails() . ').'
+            . ' Please make sure CURL use is enabled in the install tool to get valid error codes.',
+            1303401545
+        );
+    }
 
-        if (strstr($message, '404')) {
-            return '404';
+    protected function handleRequestError(HttpClientRequestException $requestException, string $requestUrl)
+    {
+        $errorCode = $requestException->getCode();
+        if (!in_array($errorCode, $this->httpErrorHandlers, true)) {
+            $this->handleErrorUnknown($requestException);
         }
 
-        if (strstr($message, '501')) {
-            return '501';
-        }
+        /**
+         * @uses handleError401()
+         * @uses handleError404()
+         * @uses handleError501()
+         */
+        $errorHandlerMethod = 'handleError' . $errorCode;
+        $this->$errorHandlerMethod($requestUrl);
+    }
 
-        if (strstr($message, '401')) {
-            return '401';
-        }
-
-        return (string)$report['error'];
+    /**
+     * @param string $requestUrl
+     * @return string|string[]
+     */
+    protected function replaceFormatPlaceholders(string $requestUrl)
+    {
+        $requestUrl = str_replace('###FORMAT###', $this->format, $requestUrl);
+        $requestUrl = str_replace('{format}', $this->format, $requestUrl);
+        return $requestUrl;
     }
 
     /**
@@ -175,42 +248,23 @@ class HttpRequest
      *
      * @param string $requestUrl
      * @return string response data
-     * @throws \Sto\Mediaoembed\Exception\HttpNotFoundException
-     * @throws \Sto\Mediaoembed\Exception\HttpNotImplementedException
-     * @throws \Sto\Mediaoembed\Exception\HttpUnauthorizedException
      */
     protected function sendRequest($requestUrl): string
     {
-        $report = [];
-        $responseData = (string)GeneralUtility::getURL($requestUrl, 0, false, $report);
-        $mediaUrl = $this->configuration->getMediaUrl();
-
-        if ($report['error'] !== 0) {
-            switch ($this->getErrorCode($report)) {
-                case 404:
-                    throw new HttpNotFoundException($mediaUrl, $requestUrl);
-                    break;
-                case 501:
-                    throw new HttpNotImplementedException(
-                        $mediaUrl,
-                        $this->format,
-                        $requestUrl
-                    );
-                    break;
-                case 401:
-                    throw new HttpUnauthorizedException($mediaUrl, $requestUrl);
-                    break;
-                default:
-                    throw new \RuntimeException(
-                        'An unknown error occurred while contacting the provider: '
-                        . $report['message'] . ' (' . $report['error'] . ').'
-                        . ' Please make sure CURL use is enabled in the install tool to get valid error codes.',
-                        1303401545
-                    );
-                    break;
-            }
+        $requestException = null;
+        try {
+            return $this->getHttpClient()->executeGetRequest($requestUrl);
+        } catch (HttpClientRequestException $e) {
+            $requestException = $e;
         }
 
-        return $responseData;
+        $this->handleRequestError($requestException, $requestUrl);
+
+        throw new RuntimeException('This step should never be reached!');
+    }
+
+    private function getHttpClient(): HttpClientInterface
+    {
+        return $this->httpClientFactory->getHttpClient();
     }
 }

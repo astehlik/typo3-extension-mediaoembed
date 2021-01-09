@@ -21,6 +21,7 @@
     },
     "require": {
         "php": "^7.0",
+        "ext-dom": "*",
         "typo3/cms-core": "^7.6|^8.7|^9.3|^10.0"
     },
     "require-dev": {
@@ -41,6 +42,9 @@
         ]
     },
     "extra": {
+        "branch-alias": {
+            "dev-develop": "1.2.x-dev"
+        },
         "typo3/cms": {
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
             "web-dir": ".Build/Web"

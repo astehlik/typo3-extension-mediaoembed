@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Controller;
@@ -22,6 +23,8 @@ use Sto\Mediaoembed\Exception\OEmbedException;
 use Sto\Mediaoembed\Exception\RequestException;
 use Sto\Mediaoembed\Request\HttpRequest;
 use Sto\Mediaoembed\Request\ProviderResolver;
+use Sto\Mediaoembed\Response\GenericResponse;
+use Sto\Mediaoembed\Response\Processor\ResponseProcessorInterface;
 use Sto\Mediaoembed\Response\ResponseBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -129,6 +132,15 @@ class OembedController extends ActionController
         }
     }
 
+    private function processResponse(Provider $provider, GenericResponse $response)
+    {
+        foreach ($provider->getProcessors() as $processorClass) {
+            /** @var ResponseProcessorInterface $processor */
+            $processor = $this->objectManager->get($processorClass);
+            $processor->processResponse($response);
+        }
+    }
+
     private function renderErrorMessage(string $translationKey, array $arguments): string
     {
         $message = $this->translate($translationKey, $arguments);
@@ -153,11 +165,14 @@ class OembedController extends ActionController
         $providerExceptions = [];
 
         while ($provider = $this->getNextMatchingProvider($providerResolver, $url)) {
-            $request = new HttpRequest($this->configuration, $provider->getEndpoint());
+            /** @var HttpRequest $request */
+            /** @noinspection PhpParamsInspection */
+            $request = $this->objectManager->get(HttpRequest::class, $this->configuration, $provider->getEndpoint());
 
             try {
                 $responseData = $request->sendAndGetResponseData();
                 $response = $this->responseBuilder->buildResponse($url, $responseData);
+                $this->processResponse($provider, $response);
                 break;
             } catch (RequestException $exception) {
                 $providerExceptions[] = [

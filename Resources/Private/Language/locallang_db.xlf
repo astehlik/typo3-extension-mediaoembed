@@ -39,6 +39,9 @@
 			<trans-unit id="tt_content.tx_mediaoembed_maxheight" xml:space="preserve">
 				<source>Maximum height</source>
 			</trans-unit>
+			<trans-unit id="tt_content.tx_mediaoembed_play_related" xml:space="preserve">
+				<source>Play related videos (YouTube only)</source>
+			</trans-unit>
 			<trans-unit id="new_content_element_wizard_oembedmediarenderer_description" xml:space="preserve">
 				<source>Embed external media like YouTube videos by simply using the URL to the external media element.</source>
 			</trans-unit>

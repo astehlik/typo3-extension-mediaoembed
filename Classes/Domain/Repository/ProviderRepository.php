@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Domain\Repository;
@@ -32,12 +33,11 @@ class ProviderRepository implements SingletonInterface
     public function __construct(ConfigurationManagerInterface $configurationManager)
     {
         $settings = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
-        $this->providersConfig = (array)$settings['providers'] ?? [];
+        $this->providersConfig = (array)($settings['providers'] ?? []);
     }
 
     /**
      * @return Provider[]|array
-     * @throws \Sto\Mediaoembed\Exception\InvalidConfigurationException
      */
     public function findAll(): array
     {
@@ -48,52 +48,68 @@ class ProviderRepository implements SingletonInterface
         return $providers;
     }
 
-    /**
-     * @param string $providerName
-     * @param array $providerConfig
-     * @return \Sto\Mediaoembed\Domain\Model\Provider
-     * @throws \Sto\Mediaoembed\Exception\InvalidConfigurationException
-     */
+    private function addProcessors(Provider $provider, array $processors)
+    {
+        foreach ($processors as $processor) {
+            $provider->withProcessor($processor);
+        }
+    }
+
     private function createProvider(string $providerName, array $providerConfig): Provider
     {
-        if ($providerName === '') {
-            throw new InvalidConfigurationException('Provider name must not be empty');
-        }
+        $this->validateProviderName($providerName);
 
-        $endpoint = trim($providerConfig['endpoint']);
+        $endpoint = trim((string)($providerConfig['endpoint'] ?? ''));
+        $this->validateEndpoint($endpoint, $providerName);
 
+        $urlRegexes = (array)($providerConfig['urlRegexes'] ?? []);
+        $urlSchemes = (array)($providerConfig['urlSchemes'] ?? []);
+        $this->validateUrlSchemes($urlRegexes, $urlSchemes, $providerName);
+
+        $hasRegexUrlSchemes = count($urlRegexes) > 0;
+
+        $provider = new Provider(
+            $providerName,
+            $endpoint,
+            $hasRegexUrlSchemes ? $urlRegexes : $urlSchemes,
+            $hasRegexUrlSchemes
+        );
+
+        $this->addProcessors($provider, (array)($providerConfig['processors'] ?? []));
+
+        return $provider;
+    }
+
+    private function validateEndpoint(string $endpoint, string $providerName)
+    {
         if ($endpoint === '') {
             throw new InvalidConfigurationException(sprintf('Endpoint of provider %s is empty.', $providerName));
         }
 
         if (!GeneralUtility::isValidUrl($endpoint)) {
             throw new InvalidConfigurationException(
-                sprintf('Endpoint of provider %s is an invalid URL.', $providerName)
+                sprintf('Endpoint of provider %s is an invalid URL: %s', $providerName, $endpoint)
             );
         }
+    }
 
-        $hasRegexUrlSchemes = true;
-        $urlSchemes = (array)$providerConfig['urlRegexes'] ?? [];
-        if ($urlSchemes === []) {
-            $urlSchemes = (array)$providerConfig['urlSchemes'] ?? [];
-            $hasRegexUrlSchemes = false;
+    private function validateProviderName(string $providerName)
+    {
+        if ($providerName === '') {
+            throw new InvalidConfigurationException('Provider name must not be empty.');
         }
+    }
 
-        if ($hasRegexUrlSchemes && !empty($providerConfig['urlSchemes'])) {
+    private function validateUrlSchemes(array $urlRegexes, array $urlSchemes, string $providerName)
+    {
+        if (count($urlRegexes) && count($urlSchemes)) {
             throw new InvalidConfigurationException(
                 sprintf('A provider can have either urlRegexes or urlSchemes. The provider %s has both.', $providerName)
             );
         }
 
-        if ($urlSchemes === []) {
+        if ($urlSchemes === [] && $urlRegexes == []) {
             throw new InvalidConfigurationException(sprintf('The provider %s has no URL schemes.', $providerName));
         }
-
-        return new Provider(
-            $providerName,
-            $endpoint,
-            $urlSchemes,
-            $hasRegexUrlSchemes
-        );
     }
 }
