@@ -1,5 +1,7 @@
 <?php
+
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
+
 /** @noinspection PhpMissingStrictTypesDeclarationInspection */
 
 defined('TYPO3_MODE') or die();

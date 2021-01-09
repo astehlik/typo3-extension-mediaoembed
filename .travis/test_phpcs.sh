@@ -18,6 +18,6 @@ if [[ ! -d "codesniffer/vendor/de-swebhosting" ]]; then
     cd ..
 fi
 
-./codesniffer/bin/phpcs --config-set installed_paths $PWD/codesniffer/vendor/de-swebhosting/php-codestyle/PhpCodeSniffer
+./codesniffer/bin/phpcs --config-set installed_paths $PWD/codesniffer/vendor/de-swebhosting/php-codestyle/PhpCodeSniffer,$PWD/Tests/CodeSniffer
 
-./codesniffer/bin/phpcs --standard=PSRDefault Classes Configuration/TCA Tests ext_*.php
+./codesniffer/bin/phpcs --standard=PSRMediaoembed Classes Configuration/TCA Tests ext_*.php

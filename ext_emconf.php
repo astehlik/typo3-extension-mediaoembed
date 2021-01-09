@@ -1,4 +1,5 @@
 <?php
+
 /** @noinspection PhpMissingStrictTypesDeclarationInspection */
 
 /** @var string $_EXTKEY */
