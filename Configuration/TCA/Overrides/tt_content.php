@@ -49,8 +49,8 @@ $ttContentColumns = [
             'behaviour' => ['allowLanguageSynchronization' => true],
         ],
     ],
-    'tx_mediaoembed_youtube_rel' => [
-        'label' => $lllPrefix . 'tt_content.tx_mediaoembed_youtube_rel',
+    'tx_mediaoembed_play_related' => [
+        'label' => $lllPrefix . 'tt_content.tx_mediaoembed_play_related',
         'exclude' => true,
         'config' => [
             'type' => 'check',
@@ -79,7 +79,7 @@ $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes']['mediaoembed_oembedmed
 $GLOBALS['TCA']['tt_content']['palettes']['tx_mediaoembed_settings'] = [
     'showitem' => 'tx_mediaoembed_url,
     --linebreak--, tx_mediaoembed_maxwidth, tx_mediaoembed_maxheight,
-    --linebreak--, tx_mediaoembed_youtube_rel',
+    --linebreak--, tx_mediaoembed_play_related',
     'canNotCollapse' => 1,
 ];
 
