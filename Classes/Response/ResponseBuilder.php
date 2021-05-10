@@ -56,21 +56,15 @@ class ResponseBuilder implements SingletonInterface
      * from the provider.
      *
      * @param string $embedUrl The URL provided by the editor that is sent to the oEmbed endpoint.
-     * @param string $responseData Raw response data from the provider
+     * @param array $responseData Raw response data from the provider
      * @return GenericResponse An instance of a response
      * @throws InvalidResponseException
      */
-    public function buildResponse(string $embedUrl, string $responseData): GenericResponse
+    public function buildResponse(string $embedUrl, array $responseData): GenericResponse
     {
-        $parsedResponseData = json_decode($responseData, true);
+        $responseData['embedUrl'] = $embedUrl;
 
-        if ($parsedResponseData === null) {
-            throw new InvalidResponseException($responseData);
-        }
-
-        $parsedResponseData['embedUrl'] = $embedUrl;
-
-        return $this->createResponseByType($parsedResponseData);
+        return $this->createResponseByType($responseData);
     }
 
     /**

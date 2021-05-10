@@ -16,7 +16,7 @@ class ProviderRepositoryTest extends TestCase
             [
                 'test' => [
                     'endpoint' => 'https://my-provider.tld/enpoint',
-                    'urlSchemes' => ['http://my-url-scheme.tld'],
+                    'urlSchemes' => ['https://my-url-scheme.tld'],
                 ],
             ]
         );
@@ -30,7 +30,7 @@ class ProviderRepositoryTest extends TestCase
             [
                 'test' => [
                     'endpoint' => 'https://my-provider.tld/enpoint',
-                    'urlSchemes' => ['http://my-url-scheme.tld'],
+                    'urlSchemes' => ['https://my-url-scheme.tld'],
                     'processors' => ['my processor class'],
                 ],
             ]
@@ -39,19 +39,34 @@ class ProviderRepositoryTest extends TestCase
         $this->assertEquals(['my processor class'], $provider->getProcessors());
     }
 
+    public function testCreatesProviderWithRequestHandlerClass()
+    {
+        $provider = $this->callFindAll(
+            [
+                'test' => [
+                    'endpoint' => 'https://my-provider.tld/enpoint',
+                    'requestHandlerClass' => 'My\\Request\\Handler',
+                    'urlSchemes' => ['https://my-url-scheme.tld'],
+                ],
+            ]
+        );
+
+        $this->assertEquals('My\\Request\\Handler', $provider->getRequestHandlerClass());
+    }
+
     public function testCreatesProviderWithUrlRegex()
     {
         $provider = $this->callFindAll(
             [
                 'test' => [
                     'endpoint' => 'https://my-provider.tld/enpoint',
-                    'urlRegexes' => ['http://my-url-regex.tld'],
+                    'urlRegexes' => ['https://my-url-regex.tld'],
                 ],
             ]
         );
 
         $this->assertTrue($provider->hasRegexUrlSchemes());
-        $this->assertEquals(['http://my-url-regex.tld'], $provider->getUrlSchemes());
+        $this->assertEquals(['https://my-url-regex.tld'], $provider->getUrlSchemes());
     }
 
     public function testCreatesProviderWithUrlScheme()
@@ -60,13 +75,13 @@ class ProviderRepositoryTest extends TestCase
             [
                 'test' => [
                     'endpoint' => 'https://my-provider.tld/enpoint',
-                    'urlSchemes' => ['http://my-url-scheme.tld'],
+                    'urlSchemes' => ['https://my-url-scheme.tld'],
                 ],
             ]
         );
 
         $this->assertFalse($provider->hasRegexUrlSchemes());
-        $this->assertEquals(['http://my-url-scheme.tld'], $provider->getUrlSchemes());
+        $this->assertEquals(['https://my-url-scheme.tld'], $provider->getUrlSchemes());
     }
 
     public function testEndpointMustBeAValidUrl()
@@ -104,8 +119,8 @@ class ProviderRepositoryTest extends TestCase
             [
                 'test' => [
                     'endpoint' => 'https://my-provider.tld/enpoint',
-                    'urlSchemes' => ['http://my-url-scheme.tld'],
-                    'urlRegexes' => ['http://my-url-regex.tld'],
+                    'urlSchemes' => ['https://my-url-scheme.tld'],
+                    'urlRegexes' => ['https://my-url-regex.tld'],
                 ],
             ]
         );

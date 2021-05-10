@@ -72,7 +72,8 @@ class ProviderRepository implements SingletonInterface
             $providerName,
             $endpoint,
             $hasRegexUrlSchemes ? $urlRegexes : $urlSchemes,
-            $hasRegexUrlSchemes
+            $hasRegexUrlSchemes,
+            $providerConfig['requestHandlerClass'] ?? ''
         );
 
         $this->addProcessors($provider, (array)($providerConfig['processors'] ?? []));

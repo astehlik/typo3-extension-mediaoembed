@@ -21,8 +21,11 @@ use Sto\Mediaoembed\Exception\InvalidUrlException;
 use Sto\Mediaoembed\Exception\NoMatchingProviderException;
 use Sto\Mediaoembed\Exception\OEmbedException;
 use Sto\Mediaoembed\Exception\RequestException;
-use Sto\Mediaoembed\Request\HttpRequest;
+use Sto\Mediaoembed\Exception\RequestHandler\RequestHandlerClassDoesNotExistsException;
+use Sto\Mediaoembed\Exception\RequestHandler\RequestHandlerClassInvalidException;
 use Sto\Mediaoembed\Request\ProviderResolver;
+use Sto\Mediaoembed\Request\RequestHandler\HttpRequestHandler;
+use Sto\Mediaoembed\Request\RequestHandler\RequestHandlerInterface;
 use Sto\Mediaoembed\Response\GenericResponse;
 use Sto\Mediaoembed\Response\Processor\ResponseProcessorInterface;
 use Sto\Mediaoembed\Response\ResponseBuilder;
@@ -132,6 +135,32 @@ class OembedController extends ActionController
         }
     }
 
+    private function getRequestHandlerForProvider(Provider $provider): RequestHandlerInterface
+    {
+        $requestHandlerClass = $provider->getRequestHandlerClass();
+
+        if (!$requestHandlerClass) {
+            return $this->objectManager->get(HttpRequestHandler::class);
+        }
+
+        if (!class_exists($requestHandlerClass)) {
+            throw new RequestHandlerClassDoesNotExistsException($provider);
+        }
+
+        $requestHandler = $this->objectManager->get($requestHandlerClass);
+        if (!$requestHandler instanceof RequestHandlerInterface) {
+            throw new RequestHandlerClassInvalidException($provider);
+        }
+
+        return $requestHandler;
+    }
+
+    private function getResponseDataForProvider(Provider $provider): array
+    {
+        $requestHandler = $this->getRequestHandlerForProvider($provider);
+        return $requestHandler->handle($provider);
+    }
+
     private function processResponse(Provider $provider, GenericResponse $response)
     {
         foreach ($provider->getProcessors() as $processorClass) {
@@ -165,12 +194,8 @@ class OembedController extends ActionController
         $providerExceptions = [];
 
         while ($provider = $this->getNextMatchingProvider($providerResolver, $url)) {
-            /** @var HttpRequest $request */
-            /** @noinspection PhpParamsInspection */
-            $request = $this->objectManager->get(HttpRequest::class, $this->configuration, $provider->getEndpoint());
-
             try {
-                $responseData = $request->sendAndGetResponseData();
+                $responseData = $this->getResponseDataForProvider($provider);
                 $response = $this->responseBuilder->buildResponse($url, $responseData);
                 $this->processResponse($provider, $response);
                 break;

@@ -18,7 +18,8 @@ class ProviderTest extends TestCase
             'the_provider_name',
             'http://the.provider.endpoint.url',
             ['https://the.url.scheme'],
-            true
+            true,
+            'The\\Request\\Handler\\Class'
         );
     }
 
@@ -40,5 +41,10 @@ class ProviderTest extends TestCase
     public function testHasRegexUrlSchemes()
     {
         $this->assertTrue($this->provider->hasRegexUrlSchemes());
+    }
+
+    public function testGetRequestHandlerClass()
+    {
+        $this->assertEquals('The\\Request\\Handler\\Class', $this->provider->getRequestHandlerClass());
     }
 }

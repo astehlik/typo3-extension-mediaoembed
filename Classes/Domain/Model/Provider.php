@@ -44,12 +44,23 @@ class Provider
      */
     private $processors = [];
 
-    public function __construct(string $name, string $endpoint, array $urlSchemes, bool $hasRegexUrlSchemes)
-    {
+    /**
+     * @var string
+     */
+    private $requestHandlerClass;
+
+    public function __construct(
+        string $name,
+        string $endpoint,
+        array $urlSchemes,
+        bool $hasRegexUrlSchemes,
+        string $requestHandlerClass = ''
+    ) {
         $this->name = $name;
         $this->endpoint = $endpoint;
         $this->urlSchemes = $urlSchemes;
         $this->hasRegexUrlSchemes = $hasRegexUrlSchemes;
+        $this->requestHandlerClass = $requestHandlerClass;
     }
 
     public function getEndpoint(): string
@@ -68,6 +79,11 @@ class Provider
     public function getProcessors(): array
     {
         return $this->processors;
+    }
+
+    public function getRequestHandlerClass(): string
+    {
+        return $this->requestHandlerClass;
     }
 
     public function getUrlSchemes(): array

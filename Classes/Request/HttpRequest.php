@@ -86,7 +86,7 @@ class HttpRequest
      *
      * @return string json formatted result from server
      */
-    public function sendAndGetResponseData()
+    public function sendAndGetResponseData(): string
     {
         $parameters = $this->buildRequestParameterArray();
         $requestUrl = $this->buildRequestUrl($parameters);
