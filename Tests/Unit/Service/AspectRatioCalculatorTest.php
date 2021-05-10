@@ -34,9 +34,18 @@ final class AspectRatioCalculatorTest extends AbstractUnitTest
     public function calculateAspectRatioReturnsExpectedValuesDataProvider(): array
     {
         return [
-            'invalid value' => [0.0, 'asdf'],
-            'valid value' => [2, '10:5'],
-            'valid value 2' => [0.5, '5:10'],
+            'invalid value' => [
+                0.0,
+                'asdf',
+            ],
+            'valid value' => [
+                2,
+                '10:5',
+            ],
+            'valid value 2' => [
+                0.5,
+                '5:10',
+            ],
         ];
     }
 
