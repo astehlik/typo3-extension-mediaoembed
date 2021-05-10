@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Sto\Mediaoembed\Backend\AspectRatioEvaluation;
+use Sto\Mediaoembed\Content\Configuration;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
@@ -16,6 +18,16 @@ $ttContentColumns = [
         'config' => [
             'type' => 'input',
             'behaviour' => ['allowLanguageSynchronization' => true],
+        ],
+    ],
+    'tx_mediaoembed_aspect_ratio' => [
+        'label' => $lllPrefix . 'tt_content.tx_mediaoembed_aspect_ratio',
+        'config' => [
+            'type' => 'input',
+            'behaviour' => ['allowLanguageSynchronization' => true],
+            'placeholder' => Configuration::ASPECT_RATIO_DEFAULT,
+            'size' => '4',
+            'eval' => AspectRatioEvaluation::class,
         ],
     ],
     'tx_mediaoembed_maxwidth' => [
@@ -80,7 +92,8 @@ $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes']['mediaoembed_oembedmed
 $GLOBALS['TCA']['tt_content']['palettes']['tx_mediaoembed_settings'] = [
     'showitem' => 'tx_mediaoembed_url,
     --linebreak--, tx_mediaoembed_maxwidth, tx_mediaoembed_maxheight,
-    --linebreak--, tx_mediaoembed_play_related',
+    --linebreak--, tx_mediaoembed_play_related,
+    --linebreak--, tx_mediaoembed_aspect_ratio',
     'canNotCollapse' => 1,
 ];
 

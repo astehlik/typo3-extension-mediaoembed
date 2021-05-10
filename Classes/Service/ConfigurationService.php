@@ -21,7 +21,12 @@ class ConfigurationService
         );
     }
 
-    public function getMaxHeight()
+    public function getAspectRatioFallback(): string
+    {
+        return $this->settings['aspectRatioFallback'] ?? '';
+    }
+
+    public function getMaxHeight(): int
     {
         if (!empty($this->settings['media']['maxheight'])) {
             return (int)$this->settings['media']['maxheight'];

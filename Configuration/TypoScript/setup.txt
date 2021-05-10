@@ -12,6 +12,9 @@ plugin.tx_mediaoembed.settings {
         folderIdentifier = {$plugin.tx_mediaoembed.downloadPhotoSettings.folderIdentifier}
     }
 
+    // Aspect ratio to use when no width / height is available.
+    aspectRatioFallback = 16:9
+
     view {
         displayDirectLink = 1
 

@@ -63,6 +63,9 @@ mod.wizards.newContentElement {
 }
 '
     );
+
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][\Sto\Mediaoembed\Backend\AspectRatioEvaluation::class]
+        = '';
 };
 
 $bootMediaoembed();

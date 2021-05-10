@@ -44,7 +44,8 @@ class ContentRepository implements SingletonInterface
             (string)$contentObjectData['tx_mediaoembed_url'],
             (int)$contentObjectData['tx_mediaoembed_maxheight'],
             (int)$contentObjectData['tx_mediaoembed_maxwidth'],
-            (bool)$contentObjectData['tx_mediaoembed_play_related']
+            (bool)$contentObjectData['tx_mediaoembed_play_related'],
+            (string)($contentObjectData['tx_mediaoembed_aspect_ratio'] ?? '')
         );
     }
 }
