@@ -46,6 +46,7 @@
 			"dev-develop": "2.1.x-dev"
 		},
 		"typo3/cms": {
+			"extension-key": "mediaoembed",
 			"cms-package-dir": "{$vendor-dir}/typo3/cms",
 			"web-dir": ".Build/Web"
 		}
