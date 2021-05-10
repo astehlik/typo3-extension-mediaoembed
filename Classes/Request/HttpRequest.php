@@ -238,8 +238,7 @@ class HttpRequest
     protected function replaceFormatPlaceholders(string $requestUrl)
     {
         $requestUrl = str_replace('###FORMAT###', $this->format, $requestUrl);
-        $requestUrl = str_replace('{format}', $this->format, $requestUrl);
-        return $requestUrl;
+        return str_replace('{format}', $this->format, $requestUrl);
     }
 
     /**
