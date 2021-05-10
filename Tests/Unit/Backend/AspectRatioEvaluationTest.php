@@ -25,7 +25,7 @@ final class AspectRatioEvaluationTest extends AbstractUnitTest
     {
         $this->aspectRatioEvaluation = new AspectRatioEvaluation();
 
-        $this->aspectRatioCalculatorMock = $this->getMockForAbstractClass(AspectRatioCalculatorInterface::class);
+        $this->aspectRatioCalculatorMock = $this->createMock(AspectRatioCalculatorInterface::class);
         $this->aspectRatioEvaluation->injectAspectRatioCalculator($this->aspectRatioCalculatorMock);
     }
 
