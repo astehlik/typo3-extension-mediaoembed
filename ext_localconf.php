@@ -66,6 +66,15 @@ mod.wizards.newContentElement {
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][\Sto\Mediaoembed\Backend\AspectRatioEvaluation::class]
         = '';
+
+    $dispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
+    /** @uses \Sto\Mediaoembed\Backend\EditDocumentControllerHooks::addUrlParserJs() */
+    $dispatcher->connect(
+        \TYPO3\CMS\Backend\Controller\EditDocumentController::class,
+        'initAfter',
+        \Sto\Mediaoembed\Backend\EditDocumentControllerHooks::class,
+        'addUrlParserJs'
+    );
 };
 
 $bootMediaoembed();
