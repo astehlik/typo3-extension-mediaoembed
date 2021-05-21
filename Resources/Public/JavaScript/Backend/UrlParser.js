@@ -43,7 +43,7 @@ define(
         return;
       }
 
-      urlInput.val(iframeUrl);
+      setFormFieldValue(urlInput, iframeUrl)
       successMessages.push(translate('success_iframe_src_extracted'));
 
       var width = parseInt(iframe.attr('width'), 10);
@@ -54,7 +54,7 @@ define(
 
       var form = urlInput.closest('.typo3-TCEforms');
       var aspectRatioInput = form.find(buildFormFieldSelector('tx_mediaoembed_aspect_ratio'));
-      aspectRatioInput.val(width + ':' + height);
+      setFormFieldValue(aspectRatioInput, width + ':' + height);
       successMessages.push(translate('success_iframe_aspect_ratio_extracted'));
     }
 
@@ -69,6 +69,12 @@ define(
           successMessages = [];
         }
       );
+    }
+
+    function setFormFieldValue(field, value) {
+      field.val(value);
+      // We need to trigger the "change" event for the TYPO3 form engine to update the related hidden field.
+      field.change();
     }
 
     jQuery(function() {
