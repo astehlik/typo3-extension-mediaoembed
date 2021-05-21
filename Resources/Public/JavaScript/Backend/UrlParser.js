@@ -79,7 +79,7 @@ define(
 
     jQuery(function() {
       jQuery(buildFormFieldSelector('tx_mediaoembed_url')).each(function() {
-        initContentForm($(this));
+        initContentForm(jQuery(this));
       });
     });
   }
