@@ -46,8 +46,8 @@ trait IframeAwareProcessorTrait
 
     private function withoutXmlErrors(Closure $callback)
     {
-       $previousSetting = libxml_use_internal_errors(true);
-       $callback();
-       libxml_use_internal_errors($previousSetting);
+        $previousSetting = libxml_use_internal_errors(true);
+        $callback();
+        libxml_use_internal_errors($previousSetting);
     }
 }
