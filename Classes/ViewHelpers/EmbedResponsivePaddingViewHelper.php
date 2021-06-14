@@ -4,7 +4,6 @@ namespace Sto\Mediaoembed\ViewHelpers;
 
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
 class EmbedResponsivePaddingViewHelper extends AbstractTagBasedViewHelper
 {
