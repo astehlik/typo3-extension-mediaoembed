@@ -40,7 +40,7 @@ test:unit:
     - build:composer
     - build:cc-reporter
   script:
-    - phpenmod xdebug
+    - phpenmod xdebug && echo "xdebug.mode=coverage" > /etc/php/7.4/cli/conf.d/30-xdebug.ini
     - .Build/bin/phpunit --coverage-clover .Build/Logs/clover.xml --whitelist Classes Tests/Unit/
     - ./cc-test-reporter format-coverage -t clover -o .Build/Logs/clover-unit.json .Build/Logs/clover.xml
   artifacts:
@@ -59,7 +59,7 @@ test:functional:
   script:
     - export typo3DatabaseName="$MYSQL_DATABASE"
     - export typo3DatabasePassword="$MYSQL_ROOT_PASSWORD"
-    - phpenmod xdebug
+    - phpenmod xdebug && echo "xdebug.mode=coverage" > /etc/php/7.4/cli/conf.d/30-xdebug.ini
     - .Build/bin/phpunit --coverage-clover .Build/Logs/clover.xml --whitelist Classes Tests/Functional/ -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml
     - ./cc-test-reporter format-coverage -t clover -o .Build/Logs/clover-functional.json .Build/Logs/clover.xml
   artifacts:
