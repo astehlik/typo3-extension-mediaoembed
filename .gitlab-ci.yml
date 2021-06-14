@@ -79,3 +79,5 @@ report:codecoverage:
   script:
     - ./cc-test-reporter sum-coverage --parts=2 --output=.Build/Logs/clover-sum.json .Build/Logs/clover-unit.json .Build/Logs/clover-functional.json
     - ./cc-test-reporter upload-coverage --input=.Build/Logs/clover-sum.json
+  rules:
+    - if: '$CC_TEST_REPORTER_ID'
