@@ -20,8 +20,8 @@ class PlayRelatedProcessorTest extends AbstractUnitTest
         $videoHtmlTemplate = '<iframe width="480" height="270" src="%s"'
             . ' allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"'
             . ' allowfullscreen=""></iframe>';
-        $originalUrl = 'https://www.youtube.com/embed/P8bHMEh40JU?feature=oembed';
-        $modifiedUrl = 'https://www.youtube.com/embed/P8bHMEh40JU?feature=oembed&amp;rel='
+        $originalUrl = 'https://www.youtube.com/embed/P8bHMEh40JU?start=14&feature=oembed';
+        $modifiedUrl = 'https://www.youtube.com/embed/P8bHMEh40JU?start=14&amp;feature=oembed&amp;rel='
             . ($shouldPlayRelated ? '1' : '0');
 
         $videoHtml = sprintf($videoHtmlTemplate, $originalUrl);

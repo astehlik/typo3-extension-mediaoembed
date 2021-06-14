@@ -12,9 +12,14 @@ trait IframeAwareProcessorTrait
 {
     private function modifyIframeUrl(VideoResponse $response, Closure $urlModifier)
     {
-        $htmlWrapping = '<html><body><div id="oembed-response">%s</div></body></html>';
         $document = new DOMDocument();
-        $loadSuccess = $document->loadHTML(sprintf($htmlWrapping, $response->getHtml()));
+        $loadSuccess = false;
+        $this->withoutXmlErrors(
+            function () use ($response, $document, &$loadSuccess) {
+                $htmlWrapping = '<html><body><div id="oembed-response">%s</div></body></html>';
+                $loadSuccess = $document->loadHTML(sprintf($htmlWrapping, $response->getHtml()));
+            }
+        );
         if (!$loadSuccess) {
             throw new ProcessorException('Error parsing HTML from YouTube response.');
         }
@@ -37,5 +42,12 @@ trait IframeAwareProcessorTrait
 
         $modifiedHtml = $iframe->ownerDocument->saveHTML($iframe);
         $response->setHtml($modifiedHtml);
+    }
+
+    private function withoutXmlErrors(Closure $callback)
+    {
+       $previousSetting = libxml_use_internal_errors(true);
+       $callback();
+       libxml_use_internal_errors($previousSetting);
     }
 }
