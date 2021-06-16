@@ -47,20 +47,23 @@ class Provider
     /**
      * @var string
      */
-    private $requestHandlerClass;
+    private $requestHandlerClass = '';
+
+    /**
+     * @var array
+     */
+    private $requestHandlerSettings = [];
 
     public function __construct(
         string $name,
         string $endpoint,
         array $urlSchemes,
-        bool $hasRegexUrlSchemes,
-        string $requestHandlerClass = ''
+        bool $hasRegexUrlSchemes
     ) {
         $this->name = $name;
         $this->endpoint = $endpoint;
         $this->urlSchemes = $urlSchemes;
         $this->hasRegexUrlSchemes = $hasRegexUrlSchemes;
-        $this->requestHandlerClass = $requestHandlerClass;
     }
 
     public function getEndpoint(): string
@@ -86,6 +89,11 @@ class Provider
         return $this->requestHandlerClass;
     }
 
+    public function getRequestHandlerSettings(): array
+    {
+        return $this->requestHandlerSettings;
+    }
+
     public function getUrlSchemes(): array
     {
         return $this->urlSchemes;
@@ -99,5 +107,11 @@ class Provider
     public function withProcessor(string $processorClass)
     {
         $this->processors[] = $processorClass;
+    }
+
+    public function withRequestHandler(string $requestHandlerClass, array $requestHandlerSettings)
+    {
+        $this->requestHandlerClass = $requestHandlerClass;
+        $this->requestHandlerSettings = $requestHandlerSettings;
     }
 }

@@ -39,6 +39,23 @@ class ProviderRepositoryTest extends TestCase
         $this->assertEquals(['my processor class'], $provider->getProcessors());
     }
 
+    public function testCreatesProviderWithRequestHandler()
+    {
+        $provider = $this->callFindAll(
+            [
+                'test' => [
+                    'endpoint' => 'https://my-provider.tld/enpoint',
+                    'urlSchemes' => ['https://my-url-scheme.tld'],
+                    'requestHandlerClass' => 'theclass',
+                    'requestHandlerSettings' => ['my' => 'setting'],
+                ],
+            ]
+        );
+
+        $this->assertEquals('theclass', $provider->getRequestHandlerClass());
+        $this->assertEquals(['my' => 'setting'], $provider->getRequestHandlerSettings());
+    }
+
     public function testCreatesProviderWithRequestHandlerClass()
     {
         $provider = $this->callFindAll(

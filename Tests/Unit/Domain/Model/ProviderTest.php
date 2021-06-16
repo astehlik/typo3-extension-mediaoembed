@@ -16,21 +16,33 @@ class ProviderTest extends TestCase
     {
         $this->provider = new Provider(
             'the_provider_name',
-            'http://the.provider.endpoint.url',
+            'https://the.provider.endpoint.url',
             ['https://the.url.scheme'],
-            true,
-            'The\\Request\\Handler\\Class'
+            true
         );
     }
 
     public function testGetEndpoint()
     {
-        $this->assertEquals('http://the.provider.endpoint.url', $this->provider->getEndpoint());
+        $this->assertEquals('https://the.provider.endpoint.url', $this->provider->getEndpoint());
     }
 
     public function testGetName()
     {
         $this->assertEquals('the_provider_name', $this->provider->getName());
+    }
+
+    public function testGetRequestHandlerClass()
+    {
+        $this->provider->withRequestHandler('The\\Request\\Handler\\Class', []);
+        $this->assertEquals('The\\Request\\Handler\\Class', $this->provider->getRequestHandlerClass());
+    }
+
+    public function testGetRequestHandlerSettings()
+    {
+        $settings = ['this' => 'setting'];
+        $this->provider->withRequestHandler('The\\Request\\Handler\\Class', $settings);
+        $this->assertEquals($settings, $this->provider->getRequestHandlerSettings());
     }
 
     public function testGetUrlSchemes()
@@ -41,10 +53,5 @@ class ProviderTest extends TestCase
     public function testHasRegexUrlSchemes()
     {
         $this->assertTrue($this->provider->hasRegexUrlSchemes());
-    }
-
-    public function testGetRequestHandlerClass()
-    {
-        $this->assertEquals('The\\Request\\Handler\\Class', $this->provider->getRequestHandlerClass());
     }
 }
