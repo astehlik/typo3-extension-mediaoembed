@@ -37,6 +37,11 @@ class Provider
     /**
      * @var bool
      */
+    private $displayDirectLink = true;
+
+    /**
+     * @var bool
+     */
     private $hasRegexUrlSchemes;
 
     /**
@@ -54,11 +59,6 @@ class Provider
      */
     private $requestHandlerSettings = [];
 
-    /**
-     * @var bool
-     */
-    private $showDirectLink = true;
-
     public function __construct(
         string $name,
         string $endpoint,
@@ -74,11 +74,6 @@ class Provider
     public function getEndpoint(): string
     {
         return $this->endpoint;
-    }
-
-    public function getIsDirectLinkVisible(): bool
-    {
-        return $this->showDirectLink;
     }
 
     public function getName(): string
@@ -116,7 +111,12 @@ class Provider
 
     public function hideDirectLink()
     {
-        $this->showDirectLink = false;
+        $this->displayDirectLink = false;
+    }
+
+    public function shouldDirectLinkBeDisplayed(): bool
+    {
+        return $this->displayDirectLink;
     }
 
     public function withProcessor(string $processorClass)

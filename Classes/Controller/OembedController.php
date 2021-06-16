@@ -177,6 +177,21 @@ class OembedController extends ActionController
     }
 
     /**
+     * @param Provider|null $provider
+     * @return bool
+     */
+    private function shouldDisplayDirectLink($provider): bool
+    {
+        if (!$this->settings['view']['displayDirectLink']) {
+            return false;
+        }
+        if (!$provider) {
+            return true;
+        }
+        return $provider->shouldDirectLinkBeDisplayed();
+    }
+
+    /**
      * Loops over all mathing providers and all their endpoint
      * until the request was successful or no more providers / endpoints
      * are available.
@@ -216,6 +231,7 @@ class OembedController extends ActionController
 
         $this->view->assign('request', $request);
         $this->view->assign('provider', $provider);
+        $this->view->assign('displayDirectLink', $this->shouldDisplayDirectLink($provider));
         $this->view->assign('response', $response);
     }
 

@@ -82,7 +82,7 @@ class ProviderRepository implements SingletonInterface
             );
         }
 
-        if (isset($providerConfig['showDirectLink']) && !$providerConfig['showDirectLink']) {
+        if (isset($providerConfig['displayDirectLink']) && !$providerConfig['displayDirectLink']) {
             $provider->hideDirectLink();
         }
 

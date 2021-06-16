@@ -27,11 +27,6 @@ class ProviderTest extends TestCase
         $this->assertEquals('https://the.provider.endpoint.url', $this->provider->getEndpoint());
     }
 
-    public function testGetIsDirectLinkVisible()
-    {
-        $this->assertTrue($this->provider->getIsDirectLinkVisible());
-    }
-
     public function testGetName()
     {
         $this->assertEquals('the_provider_name', $this->provider->getName());
@@ -58,5 +53,10 @@ class ProviderTest extends TestCase
     public function testHasRegexUrlSchemes()
     {
         $this->assertTrue($this->provider->hasRegexUrlSchemes());
+    }
+
+    public function testShouldDirectLinkBeDisplayed()
+    {
+        $this->assertTrue($this->provider->shouldDirectLinkBeDisplayed());
     }
 }
