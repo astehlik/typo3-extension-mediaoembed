@@ -31,12 +31,8 @@ trait IframeAwareProcessorTrait
         }
 
         $iframeSrc = $iframe->getAttribute('src');
-        $urlParts = parse_url($iframeSrc);
-        if (!$urlParts) {
-            throw new ProcessorException('Could not parse URL of IFrame: ' . $iframeSrc);
-        }
 
-        $newUrl = $urlModifier($urlParts);
+        $newUrl = $urlModifier($iframeSrc);
 
         $iframe->setAttribute('src', $newUrl);
 

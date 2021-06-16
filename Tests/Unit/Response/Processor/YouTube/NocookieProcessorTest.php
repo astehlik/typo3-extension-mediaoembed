@@ -4,6 +4,7 @@ namespace Sto\Mediaoembed\Tests\Unit\Response\Processor\YouTube;
 
 use Sto\Mediaoembed\Response\Processor\YouTube\NocookieProcessor;
 use Sto\Mediaoembed\Response\VideoResponse;
+use Sto\Mediaoembed\Service\UrlService;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
 
 class NocookieProcessorTest extends AbstractUnitTest
@@ -19,7 +20,7 @@ class NocookieProcessorTest extends AbstractUnitTest
         $videoProphecy->getHtml()->shouldBeCalledOnce()->willReturn($videoHtml);
         $videoProphecy->setHtml($expectedHtml)->shouldBeCalledOnce();
 
-        $processor = new NocookieProcessor();
+        $processor = new NocookieProcessor(new UrlService());
         $processor->processResponse($videoProphecy->reveal());
     }
 }

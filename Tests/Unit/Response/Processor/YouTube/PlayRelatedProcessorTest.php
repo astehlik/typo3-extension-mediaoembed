@@ -5,6 +5,7 @@ namespace Sto\Mediaoembed\Tests\Unit\Response\Processor\YouTube;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Response\Processor\YouTube\PlayRelatedProcessor;
 use Sto\Mediaoembed\Response\VideoResponse;
+use Sto\Mediaoembed\Service\UrlService;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
 
 class PlayRelatedProcessorTest extends AbstractUnitTest
@@ -34,8 +35,7 @@ class PlayRelatedProcessorTest extends AbstractUnitTest
         $videoProphecy->getHtml()->shouldBeCalledOnce()->willReturn($videoHtml);
         $videoProphecy->setHtml($expectedHtml)->shouldBeCalledOnce();
 
-        $processor = new PlayRelatedProcessor();
-        $processor->injectConfiguration($configurationProphecy->reveal());
+        $processor = new PlayRelatedProcessor($configurationProphecy->reveal(), new UrlService());
         $processor->processResponse($videoProphecy->reveal());
     }
 
