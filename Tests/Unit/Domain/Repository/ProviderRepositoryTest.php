@@ -31,7 +31,7 @@ class ProviderRepositoryTest extends TestCase
                 'test' => [
                     'endpoint' => 'https://my-provider.tld/enpoint',
                     'urlSchemes' => ['https://my-url-scheme.tld'],
-                    'showDirectLink' => '0',
+                    'displayDirectLink' => '0',
                 ],
             ]
         );
