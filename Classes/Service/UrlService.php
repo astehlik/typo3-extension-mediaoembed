@@ -31,7 +31,7 @@ final class UrlService
         $fragment = $urlParts['fragment'] ?? '';
 
         $authority = ($userinfo !== null ? $userinfo . '@' : '')
-            . ($urlParts['host'] ?? "")
+            . ($urlParts['host'] ?? '')
             . ($port ? ':' . $port : '');
 
         return ($scheme ? $scheme . ':' : '')
