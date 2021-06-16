@@ -10,6 +10,21 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 class ProviderRepositoryTest extends TestCase
 {
+    public function testCreatesProviderWithDisabledDirectLink()
+    {
+        $provider = $this->callFindAll(
+            [
+                'test' => [
+                    'endpoint' => 'https://my-provider.tld/enpoint',
+                    'urlSchemes' => ['https://my-url-scheme.tld'],
+                    'showDirectLink' => '0',
+                ],
+            ]
+        );
+
+        $this->assertEquals(false, $provider->getIsDirectLinkVisible());
+    }
+
     public function testCreatesProviderWithEndpoint()
     {
         $provider = $this->callFindAll(

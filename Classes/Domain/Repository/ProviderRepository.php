@@ -82,6 +82,10 @@ class ProviderRepository implements SingletonInterface
             );
         }
 
+        if (isset($providerConfig['showDirectLink']) && !$providerConfig['showDirectLink']) {
+            $provider->hideDirectLink();
+        }
+
         $this->addProcessors($provider, (array)($providerConfig['processors'] ?? []));
 
         return $provider;

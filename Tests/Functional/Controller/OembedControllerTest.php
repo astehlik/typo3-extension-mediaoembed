@@ -31,6 +31,14 @@ class OembedControllerTest extends AbstractFunctionalTest
         $this->assertContains($expectedDirectLink, $this->renderOembedContent());
     }
 
+    public function testPanoptoDirectLinkIsNotRendered()
+    {
+        $expectedDirectLink = '<a rel="noreferrer noopener" target="_blank"'
+            . ' href="https://demo.hosted.panopto.com/Panopto';
+
+        $this->assertNotContains($expectedDirectLink, $this->renderOembedContent(4));
+    }
+
     public function testYouTubeIframeIsRendered()
     {
         $expectedIframe = '<iframe width="459" height="344"'
