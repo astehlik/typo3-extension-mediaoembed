@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Sto\Mediaoembed\Request\RequestHandler;
+namespace Sto\Mediaoembed\Request\RequestHandler\Panopto;
 
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Domain\Model\Provider;
+use Sto\Mediaoembed\Request\RequestHandler\RequestHandlerInterface;
+use Sto\Mediaoembed\Request\RequestHandler\SettingsAwareRequestHandlerInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Fluid\View\StandaloneView;
@@ -23,17 +25,31 @@ final class PanoptoRequestHandler implements RequestHandlerInterface
      */
     private $contentObjectRenderer;
 
-    public function __construct(Configuration $configuration, ConfigurationManagerInterface $configurationManager)
-    {
+    /**
+     * @var PanoptoUrlProcessor
+     */
+    private $urlProcessor;
+
+    public function __construct(
+        Configuration $configuration,
+        ConfigurationManagerInterface $configurationManager,
+        PanoptoUrlProcessor $urlProcessor
+    ) {
         $this->configuration = $configuration;
         $this->contentObjectRenderer = $configurationManager->getContentObject();
+        $this->urlProcessor = $urlProcessor;
     }
 
     public function handle(Provider $provider): array
     {
         $view = new StandaloneView($this->contentObjectRenderer);
         $view->setTemplatePathAndFilename($this->getTemplatePath());
-        $view->assign('mediaUrl', $this->configuration->getMediaUrl());
+
+        $settings = $provider->getRequestHandlerSettings();
+
+        $mediaUrl = $this->configuration->getMediaUrl();
+        $mediaUrl = $this->urlProcessor->processUrl($mediaUrl, $settings['defaultViewerUrlParameters'] ?? []);
+        $view->assign('mediaUrl', $mediaUrl);
 
         return [
             'type' => 'video',

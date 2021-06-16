@@ -31,6 +31,17 @@ class OembedControllerTest extends AbstractFunctionalTest
         $this->assertContains($expectedDirectLink, $this->renderOembedContent());
     }
 
+    public function testPanoptoViewerIsConvertedToEmbed()
+    {
+        $expectedIframeUrl =
+            ' src="https://demo.hosted.panopto.com/Panopto/Pages/Embed.aspx'
+            . '?autoplay=false&amp;offerviewer=true&amp;showtitle=false&amp;'
+            . 'showbrand=false&amp;start=0&amp;interactivity=all&amp;'
+            . 'id=24573-4a48-4688c-965a-036878978a0fb';
+
+        $this->assertContains($expectedIframeUrl, $this->renderOembedContent(4));
+    }
+
     public function testPanoptoDirectLinkIsNotRendered()
     {
         $expectedDirectLink = '<a rel="noreferrer noopener" target="_blank"'

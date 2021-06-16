@@ -305,9 +305,17 @@ plugin.tx_mediaoembed.settings.providers {
 
     panopto {
         endpoint = https://demo.hosted.panopto.com
-        requestHandlerClass = Sto\Mediaoembed\Request\RequestHandler\PanoptoRequestHandler
+        requestHandlerClass = Sto\Mediaoembed\Request\RequestHandler\Panopto\PanoptoRequestHandler
+        requestHandlerSettings.defaultViewerUrlParameters {
+            autoplay = false
+            offerviewer = true
+            showtitle = false
+            showbrand = false
+            start = 0
+            interactivity = all
+        }
         urlRegexes {
-            10 = #https?://demo\.hosted\.panopto\.com/Panopto/Pages/Viewer\.aspx.+#i
+            10 = #https?://demo\.hosted\.panopto\.com/Panopto/Pages/(Embed|Viewer)\.aspx.+#i
         }
     }
 }
