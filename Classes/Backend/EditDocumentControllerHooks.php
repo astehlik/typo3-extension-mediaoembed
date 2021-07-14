@@ -28,26 +28,26 @@ final class EditDocumentControllerHooks
      */
     private $pageRenderer;
 
+    public function addJsLanguageLabels()
+    {
+        $this->initDependencies();
+
+        $languageLabels = $this->buildLanguageLabelArray();
+        $this->pageRenderer->addInlineLanguageLabelArray($languageLabels);
+    }
+
     /**
      * @noinspection PhpFullyQualifiedNameUsageInspection PhpUndefinedClassInspection PhpUndefinedNamespaceInspection
      * @param \TYPO3\CMS\Lang\LanguageService|\TYPO3\CMS\Core\Localization\LanguageService $languageService
      */
-    public function injectLanguageService($languageService)
+    public function setLanguageService($languageService)
     {
         $this->languageService = $languageService;
     }
 
-    public function injectPageRenderer(PageRenderer $pageRenderer)
+    public function setPageRenderer(PageRenderer $pageRenderer)
     {
         $this->pageRenderer = $pageRenderer;
-    }
-
-    public function addJsLanguageLabels()
-    {
-        $this->injectDependencies();
-
-        $languageLabels = $this->buildLanguageLabelArray();
-        $this->pageRenderer->addInlineLanguageLabelArray($languageLabels);
     }
 
     private function buildLanguageLabelArray(): array
@@ -61,13 +61,13 @@ final class EditDocumentControllerHooks
         return $translations;
     }
 
-    private function injectDependencies()
+    private function initDependencies()
     {
         if ($this->languageService) {
             return;
         }
-        $this->injectLanguageService($GLOBALS['LANG']);
-        $this->injectPageRenderer(GeneralUtility::makeInstance(PageRenderer::class));
+        $this->setLanguageService($GLOBALS['LANG']);
+        $this->setPageRenderer(GeneralUtility::makeInstance(PageRenderer::class));
     }
 
     private function translate(string $key): string

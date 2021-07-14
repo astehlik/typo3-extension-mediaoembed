@@ -29,8 +29,8 @@ final class EditDocumentControllerHooksTest extends AbstractFunctionalTest
             );
 
         $hooks = new EditDocumentControllerHooks();
-        $hooks->injectLanguageService($this->getLanguageService());
-        $hooks->injectPageRenderer($pageRendererMock);
+        $hooks->setLanguageService($this->getLanguageService());
+        $hooks->setPageRenderer($pageRendererMock);
         $hooks->addJsLanguageLabels();
     }
 
