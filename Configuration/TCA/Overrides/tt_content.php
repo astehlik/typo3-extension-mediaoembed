@@ -16,7 +16,7 @@ $ttContentColumns = [
     'tx_mediaoembed_url' => [
         'label' => $lllPrefix . 'tt_content.tx_mediaoembed_url',
         'config' => [
-            'type' => 'input',
+            'type' => 'tx_mediaoembed_urlinput',
             'behaviour' => ['allowLanguageSynchronization' => true],
         ],
     ],

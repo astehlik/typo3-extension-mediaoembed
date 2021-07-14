@@ -24,8 +24,6 @@ final class EditDocumentControllerHooks
 
         $languageLabels = $this->buildLanguageLabelArray();
         $pageRenderer->addInlineLanguageLabelArray($languageLabels);
-
-        $pageRenderer->loadRequireJsModule('TYPO3/CMS/Mediaoembed/Backend/UrlParser');
     }
 
     private function buildLanguageLabelArray(): array

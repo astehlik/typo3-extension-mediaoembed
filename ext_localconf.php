@@ -75,6 +75,12 @@ mod.wizards.newContentElement {
         \Sto\Mediaoembed\Backend\EditDocumentControllerHooks::class,
         'addUrlParserJs'
     );
+
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry']['tx_mediaoembed_urlinput'] = [
+        'nodeName' => 'tx_mediaoembed_urlinput',
+        'class' => \Sto\Mediaoembed\Backend\Form\MediaUrlInputElement::class,
+        'priority' => 50,
+    ];
 };
 
 $bootMediaoembed();
