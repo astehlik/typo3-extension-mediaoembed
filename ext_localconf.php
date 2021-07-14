@@ -68,12 +68,12 @@ mod.wizards.newContentElement {
         = '';
 
     $dispatcher = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
-    /** @uses \Sto\Mediaoembed\Backend\EditDocumentControllerHooks::addUrlParserJs() */
+    /** @uses \Sto\Mediaoembed\Backend\EditDocumentControllerHooks::addJsLanguageLabels() */
     $dispatcher->connect(
         \TYPO3\CMS\Backend\Controller\EditDocumentController::class,
         'initAfter',
         \Sto\Mediaoembed\Backend\EditDocumentControllerHooks::class,
-        'addUrlParserJs'
+        'addJsLanguageLabels'
     );
 
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry']['tx_mediaoembed_urlinput'] = [

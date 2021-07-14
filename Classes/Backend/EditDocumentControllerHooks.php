@@ -6,11 +6,10 @@ namespace Sto\Mediaoembed\Backend;
 
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Lang\LanguageService;
 
 final class EditDocumentControllerHooks
 {
-    private $jsLabelKeys = [
+    const JS_LABEL_KEYS = [
         'error_iframe_extraction_failed',
         'error_iframe_has_no_src',
         'error_more_than_one_iframe_found',
@@ -18,7 +17,7 @@ final class EditDocumentControllerHooks
         'success_iframe_src_extracted',
     ];
 
-    public function addUrlParserJs()
+    public function addJsLanguageLabels()
     {
         $pageRenderer = $this->getPageRenderer();
 
@@ -30,14 +29,21 @@ final class EditDocumentControllerHooks
     {
         $translations = [];
 
-        foreach ($this->jsLabelKeys as $key) {
+        foreach (self::JS_LABEL_KEYS as $key) {
             $translations['tx_mediaoembed_' . $key] = $this->translate($key);
         }
 
         return $translations;
     }
 
-    private function getLanguageService(): LanguageService
+    /**
+     * @noinspection PhpFullyQualifiedNameUsageInspection
+     * @noinspection PhpUndefinedClassInspection
+     * @noinspection PhpUndefinedNamespaceInspection
+     *
+     * @return \TYPO3\CMS\Lang\LanguageService|\TYPO3\CMS\Core\Localization\LanguageService
+     */
+    private function getLanguageService()
     {
         return $GLOBALS['LANG'];
     }
