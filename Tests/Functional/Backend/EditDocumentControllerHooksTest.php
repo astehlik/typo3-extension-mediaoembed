@@ -6,25 +6,14 @@ namespace Sto\Mediaoembed\Tests\Functional\Backend;
 
 use Sto\Mediaoembed\Backend\EditDocumentControllerHooks;
 use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTest;
-use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 final class EditDocumentControllerHooksTest extends AbstractFunctionalTest
 {
-    protected function tearDown()
-    {
-        GeneralUtility::resetSingletonInstances([]);
-        unset($GLOBALS['LANG']);
-        parent::tearDown();
-    }
-
     public function testAddJsLanguageLabels()
     {
         $pageRendererMock = $this->createMock(PageRenderer::class);
-        GeneralUtility::setSingletonInstance(PageRenderer::class, $pageRendererMock);
-
-        $GLOBALS['LANG'] = $this->getLanguageService();
 
         /** @noinspection PhpParamsInspection */
         $pageRendererMock->expects($this->once())
@@ -40,6 +29,8 @@ final class EditDocumentControllerHooksTest extends AbstractFunctionalTest
             );
 
         $hooks = new EditDocumentControllerHooks();
+        $hooks->injectLanguageService($this->getLanguageService());
+        $hooks->injectPageRenderer($pageRendererMock);
         $hooks->addJsLanguageLabels();
     }
 
@@ -62,10 +53,7 @@ final class EditDocumentControllerHooksTest extends AbstractFunctionalTest
     }
 
     /**
-     * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
-     * @noinspection PhpUndefinedClassInspection
-     * @noinspection PhpUndefinedNamespaceInspection
-     *
+     * @noinspection PhpFullyQualifiedNameUsageInspection PhpUndefinedClassInspection PhpUndefinedNamespaceInspection
      * @return \TYPO3\CMS\Lang\LanguageService|\TYPO3\CMS\Core\Localization\LanguageService
      */
     private function getLanguageService()

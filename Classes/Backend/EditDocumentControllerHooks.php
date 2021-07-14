@@ -17,12 +17,37 @@ final class EditDocumentControllerHooks
         'success_iframe_src_extracted',
     ];
 
+    /**
+     * @noinspection PhpFullyQualifiedNameUsageInspection PhpUndefinedClassInspection PhpUndefinedNamespaceInspection
+     * @var \TYPO3\CMS\Core\Localization\LanguageService|\TYPO3\CMS\Lang\LanguageService
+     */
+    private $languageService;
+
+    /**
+     * @var PageRenderer
+     */
+    private $pageRenderer;
+
+    /**
+     * @noinspection PhpFullyQualifiedNameUsageInspection PhpUndefinedClassInspection PhpUndefinedNamespaceInspection
+     * @param \TYPO3\CMS\Lang\LanguageService|\TYPO3\CMS\Core\Localization\LanguageService $languageService
+     */
+    public function injectLanguageService($languageService)
+    {
+        $this->languageService = $languageService;
+    }
+
+    public function injectPageRenderer(PageRenderer $pageRenderer)
+    {
+        $this->pageRenderer = $pageRenderer;
+    }
+
     public function addJsLanguageLabels()
     {
-        $pageRenderer = $this->getPageRenderer();
+        $this->injectDependencies();
 
         $languageLabels = $this->buildLanguageLabelArray();
-        $pageRenderer->addInlineLanguageLabelArray($languageLabels);
+        $this->pageRenderer->addInlineLanguageLabelArray($languageLabels);
     }
 
     private function buildLanguageLabelArray(): array
@@ -36,26 +61,18 @@ final class EditDocumentControllerHooks
         return $translations;
     }
 
-    /**
-     * @noinspection PhpFullyQualifiedNameUsageInspection
-     * @noinspection PhpUndefinedClassInspection
-     * @noinspection PhpUndefinedNamespaceInspection
-     *
-     * @return \TYPO3\CMS\Lang\LanguageService|\TYPO3\CMS\Core\Localization\LanguageService
-     */
-    private function getLanguageService()
+    private function injectDependencies()
     {
-        return $GLOBALS['LANG'];
-    }
-
-    private function getPageRenderer()
-    {
-        return GeneralUtility::makeInstance(PageRenderer::class);
+        if ($this->languageService) {
+            return;
+        }
+        $this->injectLanguageService($GLOBALS['LANG']);
+        $this->injectPageRenderer(GeneralUtility::makeInstance(PageRenderer::class));
     }
 
     private function translate(string $key): string
     {
-        return $this->getLanguageService()->sL(
+        return $this->languageService->sL(
             'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_be_js.xlf:' . $key
         );
     }
