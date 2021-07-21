@@ -22,7 +22,7 @@ use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
  * If a provider wishes the consumer to just provide a thumbnail, rather than an
  * embeddable player, they should instead return a photo response type.
  */
-class VideoResponse extends GenericResponse implements AspectRatioAwareResponseInterface
+class VideoResponse extends GenericResponse implements AspectRatioAwareResponseInterface, HtmlAwareResponseInterface
 {
     const ASPECT_RATIO_16TO9 = '16to9';
 

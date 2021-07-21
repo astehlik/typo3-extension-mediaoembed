@@ -27,6 +27,8 @@ use Sto\Mediaoembed\Request\ProviderResolver;
 use Sto\Mediaoembed\Request\RequestHandler\HttpRequestHandler;
 use Sto\Mediaoembed\Request\RequestHandler\RequestHandlerInterface;
 use Sto\Mediaoembed\Response\GenericResponse;
+use Sto\Mediaoembed\Response\HtmlAwareResponseInterface;
+use Sto\Mediaoembed\Response\Processor\HtmlResponseProcessorInterface;
 use Sto\Mediaoembed\Response\Processor\ResponseProcessorInterface;
 use Sto\Mediaoembed\Response\ResponseBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -167,6 +169,20 @@ class OembedController extends ActionController
             /** @var ResponseProcessorInterface $processor */
             $processor = $this->objectManager->get($processorClass);
             $processor->processResponse($response);
+        }
+        $this->processResponseWithHtml($response);
+    }
+
+    private function processResponseWithHtml(GenericResponse $response)
+    {
+        if (!$response instanceof HtmlAwareResponseInterface) {
+            return;
+        }
+
+        foreach ($this->configuration->getProcessorsForHtml() as $htmlProcessorClass) {
+            /** @var HtmlResponseProcessorInterface $processor */
+            $processor = $this->objectManager->get($htmlProcessorClass);
+            $processor->processHtmlResponse($response);
         }
     }
 

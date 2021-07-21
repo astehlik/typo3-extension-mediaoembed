@@ -54,6 +54,11 @@ class ConfigurationService
         return (int)$this->settings['downloadPhotoSettings']['storageUid'];
     }
 
+    public function getProcessorsForHtml(): array
+    {
+        return $this->settings['reponseProcessors']['html'] ?? [];
+    }
+
     public function isPhotoDownloadEnabled(): bool
     {
         return (bool)$this->settings['downloadPhoto'];

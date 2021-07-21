@@ -12,6 +12,12 @@ plugin.tx_mediaoembed.settings {
         folderIdentifier = {$plugin.tx_mediaoembed.downloadPhotoSettings.folderIdentifier}
     }
 
+    reponseProcessors {
+        html {
+            10 = Sto\Mediaoembed\Response\Processor\YouTube\IframeAccessibilityProcessor
+        }
+    }
+
     // Aspect ratio to use when no width / height is available.
     aspectRatioFallback = 16:9
 

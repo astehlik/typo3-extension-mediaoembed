@@ -106,6 +106,11 @@ class Configuration
         return $this->getContent()->getUrl();
     }
 
+    public function getProcessorsForHtml(): array
+    {
+        return $this->configurationService->getProcessorsForHtml();
+    }
+
     public function shouldPlayRelated(): bool
     {
         return $this->getContent()->shouldPlayRelated();

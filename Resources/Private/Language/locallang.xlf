@@ -4,6 +4,12 @@
 		  product-name="mediaoembed">
 		<header/>
 		<body>
+			<trans-unit id="iframe_aria_label" xml:space="preserve">
+				<source>%s media: %s</source>
+			</trans-unit>
+			<trans-unit id="iframe_aria_label_fallback" xml:space="preserve">
+				<source>%s media</source>
+			</trans-unit>
 			<trans-unit id="error" xml:space="preserve">
 				<source>Error!</source>
 			</trans-unit>
