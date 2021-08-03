@@ -55,7 +55,7 @@ class OembedControllerTest extends AbstractFunctionalTest
         $expectedIframe = '<iframe width="459" height="344"'
             . ' src="https://www.youtube-nocookie.com/embed/iwGFalTRHDA?feature=oembed&amp;rel=1"'
             . ' frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"'
-            . ' allowfullscreen></iframe>';
+            . ' allowfullscreen aria-label="YouTube media: Trololo"></iframe>';
 
         $this->assertContains($expectedIframe, $this->renderOembedContent());
     }
@@ -65,7 +65,7 @@ class OembedControllerTest extends AbstractFunctionalTest
         $expectedIframe = '<iframe width="459" height="344"'
             . ' src="https://www.youtube-nocookie.com/embed/iwGFalTRHDA?feature=oembed&amp;rel=0"'
             . ' frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"'
-            . ' allowfullscreen></iframe>';
+            . ' allowfullscreen aria-label="YouTube media: Trololo"></iframe>';
 
         $this->renderOembedContent(3);
 
