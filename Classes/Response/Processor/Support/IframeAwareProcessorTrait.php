@@ -17,7 +17,11 @@ trait IframeAwareProcessorTrait
         string $attribute,
         string $value
     ) {
-        $attributeModifier = function (?string $currentValue) use ($value) {
+        /**
+         * @param string|null $currentValue
+         * @return string
+         */
+        $attributeModifier = function ($currentValue) use ($value) {
             if ($currentValue) {
                 return $currentValue;
             }
@@ -26,7 +30,12 @@ trait IframeAwareProcessorTrait
         $this->modifyIframeAttribute($response, $attribute, $attributeModifier);
     }
 
-    private function getAttributeValue(DOMElement $iframe, string $attribute): ?string
+    /**
+     * @param DOMElement $iframe
+     * @param string $attribute
+     * @return string|null
+     */
+    private function getAttributeValue(DOMElement $iframe, string $attribute)
     {
         $hasAttribute = $iframe->hasAttribute($attribute);
         $attributeValue = null;
@@ -36,7 +45,12 @@ trait IframeAwareProcessorTrait
         return $attributeValue;
     }
 
-    private function modifyAttribute(DOMElement $iframe, string $attribute, ?string $attributeValue)
+    /**
+     * @param DOMElement $iframe
+     * @param string $attribute
+     * @param string|null $attributeValue
+     */
+    private function modifyAttribute(DOMElement $iframe, string $attribute, $attributeValue)
     {
         if ($attributeValue === null) {
             $iframe->removeAttribute($attribute);
@@ -83,7 +97,11 @@ trait IframeAwareProcessorTrait
 
     private function modifyIframeUrl(HtmlAwareResponseInterface $response, Closure $urlModifier)
     {
-        $attributeModifier = function (?string $iframeSrc) use ($urlModifier) {
+        /**
+         * @param string|null $iframeSrc
+         * @return mixed
+         */
+        $attributeModifier = function ($iframeSrc) use ($urlModifier) {
             return $urlModifier($iframeSrc);
         };
         $this->modifyIframeAttribute($response, 'src', $attributeModifier);

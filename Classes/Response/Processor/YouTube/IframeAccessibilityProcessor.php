@@ -29,7 +29,11 @@ class IframeAccessibilityProcessor implements HtmlResponseProcessorInterface
         $this->addIframeAttributeIfNonExisting($response, 'aria-label', $ariaLabel);
     }
 
-    private function getAriaLabel(GenericResponse $response): ?string
+    /**
+     * @param GenericResponse $response
+     * @return string|null
+     */
+    private function getAriaLabel(GenericResponse $response)
     {
         if (!$response->getTitle()) {
             return LocalizationUtility::translate(
