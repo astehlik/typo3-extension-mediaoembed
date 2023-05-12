@@ -34,7 +34,7 @@ class Endpoint
         $this->urlSchemes = [];
     }
 
-    public function addUrlScheme(string $urlScheme)
+    public function addUrlScheme(string $urlScheme): void
     {
         $this->urlSchemes[] = $urlScheme;
     }

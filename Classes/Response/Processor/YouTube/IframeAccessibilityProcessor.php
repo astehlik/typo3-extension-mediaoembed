@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Response\Processor\YouTube;
 
-use InvalidArgumentException;
 use Sto\Mediaoembed\Response\GenericResponse;
 use Sto\Mediaoembed\Response\HtmlAwareResponseInterface;
 use Sto\Mediaoembed\Response\Processor\HtmlResponseProcessorInterface;
@@ -15,14 +14,14 @@ class IframeAccessibilityProcessor implements HtmlResponseProcessorInterface
 {
     use IframeAwareProcessorTrait;
 
-    public function processHtmlResponse(HtmlAwareResponseInterface $response)
+    public function processHtmlResponse(HtmlAwareResponseInterface $response): void
     {
         if (strpos($response->getHtml(), '<iframe') !== 0) {
             return;
         }
 
         if (!$response instanceof GenericResponse) {
-            throw new InvalidArgumentException('This processor only works GenericResponse instances!');
+            throw new \InvalidArgumentException('This processor only works GenericResponse instances!');
         }
 
         $ariaLabel = $this->getAriaLabel($response);
@@ -30,7 +29,6 @@ class IframeAccessibilityProcessor implements HtmlResponseProcessorInterface
     }
 
     /**
-     * @param GenericResponse $response
      * @return string|null
      */
     private function getAriaLabel(GenericResponse $response)

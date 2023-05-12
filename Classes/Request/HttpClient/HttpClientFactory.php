@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sto\Mediaoembed\Request\HttpClient;
 
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -17,18 +19,6 @@ class HttpClientFactory
      */
     private $settings;
 
-    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
-    {
-        $this->settings = $configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
-        );
-    }
-
-    public function injectObjectManager(ObjectManagerInterface $objectManager)
-    {
-        $this->objectManager = $objectManager;
-    }
-
     public function getHttpClient(): HttpClientInterface
     {
         $httpClientClass = (string)($this->settings['httpClient'] ?? '');
@@ -39,5 +29,17 @@ class HttpClientFactory
 
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->objectManager->get($httpClientClass);
+    }
+
+    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager): void
+    {
+        $this->settings = $configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
+        );
+    }
+
+    public function injectObjectManager(ObjectManagerInterface $objectManager): void
+    {
+        $this->objectManager = $objectManager;
     }
 }

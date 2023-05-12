@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Response\Processor\Support;
 
-use Closure;
-use DOMDocument;
-use DOMElement;
 use Sto\Mediaoembed\Exception\ProcessorException;
 use Sto\Mediaoembed\Response\HtmlAwareResponseInterface;
 
@@ -16,9 +13,10 @@ trait IframeAwareProcessorTrait
         HtmlAwareResponseInterface $response,
         string $attribute,
         string $value
-    ) {
+    ): void {
         /**
          * @param string|null $currentValue
+         *
          * @return string
          */
         $attributeModifier = function ($currentValue) use ($value) {
@@ -31,11 +29,9 @@ trait IframeAwareProcessorTrait
     }
 
     /**
-     * @param DOMElement $iframe
-     * @param string $attribute
      * @return string|null
      */
-    private function getAttributeValue(DOMElement $iframe, string $attribute)
+    private function getAttributeValue(\DOMElement $iframe, string $attribute)
     {
         $hasAttribute = $iframe->hasAttribute($attribute);
         $attributeValue = null;
@@ -46,11 +42,9 @@ trait IframeAwareProcessorTrait
     }
 
     /**
-     * @param DOMElement $iframe
-     * @param string $attribute
      * @param string|null $attributeValue
      */
-    private function modifyAttribute(DOMElement $iframe, string $attribute, $attributeValue)
+    private function modifyAttribute(\DOMElement $iframe, string $attribute, $attributeValue): void
     {
         if ($attributeValue === null) {
             $iframe->removeAttribute($attribute);
@@ -63,12 +57,12 @@ trait IframeAwareProcessorTrait
     private function modifyIframeAttribute(
         HtmlAwareResponseInterface $response,
         string $attribute,
-        Closure $attributeModifier
-    ) {
-        $document = new DOMDocument();
+        \Closure $attributeModifier
+    ): void {
+        $document = new \DOMDocument();
         $loadSuccess = false;
         $this->withoutXmlErrors(
-            function () use ($response, $document, &$loadSuccess) {
+            function () use ($response, $document, &$loadSuccess): void {
                 $htmlWrapping = '<html><body><div id="oembed-response">%s</div></body></html>';
                 $loadSuccess = $document->loadHTML(sprintf($htmlWrapping, $response->getHtml()));
             }
@@ -77,7 +71,7 @@ trait IframeAwareProcessorTrait
             throw new ProcessorException('Error parsing HTML from YouTube response.');
         }
 
-        /** @var DOMElement $iframe */
+        /** @var \DOMElement $iframe */
         $iframe = $document->getElementById('oembed-response')->childNodes->item(0);
         if ($iframe->tagName !== 'iframe') {
             throw new ProcessorException('Expected HTML to be iframe but was: ' . $iframe->tagName);
@@ -95,10 +89,11 @@ trait IframeAwareProcessorTrait
         $response->setHtml($modifiedHtml);
     }
 
-    private function modifyIframeUrl(HtmlAwareResponseInterface $response, Closure $urlModifier)
+    private function modifyIframeUrl(HtmlAwareResponseInterface $response, \Closure $urlModifier): void
     {
         /**
          * @param string|null $iframeSrc
+         *
          * @return mixed
          */
         $attributeModifier = function ($iframeSrc) use ($urlModifier) {
@@ -107,7 +102,7 @@ trait IframeAwareProcessorTrait
         $this->modifyIframeAttribute($response, 'src', $attributeModifier);
     }
 
-    private function withoutXmlErrors(Closure $callback)
+    private function withoutXmlErrors(\Closure $callback): void
     {
         $previousSetting = libxml_use_internal_errors(true);
         $callback();

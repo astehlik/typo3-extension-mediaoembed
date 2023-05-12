@@ -8,6 +8,7 @@ class ProviderTypoScriptRenderer
 {
     /**
      * @param array|Endpoint[] $endpointsByName
+     *
      * @return string
      */
     public function render(array $endpointsByName)

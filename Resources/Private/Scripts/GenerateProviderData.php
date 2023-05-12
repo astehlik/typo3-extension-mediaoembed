@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Sto\Mediaoembed\Provider\EndpointCollector;
 use Sto\Mediaoembed\Provider\ProviderEndpoints;
 use Sto\Mediaoembed\Provider\ProviderTypoScriptRenderer;

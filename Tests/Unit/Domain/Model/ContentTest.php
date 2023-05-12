@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sto\Mediaoembed\Tests\Unit\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
@@ -12,38 +14,38 @@ class ContentTest extends TestCase
      */
     private $content;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->content = new Content(10, 'https://the.media.url', 12, 43, false, '12:2');
     }
 
-    public function testGetAspectRatio()
+    public function testGetAspectRatio(): void
     {
-        $this->assertEquals('12:2', $this->content->getAspectRatio());
+        self::assertSame('12:2', $this->content->getAspectRatio());
     }
 
-    public function testGetMaxHeight()
+    public function testGetMaxHeight(): void
     {
-        $this->assertEquals(12, $this->content->getMaxHeight());
+        self::assertSame(12, $this->content->getMaxHeight());
     }
 
-    public function testGetMaxWidth()
+    public function testGetMaxWidth(): void
     {
-        $this->assertEquals(43, $this->content->getMaxWidth());
+        self::assertSame(43, $this->content->getMaxWidth());
     }
 
-    public function testGetUid()
+    public function testGetUid(): void
     {
-        $this->assertEquals(10, $this->content->getUid());
+        self::assertSame(10, $this->content->getUid());
     }
 
-    public function testGetUrl()
+    public function testGetUrl(): void
     {
-        $this->assertEquals('https://the.media.url', $this->content->getUrl());
+        self::assertSame('https://the.media.url', $this->content->getUrl());
     }
 
-    public function testShouldPlayRelated()
+    public function testShouldPlayRelated(): void
     {
-        $this->assertEquals(false, $this->content->shouldPlayRelated());
+        self::assertFalse($this->content->shouldPlayRelated());
     }
 }

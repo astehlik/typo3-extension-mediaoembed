@@ -12,7 +12,7 @@ use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
 final class AspectRatioEvaluationTest extends AbstractUnitTest
 {
     /**
-     * @var MockObject|AspectRatioCalculatorInterface
+     * @var AspectRatioCalculatorInterface|MockObject
      */
     private $aspectRatioCalculatorMock;
 
@@ -21,24 +21,12 @@ final class AspectRatioEvaluationTest extends AbstractUnitTest
      */
     private $aspectRatioEvaluation;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->aspectRatioEvaluation = new AspectRatioEvaluation();
 
         $this->aspectRatioCalculatorMock = $this->createMock(AspectRatioCalculatorInterface::class);
         $this->aspectRatioEvaluation->injectAspectRatioCalculator($this->aspectRatioCalculatorMock);
-    }
-
-    /**
-     * @test
-     * @dataProvider deevaluateFieldValueReturnsExpectedValueDataProvider
-     *
-     * @param array $parameters
-     * @param string $expectedValue
-     */
-    public function deevaluateFieldValueReturnsExpectedValue(array $parameters, string $expectedValue)
-    {
-        $this->assertEquals($expectedValue, $this->aspectRatioEvaluation->deevaluateFieldValue($parameters));
     }
 
     public function deevaluateFieldValueReturnsExpectedValueDataProvider(): array
@@ -55,23 +43,6 @@ final class AspectRatioEvaluationTest extends AbstractUnitTest
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider evaluateFieldValueReturnsEmptyStringForInvalidValuesDataProvider
-     *
-     * @param mixed $value
-     */
-    public function evaluateFieldValueReturnsEmptyStringForInvalidValues($value)
-    {
-        if ($value === 'invalid') {
-            $this->aspectRatioCalculatorMock->method('isValidAspectRatio')
-                ->with('invalid')
-                ->willReturn(false);
-        }
-
-        $this->assertEquals('', $this->aspectRatioEvaluation->evaluateFieldValue($value));
-    }
-
     public function evaluateFieldValueReturnsEmptyStringForInvalidValuesDataProvider(): array
     {
         return [
@@ -83,20 +54,41 @@ final class AspectRatioEvaluationTest extends AbstractUnitTest
     }
 
     /**
-     * @test
+     * @dataProvider deevaluateFieldValueReturnsExpectedValueDataProvider
      */
-    public function evaluateFieldValueReturnsValueForvalueValue()
+    public function testDeevaluateFieldValueReturnsExpectedValue(array $parameters, string $expectedValue): void
+    {
+        self::assertSame($expectedValue, $this->aspectRatioEvaluation->deevaluateFieldValue($parameters));
+    }
+
+    /**
+     * @dataProvider evaluateFieldValueReturnsEmptyStringForInvalidValuesDataProvider
+     *
+     * @param mixed $value
+     */
+    public function testEvaluateFieldValueReturnsEmptyStringForInvalidValues($value): void
+    {
+        if ($value === 'invalid') {
+            $this->aspectRatioCalculatorMock->method('isValidAspectRatio')
+                ->with('invalid')
+                ->willReturn(false);
+        }
+
+        self::assertSame('', $this->aspectRatioEvaluation->evaluateFieldValue($value));
+    }
+
+    public function testEvaluateFieldValueReturnsValueForvalueValue(): void
     {
         $this->aspectRatioCalculatorMock->method('isValidAspectRatio')
             ->with('valid')
             ->willReturn(true);
 
-        $this->assertEquals('valid', $this->aspectRatioEvaluation->evaluateFieldValue('valid'));
+        self::assertSame('valid', $this->aspectRatioEvaluation->evaluateFieldValue('valid'));
     }
 
-    public function testReturnFieldJSReturnsJsContents()
+    public function testReturnFieldJSReturnsJsContents(): void
     {
-        $this->assertStringEqualsFile(
+        self::assertStringEqualsFile(
             __DIR__ . '/../../../Classes/Backend/AspectRatioEvaluation.js',
             $this->aspectRatioEvaluation->returnFieldJS()
         );

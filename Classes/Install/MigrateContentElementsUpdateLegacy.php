@@ -19,14 +19,14 @@ use TYPO3\CMS\Install\Updates\AbstractUpdate;
 /**
  * Update class for the install tool that migrates the old media content
  * types with render type tx_mediaoembed to the new external media
- * content element
+ * content element.
  */
 class MigrateContentElementsUpdateLegacy extends AbstractUpdate
 {
     use MigrateContentElementsUpdateTrait;
 
     /**
-     * Title of this update that is displayed in the install tool
+     * Title of this update that is displayed in the install tool.
      *
      * @var string
      */
@@ -36,7 +36,8 @@ class MigrateContentElementsUpdateLegacy extends AbstractUpdate
      * Checks whether updates are required.
      *
      * @param string &$description : The description for the update
-     * @return boolean Whether an update is required (TRUE) or not (FALSE)
+     *
+     * @return bool Whether an update is required (TRUE) or not (FALSE)
      */
     public function checkForUpdate(&$description)
     {
@@ -57,7 +58,8 @@ class MigrateContentElementsUpdateLegacy extends AbstractUpdate
      *
      * @param array &$dbQueries : queries done in this update
      * @param mixed &$customMessages : custom messages
-     * @return boolean Whether everything went smoothly or not
+     *
+     * @return bool Whether everything went smoothly or not
      */
     public function performUpdate(array &$dbQueries, &$customMessages)
     {

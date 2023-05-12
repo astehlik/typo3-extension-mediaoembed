@@ -20,44 +20,16 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 /**
  * Update class for the install tool that migrates the old media content
  * types with render type tx_mediaoembed to the new external media
- * content element
+ * content element.
  */
 class MigrateContentElementsUpdate implements UpgradeWizardInterface
 {
     use MigrateContentElementsUpdateTrait;
 
-    public function getDescription(): string
-    {
-        return $this->getFlexFormUpdateHandler()->getDescription();
-    }
-
     /**
-     * Return the identifier for this wizard
-     * This should be the same string as used in the ext_localconf class registration
-     *
-     * @return string
-     */
-    public function getIdentifier(): string
-    {
-        return 'tx_mediaoembed_migratecontentelements';
-    }
-
-    /**
-     * Return the speaking name of this wizard
-     *
-     * @return string
-     */
-    public function getTitle(): string
-    {
-        return 'mediaoembed - Migrate content elements';
-    }
-
-    /**
-     * Execute the update
+     * Execute the update.
      *
      * Called when a wizard reports that an update is necessary
-     *
-     * @return bool
      */
     public function executeUpdate(): bool
     {
@@ -66,21 +38,22 @@ class MigrateContentElementsUpdate implements UpgradeWizardInterface
         return $this->getFlexFormUpdateHandler()->performUpdate($dbQueries, $customMessages);
     }
 
-    /**
-     * Is an update necessary?
-     *
-     * Is used to determine whether a wizard needs to be run.
-     * Check if data for migration exists.
-     *
-     * @return bool
-     */
-    public function updateNecessary(): bool
+    public function getDescription(): string
     {
-        return $this->getFlexFormUpdateHandler()->checkForUpdate();
+        return $this->getFlexFormUpdateHandler()->getDescription();
     }
 
     /**
-     * Returns an array of class names of Prerequisite classes
+     * Return the identifier for this wizard
+     * This should be the same string as used in the ext_localconf class registration.
+     */
+    public function getIdentifier(): string
+    {
+        return 'tx_mediaoembed_migratecontentelements';
+    }
+
+    /**
+     * Returns an array of class names of Prerequisite classes.
      *
      * This way a wizard can define dependencies like "database up-to-date" or
      * "reference index updated"
@@ -90,5 +63,24 @@ class MigrateContentElementsUpdate implements UpgradeWizardInterface
     public function getPrerequisites(): array
     {
         return [DatabaseUpdatedPrerequisite::class];
+    }
+
+    /**
+     * Return the speaking name of this wizard.
+     */
+    public function getTitle(): string
+    {
+        return 'mediaoembed - Migrate content elements';
+    }
+
+    /**
+     * Is an update necessary?
+     *
+     * Is used to determine whether a wizard needs to be run.
+     * Check if data for migration exists.
+     */
+    public function updateNecessary(): bool
+    {
+        return $this->getFlexFormUpdateHandler()->checkForUpdate();
     }
 }

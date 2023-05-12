@@ -20,11 +20,11 @@ use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
 use Sto\Mediaoembed\Service\ConfigurationService;
 
 /**
- * Handels TypoScript and content object configuration
+ * Handels TypoScript and content object configuration.
  */
 class Configuration
 {
-    const ASPECT_RATIO_DEFAULT = '16:9';
+    public const ASPECT_RATIO_DEFAULT = '16:9';
 
     /**
      * @var AspectRatioCalculatorInterface
@@ -70,8 +70,6 @@ class Configuration
      * Only applies to some resource types (as specified below).
      * For supported resource types, this parameter must be respected by providers.
      * This value is optional.
-     *
-     * @return int
      */
     public function getMaxheight(): int
     {
@@ -88,8 +86,6 @@ class Configuration
      * Only applies to some resource types (as specified below).
      * For supported resource types, this parameter must be respected by providers.
      * This value is optional.
-     *
-     * @return int
      */
     public function getMaxwidth(): int
     {
@@ -133,8 +129,6 @@ class Configuration
 
     /**
      * Returns the current tt_content record domain model.
-     *
-     * @return Content
      */
     private function getContent(): Content
     {

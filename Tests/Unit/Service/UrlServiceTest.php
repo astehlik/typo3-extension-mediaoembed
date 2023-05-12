@@ -14,24 +14,9 @@ final class UrlServiceTest extends AbstractUnitTest
      */
     private $urlService;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->urlService = new UrlService();
-    }
-
-    /**
-     * @test
-     * @dataProvider buildUrlReturnsExpectedStringDataProvider
-     */
-    public function buildUrlReturnsExpectedString(string $url)
-    {
-        $originalUrlParts = parse_url($url);
-
-        $rebuildUrl = $this->urlService->buildUrl($originalUrlParts, $url);
-        $rebuildUrlParts = parse_url($rebuildUrl);
-
-        $this->assertEquals($url, $rebuildUrl);
-        $this->assertEquals($originalUrlParts, $rebuildUrlParts);
     }
 
     public function buildUrlReturnsExpectedStringDataProvider(): array
@@ -49,7 +34,7 @@ final class UrlServiceTest extends AbstractUnitTest
         ];
     }
 
-    public function testAddQueryParameters()
+    public function testAddQueryParameters(): void
     {
         $testUrl = 'https://www.intera.de?bla=blubb&arr[test]=1&arr1[]=1';
         $addParameters = [
@@ -69,10 +54,24 @@ final class UrlServiceTest extends AbstractUnitTest
             'arr1' => ['2'],
             'new' => 'neu',
         ];
-        $this->assertEquals($expectedUrlParameters, $newUrlParameters);
+        self::assertSame($expectedUrlParameters, $newUrlParameters);
     }
 
-    public function testQueryParamsDefaults()
+    /**
+     * @dataProvider buildUrlReturnsExpectedStringDataProvider
+     */
+    public function testBuildUrlReturnsExpectedString(string $url): void
+    {
+        $originalUrlParts = parse_url($url);
+
+        $rebuildUrl = $this->urlService->buildUrl($originalUrlParts, $url);
+        $rebuildUrlParts = parse_url($rebuildUrl);
+
+        self::assertSame($url, $rebuildUrl);
+        self::assertSame($originalUrlParts, $rebuildUrlParts);
+    }
+
+    public function testQueryParamsDefaults(): void
     {
         $queryParams = [
             'test1' => 'test',
@@ -93,14 +92,14 @@ final class UrlServiceTest extends AbstractUnitTest
                 'test1' => '2',
             ],
         ];
-        $this->assertEquals($expectedParams, $newParams);
+        self::assertSame($expectedParams, $newParams);
     }
 
-    public function testReplaceSchemeAndHost()
+    public function testReplaceSchemeAndHost(): void
     {
         /** @noinspection HttpUrlsUsage */
         $oldUrl = 'http://test@bla.com?blubb=1#test';
         $newUrl = $this->urlService->replaceSchemeAndHost($oldUrl, 'https', 'www.my-new-host.com');
-        $this->assertEquals('https://test@www.my-new-host.com?blubb=1#test', $newUrl);
+        self::assertSame('https://test@www.my-new-host.com?blubb=1#test', $newUrl);
     }
 }

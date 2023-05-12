@@ -14,21 +14,9 @@ final class AspectRatioCalculatorTest extends AbstractUnitTest
      */
     private $aspectRatioCalculator;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->aspectRatioCalculator = new AspectRatioCalculator();
-    }
-
-    /**
-     * @test
-     * @dataProvider calculateAspectRatioReturnsExpectedValuesDataProvider
-     *
-     * @param float $expectedValue
-     * @param string $aspectRatio
-     */
-    public function calculateAspectRatioReturnsExpectedValues(float $expectedValue, string $aspectRatio)
-    {
-        $this->assertEquals($expectedValue, $this->aspectRatioCalculator->calculateAspectRatio($aspectRatio));
     }
 
     public function calculateAspectRatioReturnsExpectedValuesDataProvider(): array
@@ -49,17 +37,6 @@ final class AspectRatioCalculatorTest extends AbstractUnitTest
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider isValidAspectRatioReturnsFalseForInvalidValuesDataProvider
-     *
-     * @param string $value
-     */
-    public function isValidAspectRatioReturnsFalseForInvalidValues(string $value)
-    {
-        $this->assertFalse($this->aspectRatioCalculator->isValidAspectRatio($value));
-    }
-
     public function isValidAspectRatioReturnsFalseForInvalidValuesDataProvider(): array
     {
         return [
@@ -72,10 +49,23 @@ final class AspectRatioCalculatorTest extends AbstractUnitTest
     }
 
     /**
-     * @test
+     * @dataProvider calculateAspectRatioReturnsExpectedValuesDataProvider
      */
-    public function isValidAspectRatioReturnsTrueForValidValue()
+    public function testCalculateAspectRatioReturnsExpectedValues(float $expectedValue, string $aspectRatio): void
     {
-        $this->assertTrue($this->aspectRatioCalculator->isValidAspectRatio('10:5'));
+        self::assertSame($expectedValue, $this->aspectRatioCalculator->calculateAspectRatio($aspectRatio));
+    }
+
+    /**
+     * @dataProvider isValidAspectRatioReturnsFalseForInvalidValuesDataProvider
+     */
+    public function testIsValidAspectRatioReturnsFalseForInvalidValues(string $value): void
+    {
+        self::assertFalse($this->aspectRatioCalculator->isValidAspectRatio($value));
+    }
+
+    public function testIsValidAspectRatioReturnsTrueForValidValue(): void
+    {
+        self::assertTrue($this->aspectRatioCalculator->isValidAspectRatio('10:5'));
     }
 }

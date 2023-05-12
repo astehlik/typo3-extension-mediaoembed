@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Service;
 
-use SplFileInfo;
 use Sto\Mediaoembed\Exception\PhotoDownload\NotAnImageFileException;
 use Sto\Mediaoembed\Exception\PhotoDownloadException;
 use Sto\Mediaoembed\Exception\RequestException;
@@ -41,8 +40,9 @@ class PhotoDownloadService
     /**
      * Downloads the photo from the server and stores it in the typo3temp folder.
      *
-     * @param string $embedUrl The URL specified by the editor that should be embedded.
-     * @param string $downloadUrl The media URL returned by the oEmbed Service.
+     * @param string $embedUrl the URL specified by the editor that should be embedded
+     * @param string $downloadUrl the media URL returned by the oEmbed Service
+     *
      * @return File|null
      */
     public function downloadPhoto(string $embedUrl, string $downloadUrl)
@@ -80,9 +80,6 @@ class PhotoDownloadService
         return $file;
     }
 
-    /**
-     * @return Folder
-     */
     public function getTargetFolder(): Folder
     {
         return $this->resourceService->getOrCreateFolder(
@@ -92,11 +89,9 @@ class PhotoDownloadService
     }
 
     /**
-     * @param string $downloadUrl
-     * @param File $file
      * @throws NotAnImageFileException
      */
-    public function validateMimeType(string $downloadUrl, File $file)
+    public function validateMimeType(string $downloadUrl, File $file): void
     {
         if ($file->getType() !== File::FILETYPE_IMAGE) {
             $mimeType = $file->getMimeType();
@@ -107,7 +102,7 @@ class PhotoDownloadService
 
     private function detectExtension(string $photoUrl): string
     {
-        $fileInfo = new SplFileInfo($photoUrl);
+        $fileInfo = new \SplFileInfo($photoUrl);
         return $fileInfo->getExtension();
     }
 }

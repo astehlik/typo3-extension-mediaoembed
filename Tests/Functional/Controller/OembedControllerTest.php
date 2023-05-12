@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sto\Mediaoembed\Tests\Functional\Controller;
 
 use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTest;
 
 class OembedControllerTest extends AbstractFunctionalTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -23,15 +25,15 @@ class OembedControllerTest extends AbstractFunctionalTest
         );
     }
 
-    public function testYouTubeDirectLinkIsRendered()
+    public function testPanoptoDirectLinkIsNotRendered(): void
     {
         $expectedDirectLink = '<a rel="noreferrer noopener" target="_blank"'
-            . ' href="https://www.youtube.com/watch?v=iwGFalTRHDA">';
+            . ' href="https://demo.hosted.panopto.com/Panopto';
 
-        $this->assertContains($expectedDirectLink, $this->renderOembedContent());
+        self::assertNotContains($expectedDirectLink, $this->renderOembedContent(4));
     }
 
-    public function testPanoptoViewerIsConvertedToEmbed()
+    public function testPanoptoViewerIsConvertedToEmbed(): void
     {
         $expectedIframeUrl =
             ' src="https://demo.hosted.panopto.com/Panopto/Pages/Embed.aspx'
@@ -39,28 +41,28 @@ class OembedControllerTest extends AbstractFunctionalTest
             . 'showbrand=false&amp;start=0&amp;interactivity=all&amp;'
             . 'id=24573-4a48-4688c-965a-036878978a0fb';
 
-        $this->assertContains($expectedIframeUrl, $this->renderOembedContent(4));
+        self::assertContains($expectedIframeUrl, $this->renderOembedContent(4));
     }
 
-    public function testPanoptoDirectLinkIsNotRendered()
+    public function testYouTubeDirectLinkIsRendered(): void
     {
         $expectedDirectLink = '<a rel="noreferrer noopener" target="_blank"'
-            . ' href="https://demo.hosted.panopto.com/Panopto';
+            . ' href="https://www.youtube.com/watch?v=iwGFalTRHDA">';
 
-        $this->assertNotContains($expectedDirectLink, $this->renderOembedContent(4));
+        self::assertContains($expectedDirectLink, $this->renderOembedContent());
     }
 
-    public function testYouTubeIframeIsRendered()
+    public function testYouTubeIframeIsRendered(): void
     {
         $expectedIframe = '<iframe width="459" height="344"'
             . ' src="https://www.youtube-nocookie.com/embed/iwGFalTRHDA?feature=oembed&amp;rel=1"'
             . ' frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"'
             . ' allowfullscreen aria-label="YouTube media: Trololo"></iframe>';
 
-        $this->assertContains($expectedIframe, $this->renderOembedContent());
+        self::assertContains($expectedIframe, $this->renderOembedContent());
     }
 
-    public function testYouTubeIframeIsRenderedWithoutRelated()
+    public function testYouTubeIframeIsRenderedWithoutRelated(): void
     {
         $expectedIframe = '<iframe width="459" height="344"'
             . ' src="https://www.youtube-nocookie.com/embed/iwGFalTRHDA?feature=oembed&amp;rel=0"'
@@ -69,7 +71,7 @@ class OembedControllerTest extends AbstractFunctionalTest
 
         $this->renderOembedContent(3);
 
-        $this->assertContains($expectedIframe, $this->renderOembedContent(3));
+        self::assertContains($expectedIframe, $this->renderOembedContent(3));
     }
 
     private function renderOembedContent(int $openPageUid = 2): string

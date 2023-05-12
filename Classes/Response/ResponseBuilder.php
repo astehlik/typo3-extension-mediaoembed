@@ -55,9 +55,11 @@ class ResponseBuilder implements SingletonInterface
      * Builds a response object using the reponse data returned
      * from the provider.
      *
-     * @param string $embedUrl The URL provided by the editor that is sent to the oEmbed endpoint.
+     * @param string $embedUrl the URL provided by the editor that is sent to the oEmbed endpoint
      * @param array $responseData Raw response data from the provider
+     *
      * @return GenericResponse An instance of a response
+     *
      * @throws InvalidResponseException
      */
     public function buildResponse(string $embedUrl, array $responseData): GenericResponse
@@ -70,9 +72,6 @@ class ResponseBuilder implements SingletonInterface
     /**
      * Creates an instance of a non abstract response for the
      * given response type.
-     *
-     * @param array $parsedResponseData
-     * @return GenericResponse
      */
     protected function createResponseByType(array $parsedResponseData): GenericResponse
     {
@@ -90,7 +89,7 @@ class ResponseBuilder implements SingletonInterface
          * @uses createResponseRich()
          * @uses createResponseVideo()
          */
-        return $this->$createMethod($finalResponseData);
+        return $this->{$createMethod}($finalResponseData);
     }
 
     protected function createResponseGeneric(array $responseData): GenericResponse
@@ -110,6 +109,7 @@ class ResponseBuilder implements SingletonInterface
             $responseData['embedUrl'],
             $responseData['url']
         );
+
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->createResponseWithData(PhotoResponse::class, $responseData);
     }

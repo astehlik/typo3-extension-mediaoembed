@@ -19,12 +19,12 @@ use Sto\Mediaoembed\Domain\Repository\ProviderRepository;
 use Sto\Mediaoembed\Exception\NoMatchingProviderException;
 
 /**
- * Resolves a matching provider for the given URL
+ * Resolves a matching provider for the given URL.
  */
 class ProviderResolver
 {
     /**
-     * @var Provider[]|array
+     * @var array|Provider[]
      */
     protected $providerList;
 
@@ -41,10 +41,10 @@ class ProviderResolver
 
     /**
      * Returns the next active provider whos url scheme matches the URL in
-     * the current configuration
+     * the current configuration.
      *
-     * @param string $url
      * @return Provider The next matching provider
+     *
      * @throws NoMatchingProviderException
      */
     public function getNextMatchingProvider(string $url): Provider

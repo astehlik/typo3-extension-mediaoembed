@@ -9,7 +9,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 final class EditDocumentControllerHooks
 {
-    const JS_LABEL_KEYS = [
+    public const JS_LABEL_KEYS = [
         'error_iframe_extraction_failed',
         'error_iframe_has_no_src',
         'error_more_than_one_iframe_found',
@@ -19,6 +19,7 @@ final class EditDocumentControllerHooks
 
     /**
      * @noinspection PhpFullyQualifiedNameUsageInspection PhpUndefinedClassInspection PhpUndefinedNamespaceInspection
+     *
      * @var \TYPO3\CMS\Core\Localization\LanguageService|\TYPO3\CMS\Lang\LanguageService
      */
     private $languageService;
@@ -28,7 +29,7 @@ final class EditDocumentControllerHooks
      */
     private $pageRenderer;
 
-    public function addJsLanguageLabels()
+    public function addJsLanguageLabels(): void
     {
         $this->initDependencies();
 
@@ -38,14 +39,15 @@ final class EditDocumentControllerHooks
 
     /**
      * @noinspection PhpFullyQualifiedNameUsageInspection PhpUndefinedClassInspection PhpUndefinedNamespaceInspection
-     * @param \TYPO3\CMS\Lang\LanguageService|\TYPO3\CMS\Core\Localization\LanguageService $languageService
+     *
+     * @param \TYPO3\CMS\Core\Localization\LanguageService|\TYPO3\CMS\Lang\LanguageService $languageService
      */
-    public function setLanguageService($languageService)
+    public function setLanguageService($languageService): void
     {
         $this->languageService = $languageService;
     }
 
-    public function setPageRenderer(PageRenderer $pageRenderer)
+    public function setPageRenderer(PageRenderer $pageRenderer): void
     {
         $this->pageRenderer = $pageRenderer;
     }
@@ -61,7 +63,7 @@ final class EditDocumentControllerHooks
         return $translations;
     }
 
-    private function initDependencies()
+    private function initDependencies(): void
     {
         if ($this->languageService) {
             return;

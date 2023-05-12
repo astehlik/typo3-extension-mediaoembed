@@ -13,14 +13,6 @@ class ConfigurationService
      */
     private $settings = [];
 
-    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
-    {
-        $this->settings = $configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
-            'Mediaoembed'
-        );
-    }
-
     public function getAspectRatioFallback(): string
     {
         return $this->settings['aspectRatioFallback'] ?? '';
@@ -57,6 +49,14 @@ class ConfigurationService
     public function getProcessorsForHtml(): array
     {
         return $this->settings['reponseProcessors']['html'] ?? [];
+    }
+
+    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager): void
+    {
+        $this->settings = $configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
+            'Mediaoembed'
+        );
     }
 
     public function isPhotoDownloadEnabled(): bool

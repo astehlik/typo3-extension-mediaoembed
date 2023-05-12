@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sto\Mediaoembed\ViewHelpers;
 
 use Sto\Mediaoembed\Content\Configuration;
@@ -20,7 +22,7 @@ class EmbedResponsivePaddingViewHelper extends AbstractTagBasedViewHelper
         $this->configuration = $configuration;
     }
 
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('response', AspectRatioAwareResponseInterface::class, '', true);
         $this->registerArgument('style-property', 'string', '', false, 'padding-top');

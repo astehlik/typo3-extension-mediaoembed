@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sto\Mediaoembed\Tests\Unit\Provider;
 
 use PHPUnit\Framework\TestCase;
@@ -13,12 +15,12 @@ class ProviderTypoScriptRendererTest extends TestCase
      */
     private $renderer;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->renderer = new ProviderTypoScriptRenderer();
     }
 
-    public function testRenderReturnsExpectedResult()
+    public function testRenderReturnsExpectedResult(): void
     {
         $testProvider1 = new Endpoint('test_provider_1', 'https://test.endpoint.tld', true);
         $testProvider1->addUrlScheme('#https?://([a-z0-9-]+\.)?test\.tld/.*#i');
@@ -32,7 +34,7 @@ class ProviderTypoScriptRendererTest extends TestCase
             'test_provider_1' => $testProvider1,
             'test_provider_2' => $testProvider2,
         ];
-        $this->assertEquals($this->getExpectedResult(), $this->renderer->render($providers));
+        self::assertSame($this->getExpectedResult(), $this->renderer->render($providers));
     }
 
     private function getExpectedResult()

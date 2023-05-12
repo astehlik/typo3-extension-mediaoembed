@@ -7,7 +7,6 @@ namespace Sto\Mediaoembed\Request\RequestHandler\Panopto;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Request\RequestHandler\RequestHandlerInterface;
-use Sto\Mediaoembed\Request\RequestHandler\SettingsAwareRequestHandlerInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Fluid\View\StandaloneView;

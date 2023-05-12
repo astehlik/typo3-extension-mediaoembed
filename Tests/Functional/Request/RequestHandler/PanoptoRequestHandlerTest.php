@@ -15,13 +15,26 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 final class PanoptoRequestHandlerTest extends AbstractFunctionalTest
 {
+    public function handleBuildsExpectedIframeDataProvider(): array
+    {
+        return [
+            [
+                'https://the-iframe-url.tld',
+                'https://the-iframe-url.tld',
+            ],
+            [
+                'https://demo.hosted.panopto.com/Panopto/Pages/Viewer.aspx'
+                . '?id=af1d34c39-d435-45456-b5451-a45b045377&offerviewer=false',
+                'https://demo.hosted.panopto.com/Panopto/Pages/Embed.aspx'
+                . '?offerviewer=false&amp;autoplay=false&amp;id=af1d34c39-d435-45456-b5451-a45b045377',
+            ],
+        ];
+    }
+
     /**
-     * @test
      * @dataProvider handleBuildsExpectedIframeDataProvider
-     * @param string $mediaUrl
-     * @param string $expectedUrl
      */
-    public function handleBuildsExpectedIframe(string $mediaUrl, string $expectedUrl)
+    public function testHandleBuildsExpectedIframe(string $mediaUrl, string $expectedUrl): void
     {
         $objectManager = $this->getObjectManager();
 
@@ -58,23 +71,7 @@ final class PanoptoRequestHandlerTest extends AbstractFunctionalTest
         ];
 
         $requestHandler = $objectManager->get(PanoptoRequestHandler::class);
-        $this->assertEquals($expectedResponse, $requestHandler->handle($provider));
-    }
-
-    public function handleBuildsExpectedIframeDataProvider(): array
-    {
-        return [
-            [
-                'https://the-iframe-url.tld',
-                'https://the-iframe-url.tld',
-            ],
-            [
-                'https://demo.hosted.panopto.com/Panopto/Pages/Viewer.aspx'
-                . '?id=af1d34c39-d435-45456-b5451-a45b045377&offerviewer=false',
-                'https://demo.hosted.panopto.com/Panopto/Pages/Embed.aspx'
-                . '?offerviewer=false&amp;autoplay=false&amp;id=af1d34c39-d435-45456-b5451-a45b045377',
-            ],
-        ];
+        self::assertSame($expectedResponse, $requestHandler->handle($provider));
     }
 
     private function getObjectManager(): ObjectManagerInterface

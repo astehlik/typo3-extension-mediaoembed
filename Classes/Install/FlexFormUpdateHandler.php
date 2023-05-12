@@ -29,15 +29,14 @@ class FlexFormUpdateHandler
     /**
      * Checks whether updates are required.
      *
-     * @return boolean Whether an update is required (TRUE) or not (FALSE)
+     * @return bool Whether an update is required (TRUE) or not (FALSE)
      */
     public function checkForUpdate()
     {
         if ($this->oldRecordCount > 0) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     public function getDescription(): string
@@ -57,7 +56,8 @@ class FlexFormUpdateHandler
      *
      * @param array &$dbQueries : queries done in this update
      * @param mixed &$customMessages : custom messages
-     * @return boolean Whether everything went smoothly or not
+     *
+     * @return bool Whether everything went smoothly or not
      */
     public function performUpdate(array &$dbQueries, &$customMessages): bool
     {

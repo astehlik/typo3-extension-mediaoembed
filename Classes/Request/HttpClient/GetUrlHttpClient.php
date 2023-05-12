@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sto\Mediaoembed\Request\HttpClient;
 
 use Sto\Mediaoembed\Exception\HttpClientRequestException;
@@ -8,8 +10,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class GetUrlHttpClient implements HttpClientInterface
 {
     /**
-     * @param string $requestUrl
-     * @return string
      * @throws HttpClientRequestException
      */
     public function executeGetRequest(string $requestUrl): string
@@ -30,10 +30,12 @@ class GetUrlHttpClient implements HttpClientInterface
 
     /**
      * Tries to get the real error code from the $report array of
-     * GeneralUtility::getURL()
+     * GeneralUtility::getURL().
      *
      * @param array $report report array of GeneralUtility::getURL()
+     *
      * @return string the error code
+     *
      * @see t3lib_div::getURL()
      */
     private function getErrorCode(array $report): string

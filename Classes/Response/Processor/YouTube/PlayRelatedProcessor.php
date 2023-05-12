@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sto\Mediaoembed\Response\Processor\YouTube;
 
-use InvalidArgumentException;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Response\GenericResponse;
 use Sto\Mediaoembed\Response\Processor\ResponseProcessorInterface;
@@ -30,16 +31,16 @@ class PlayRelatedProcessor implements ResponseProcessorInterface
         $this->urlService = $urlService;
     }
 
-    public function processResponse(GenericResponse $response)
+    public function processResponse(GenericResponse $response): void
     {
         if (!$response instanceof VideoResponse) {
-            throw new InvalidArgumentException('This processor only works with video responses!');
+            throw new \InvalidArgumentException('This processor only works with video responses!');
         }
 
         $this->processVideoResponse($response);
     }
 
-    private function processVideoResponse(VideoResponse $response)
+    private function processVideoResponse(VideoResponse $response): void
     {
         $replaceYoutubeUrl = function (string $url) {
             $queryParams['rel'] = $this->configuration->shouldPlayRelated() ? '1' : '0';

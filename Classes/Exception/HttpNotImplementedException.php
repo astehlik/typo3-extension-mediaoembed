@@ -15,7 +15,7 @@ namespace Sto\Mediaoembed\Exception;
  *                                                                        */
 
 /**
- * Exception if server returned 501 Not Implemented
+ * Exception if server returned 501 Not Implemented.
  *
  * The provider cannot return a response in the requested format.
  * This should be sent when (for example) the request includes format=xml

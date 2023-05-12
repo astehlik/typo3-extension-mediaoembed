@@ -37,7 +37,7 @@ class ProviderRepository implements SingletonInterface
     }
 
     /**
-     * @return Provider[]|array
+     * @return array|Provider[]
      */
     public function findAll(): array
     {
@@ -48,7 +48,7 @@ class ProviderRepository implements SingletonInterface
         return $providers;
     }
 
-    private function addProcessors(Provider $provider, array $processors)
+    private function addProcessors(Provider $provider, array $processors): void
     {
         foreach ($processors as $processor) {
             $provider->withProcessor($processor);
@@ -91,7 +91,7 @@ class ProviderRepository implements SingletonInterface
         return $provider;
     }
 
-    private function validateEndpoint(string $endpoint, string $providerName)
+    private function validateEndpoint(string $endpoint, string $providerName): void
     {
         if ($endpoint === '') {
             throw new InvalidConfigurationException(sprintf('Endpoint of provider %s is empty.', $providerName));
@@ -104,14 +104,14 @@ class ProviderRepository implements SingletonInterface
         }
     }
 
-    private function validateProviderName(string $providerName)
+    private function validateProviderName(string $providerName): void
     {
         if ($providerName === '') {
             throw new InvalidConfigurationException('Provider name must not be empty.');
         }
     }
 
-    private function validateUrlSchemes(array $urlRegexes, array $urlSchemes, string $providerName)
+    private function validateUrlSchemes(array $urlRegexes, array $urlSchemes, string $providerName): void
     {
         if (count($urlRegexes) && count($urlSchemes)) {
             throw new InvalidConfigurationException(
@@ -119,7 +119,7 @@ class ProviderRepository implements SingletonInterface
             );
         }
 
-        if ($urlSchemes === [] && $urlRegexes == []) {
+        if ($urlSchemes === [] && $urlRegexes === []) {
             throw new InvalidConfigurationException(sprintf('The provider %s has no URL schemes.', $providerName));
         }
     }

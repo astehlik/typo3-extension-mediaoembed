@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sto\Mediaoembed\Tests\Unit\Response\Processor\YouTube;
 
 use Sto\Mediaoembed\Content\Configuration;
@@ -10,13 +12,18 @@ use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
 
 class PlayRelatedProcessorTest extends AbstractUnitTest
 {
+    public function processResponseModifesIframeUrlDataProvider(): array
+    {
+        return [
+            [true],
+            [false],
+        ];
+    }
+
     /**
-     * @param bool $shouldPlayRelated
-     *
-     * @test
      * @dataProvider processResponseModifesIframeUrlDataProvider
      */
-    public function processResponseModifesIframeUrl(bool $shouldPlayRelated)
+    public function testProcessResponseModifesIframeUrl(bool $shouldPlayRelated): void
     {
         $videoHtmlTemplate = '<iframe width="480" height="270" src="%s"'
             . ' allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"'
@@ -37,13 +44,5 @@ class PlayRelatedProcessorTest extends AbstractUnitTest
 
         $processor = new PlayRelatedProcessor($configurationProphecy->reveal(), new UrlService());
         $processor->processResponse($videoProphecy->reveal());
-    }
-
-    public function processResponseModifesIframeUrlDataProvider(): array
-    {
-        return [
-            [true],
-            [false],
-        ];
     }
 }

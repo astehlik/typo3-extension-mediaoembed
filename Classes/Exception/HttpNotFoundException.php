@@ -15,7 +15,7 @@ namespace Sto\Mediaoembed\Exception;
  *                                                                        */
 
 /**
- * Exception if server returned 404 Not Found
+ * Exception if server returned 404 Not Found.
  *
  * The provider has no response for the requested url parameter.
  * This allows providers to be broad in their URL scheme, and then determine

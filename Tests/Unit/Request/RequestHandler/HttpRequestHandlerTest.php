@@ -16,7 +16,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 final class HttpRequestHandlerTest extends AbstractUnitTest
 {
     /**
-     * @var MockObject|Configuration
+     * @var Configuration|MockObject
      */
     private $configurationMock;
 
@@ -30,7 +30,7 @@ final class HttpRequestHandlerTest extends AbstractUnitTest
      */
     private $requestHandler;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->configurationMock = $this->createMock(Configuration::class);
         $this->objectManagerMock = $this->createMock(ObjectManagerInterface::class);
@@ -38,19 +38,19 @@ final class HttpRequestHandlerTest extends AbstractUnitTest
         $this->requestHandler = new HttpRequestHandler($this->configurationMock, $this->objectManagerMock);
     }
 
-    public function testInvalidResponseDataThrowsException()
+    public function testInvalidResponseDataThrowsException(): void
     {
         $this->expectException(InvalidResponseException::class);
 
         $this->callHandler('invalid');
     }
 
-    public function testValidResponseReturnsDecodedJson()
+    public function testValidResponseReturnsDecodedJson(): void
     {
         $responseArray = ['my' => 'array'];
         $response = $this->callHandler(json_encode($responseArray));
 
-        $this->assertEquals($responseArray, $response);
+        self::assertSame($responseArray, $response);
     }
 
     private function callHandler(string $responseData): array

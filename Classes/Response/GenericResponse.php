@@ -63,7 +63,7 @@ class GenericResponse
     protected $providerUrl;
 
     /**
-     * Array containing the json decoded data of the provider's response
+     * Array containing the json decoded data of the provider's response.
      *
      * @var array
      */
@@ -126,37 +126,6 @@ class GenericResponse
     protected $version;
 
     /**
-     * Initializes the response parameters that are valid for all
-     * response types.
-     *
-     * @param array $responseData the parsed json response
-     */
-    public function initializeResponseData(array $responseData)
-    {
-        $this->responseDataArray = $responseData;
-        $this->type = $this->getValueFromResponseData('type');
-        $this->version = $this->getValueFromResponseData('version');
-        $this->title = $this->getValueFromResponseData('title');
-        $this->authorName = $this->getValueFromResponseData('author_name');
-        $this->authorUrl = $this->getValueFromResponseData('author_url');
-        $this->providerName = $this->getValueFromResponseData('provider_name');
-        $this->providerUrl = $this->getValueFromResponseData('provider_url');
-        $this->cacheAge = $this->getValueFromResponseData('cache_age');
-        $this->thumbnailUrl = $this->getValueFromResponseData('thumbnail_url');
-        $this->thumbnailWidth = $this->getValueFromResponseData('thumbnail_width');
-        $this->thumbnailHeight = $this->getValueFromResponseData('thumbnail_height');
-        $this->initializeTypeSpecificResponseData();
-    }
-
-    /**
-     * Initializes the response parameters that are specific for this
-     * resource type.
-     */
-    public function initializeTypeSpecificResponseData()
-    {
-    }
-
-    /**
      * Getter for the name of the author/owner of the resource.
      *
      * @return string
@@ -207,7 +176,7 @@ class GenericResponse
     }
 
     /**
-     * Getter for the the json decoded data of the provider's response
+     * Getter for the the json decoded data of the provider's response.
      *
      * @return array
      */
@@ -287,9 +256,39 @@ class GenericResponse
     }
 
     /**
+     * Initializes the response parameters that are valid for all
+     * response types.
+     *
+     * @param array $responseData the parsed json response
+     */
+    public function initializeResponseData(array $responseData): void
+    {
+        $this->responseDataArray = $responseData;
+        $this->type = $this->getValueFromResponseData('type');
+        $this->version = $this->getValueFromResponseData('version');
+        $this->title = $this->getValueFromResponseData('title');
+        $this->authorName = $this->getValueFromResponseData('author_name');
+        $this->authorUrl = $this->getValueFromResponseData('author_url');
+        $this->providerName = $this->getValueFromResponseData('provider_name');
+        $this->providerUrl = $this->getValueFromResponseData('provider_url');
+        $this->cacheAge = $this->getValueFromResponseData('cache_age');
+        $this->thumbnailUrl = $this->getValueFromResponseData('thumbnail_url');
+        $this->thumbnailWidth = $this->getValueFromResponseData('thumbnail_width');
+        $this->thumbnailHeight = $this->getValueFromResponseData('thumbnail_height');
+        $this->initializeTypeSpecificResponseData();
+    }
+
+    /**
+     * Initializes the response parameters that are specific for this
+     * resource type.
+     */
+    public function initializeTypeSpecificResponseData(): void
+    {
+    }
+
+    /**
      * Retrieves a value from the response array or returns NULL if the array key is not set.
      *
-     * @param string $key
      * @return mixed
      */
     protected function getValueFromResponseData(string $key)

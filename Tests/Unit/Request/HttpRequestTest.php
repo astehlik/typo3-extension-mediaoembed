@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sto\Mediaoembed\Tests\Unit\Request;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use RuntimeException;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Exception\HttpClientRequestException;
 use Sto\Mediaoembed\Exception\HttpNotFoundException;
@@ -16,7 +17,7 @@ use Sto\Mediaoembed\Request\HttpRequest;
 
 class HttpRequestTest extends TestCase
 {
-    public function testAddsMaxHeightToRequestUrl()
+    public function testAddsMaxHeightToRequestUrl(): void
     {
         $this->assertUrlIs(
             'maxheight=100&format=json&url=http%3A%2F%2Fmy-media.tld%2Ftheurl',
@@ -25,7 +26,7 @@ class HttpRequestTest extends TestCase
         );
     }
 
-    public function testAddsMaxWidthAndMaxHeightToRequestUrl()
+    public function testAddsMaxWidthAndMaxHeightToRequestUrl(): void
     {
         $this->assertUrlIs(
             'maxwidth=55&maxheight=100&format=json&url=http%3A%2F%2Fmy-media.tld%2Ftheurl',
@@ -34,7 +35,7 @@ class HttpRequestTest extends TestCase
         );
     }
 
-    public function testAddsMaxWidthToRequestUrl()
+    public function testAddsMaxWidthToRequestUrl(): void
     {
         $this->assertUrlIs(
             'maxwidth=100&format=json&url=http%3A%2F%2Fmy-media.tld%2Ftheurl',
@@ -42,7 +43,7 @@ class HttpRequestTest extends TestCase
         );
     }
 
-    public function testAddsQueryParametersToEndpointWithExistingQueryString()
+    public function testAddsQueryParametersToEndpointWithExistingQueryString(): void
     {
         $this->assertUrlIs(
             'some=get&para=meter&format=json&url=http%3A%2F%2Fmy-media.tld%2Ftheurl',
@@ -52,31 +53,31 @@ class HttpRequestTest extends TestCase
         );
     }
 
-    public function testError401()
+    public function testError401(): void
     {
         $this->expectException(HttpUnauthorizedException::class);
         $this->sendWithException(401);
     }
 
-    public function testError404()
+    public function testError404(): void
     {
         $this->expectException(HttpNotFoundException::class);
         $this->sendWithException(404);
     }
 
-    public function testError501()
+    public function testError501(): void
     {
         $this->expectException(HttpNotImplementedException::class);
         $this->sendWithException(501);
     }
 
-    public function testErrorUnknown()
+    public function testErrorUnknown(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(\RuntimeException::class);
         $this->sendWithException(500);
     }
 
-    public function testReplacesFormatPlaceholderInUrl()
+    public function testReplacesFormatPlaceholderInUrl(): void
     {
         $this->assertUrlIs(
             'some=get&format=json&someother=param&url=http%3A%2F%2Fmy-media.tld%2Ftheurl',
@@ -87,13 +88,13 @@ class HttpRequestTest extends TestCase
         );
     }
 
-    public function testReturnsResponse()
+    public function testReturnsResponse(): void
     {
         $response = $this->assertUrlIs(
             'maxwidth=100&format=json&url=http%3A%2F%2Fmy-media.tld%2Ftheurl',
             100
         );
-        $this->assertEquals('the repsonse', $response);
+        self::assertSame('the repsonse', $response);
     }
 
     private function assertUrlIs(
@@ -128,14 +129,14 @@ class HttpRequestTest extends TestCase
         return new HttpRequest($configurationProphecy->reveal(), $endpointUrl);
     }
 
-    private function injectHttpClientFactory(HttpRequest $httpRequest, HttpClientInterface $httpClient)
+    private function injectHttpClientFactory(HttpRequest $httpRequest, HttpClientInterface $httpClient): void
     {
         $httpClientFactoryProphecy = $this->prophesize(HttpClientFactory::class);
         $httpClientFactoryProphecy->getHttpClient()->shouldBeCalledOnce()->willReturn($httpClient);
         $httpRequest->injectHttpClientFactory($httpClientFactoryProphecy->reveal());
     }
 
-    private function sendWithException(int $errorCode)
+    private function sendWithException(int $errorCode): void
     {
         $httpRequest = $this->createHttpRequest();
 

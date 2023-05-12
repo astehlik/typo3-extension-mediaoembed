@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sto\Mediaoembed\Tests\Unit\Response;
 
 use Sto\Mediaoembed\Response\GenericResponse;
@@ -15,7 +17,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 class ResponseBuilderTest extends AbstractUnitTest
 {
-    public function testBuildResponseGeneric()
+    public function testBuildResponseGeneric(): void
     {
         $responseData = [
             'type' => 'a custom response',
@@ -24,10 +26,10 @@ class ResponseBuilderTest extends AbstractUnitTest
         $responseClass = GenericResponse::class;
 
         $response = $this->buildResponse($responseClass, $responseData);
-        $this->assertEquals('Some generic response', $response->getTitle());
+        self::assertSame('Some generic response', $response->getTitle());
     }
 
-    public function testBuildResponseLink()
+    public function testBuildResponseLink(): void
     {
         $responseData = [
             'type' => 'link',
@@ -37,10 +39,10 @@ class ResponseBuilderTest extends AbstractUnitTest
 
         /** @var LinkResponse $response */
         $response = $this->buildResponse($responseClass, $responseData);
-        $this->assertEquals('My link title', $response->getTitle());
+        self::assertSame('My link title', $response->getTitle());
     }
 
-    public function testBuildResponsePhoto()
+    public function testBuildResponsePhoto(): void
     {
         $responseData = [
             'type' => 'photo',
@@ -63,11 +65,11 @@ class ResponseBuilderTest extends AbstractUnitTest
 
         /** @var PhotoResponse $response */
         $response = $this->buildResponse($responseClass, $responseData, $photoDownloadServiceProphecy);
-        $this->assertEquals('https://my-awsome.tld/photo', $response->getUrl());
-        $this->assertEquals($file, $response->getLocalFile());
+        self::assertSame('https://my-awsome.tld/photo', $response->getUrl());
+        self::assertSame($file, $response->getLocalFile());
     }
 
-    public function testBuildResponseRich()
+    public function testBuildResponseRich(): void
     {
         $responseData = [
             'type' => 'rich',
@@ -79,10 +81,10 @@ class ResponseBuilderTest extends AbstractUnitTest
 
         /** @var RichResponse $response */
         $response = $this->buildResponse($responseClass, $responseData);
-        $this->assertEquals('<div>dummyrich</div>', $response->getHtml());
+        self::assertSame('<div>dummyrich</div>', $response->getHtml());
     }
 
-    public function testBuildResponseVideo()
+    public function testBuildResponseVideo(): void
     {
         $responseData = [
             'type' => 'video',
@@ -94,7 +96,7 @@ class ResponseBuilderTest extends AbstractUnitTest
 
         /** @var VideoResponse $response */
         $response = $this->buildResponse($responseClass, $responseData);
-        $this->assertEquals('<div>dummyvideo</div>', $response->getHtml());
+        self::assertSame('<div>dummyvideo</div>', $response->getHtml());
     }
 
     protected function buildResponse(
@@ -115,7 +117,7 @@ class ResponseBuilderTest extends AbstractUnitTest
             $responseData
         );
 
-        $this->assertInstanceOf($responseClass, $response);
+        self::assertInstanceOf($responseClass, $response);
 
         return $response;
     }

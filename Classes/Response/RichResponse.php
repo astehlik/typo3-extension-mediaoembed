@@ -50,17 +50,6 @@ class RichResponse extends GenericResponse implements HtmlAwareResponseInterface
     protected $width;
 
     /**
-     * Initializes the response parameters that are specific for this
-     * resource type.
-     */
-    public function initializeTypeSpecificResponseData()
-    {
-        $this->html = $this->responseDataArray['html'];
-        $this->width = $this->responseDataArray['width'];
-        $this->height = $this->responseDataArray['height'];
-    }
-
-    /**
      * Getter for the height in pixels required to display the HTML.
      *
      * @return string
@@ -72,8 +61,6 @@ class RichResponse extends GenericResponse implements HtmlAwareResponseInterface
 
     /**
      * Getter for the HTML required to display the resource.
-     *
-     * @return string
      */
     public function getHtml(): string
     {
@@ -90,7 +77,18 @@ class RichResponse extends GenericResponse implements HtmlAwareResponseInterface
         return $this->width;
     }
 
-    public function setHtml(string $html)
+    /**
+     * Initializes the response parameters that are specific for this
+     * resource type.
+     */
+    public function initializeTypeSpecificResponseData(): void
+    {
+        $this->html = $this->responseDataArray['html'];
+        $this->width = $this->responseDataArray['width'];
+        $this->height = $this->responseDataArray['height'];
+    }
+
+    public function setHtml(string $html): void
     {
         $this->html = $html;
     }

@@ -6,7 +6,7 @@ namespace Sto\Mediaoembed\Install\Repository;
 
 interface UpdateRepository
 {
-    const RENDER_TYPE = 'tx_mediaoembed';
+    public const RENDER_TYPE = 'tx_mediaoembed';
 
     public function countOldRecords(): int;
 

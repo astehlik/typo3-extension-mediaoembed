@@ -11,11 +11,7 @@ final class UrlService
 {
     /**
      * Takes query parts and builds a URL. Based on:
-     * https://stackoverflow.com/a/31691249
-     *
-     * @param array $urlParts
-     * @param string $originalUrl
-     * @return string
+     * https://stackoverflow.com/a/31691249.
      */
     public function buildUrl(array $urlParts, string $originalUrl): string
     {

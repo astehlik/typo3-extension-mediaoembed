@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sto\Mediaoembed\Request\HttpClient;
 
 use Sto\Mediaoembed\Exception\HttpClientRequestException;
@@ -7,8 +9,6 @@ use Sto\Mediaoembed\Exception\HttpClientRequestException;
 interface HttpClientInterface
 {
     /**
-     * @param string $requestUrl
-     * @return string
      * @throws HttpClientRequestException
      */
     public function executeGetRequest(string $requestUrl): string;

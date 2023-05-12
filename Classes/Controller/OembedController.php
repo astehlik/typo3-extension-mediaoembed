@@ -36,7 +36,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
- * Controller for rendering oEmbed media
+ * Controller for rendering oEmbed media.
  */
 class OembedController extends ActionController
 {
@@ -55,23 +55,23 @@ class OembedController extends ActionController
      */
     private $responseBuilder;
 
-    public function injectConfiguration(Configuration $configuration)
+    public function injectConfiguration(Configuration $configuration): void
     {
         $this->configuration = $configuration;
     }
 
-    public function injectProviderRepository(ProviderRepository $providerRepository)
+    public function injectProviderRepository(ProviderRepository $providerRepository): void
     {
         $this->providerRepository = $providerRepository;
     }
 
-    public function injectResponseBuilder(ResponseBuilder $responseBuilder)
+    public function injectResponseBuilder(ResponseBuilder $responseBuilder): void
     {
         $this->responseBuilder = $responseBuilder;
     }
 
     /**
-     * Renders the external media
+     * Renders the external media.
      *
      * @return string
      */
@@ -95,18 +95,17 @@ class OembedController extends ActionController
      * Build all data for the register using the embed code reponse
      * of a matching provider.
      */
-    protected function getEmbedDataFromProvider()
+    protected function getEmbedDataFromProvider(): void
     {
         $this->startRequestLoop();
     }
 
     /**
-     * Checks if the current URL is valid
+     * Checks if the current URL is valid.
      *
-     * @param string $url
      * @throws InvalidUrlException
      */
-    private function checkIfUrlIsValid(string $url)
+    private function checkIfUrlIsValid(string $url): void
     {
         $isValid = true;
 
@@ -124,8 +123,6 @@ class OembedController extends ActionController
     }
 
     /**
-     * @param ProviderResolver $providerResolver
-     * @param string $url
      * @return Provider|null
      */
     private function getNextMatchingProvider(ProviderResolver $providerResolver, string $url)
@@ -163,7 +160,7 @@ class OembedController extends ActionController
         return $requestHandler->handle($provider);
     }
 
-    private function processResponse(Provider $provider, GenericResponse $response)
+    private function processResponse(Provider $provider, GenericResponse $response): void
     {
         foreach ($provider->getProcessors() as $processorClass) {
             /** @var ResponseProcessorInterface $processor */
@@ -173,7 +170,7 @@ class OembedController extends ActionController
         $this->processResponseWithHtml($response);
     }
 
-    private function processResponseWithHtml(GenericResponse $response)
+    private function processResponseWithHtml(GenericResponse $response): void
     {
         if (!$response instanceof HtmlAwareResponseInterface) {
             return;
@@ -194,7 +191,6 @@ class OembedController extends ActionController
 
     /**
      * @param Provider|null $provider
-     * @return bool
      */
     private function shouldDisplayDirectLink($provider): bool
     {
@@ -212,7 +208,7 @@ class OembedController extends ActionController
      * until the request was successful or no more providers / endpoints
      * are available.
      */
-    private function startRequestLoop()
+    private function startRequestLoop(): void
     {
         $response = null;
         $request = null;

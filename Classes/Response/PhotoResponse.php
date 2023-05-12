@@ -56,20 +56,6 @@ class PhotoResponse extends GenericResponse
     protected $width;
 
     /**
-     * Initializes the response parameters that are specific for this
-     * resource type.
-     */
-    public function initializeTypeSpecificResponseData()
-    {
-        $this->url = $this->responseDataArray['url'];
-
-        $this->height = $this->responseDataArray['height'];
-        $this->width = $this->responseDataArray['width'];
-
-        $this->localFile = $this->responseDataArray['localFile'];
-    }
-
-    /**
      * Getter for the height in pixels of the image specified in the url parameter.
      *
      * @return string
@@ -107,5 +93,19 @@ class PhotoResponse extends GenericResponse
     public function getWidth()
     {
         return $this->width;
+    }
+
+    /**
+     * Initializes the response parameters that are specific for this
+     * resource type.
+     */
+    public function initializeTypeSpecificResponseData(): void
+    {
+        $this->url = $this->responseDataArray['url'];
+
+        $this->height = $this->responseDataArray['height'];
+        $this->width = $this->responseDataArray['width'];
+
+        $this->localFile = $this->responseDataArray['localFile'];
     }
 }

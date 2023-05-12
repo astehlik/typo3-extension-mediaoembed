@@ -30,7 +30,7 @@ class VideoResponseTest extends AbstractUnitTest
     /**
      * Initialies the test subject.
      */
-    public function setUp()
+    protected function setUp(): void
     {
         $this->videoResponse = new VideoResponse();
     }
@@ -64,14 +64,19 @@ class VideoResponseTest extends AbstractUnitTest
         ];
     }
 
+    public function testAspectRatioDoesNotDivideByZero(): void
+    {
+        self::assertSame(0, $this->videoResponse->getAspectRatio());
+    }
+
     /**
-     * @test
      * @dataProvider aspectRatioIsDetectedCorrectlyDataProvider
+     *
      * @param int $width
      * @param int $height
      * @param string $expectedRatioType
      */
-    public function aspectRatioTypeIsDetectedCorrectly($width, $height, $expectedRatioType)
+    public function testAspectRatioTypeIsDetectedCorrectly($width, $height, $expectedRatioType): void
     {
         $this->videoResponse->initializeResponseData(
             [
@@ -81,18 +86,15 @@ class VideoResponseTest extends AbstractUnitTest
                 'height' => $height,
             ]
         );
-        $this->assertEquals($expectedRatioType, $this->videoResponse->getAspectRatioType());
+        self::assertSame($expectedRatioType, $this->videoResponse->getAspectRatioType());
 
         $is4To3 = $expectedRatioType === VideoResponse::ASPECT_RATIO_4TO3;
         $is16To9 = $expectedRatioType === VideoResponse::ASPECT_RATIO_16TO9;
-        $this->assertEquals($is4To3, $this->videoResponse->getAspectRatioIs4To3());
-        $this->assertEquals($is16To9, $this->videoResponse->getAspectRatioIs16To9());
+        self::assertSame($is4To3, $this->videoResponse->getAspectRatioIs4To3());
+        self::assertSame($is16To9, $this->videoResponse->getAspectRatioIs16To9());
     }
 
-    /**
-     * @test
-     */
-    public function getAspectRatioTypeReturnsWidthDividedByHeight()
+    public function testGetAspectRatioTypeReturnsWidthDividedByHeight(): void
     {
         $this->videoResponse->initializeResponseData(
             [
@@ -102,17 +104,12 @@ class VideoResponseTest extends AbstractUnitTest
                 'height' => 190,
             ]
         );
-        $this->assertEquals(160 / 190, $this->videoResponse->getAspectRatio());
+        self::assertSame(160 / 190, $this->videoResponse->getAspectRatio());
     }
 
-    public function testAspectRatioDoesNotDivideByZero()
-    {
-        $this->assertEquals(0, $this->videoResponse->getAspectRatio());
-    }
-
-    public function testSetHtml()
+    public function testSetHtml(): void
     {
         $this->videoResponse->setHtml('the new html');
-        $this->assertEquals('the new html', $this->videoResponse->getHtml());
+        self::assertSame('the new html', $this->videoResponse->getHtml());
     }
 }
