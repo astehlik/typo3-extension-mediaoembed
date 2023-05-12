@@ -112,7 +112,7 @@ class ResponseBuilderTest extends AbstractUnitTest
         $reponseBuilder = new ResponseBuilder($objectManager->reveal(), $photoDownloadServiceProphecy->reveal());
         $response = $reponseBuilder->buildResponse(
             'https://my-embed-url.tld/embed/4kgfjk',
-            json_encode($responseData)
+            $responseData
         );
 
         $this->assertInstanceOf($responseClass, $response);

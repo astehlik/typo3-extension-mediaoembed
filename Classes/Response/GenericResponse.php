@@ -131,7 +131,7 @@ class GenericResponse
      *
      * @param array $responseData the parsed json response
      */
-    public function initializeResponseData($responseData)
+    public function initializeResponseData(array $responseData)
     {
         $this->responseDataArray = $responseData;
         $this->type = $this->getValueFromResponseData('type');
@@ -292,12 +292,8 @@ class GenericResponse
      * @param string $key
      * @return mixed
      */
-    protected function getValueFromResponseData($key)
+    protected function getValueFromResponseData(string $key)
     {
-        if (!array_key_exists($key, $this->responseDataArray)) {
-            return null;
-        }
-
-        return $this->responseDataArray[$key];
+        return $this->responseDataArray[$key] ?? null;
     }
 }

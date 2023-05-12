@@ -1,65 +1,57 @@
-﻿.. include:: Includes.txt
-
-
-.. Every manual should have a start label for cross-referencing to
-.. start page. Do not remove this!
+﻿..  include:: /Includes.rst.txt
 
 .. _start:
 
-=============================================================
+===========
 mediaoembed
-=============================================================
+===========
 
-.. only:: html
+:Extension key:
+    mediaoembed
 
-   :Classification:
-      mediaoembed
+:Package name:
+    de-swebhosting-typo3-extension/mediaoembed
 
-   :Version:
-      |release|
+:Version:
+    |release|
 
-   :Language:
-      en
+:Language:
+    en
 
-   :Description:
-      Manual covering TYPO3 extension mediaoembed
+:Author:
+    Alexander Stehlik
 
-   :Keywords:
-      oembed, video, audio, image, youtube, flickr, external
+:License:
+    This document is published under the
+    `Creative Commons BY 4.0 <https://creativecommons.org/licenses/by/4.0/>`__
+    license.
 
-   :Copyright:
-      2013-2019
+:Rendered:
+    |today|
 
-   :Author:
-      Alexander Stehlik
+----
 
-   :Email:
-      alexander.stehlik.deleteme@gmail.com
+Adds a content element for embedding third party contents supporting the oEmbed standard
+like YouTube or Vimeo videos, Flickr images and much more.
 
-   :License:
-      This document is published under the Open Publication License
-      available from http://www.opencontent.org/openpub/
+----
 
-   :Rendered:
-      |today|
+**Table of Contents:**
 
-   The content of this document is related to TYPO3,
-   a GNU/GPL CMS/Framework available from `www.typo3.org <https://typo3.org/>`__.
-
-
-   **Table of Contents**
-
-.. toctree::
-   :maxdepth: 3
-
+..  toctree::
+    :maxdepth: 2
+    :titlesonly:
 
    Introduction/Index
    User/Index
    Installation/Index
    Configuration/Index
-   Developer/Index
    KnownProblems/Index
    ToDoList/Index
-   ChangeLog/Index
-   Support/Index
-   Links
+
+..  Meta Menu
+
+..  toctree::
+    :hidden:
+
+    Sitemap

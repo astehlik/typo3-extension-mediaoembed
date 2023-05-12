@@ -5,6 +5,7 @@ namespace Sto\Mediaoembed\Tests\Unit\Response\Processor\YouTube;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Response\Processor\YouTube\PlayRelatedProcessor;
 use Sto\Mediaoembed\Response\VideoResponse;
+use Sto\Mediaoembed\Service\UrlService;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
 
 class PlayRelatedProcessorTest extends AbstractUnitTest
@@ -20,8 +21,8 @@ class PlayRelatedProcessorTest extends AbstractUnitTest
         $videoHtmlTemplate = '<iframe width="480" height="270" src="%s"'
             . ' allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"'
             . ' allowfullscreen=""></iframe>';
-        $originalUrl = 'https://www.youtube.com/embed/P8bHMEh40JU?feature=oembed';
-        $modifiedUrl = 'https://www.youtube.com/embed/P8bHMEh40JU?feature=oembed&amp;rel='
+        $originalUrl = 'https://www.youtube.com/embed/P8bHMEh40JU?start=14&feature=oembed';
+        $modifiedUrl = 'https://www.youtube.com/embed/P8bHMEh40JU?start=14&amp;feature=oembed&amp;rel='
             . ($shouldPlayRelated ? '1' : '0');
 
         $videoHtml = sprintf($videoHtmlTemplate, $originalUrl);
@@ -34,8 +35,7 @@ class PlayRelatedProcessorTest extends AbstractUnitTest
         $videoProphecy->getHtml()->shouldBeCalledOnce()->willReturn($videoHtml);
         $videoProphecy->setHtml($expectedHtml)->shouldBeCalledOnce();
 
-        $processor = new PlayRelatedProcessor();
-        $processor->injectConfiguration($configurationProphecy->reveal());
+        $processor = new PlayRelatedProcessor($configurationProphecy->reveal(), new UrlService());
         $processor->processResponse($videoProphecy->reveal());
     }
 

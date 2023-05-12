@@ -20,6 +20,11 @@ namespace Sto\Mediaoembed\Domain\Model;
 class Content
 {
     /**
+     * @var string
+     */
+    private $aspectRatio;
+
+    /**
      * @var int
      */
     private $maxHeight;
@@ -44,13 +49,25 @@ class Content
      */
     private $url;
 
-    public function __construct(int $uid, string $url, int $maxHeight, int $maxWidth, bool $playRelated)
-    {
+    public function __construct(
+        int $uid,
+        string $url,
+        int $maxHeight,
+        int $maxWidth,
+        bool $playRelated,
+        string $aspectRatio = ''
+    ) {
         $this->maxHeight = $maxHeight;
         $this->maxWidth = $maxWidth;
         $this->uid = $uid;
         $this->url = $url;
         $this->playRelated = $playRelated;
+        $this->aspectRatio = $aspectRatio;
+    }
+
+    public function getAspectRatio(): string
+    {
+        return $this->aspectRatio;
     }
 
     public function getMaxHeight(): int

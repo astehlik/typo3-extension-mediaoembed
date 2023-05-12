@@ -38,8 +38,7 @@ class HttpRequestTest extends TestCase
     {
         $this->assertUrlIs(
             'maxwidth=100&format=json&url=http%3A%2F%2Fmy-media.tld%2Ftheurl',
-            100,
-            0
+            100
         );
     }
 
@@ -92,8 +91,7 @@ class HttpRequestTest extends TestCase
     {
         $response = $this->assertUrlIs(
             'maxwidth=100&format=json&url=http%3A%2F%2Fmy-media.tld%2Ftheurl',
-            100,
-            0
+            100
         );
         $this->assertEquals('the repsonse', $response);
     }

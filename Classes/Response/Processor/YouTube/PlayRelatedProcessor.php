@@ -8,7 +8,7 @@ use Sto\Mediaoembed\Response\GenericResponse;
 use Sto\Mediaoembed\Response\Processor\ResponseProcessorInterface;
 use Sto\Mediaoembed\Response\Processor\Support\IframeAwareProcessorTrait;
 use Sto\Mediaoembed\Response\VideoResponse;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Sto\Mediaoembed\Service\UrlService;
 
 class PlayRelatedProcessor implements ResponseProcessorInterface
 {
@@ -19,9 +19,15 @@ class PlayRelatedProcessor implements ResponseProcessorInterface
      */
     private $configuration;
 
-    public function injectConfiguration(Configuration $configuration)
+    /**
+     * @var UrlService
+     */
+    private $urlService;
+
+    public function __construct(Configuration $configuration, UrlService $urlService)
     {
         $this->configuration = $configuration;
+        $this->urlService = $urlService;
     }
 
     public function processResponse(GenericResponse $response)
@@ -35,18 +41,9 @@ class PlayRelatedProcessor implements ResponseProcessorInterface
 
     private function processVideoResponse(VideoResponse $response)
     {
-        $replaceYoutubeUrl = function (array $urlParts) {
-            $newUrl = $urlParts['scheme'] . '://';
-            $newUrl .= $urlParts['host'];
-            $newUrl .= $urlParts['path'] ?? '';
-
-            $query = $urlParts['query'] ?? '';
-            $queryParams = $query !== '' ? GeneralUtility::explodeUrl2Array($query) : [];
+        $replaceYoutubeUrl = function (string $url) {
             $queryParams['rel'] = $this->configuration->shouldPlayRelated() ? '1' : '0';
-
-            $newUrl .= '?' . ltrim(GeneralUtility::implodeArrayForUrl('', $queryParams), '&');
-
-            return $newUrl;
+            return $this->urlService->mergeQueryParameters($url, $queryParams);
         };
 
         $this->modifyIframeUrl($response, $replaceYoutubeUrl);

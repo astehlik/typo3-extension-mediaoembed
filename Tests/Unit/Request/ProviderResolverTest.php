@@ -57,16 +57,4 @@ class ProviderResolverTest extends AbstractUnitTest
         $this->expectException(NoMatchingProviderException::class);
         $this->providerResolver->getNextMatchingProvider('testurl');
     }
-
-    /**
-     * @param string $urlScheme
-     * @return \Prophecy\Prophecy\ObjectProphecy|\Sto\Mediaoembed\Domain\Model\Provider
-     */
-    private function getProviderProphecy(string $urlScheme): ObjectProphecy
-    {
-        $firstProviderProphecy = $this->prophesize(Provider::class);
-        $firstProviderProphecy->getUrlSchemes()->willReturn([$urlScheme]);
-        $firstProviderProphecy->hasRegexUrlSchemes()->willReturn(false);
-        return $firstProviderProphecy;
-    }
 }

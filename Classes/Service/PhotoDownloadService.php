@@ -85,11 +85,10 @@ class PhotoDownloadService
      */
     public function getTargetFolder(): Folder
     {
-        $targetFolder = $this->resourceService->getOrCreateFolder(
+        return $this->resourceService->getOrCreateFolder(
             $this->configurationService->getPhotoDownloadStorageUid(),
             $this->configurationService->getPhotoDownloadFolderIdentifier()
         );
-        return $targetFolder;
     }
 
     /**

@@ -1,5 +1,4 @@
-﻿.. include:: ../Includes.txt
-
+﻿..  include:: /Includes.rst.txt
 
 .. _configuration:
 
@@ -54,7 +53,6 @@ and not urlRegexes:
     }
 
 It provides less flexibility than regex but it is easier to handle.
-
 
 .. _configuration-rendering:
 

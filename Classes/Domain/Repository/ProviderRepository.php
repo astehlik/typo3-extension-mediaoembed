@@ -75,6 +75,17 @@ class ProviderRepository implements SingletonInterface
             $hasRegexUrlSchemes
         );
 
+        if (!empty($providerConfig['requestHandlerClass'])) {
+            $provider->withRequestHandler(
+                $providerConfig['requestHandlerClass'],
+                $providerConfig['requestHandlerSettings'] ?? []
+            );
+        }
+
+        if (isset($providerConfig['displayDirectLink']) && !$providerConfig['displayDirectLink']) {
+            $provider->hideDirectLink();
+        }
+
         $this->addProcessors($provider, (array)($providerConfig['processors'] ?? []));
 
         return $provider;

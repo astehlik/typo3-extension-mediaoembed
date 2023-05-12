@@ -37,6 +37,11 @@ class Provider
     /**
      * @var bool
      */
+    private $displayDirectLink = true;
+
+    /**
+     * @var bool
+     */
     private $hasRegexUrlSchemes;
 
     /**
@@ -44,8 +49,22 @@ class Provider
      */
     private $processors = [];
 
-    public function __construct(string $name, string $endpoint, array $urlSchemes, bool $hasRegexUrlSchemes)
-    {
+    /**
+     * @var string
+     */
+    private $requestHandlerClass = '';
+
+    /**
+     * @var array
+     */
+    private $requestHandlerSettings = [];
+
+    public function __construct(
+        string $name,
+        string $endpoint,
+        array $urlSchemes,
+        bool $hasRegexUrlSchemes
+    ) {
         $this->name = $name;
         $this->endpoint = $endpoint;
         $this->urlSchemes = $urlSchemes;
@@ -70,6 +89,16 @@ class Provider
         return $this->processors;
     }
 
+    public function getRequestHandlerClass(): string
+    {
+        return $this->requestHandlerClass;
+    }
+
+    public function getRequestHandlerSettings(): array
+    {
+        return $this->requestHandlerSettings;
+    }
+
     public function getUrlSchemes(): array
     {
         return $this->urlSchemes;
@@ -80,8 +109,24 @@ class Provider
         return $this->hasRegexUrlSchemes;
     }
 
+    public function hideDirectLink()
+    {
+        $this->displayDirectLink = false;
+    }
+
+    public function shouldDirectLinkBeDisplayed(): bool
+    {
+        return $this->displayDirectLink;
+    }
+
     public function withProcessor(string $processorClass)
     {
         $this->processors[] = $processorClass;
+    }
+
+    public function withRequestHandler(string $requestHandlerClass, array $requestHandlerSettings)
+    {
+        $this->requestHandlerClass = $requestHandlerClass;
+        $this->requestHandlerSettings = $requestHandlerSettings;
     }
 }

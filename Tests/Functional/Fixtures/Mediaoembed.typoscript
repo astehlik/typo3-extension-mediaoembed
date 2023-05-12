@@ -1,2 +1,5 @@
-plugin.tx_mediaoembed.settings.httpClient = Sto\Mediaoembed\Tests\Functional\Fixtures\DummyHttpClient
+plugin.tx_mediaoembed.settings {
+  httpClient = Sto\Mediaoembed\Tests\Functional\Fixtures\DummyHttpClient
 
+  providers.panopto.displayDirectLink = 0
+}
