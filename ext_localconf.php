@@ -36,14 +36,6 @@ $bootMediaoembed = function () {
     $pluginRegistrationMethod = $usesNewPluginRegistration ? $registerPlugin : $registerPluginLegacy;
     $pluginRegistrationMethod();
 
-    $hasNewUpgradeWizard = version_compare($currentVersion, '9.4.0', '>=');
-    $upgradeWizardClass = $hasNewUpgradeWizard
-        ? \Sto\Mediaoembed\Install\MigrateContentElementsUpdate::class
-        : \Sto\Mediaoembed\Install\MigrateContentElementsUpdateLegacy::class;
-
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['tx_mediaoembed_migratecontentelements'] =
-        $upgradeWizardClass;
-
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
         '
 mod.wizards.newContentElement {
