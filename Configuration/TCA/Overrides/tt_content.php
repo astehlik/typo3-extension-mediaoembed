@@ -7,7 +7,7 @@ use Sto\Mediaoembed\Content\Configuration;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
-defined('TYPO3_MODE') || exit;
+defined('TYPO3') || exit;
 
 $lllPrefix = 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
 $lllPrefixTtc = 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:';

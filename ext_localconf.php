@@ -4,7 +4,7 @@
 
 /** @noinspection PhpMissingStrictTypesDeclarationInspection */
 
-defined('TYPO3_MODE') or die();
+defined('TYPO3') or die();
 
 $bootMediaoembed = function () {
     $currentVersion = \TYPO3\CMS\Core\Utility\VersionNumberUtility::getNumericTypo3Version();
