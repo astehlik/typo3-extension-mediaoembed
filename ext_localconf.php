@@ -7,34 +7,16 @@
 defined('TYPO3') or die();
 
 $bootMediaoembed = function () {
-    $currentVersion = \TYPO3\CMS\Core\Utility\VersionNumberUtility::getNumericTypo3Version();
     $lllPrefix = 'LLL:' . 'EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
 
-    $registerPluginLegacy = function () {
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-            'Sto.Mediaoembed',
-            'OembedMediaRenderer',
-            /** @uses \Sto\Mediaoembed\Controller\OembedController::renderMediaAction() */
-            ['Oembed' => 'renderMedia'],
-            [],
-            \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
-        );
-    };
-
-    $registerPlugin = function () {
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-            'Mediaoembed',
-            'OembedMediaRenderer',
-            /** @uses \Sto\Mediaoembed\Controller\OembedController::renderMediaAction() */
-            [\Sto\Mediaoembed\Controller\OembedController::class => 'renderMedia'],
-            [],
-            \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
-        );
-    };
-
-    $usesNewPluginRegistration = version_compare($currentVersion, '10.0.0', '>=');
-    $pluginRegistrationMethod = $usesNewPluginRegistration ? $registerPlugin : $registerPluginLegacy;
-    $pluginRegistrationMethod();
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+        'Mediaoembed',
+        'OembedMediaRenderer',
+        /** @uses \Sto\Mediaoembed\Controller\OembedController::renderMediaAction() */
+        [\Sto\Mediaoembed\Controller\OembedController::class => 'renderMedia'],
+        [],
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+    );
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
         '
