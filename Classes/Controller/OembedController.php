@@ -21,9 +21,14 @@ use Sto\Mediaoembed\Exception\InvalidUrlException;
 use Sto\Mediaoembed\Exception\NoMatchingProviderException;
 use Sto\Mediaoembed\Exception\OEmbedException;
 use Sto\Mediaoembed\Exception\RequestException;
-use Sto\Mediaoembed\Request\HttpRequest;
+use Sto\Mediaoembed\Exception\RequestHandler\RequestHandlerClassDoesNotExistsException;
+use Sto\Mediaoembed\Exception\RequestHandler\RequestHandlerClassInvalidException;
 use Sto\Mediaoembed\Request\ProviderResolver;
+use Sto\Mediaoembed\Request\RequestHandler\HttpRequestHandler;
+use Sto\Mediaoembed\Request\RequestHandler\RequestHandlerInterface;
 use Sto\Mediaoembed\Response\GenericResponse;
+use Sto\Mediaoembed\Response\HtmlAwareResponseInterface;
+use Sto\Mediaoembed\Response\Processor\HtmlResponseProcessorInterface;
 use Sto\Mediaoembed\Response\Processor\ResponseProcessorInterface;
 use Sto\Mediaoembed\Response\ResponseBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -132,6 +137,32 @@ class OembedController extends ActionController
         }
     }
 
+    private function getRequestHandlerForProvider(Provider $provider): RequestHandlerInterface
+    {
+        $requestHandlerClass = $provider->getRequestHandlerClass();
+
+        if (!$requestHandlerClass) {
+            return $this->objectManager->get(HttpRequestHandler::class);
+        }
+
+        if (!class_exists($requestHandlerClass)) {
+            throw new RequestHandlerClassDoesNotExistsException($provider);
+        }
+
+        $requestHandler = $this->objectManager->get($requestHandlerClass);
+        if (!$requestHandler instanceof RequestHandlerInterface) {
+            throw new RequestHandlerClassInvalidException($provider);
+        }
+
+        return $requestHandler;
+    }
+
+    private function getResponseDataForProvider(Provider $provider): array
+    {
+        $requestHandler = $this->getRequestHandlerForProvider($provider);
+        return $requestHandler->handle($provider);
+    }
+
     private function processResponse(Provider $provider, GenericResponse $response)
     {
         foreach ($provider->getProcessors() as $processorClass) {
@@ -139,12 +170,41 @@ class OembedController extends ActionController
             $processor = $this->objectManager->get($processorClass);
             $processor->processResponse($response);
         }
+        $this->processResponseWithHtml($response);
+    }
+
+    private function processResponseWithHtml(GenericResponse $response)
+    {
+        if (!$response instanceof HtmlAwareResponseInterface) {
+            return;
+        }
+
+        foreach ($this->configuration->getProcessorsForHtml() as $htmlProcessorClass) {
+            /** @var HtmlResponseProcessorInterface $processor */
+            $processor = $this->objectManager->get($htmlProcessorClass);
+            $processor->processHtmlResponse($response);
+        }
     }
 
     private function renderErrorMessage(string $translationKey, array $arguments): string
     {
         $message = $this->translate($translationKey, $arguments);
         return '<div class="alert alert-warning">' . htmlspecialchars($message) . '</div>';
+    }
+
+    /**
+     * @param Provider|null $provider
+     * @return bool
+     */
+    private function shouldDisplayDirectLink($provider): bool
+    {
+        if (!$this->settings['view']['displayDirectLink']) {
+            return false;
+        }
+        if (!$provider) {
+            return true;
+        }
+        return $provider->shouldDirectLinkBeDisplayed();
     }
 
     /**
@@ -165,12 +225,8 @@ class OembedController extends ActionController
         $providerExceptions = [];
 
         while ($provider = $this->getNextMatchingProvider($providerResolver, $url)) {
-            /** @var HttpRequest $request */
-            /** @noinspection PhpParamsInspection */
-            $request = $this->objectManager->get(HttpRequest::class, $this->configuration, $provider->getEndpoint());
-
             try {
-                $responseData = $request->sendAndGetResponseData();
+                $responseData = $this->getResponseDataForProvider($provider);
                 $response = $this->responseBuilder->buildResponse($url, $responseData);
                 $this->processResponse($provider, $response);
                 break;
@@ -191,6 +247,7 @@ class OembedController extends ActionController
 
         $this->view->assign('request', $request);
         $this->view->assign('provider', $provider);
+        $this->view->assign('displayDirectLink', $this->shouldDisplayDirectLink($provider));
         $this->view->assign('response', $response);
     }
 

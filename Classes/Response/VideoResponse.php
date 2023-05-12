@@ -22,7 +22,7 @@ use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
  * If a provider wishes the consumer to just provide a thumbnail, rather than an
  * embeddable player, they should instead return a photo response type.
  */
-class VideoResponse extends GenericResponse implements AspectRatioAwareResponseInterface
+class VideoResponse extends GenericResponse implements AspectRatioAwareResponseInterface, HtmlAwareResponseInterface
 {
     const ASPECT_RATIO_16TO9 = '16to9';
 
@@ -32,9 +32,9 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
      * The height in pixels required to display the HTML.
      * This value is required.
      *
-     * @var string
+     * @var int
      */
-    protected $height;
+    protected $height = 0;
 
     /**
      * The HTML required to embed a video player.
@@ -51,9 +51,9 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
      * The width in pixels required to display the HTML.
      * This value is required.
      *
-     * @var string
+     * @var int
      */
-    protected $width;
+    protected $width = 0;
 
     /**
      * Initializes the response parameters that are specific for this
@@ -62,8 +62,8 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
     public function initializeTypeSpecificResponseData()
     {
         $this->html = $this->responseDataArray['html'];
-        $this->width = $this->responseDataArray['width'];
-        $this->height = $this->responseDataArray['height'];
+        $this->width = (int)$this->responseDataArray['width'];
+        $this->height = (int)$this->responseDataArray['height'];
     }
 
     /**
@@ -85,7 +85,7 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
      *
      * @return bool
      */
-    public function getAspectRatioIs16To9()
+    public function getAspectRatioIs16To9(): bool
     {
         return $this->getAspectRatioType() === static::ASPECT_RATIO_16TO9;
     }
@@ -95,7 +95,7 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
      *
      * @return bool
      */
-    public function getAspectRatioIs4To3()
+    public function getAspectRatioIs4To3(): bool
     {
         return $this->getAspectRatioType() === static::ASPECT_RATIO_4TO3;
     }
@@ -105,7 +105,7 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
      *
      * @return string
      */
-    public function getAspectRatioType()
+    public function getAspectRatioType(): string
     {
         $ratio4To3 = 4 / 3;
         $ratio16To9 = 16 / 9;
@@ -126,9 +126,9 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
      *
      * @return int
      */
-    public function getHeight()
+    public function getHeight(): int
     {
-        return (int)$this->height;
+        return $this->height;
     }
 
     /**
@@ -136,7 +136,7 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
      *
      * @return string
      */
-    public function getHtml()
+    public function getHtml(): string
     {
         return $this->html;
     }
@@ -146,9 +146,9 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
      *
      * @return int
      */
-    public function getWidth()
+    public function getWidth(): int
     {
-        return (int)$this->width;
+        return $this->width;
     }
 
     public function setHtml(string $html)

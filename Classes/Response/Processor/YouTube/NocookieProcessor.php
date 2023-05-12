@@ -7,10 +7,21 @@ use Sto\Mediaoembed\Response\GenericResponse;
 use Sto\Mediaoembed\Response\Processor\ResponseProcessorInterface;
 use Sto\Mediaoembed\Response\Processor\Support\IframeAwareProcessorTrait;
 use Sto\Mediaoembed\Response\VideoResponse;
+use Sto\Mediaoembed\Service\UrlService;
 
 class NocookieProcessor implements ResponseProcessorInterface
 {
     use IframeAwareProcessorTrait;
+
+    /**
+     * @var UrlService
+     */
+    private $urlService;
+
+    public function __construct(UrlService $urlService)
+    {
+        $this->urlService = $urlService;
+    }
 
     public function processResponse(GenericResponse $response)
     {
@@ -23,16 +34,8 @@ class NocookieProcessor implements ResponseProcessorInterface
 
     private function processVideoResponse(VideoResponse $response)
     {
-        $replaceYoutubeUrl = function (array $urlParts) {
-            $newUrl = 'https://www.youtube-nocookie.com';
-            $newUrl .= ($urlParts['path'] ?? '');
-
-            $query = ($urlParts['query'] ?? '');
-            if ($query) {
-                $newUrl .= '?' . $query;
-            }
-
-            return $newUrl;
+        $replaceYoutubeUrl = function (string $url) {
+            return $this->urlService->replaceSchemeAndHost($url, 'https', 'www.youtube-nocookie.com');
         };
 
         $this->modifyIframeUrl($response, $replaceYoutubeUrl);

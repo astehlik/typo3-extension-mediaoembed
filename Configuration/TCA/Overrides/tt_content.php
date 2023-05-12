@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Sto\Mediaoembed\Backend\AspectRatioEvaluation;
+use Sto\Mediaoembed\Content\Configuration;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
@@ -15,7 +17,18 @@ $ttContentColumns = [
         'label' => $lllPrefix . 'tt_content.tx_mediaoembed_url',
         'config' => [
             'type' => 'input',
+            'renderType' => 'tx_mediaoembed_urlinput',
             'behaviour' => ['allowLanguageSynchronization' => true],
+        ],
+    ],
+    'tx_mediaoembed_aspect_ratio' => [
+        'label' => $lllPrefix . 'tt_content.tx_mediaoembed_aspect_ratio',
+        'config' => [
+            'type' => 'input',
+            'behaviour' => ['allowLanguageSynchronization' => true],
+            'placeholder' => Configuration::ASPECT_RATIO_DEFAULT,
+            'size' => '4',
+            'eval' => AspectRatioEvaluation::class,
         ],
     ],
     'tx_mediaoembed_maxwidth' => [
@@ -26,10 +39,7 @@ $ttContentColumns = [
             'size' => '4',
             'max' => '4',
             'eval' => 'int',
-            'range' => [
-                'upper' => '999',
-                'lower' => '0',
-            ],
+            'range' => ['lower' => '0'],
             'default' => 0,
             'behaviour' => ['allowLanguageSynchronization' => true],
         ],
@@ -42,10 +52,7 @@ $ttContentColumns = [
             'size' => '4',
             'max' => '4',
             'eval' => 'int',
-            'range' => [
-                'upper' => '999',
-                'lower' => '0',
-            ],
+            'range' => ['lower' => '0'],
             'default' => 0,
             'behaviour' => ['allowLanguageSynchronization' => true],
         ],
@@ -80,7 +87,8 @@ $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes']['mediaoembed_oembedmed
 $GLOBALS['TCA']['tt_content']['palettes']['tx_mediaoembed_settings'] = [
     'showitem' => 'tx_mediaoembed_url,
     --linebreak--, tx_mediaoembed_maxwidth, tx_mediaoembed_maxheight,
-    --linebreak--, tx_mediaoembed_play_related',
+    --linebreak--, tx_mediaoembed_play_related,
+    --linebreak--, tx_mediaoembed_aspect_ratio',
     'canNotCollapse' => 1,
 ];
 

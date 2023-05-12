@@ -1,53 +1,54 @@
 {
-    "name": "de-swebhosting-typo3-extension/mediaoembed",
-    "description": "External media (YouTube, Flickr, ...) content elements using the http://oembed.com/ standard.",
-    "type": "typo3-cms-extension",
-    "license": "GPL-3.0-or-later",
-    "authors": [
-        {
-            "name": "Alexander Stehlik",
-            "email": "alexander.stehlik.deleteme@gmail.com"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Sto\\Mediaoembed\\": "Classes/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Sto\\Mediaoembed\\Tests\\": "Tests/"
-        }
-    },
-    "require": {
-        "php": "^7.0",
-        "ext-dom": "*",
-        "typo3/cms-core": "^7.6|^8.7|^9.3|^10.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^6.0",
-        "nimut/testing-framework": "^4.1.5|^5.0"
-    },
-    "replace": {
-        "typo3-ter/mediaoembed": "self.version"
-    },
-    "config": {
-        "vendor-dir": ".Build/vendor",
-        "bin-dir": ".Build/bin"
-    },
-    "scripts": {
-        "post-autoload-dump": [
-            "mkdir -p .Build/Web/typo3conf/ext/",
-            "[ -L .Build/Web/typo3conf/ext/mediaoembed ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/mediaoembed"
-        ]
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-develop": "2.1.x-dev"
-        },
-        "typo3/cms": {
-            "cms-package-dir": "{$vendor-dir}/typo3/cms",
-            "web-dir": ".Build/Web"
-        }
-    }
+	"name": "de-swebhosting-typo3-extension/mediaoembed",
+	"description": "External media (YouTube, Flickr, ...) content elements using the http://oembed.com/ standard.",
+	"type": "typo3-cms-extension",
+	"license": "GPL-3.0-or-later",
+	"authors": [
+		{
+			"name": "Alexander Stehlik",
+			"email": "alexander.stehlik.deleteme@gmail.com"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"Sto\\Mediaoembed\\": "Classes/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Sto\\Mediaoembed\\Tests\\": "Tests/"
+		}
+	},
+	"require": {
+		"php": "^7.0",
+		"ext-dom": "*",
+		"typo3/cms-core": "^7.6|^8.7|^9.3|^10.0"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^6.0",
+		"nimut/testing-framework": "^4.1.5|^5.0"
+	},
+	"replace": {
+		"typo3-ter/mediaoembed": "self.version"
+	},
+	"config": {
+		"vendor-dir": ".Build/vendor",
+		"bin-dir": ".Build/bin"
+	},
+	"scripts": {
+		"post-autoload-dump": [
+			"mkdir -p .Build/Web/typo3conf/ext/",
+			"[ -L .Build/Web/typo3conf/ext/mediaoembed ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/mediaoembed"
+		]
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-develop": "2.1.x-dev"
+		},
+		"typo3/cms": {
+			"extension-key": "mediaoembed",
+			"cms-package-dir": "{$vendor-dir}/typo3/cms",
+			"web-dir": ".Build/Web"
+		}
+	}
 }

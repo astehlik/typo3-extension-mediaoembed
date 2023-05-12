@@ -302,4 +302,20 @@ plugin.tx_mediaoembed.settings.providers {
         processors.10 = Sto\Mediaoembed\Response\Processor\YouTube\NocookieProcessor
         processors.20 = Sto\Mediaoembed\Response\Processor\YouTube\PlayRelatedProcessor
     }
+
+    panopto {
+        endpoint = https://demo.hosted.panopto.com
+        requestHandlerClass = Sto\Mediaoembed\Request\RequestHandler\Panopto\PanoptoRequestHandler
+        requestHandlerSettings.defaultViewerUrlParameters {
+            autoplay = false
+            offerviewer = true
+            showtitle = false
+            showbrand = false
+            start = 0
+            interactivity = all
+        }
+        urlRegexes {
+            10 = #https?://demo\.hosted\.panopto\.com/Panopto/Pages/(Embed|Viewer)\.aspx.+#i
+        }
+    }
 }

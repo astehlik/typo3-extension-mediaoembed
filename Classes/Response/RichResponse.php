@@ -19,7 +19,7 @@ namespace Sto\Mediaoembed\Response;
  * the other categories.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
  */
-class RichResponse extends GenericResponse
+class RichResponse extends GenericResponse implements HtmlAwareResponseInterface
 {
     /**
      * The height in pixels required to display the HTML.
@@ -75,7 +75,7 @@ class RichResponse extends GenericResponse
      *
      * @return string
      */
-    public function getHtml()
+    public function getHtml(): string
     {
         return $this->html;
     }
@@ -88,5 +88,10 @@ class RichResponse extends GenericResponse
     public function getWidth()
     {
         return $this->width;
+    }
+
+    public function setHtml(string $html)
+    {
+        $this->html = $html;
     }
 }

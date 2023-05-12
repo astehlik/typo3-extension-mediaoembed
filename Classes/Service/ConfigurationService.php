@@ -21,7 +21,12 @@ class ConfigurationService
         );
     }
 
-    public function getMaxHeight()
+    public function getAspectRatioFallback(): string
+    {
+        return $this->settings['aspectRatioFallback'] ?? '';
+    }
+
+    public function getMaxHeight(): int
     {
         if (!empty($this->settings['media']['maxheight'])) {
             return (int)$this->settings['media']['maxheight'];
@@ -47,6 +52,11 @@ class ConfigurationService
     public function getPhotoDownloadStorageUid(): int
     {
         return (int)$this->settings['downloadPhotoSettings']['storageUid'];
+    }
+
+    public function getProcessorsForHtml(): array
+    {
+        return $this->settings['reponseProcessors']['html'] ?? [];
     }
 
     public function isPhotoDownloadEnabled(): bool

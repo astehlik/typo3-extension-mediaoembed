@@ -86,7 +86,7 @@ class HttpRequest
      *
      * @return string json formatted result from server
      */
-    public function sendAndGetResponseData()
+    public function sendAndGetResponseData(): string
     {
         $parameters = $this->buildRequestParameterArray();
         $requestUrl = $this->buildRequestUrl($parameters);
@@ -238,8 +238,7 @@ class HttpRequest
     protected function replaceFormatPlaceholders(string $requestUrl)
     {
         $requestUrl = str_replace('###FORMAT###', $this->format, $requestUrl);
-        $requestUrl = str_replace('{format}', $this->format, $requestUrl);
-        return $requestUrl;
+        return str_replace('{format}', $this->format, $requestUrl);
     }
 
     /**

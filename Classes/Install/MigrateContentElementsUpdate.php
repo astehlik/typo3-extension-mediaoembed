@@ -76,7 +76,6 @@ class MigrateContentElementsUpdate implements UpgradeWizardInterface
      */
     public function updateNecessary(): bool
     {
-        return true;
         return $this->getFlexFormUpdateHandler()->checkForUpdate();
     }
 

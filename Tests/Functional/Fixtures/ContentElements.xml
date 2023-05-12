@@ -17,4 +17,13 @@
 		<sorting>20</sorting>
 		<tx_mediaoembed_play_related>0</tx_mediaoembed_play_related>
 	</tt_content>
+    <tt_content>
+        <uid>4</uid>
+        <pid>4</pid>
+        <CType>mediaoembed_oembedmediarenderer</CType>
+        <header>Panopto Element without direct link</header>
+        <tx_mediaoembed_url>https://demo.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=24573-4a48-4688c-965a-036878978a0fb</tx_mediaoembed_url>
+        <sorting>20</sorting>
+        <tx_mediaoembed_play_related>0</tx_mediaoembed_play_related>
+    </tt_content>
 </dataset>

@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
+
 defined('TYPO3_MODE') or die();
 
 /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */

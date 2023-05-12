@@ -16,6 +16,7 @@ namespace Sto\Mediaoembed\Content;
 
 use Sto\Mediaoembed\Domain\Model\Content;
 use Sto\Mediaoembed\Domain\Repository\ContentRepository;
+use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
 use Sto\Mediaoembed\Service\ConfigurationService;
 
 /**
@@ -23,6 +24,13 @@ use Sto\Mediaoembed\Service\ConfigurationService;
  */
 class Configuration
 {
+    const ASPECT_RATIO_DEFAULT = '16:9';
+
+    /**
+     * @var AspectRatioCalculatorInterface
+     */
+    private $aspectRatioCalculator;
+
     /**
      * @var ConfigurationService
      */
@@ -33,10 +41,28 @@ class Configuration
      */
     private $contentRepository;
 
-    public function __construct(ConfigurationService $configurationService, ContentRepository $contentRepository)
-    {
+    public function __construct(
+        AspectRatioCalculatorInterface $aspectRatioCalculator,
+        ConfigurationService $configurationService,
+        ContentRepository $contentRepository
+    ) {
+        $this->aspectRatioCalculator = $aspectRatioCalculator;
         $this->configurationService = $configurationService;
         $this->contentRepository = $contentRepository;
+    }
+
+    public function getAspectRatio(float $responseAspectRatio): float
+    {
+        $overrideAspectRatio = $this->calculateAspectRatio($this->getContent()->getAspectRatio());
+        if ($overrideAspectRatio) {
+            return $overrideAspectRatio;
+        }
+
+        if ($responseAspectRatio) {
+            return $responseAspectRatio;
+        }
+
+        return $this->getAspectRatioFallback();
     }
 
     /**
@@ -80,9 +106,29 @@ class Configuration
         return $this->getContent()->getUrl();
     }
 
+    public function getProcessorsForHtml(): array
+    {
+        return $this->configurationService->getProcessorsForHtml();
+    }
+
     public function shouldPlayRelated(): bool
     {
-        return $this->contentRepository->getCurrentContent()->shouldPlayRelated();
+        return $this->getContent()->shouldPlayRelated();
+    }
+
+    private function calculateAspectRatio(string $aspectRatio): float
+    {
+        return $this->aspectRatioCalculator->calculateAspectRatio($aspectRatio);
+    }
+
+    private function getAspectRatioFallback(): float
+    {
+        $fallbackAspectRatio = $this->calculateAspectRatio($this->configurationService->getAspectRatioFallback());
+        if ($fallbackAspectRatio) {
+            return $fallbackAspectRatio;
+        }
+
+        return $this->calculateAspectRatio(self::ASPECT_RATIO_DEFAULT);
     }
 
     /**

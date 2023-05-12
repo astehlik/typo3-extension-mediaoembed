@@ -30,6 +30,9 @@
 			<trans-unit id="tt_content.CType.I.tx_mediaoembed" xml:space="preserve">
 				<source>External media</source>
 			</trans-unit>
+			<trans-unit id="tt_content.tx_mediaoembed_aspect_ratio" xml:space="preserve">
+				<source>Overwrite aspect ratio (video only)</source>
+			</trans-unit>
 			<trans-unit id="tt_content.tx_mediaoembed_url" xml:space="preserve">
 				<source>Media URL</source>
 			</trans-unit>
