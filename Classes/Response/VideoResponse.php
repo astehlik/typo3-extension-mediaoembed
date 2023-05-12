@@ -31,10 +31,8 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
     /**
      * The height in pixels required to display the HTML.
      * This value is required.
-     *
-     * @var int
      */
-    protected $height = 0;
+    protected int $height = 0;
 
     /**
      * The HTML required to embed a video player.
@@ -42,18 +40,14 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
      * Consumers may wish to load the HTML in an off-domain iframe to avoid
      * XSS vulnerabilities.
      * This value is required.
-     *
-     * @var string
      */
-    protected $html;
+    protected string $html;
 
     /**
      * The width in pixels required to display the HTML.
      * This value is required.
-     *
-     * @var int
      */
-    protected $width = 0;
+    protected int $width = 0;
 
     /**
      * Returns the current aspect ratio.
@@ -133,8 +127,8 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
     public function initializeTypeSpecificResponseData(): void
     {
         $this->html = $this->responseDataArray['html'];
-        $this->width = (int)$this->responseDataArray['width'];
-        $this->height = (int)$this->responseDataArray['height'];
+        $this->width = (int)($this->responseDataArray['width'] ?? 0);
+        $this->height = (int)($this->responseDataArray['height'] ?? 0);
     }
 
     public function setHtml(string $html): void

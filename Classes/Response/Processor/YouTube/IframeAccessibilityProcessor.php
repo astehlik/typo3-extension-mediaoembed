@@ -25,23 +25,20 @@ class IframeAccessibilityProcessor implements HtmlResponseProcessorInterface
         }
 
         $ariaLabel = $this->getAriaLabel($response);
-        $this->addIframeAttributeIfNonExisting($response, 'aria-label', $ariaLabel);
+        $this->addIframeAttributeIfNonExisting($response, 'aria-label', htmlspecialchars($ariaLabel));
     }
 
-    /**
-     * @return string|null
-     */
-    private function getAriaLabel(GenericResponse $response)
+    private function getAriaLabel(GenericResponse $response): string
     {
         if (!$response->getTitle()) {
-            return LocalizationUtility::translate(
+            return (string)LocalizationUtility::translate(
                 'iframe_aria_label_fallback',
                 'Mediaoembed',
                 [$response->getProviderName()]
             );
         }
 
-        return LocalizationUtility::translate(
+        return (string)LocalizationUtility::translate(
             'iframe_aria_label',
             'Mediaoembed',
             [

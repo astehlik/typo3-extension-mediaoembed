@@ -15,23 +15,19 @@ trait IframeAwareProcessorTrait
         string $value
     ): void {
         /**
-         * @param string|null $currentValue
-         *
          * @return string
          */
-        $attributeModifier = function ($currentValue) use ($value) {
-            if ($currentValue) {
+        $attributeModifier = function (?string $currentValue) use ($value) {
+            if ($currentValue !== null && $currentValue !== '') {
                 return $currentValue;
             }
             return $value;
         };
+
         $this->modifyIframeAttribute($response, $attribute, $attributeModifier);
     }
 
-    /**
-     * @return string|null
-     */
-    private function getAttributeValue(\DOMElement $iframe, string $attribute)
+    private function getAttributeValue(\DOMElement $iframe, string $attribute): ?string
     {
         $hasAttribute = $iframe->hasAttribute($attribute);
         $attributeValue = null;
@@ -63,8 +59,10 @@ trait IframeAwareProcessorTrait
         $loadSuccess = false;
         $this->withoutXmlErrors(
             function () use ($response, $document, &$loadSuccess): void {
+                $xmlPrefixForEncodingFix = '<?xml version="1.0" encoding="utf-8" ?>';
                 $htmlWrapping = '<html><body><div id="oembed-response">%s</div></body></html>';
-                $loadSuccess = $document->loadHTML(sprintf($htmlWrapping, $response->getHtml()));
+                $template = $xmlPrefixForEncodingFix . $htmlWrapping;
+                $loadSuccess = $document->loadHTML(sprintf($template, $response->getHtml()));
             }
         );
         if (!$loadSuccess) {
@@ -92,13 +90,12 @@ trait IframeAwareProcessorTrait
     private function modifyIframeUrl(HtmlAwareResponseInterface $response, \Closure $urlModifier): void
     {
         /**
-         * @param string|null $iframeSrc
-         *
          * @return mixed
          */
-        $attributeModifier = function ($iframeSrc) use ($urlModifier) {
+        $attributeModifier = function (?string $iframeSrc) use ($urlModifier) {
             return $urlModifier($iframeSrc);
         };
+
         $this->modifyIframeAttribute($response, 'src', $attributeModifier);
     }
 

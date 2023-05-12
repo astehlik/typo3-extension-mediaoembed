@@ -15,9 +15,7 @@ namespace Sto\Mediaoembed\Content;
  *                                                                        */
 
 use Sto\Mediaoembed\Domain\Model\Content;
-use Sto\Mediaoembed\Domain\Repository\ContentRepository;
 use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
-use Sto\Mediaoembed\Service\ConfigurationService;
 
 /**
  * Handels TypoScript and content object configuration.
@@ -26,29 +24,21 @@ class Configuration
 {
     public const ASPECT_RATIO_DEFAULT = '16:9';
 
-    /**
-     * @var AspectRatioCalculatorInterface
-     */
-    private $aspectRatioCalculator;
+    private AspectRatioCalculatorInterface $aspectRatioCalculator;
 
-    /**
-     * @var ConfigurationService
-     */
-    private $configurationService;
+    private Settings $settings;
 
-    /**
-     * @var ContentRepository
-     */
-    private $contentRepository;
+    private Content $content;
 
     public function __construct(
-        AspectRatioCalculatorInterface $aspectRatioCalculator,
-        ConfigurationService $configurationService,
-        ContentRepository $contentRepository
+        Content $content,
+        Settings $settings,
+        AspectRatioCalculatorInterface $aspectRatioCalculator
     ) {
+        $this->content = $content;
+        $this->settings = $settings;
+
         $this->aspectRatioCalculator = $aspectRatioCalculator;
-        $this->configurationService = $configurationService;
-        $this->contentRepository = $contentRepository;
     }
 
     public function getAspectRatio(float $responseAspectRatio): float
@@ -65,6 +55,11 @@ class Configuration
         return $this->getAspectRatioFallback();
     }
 
+    public function getHttpClientClass(): string
+    {
+        return $this->settings->getHttpClientClass();
+    }
+
     /**
      * The maximum height of the embedded resource.
      * Only applies to some resource types (as specified below).
@@ -78,7 +73,7 @@ class Configuration
             return $contentMaxHeight;
         }
 
-        return $this->configurationService->getMaxHeight();
+        return $this->settings->getMaxHeight();
     }
 
     /**
@@ -94,7 +89,7 @@ class Configuration
             return $contentMaxWidth;
         }
 
-        return $this->configurationService->getMaxWidth();
+        return $this->settings->getMaxWidth();
     }
 
     public function getMediaUrl(): string
@@ -102,9 +97,24 @@ class Configuration
         return $this->getContent()->getUrl();
     }
 
+    public function getPhotoDownloadFolderIdentifier(): string
+    {
+        return $this->settings->getPhotoDownloadFolderIdentifier();
+    }
+
+    public function getPhotoDownloadStorageUid(): int
+    {
+        return $this->settings->getPhotoDownloadStorageUid();
+    }
+
     public function getProcessorsForHtml(): array
     {
-        return $this->configurationService->getProcessorsForHtml();
+        return $this->settings->getProcessorsForHtml();
+    }
+
+    public function isPhotoDownloadEnabled(): bool
+    {
+        return $this->settings->isPhotoDownloadEnabled();
     }
 
     public function shouldPlayRelated(): bool
@@ -119,7 +129,7 @@ class Configuration
 
     private function getAspectRatioFallback(): float
     {
-        $fallbackAspectRatio = $this->calculateAspectRatio($this->configurationService->getAspectRatioFallback());
+        $fallbackAspectRatio = $this->calculateAspectRatio($this->settings->getAspectRatioFallback());
         if ($fallbackAspectRatio) {
             return $fallbackAspectRatio;
         }
@@ -132,6 +142,6 @@ class Configuration
      */
     private function getContent(): Content
     {
-        return $this->contentRepository->getCurrentContent();
+        return $this->content;
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sto\Mediaoembed\Tests\Unit\Provider;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sto\Mediaoembed\Provider\Endpoint;
 use Sto\Mediaoembed\Provider\EndpointCollector;
 use Sto\Mediaoembed\Provider\ProviderEndpoints;
@@ -12,6 +13,8 @@ use Sto\Mediaoembed\Provider\ProviderUrls;
 
 class EndpointCollectorTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var EndpointCollector
      */
@@ -55,8 +58,12 @@ class EndpointCollectorTest extends TestCase
         $expectedEndpoint->addUrlScheme('#https?://testscheme1/.*#i');
 
         $endpoints = $this->collector->collectEndpoints();
+        $collectedEndpoint = $endpoints['name'];
 
-        self::assertSame($expectedEndpoint, $endpoints['name']);
+        self::assertSame($expectedEndpoint->getName(), $collectedEndpoint->getName());
+        self::assertSame($expectedEndpoint->getUrl(), $collectedEndpoint->getUrl());
+        self::assertSame($expectedEndpoint->getUrlSchemes(), $collectedEndpoint->getUrlSchemes());
+        self::assertSame($expectedEndpoint->getUrlConfigKey(), $collectedEndpoint->getUrlConfigKey());
     }
 
     public function testCollectEndpointOrdersByName(): void

@@ -7,32 +7,22 @@ namespace Sto\Mediaoembed\Request\RequestHandler;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Exception\InvalidResponseException;
+use Sto\Mediaoembed\Request\HttpClient\HttpClientFactory;
 use Sto\Mediaoembed\Request\HttpRequest;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 final class HttpRequestHandler implements RequestHandlerInterface
 {
-    /**
-     * @var Configuration
-     */
-    private $configuration;
+    private HttpClientFactory $httpClientFactory;
 
-    /**
-     * @var ObjectManagerInterface
-     */
-    private $objectManager;
-
-    public function __construct(Configuration $configuration, ObjectManagerInterface $objectManager)
+    public function __construct(HttpClientFactory $httpClientFactory)
     {
-        $this->configuration = $configuration;
-        $this->objectManager = $objectManager;
+        $this->httpClientFactory = $httpClientFactory;
     }
 
-    public function handle(Provider $provider): array
+    public function handle(Provider $provider, Configuration $configuration): array
     {
-        /** @var HttpRequest $request */
-        /** @noinspection PhpParamsInspection */
-        $request = $this->objectManager->get(HttpRequest::class, $this->configuration, $provider->getEndpoint());
+        $request = new HttpRequest($configuration, $provider->getEndpoint(), $this->httpClientFactory);
         $responseData = $request->sendAndGetResponseData();
 
         return $this->parseResponseData($responseData);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sto\Mediaoembed\Tests\Functional\Controller;
 
 use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTest;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 class OembedControllerTest extends AbstractFunctionalTest
 {
@@ -12,15 +13,18 @@ class OembedControllerTest extends AbstractFunctionalTest
     {
         parent::setUp();
 
-        $this->importDataSet('ntf://Database/pages.xml');
-        $this->importDataSet(__DIR__ . '/../Fixtures/ContentElements.xml');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Database/Pages.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Database/ContentElements.csv');
+        $this->setUpFrontendSite(1);
         $this->setUpFrontendRootPage(
             1,
             [
-                'EXT:mediaoembed/Tests/Functional/Fixtures/MinimalPage.typoscript',
-                'EXT:mediaoembed/Configuration/TypoScript/setup.txt',
-                'EXT:mediaoembed/Configuration/TypoScript/DefaultProviders/setup.txt',
-                'EXT:mediaoembed/Tests/Functional/Fixtures/Mediaoembed.typoscript',
+                'setup' => [
+                    'EXT:mediaoembed/Tests/Functional/Fixtures/MinimalPage.typoscript',
+                    'EXT:mediaoembed/Configuration/TypoScript/setup.txt',
+                    'EXT:mediaoembed/Configuration/TypoScript/DefaultProviders/setup.txt',
+                    'EXT:mediaoembed/Tests/Functional/Fixtures/Mediaoembed.typoscript',
+                ]
             ]
         );
     }
@@ -30,7 +34,7 @@ class OembedControllerTest extends AbstractFunctionalTest
         $expectedDirectLink = '<a rel="noreferrer noopener" target="_blank"'
             . ' href="https://demo.hosted.panopto.com/Panopto';
 
-        self::assertNotContains($expectedDirectLink, $this->renderOembedContent(4));
+        self::assertStringNotContainsString($expectedDirectLink, $this->renderOembedContent(4));
     }
 
     public function testPanoptoViewerIsConvertedToEmbed(): void
@@ -41,7 +45,7 @@ class OembedControllerTest extends AbstractFunctionalTest
             . 'showbrand=false&amp;start=0&amp;interactivity=all&amp;'
             . 'id=24573-4a48-4688c-965a-036878978a0fb';
 
-        self::assertContains($expectedIframeUrl, $this->renderOembedContent(4));
+        self::assertStringContainsString($expectedIframeUrl, $this->renderOembedContent(4));
     }
 
     public function testYouTubeDirectLinkIsRendered(): void
@@ -49,7 +53,7 @@ class OembedControllerTest extends AbstractFunctionalTest
         $expectedDirectLink = '<a rel="noreferrer noopener" target="_blank"'
             . ' href="https://www.youtube.com/watch?v=iwGFalTRHDA">';
 
-        self::assertContains($expectedDirectLink, $this->renderOembedContent());
+        self::assertStringContainsString($expectedDirectLink, $this->renderOembedContent());
     }
 
     public function testYouTubeIframeIsRendered(): void
@@ -59,7 +63,7 @@ class OembedControllerTest extends AbstractFunctionalTest
             . ' frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"'
             . ' allowfullscreen aria-label="YouTube media: Trololo"></iframe>';
 
-        self::assertContains($expectedIframe, $this->renderOembedContent());
+        self::assertStringContainsString($expectedIframe, $this->renderOembedContent());
     }
 
     public function testYouTubeIframeIsRenderedWithoutRelated(): void
@@ -71,12 +75,15 @@ class OembedControllerTest extends AbstractFunctionalTest
 
         $this->renderOembedContent(3);
 
-        self::assertContains($expectedIframe, $this->renderOembedContent(3));
+        self::assertStringContainsString($expectedIframe, $this->renderOembedContent(3));
     }
 
     private function renderOembedContent(int $openPageUid = 2): string
     {
-        $response = $this->getFrontendResponse($openPageUid);
-        return $response->getContent();
+        $request = (new InternalRequest('https://website.local/'))->withPageId($openPageUid);
+        $response = $this->executeFrontendSubRequest($request);
+        var_dump($response->getBody()->isReadable());
+        die();
+        return $response->getBody()->getContents();
     }
 }

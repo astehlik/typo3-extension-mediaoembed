@@ -6,25 +6,13 @@ namespace Sto\Mediaoembed\Provider;
 
 class Endpoint
 {
-    /**
-     * @var bool
-     */
-    private $isRegex;
+    private bool $isRegex;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
 
-    /**
-     * @var string
-     */
-    private $url;
+    private string $url;
 
-    /**
-     * @var array
-     */
-    private $urlSchemes;
+    private array $urlSchemes;
 
     public function __construct(string $name, string $url, bool $isRegex)
     {

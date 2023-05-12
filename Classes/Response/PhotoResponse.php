@@ -25,72 +25,56 @@ class PhotoResponse extends GenericResponse
     /**
      * The height in pixels of the image specified in the url parameter.
      * This value is required.
-     *
-     * @var string
      */
-    protected $height;
+    protected int $height;
 
     /**
      * Path to the local version of the photo.
-     *
-     * @var FileInterface
      */
-    protected $localFile;
+    protected ?FileInterface $localFile;
 
     /**
      * The source URL of the image.
      * Consumers should be able to insert this URL into an <img> element.
      * Only HTTP and HTTPS URLs are valid.
      * This value is required.
-     *
-     * @var string
      */
-    protected $url;
+    protected string $url;
 
     /**
      * The width in pixels of the image specified in the url parameter.
      * This value is required.
-     *
-     * @var string
      */
-    protected $width;
+    protected int $width;
 
     /**
      * Getter for the height in pixels of the image specified in the url parameter.
-     *
-     * @return string
      */
-    public function getHeight()
+    public function getHeight(): int
     {
         return $this->height;
     }
 
     /**
      * Getter for the path to a locally stored version of the image.
-     *
-     * @return FileInterface|null
      */
-    public function getLocalFile()
+    public function getLocalFile(): ?FileInterface
     {
         return $this->localFile;
     }
 
     /**
      * Getter for the source URL of the image.
-     *
-     * @return string
      */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->url;
     }
 
     /**
      * Getter for the width in pixels of the image specified in the url parameter.
-     *
-     * @return string
      */
-    public function getWidth()
+    public function getWidth(): int
     {
         return $this->width;
     }
@@ -103,8 +87,8 @@ class PhotoResponse extends GenericResponse
     {
         $this->url = $this->responseDataArray['url'];
 
-        $this->height = $this->responseDataArray['height'];
-        $this->width = $this->responseDataArray['width'];
+        $this->height = (int)$this->responseDataArray['height'];
+        $this->width = (int)$this->responseDataArray['width'];
 
         $this->localFile = $this->responseDataArray['localFile'];
     }

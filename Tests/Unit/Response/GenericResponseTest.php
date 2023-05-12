@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sto\Mediaoembed\Tests\Unit\Response;
 
 use PHPUnit\Framework\TestCase;
+use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Response\GenericResponse;
 
 class GenericResponseTest extends TestCase
@@ -75,10 +76,10 @@ class GenericResponseTest extends TestCase
         self::assertSame('Generic', $response->getTypePartialName());
     }
 
-    public function testGetValueFromResponseDataDefaultsToNull(): void
+    public function testGetValueFromResponseDataDefaultsToEmptyString(): void
     {
         $response = $this->createResponse([]);
-        self::assertNull($response->getAuthorName());
+        self::assertSame('', $response->getAuthorName());
     }
 
     public function testGetVersion(): void
@@ -90,7 +91,7 @@ class GenericResponseTest extends TestCase
     protected function createResponse(array $responseData): GenericResponse
     {
         $response = new GenericResponse();
-        $response->initializeResponseData($responseData);
+        $response->initializeResponseData($responseData, $this->createMock(Configuration::class));
         return $response;
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sto\Mediaoembed\Tests\Unit\Domain\Repository;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Domain\Repository\ProviderRepository;
 use Sto\Mediaoembed\Exception\InvalidConfigurationException;
@@ -12,6 +13,8 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 class ProviderRepositoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testCreatesProviderWithEndpoint(): void
     {
         $provider = $this->callFindAll(

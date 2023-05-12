@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Functional\Request\RequestHandler;
 
+use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Request\RequestHandler\Panopto\PanoptoRequestHandler;
 use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTest;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 final class PanoptoRequestHandlerTest extends AbstractFunctionalTest
@@ -36,11 +34,8 @@ final class PanoptoRequestHandlerTest extends AbstractFunctionalTest
      */
     public function testHandleBuildsExpectedIframe(string $mediaUrl, string $expectedUrl): void
     {
-        $objectManager = $this->getObjectManager();
-
-        $configurationManager = $objectManager->get(ConfigurationManagerInterface::class);
-        $configurationManager->setContentObject(new ContentObjectRenderer());
-        $configurationManager->getContentObject()->data = ['tx_mediaoembed_url' => $mediaUrl];
+        $configurationMock = $this->createMock(Configuration::class);
+        $configurationMock->method('getMediaUrl')->willReturn($mediaUrl);
 
         $provider = new Provider(
             'panopto',
@@ -70,12 +65,7 @@ final class PanoptoRequestHandlerTest extends AbstractFunctionalTest
             'provider_name' => 'Panopto',
         ];
 
-        $requestHandler = $objectManager->get(PanoptoRequestHandler::class);
-        self::assertSame($expectedResponse, $requestHandler->handle($provider));
-    }
-
-    private function getObjectManager(): ObjectManagerInterface
-    {
-        return GeneralUtility::makeInstance(ObjectManager::class);
+        $requestHandler = $this->getContainer()->get(PanoptoRequestHandler::class);
+        self::assertSame($expectedResponse, $requestHandler->handle($provider, $configurationMock));
     }
 }

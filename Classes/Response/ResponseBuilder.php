@@ -14,10 +14,9 @@ namespace Sto\Mediaoembed\Response;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use Sto\Mediaoembed\Exception\InvalidResponseException;
+use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Service\PhotoDownloadService;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * This type is used for representing static photos.
@@ -25,29 +24,10 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class ResponseBuilder implements SingletonInterface
 {
-    /**
-     * @var ObjectManagerInterface
-     */
-    private $objectManager;
+    private PhotoDownloadService $photoDownloadService;
 
-    /**
-     * @var PhotoDownloadService
-     */
-    private $photoDownloadService;
-
-    /**
-     * @var string[]
-     */
-    private $responseTypes = [
-        'link',
-        'photo',
-        'rich',
-        'video',
-    ];
-
-    public function __construct(ObjectManagerInterface $objectManager, PhotoDownloadService $photoDownloadService)
+    public function __construct(PhotoDownloadService $photoDownloadService)
     {
-        $this->objectManager = $objectManager;
         $this->photoDownloadService = $photoDownloadService;
     }
 
@@ -55,82 +35,81 @@ class ResponseBuilder implements SingletonInterface
      * Builds a response object using the reponse data returned
      * from the provider.
      *
-     * @param string $embedUrl the URL provided by the editor that is sent to the oEmbed endpoint
      * @param array $responseData Raw response data from the provider
      *
      * @return GenericResponse An instance of a response
-     *
-     * @throws InvalidResponseException
      */
-    public function buildResponse(string $embedUrl, array $responseData): GenericResponse
+    public function buildResponse(array $responseData, Configuration $configuration): GenericResponse
     {
-        $responseData['embedUrl'] = $embedUrl;
-
-        return $this->createResponseByType($responseData);
+        return $this->createResponseByType($responseData, $configuration);
     }
 
     /**
      * Creates an instance of a non abstract response for the
      * given response type.
      */
-    protected function createResponseByType(array $parsedResponseData): GenericResponse
+    protected function createResponseByType(array $parsedResponseData, Configuration $configuration): GenericResponse
     {
         $finalResponseData = $parsedResponseData;
 
         $responseType = (string)$parsedResponseData['type'];
-        $createMethod = in_array($responseType, $this->responseTypes, true)
-            ? 'createResponse' . ucfirst($responseType)
-            : 'createResponseGeneric';
 
-        /**
-         * @uses createResponseGeneric()
-         * @uses createResponseLink()
-         * @uses createResponsePhoto()
-         * @uses createResponseRich()
-         * @uses createResponseVideo()
-         */
-        return $this->{$createMethod}($finalResponseData);
+        switch ($responseType) {
+            case 'link':
+                return $this->createResponseLink($finalResponseData, $configuration);
+            case 'photo':
+                return $this->createResponsePhoto($finalResponseData, $configuration);
+            case 'rich':
+                return $this->createResponseRich($finalResponseData, $configuration);
+            case 'video':
+                return $this->createResponseVideo($finalResponseData, $configuration);
+            default:
+                return $this->createResponseGeneric($finalResponseData, $configuration);
+        }
     }
 
-    protected function createResponseGeneric(array $responseData): GenericResponse
+    protected function createResponseGeneric(array $responseData, Configuration $configuration): GenericResponse
     {
-        return $this->createResponseWithData(GenericResponse::class, $responseData);
+        return $this->createResponseWithData(GenericResponse::class, $responseData, $configuration);
     }
 
-    protected function createResponseLink(array $responseData): LinkResponse
+    protected function createResponseLink(array $responseData, Configuration $configuration): LinkResponse
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->createResponseWithData(LinkResponse::class, $responseData);
+        return $this->createResponseWithData(LinkResponse::class, $responseData, $configuration);
     }
 
-    protected function createResponsePhoto(array $responseData): PhotoResponse
+    protected function createResponsePhoto(array $responseData, Configuration $configuration): PhotoResponse
     {
         $responseData['localFile'] = $this->photoDownloadService->downloadPhoto(
-            $responseData['embedUrl'],
-            $responseData['url']
+            $responseData['url'],
+            $configuration
         );
 
         /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->createResponseWithData(PhotoResponse::class, $responseData);
+        return $this->createResponseWithData(PhotoResponse::class, $responseData, $configuration);
     }
 
-    protected function createResponseRich(array $responseData): RichResponse
+    protected function createResponseRich(array $responseData, Configuration $configuration): RichResponse
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->createResponseWithData(RichResponse::class, $responseData);
+        return $this->createResponseWithData(RichResponse::class, $responseData, $configuration);
     }
 
-    protected function createResponseVideo(array $responseData): VideoResponse
+    protected function createResponseVideo(array $responseData, Configuration $configuration): VideoResponse
     {
         /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->createResponseWithData(VideoResponse::class, $responseData);
+        return $this->createResponseWithData(VideoResponse::class, $responseData, $configuration);
     }
 
-    protected function createResponseWithData(string $responseClass, array $responseData): GenericResponse
-    {
+    protected function createResponseWithData(
+        string $responseClass,
+        array $responseData,
+        Configuration $configuration
+    ): GenericResponse {
         /** @var GenericResponse $response */
-        $response = $this->objectManager->get($responseClass);
-        $response->initializeResponseData($responseData);
+        $response = new $responseClass();
+        $response->initializeResponseData($responseData, $configuration);
         return $response;
     }
 }

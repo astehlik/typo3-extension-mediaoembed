@@ -4,19 +4,25 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Response;
 
+use Prophecy\PhpUnit\ProphecyTrait;
+use Sto\Mediaoembed\Content\Configuration;
+use Sto\Mediaoembed\Content\Settings;
+use Sto\Mediaoembed\Domain\Model\Content;
 use Sto\Mediaoembed\Response\GenericResponse;
 use Sto\Mediaoembed\Response\LinkResponse;
 use Sto\Mediaoembed\Response\PhotoResponse;
 use Sto\Mediaoembed\Response\ResponseBuilder;
 use Sto\Mediaoembed\Response\RichResponse;
 use Sto\Mediaoembed\Response\VideoResponse;
+use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
 use Sto\Mediaoembed\Service\PhotoDownloadService;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
 use TYPO3\CMS\Core\Resource\FileInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 class ResponseBuilderTest extends AbstractUnitTest
 {
+    use ProphecyTrait;
+
     public function testBuildResponseGeneric(): void
     {
         $responseData = [
@@ -52,21 +58,22 @@ class ResponseBuilderTest extends AbstractUnitTest
         ];
         $responseClass = PhotoResponse::class;
 
-        $fileProphecy = $this->prophesize(FileInterface::class);
-        $file = $fileProphecy->reveal();
+        $fileMock = $this->createMock(FileInterface::class);
+
+        $configuration = $this->createConfiguration();
 
         $photoDownloadServiceProphecy = $this->prophesize(PhotoDownloadService::class);
         $photoDownloadServiceProphecy->downloadPhoto(
-            'https://my-embed-url.tld/embed/4kgfjk',
-            'https://my-awsome.tld/photo'
+            'https://my-awsome.tld/photo',
+            $configuration
         )
             ->shouldBeCalledOnce()
-            ->willReturn($file);
+            ->willReturn($fileMock);
 
         /** @var PhotoResponse $response */
-        $response = $this->buildResponse($responseClass, $responseData, $photoDownloadServiceProphecy);
+        $response = $this->buildResponse($responseClass, $responseData, $configuration, $photoDownloadServiceProphecy);
         self::assertSame('https://my-awsome.tld/photo', $response->getUrl());
-        self::assertSame($file, $response->getLocalFile());
+        self::assertSame($fileMock, $response->getLocalFile());
     }
 
     public function testBuildResponseRich(): void
@@ -102,23 +109,31 @@ class ResponseBuilderTest extends AbstractUnitTest
     protected function buildResponse(
         string $responseClass,
         array $responseData,
+        ?Configuration $configuration = null,
         $photoDownloadServiceProphecy = null
     ): GenericResponse {
-        $objectManager = $this->prophesize(ObjectManagerInterface::class);
-        $objectManager->get($responseClass)->shouldBeCalledOnce()->willReturn(new $responseClass());
-
         if (!$photoDownloadServiceProphecy) {
             $photoDownloadServiceProphecy = $this->prophesize(PhotoDownloadService::class);
         }
 
-        $reponseBuilder = new ResponseBuilder($objectManager->reveal(), $photoDownloadServiceProphecy->reveal());
+        $reponseBuilder = new ResponseBuilder($photoDownloadServiceProphecy->reveal());
+
         $response = $reponseBuilder->buildResponse(
-            'https://my-embed-url.tld/embed/4kgfjk',
-            $responseData
+            $responseData,
+            $configuration ?: $this->createConfiguration()
         );
 
         self::assertInstanceOf($responseClass, $response);
 
         return $response;
+    }
+
+    private function createConfiguration(): Configuration
+    {
+        return new Configuration(
+            new Content(12, 'https://the-url.tld/embed'),
+            new Settings([]),
+            $this->createMock(AspectRatioCalculatorInterface::class)
+        );
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Response\Processor\YouTube;
 
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sto\Mediaoembed\Response\Processor\YouTube\NocookieProcessor;
 use Sto\Mediaoembed\Response\VideoResponse;
 use Sto\Mediaoembed\Service\UrlService;
@@ -11,6 +12,8 @@ use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
 
 class NocookieProcessorTest extends AbstractUnitTest
 {
+    use ProphecyTrait;
+
     public function testProcessResponse(): void
     {
         $videoHtml = '<iframe width="480" height="270" src="https://www.youtube.com/embed/P8bHMEh40JU?feature=oembed"'

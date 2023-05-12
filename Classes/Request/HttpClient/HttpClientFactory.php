@@ -4,42 +4,28 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Request\HttpClient;
 
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use Psr\Container\ContainerInterface;
+use Sto\Mediaoembed\Content\Configuration;
 
 class HttpClientFactory
 {
-    /**
-     * @var ObjectManagerInterface
-     */
-    private $objectManager;
+    private ContainerInterface $container;
 
-    /**
-     * @var array
-     */
-    private $settings;
+    public function __construct(
+        ContainerInterface $container
+    ) {
+        $this->container = $container;
+    }
 
-    public function getHttpClient(): HttpClientInterface
+    public function getHttpClient(Configuration $configuration): HttpClientInterface
     {
-        $httpClientClass = (string)($this->settings['httpClient'] ?? '');
+        $httpClientClass = $configuration->getHttpClientClass();
+
         if ($httpClientClass === '') {
             // If nothing is configured we fallback to our default client.
             $httpClientClass = GetUrlHttpClient::class;
         }
 
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->objectManager->get($httpClientClass);
-    }
-
-    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager): void
-    {
-        $this->settings = $configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
-        );
-    }
-
-    public function injectObjectManager(ObjectManagerInterface $objectManager): void
-    {
-        $this->objectManager = $objectManager;
+        return $this->container->get($httpClientClass);
     }
 }

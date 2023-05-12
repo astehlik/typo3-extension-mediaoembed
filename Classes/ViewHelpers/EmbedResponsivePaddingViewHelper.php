@@ -6,24 +6,15 @@ namespace Sto\Mediaoembed\ViewHelpers;
 
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
 class EmbedResponsivePaddingViewHelper extends AbstractTagBasedViewHelper
 {
     protected $escapeOutput = false;
 
-    /**
-     * @var Configuration
-     */
-    private $configuration;
-
-    public function __construct(Configuration $configuration)
-    {
-        parent::__construct();
-        $this->configuration = $configuration;
-    }
-
     public function initializeArguments(): void
     {
+        $this->registerArgument('configuration', Configuration::class, '', true);
         $this->registerArgument('response', AspectRatioAwareResponseInterface::class, '', true);
         $this->registerArgument('style-property', 'string', '', false, 'padding-top');
 
@@ -48,7 +39,12 @@ class EmbedResponsivePaddingViewHelper extends AbstractTagBasedViewHelper
     private function getAspectRatio(): float
     {
         $response = $this->getResponse();
-        return $this->configuration->getAspectRatio($response->getAspectRatio());
+        return $this->getConfiguration()->getAspectRatio($response->getAspectRatio());
+    }
+
+    private function getConfiguration(): Configuration
+    {
+        return $this->arguments['configuration'];
     }
 
     private function getResponse(): AspectRatioAwareResponseInterface

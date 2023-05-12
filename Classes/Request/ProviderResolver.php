@@ -15,7 +15,6 @@ namespace Sto\Mediaoembed\Request;
  *                                                                        */
 
 use Sto\Mediaoembed\Domain\Model\Provider;
-use Sto\Mediaoembed\Domain\Repository\ProviderRepository;
 use Sto\Mediaoembed\Exception\NoMatchingProviderException;
 
 /**
@@ -26,12 +25,7 @@ class ProviderResolver
     /**
      * @var array|Provider[]
      */
-    protected $providerList;
-
-    /**
-     * @param ProviderRepository $providerRepository
-     */
-    protected $url;
+    protected array $providerList;
 
     public function __construct(array $providerList)
     {

@@ -1,0 +1,6 @@
+pages,,,,,
+,uid,pid,title,deleted,perms_everybody
+,1,0,Root,0,15
+,2,1,Dummy 1-2,0,15
+,3,2,Dummy 1-2-3,0,15
+,4,3,Dummy 1-2-3-4,0,15

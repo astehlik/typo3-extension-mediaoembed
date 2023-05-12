@@ -15,19 +15,10 @@ class PlayRelatedProcessor implements ResponseProcessorInterface
 {
     use IframeAwareProcessorTrait;
 
-    /**
-     * @var Configuration
-     */
-    private $configuration;
+    private UrlService $urlService;
 
-    /**
-     * @var UrlService
-     */
-    private $urlService;
-
-    public function __construct(Configuration $configuration, UrlService $urlService)
+    public function __construct(UrlService $urlService)
     {
-        $this->configuration = $configuration;
         $this->urlService = $urlService;
     }
 
@@ -42,8 +33,8 @@ class PlayRelatedProcessor implements ResponseProcessorInterface
 
     private function processVideoResponse(VideoResponse $response): void
     {
-        $replaceYoutubeUrl = function (string $url) {
-            $queryParams['rel'] = $this->configuration->shouldPlayRelated() ? '1' : '0';
+        $replaceYoutubeUrl = function (string $url) use ($response) {
+            $queryParams['rel'] = $response->getConfiguration()->shouldPlayRelated() ? '1' : '0';
             return $this->urlService->mergeQueryParameters($url, $queryParams);
         };
 

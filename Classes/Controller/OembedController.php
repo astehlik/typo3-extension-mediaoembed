@@ -14,7 +14,10 @@ namespace Sto\Mediaoembed\Controller;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Sto\Mediaoembed\Content\Configuration;
+use Sto\Mediaoembed\Content\ConfigurationFactory;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Domain\Repository\ProviderRepository;
 use Sto\Mediaoembed\Exception\InvalidUrlException;
@@ -40,46 +43,38 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class OembedController extends ActionController
 {
-    /**
-     * @var Configuration
-     */
-    private $configuration;
+    private ConfigurationFactory $configurationFactory;
 
-    /**
-     * @var ProviderRepository
-     */
-    private $providerRepository;
+    private ContainerInterface $container;
 
-    /**
-     * @var ResponseBuilder
-     */
-    private $responseBuilder;
+    private ProviderRepository $providerRepository;
 
-    public function injectConfiguration(Configuration $configuration): void
-    {
-        $this->configuration = $configuration;
-    }
+    private ResponseBuilder $responseBuilder;
 
-    public function injectProviderRepository(ProviderRepository $providerRepository): void
-    {
+    public function __construct(
+        ConfigurationFactory $configurationFactory,
+        ContainerInterface $container,
+        ProviderRepository $providerRepository,
+        ResponseBuilder $responseBuilder
+    ) {
+        $this->configurationFactory = $configurationFactory;
+        $this->container = $container;
         $this->providerRepository = $providerRepository;
-    }
-
-    public function injectResponseBuilder(ResponseBuilder $responseBuilder): void
-    {
         $this->responseBuilder = $responseBuilder;
     }
 
     /**
      * Renders the external media.
-     *
-     * @return string
      */
-    public function renderMediaAction()
+    public function renderMediaAction(): ResponseInterface
     {
         try {
-            $this->getEmbedDataFromProvider();
-            $this->view->assign('configuration', $this->configuration);
+            $configuration = $this->configurationFactory->createConfiguration(
+                $this->configurationManager->getContentObject()->data,
+                $this->settings
+            );
+            $this->getEmbedDataFromProvider($configuration);
+            $this->view->assign('configuration', $configuration);
             $this->view->assign('isSSLRequest', GeneralUtility::getIndpEnv('TYPO3_SSL'));
             $result = $this->view->render();
         } catch (InvalidUrlException $invalidUrlException) {
@@ -88,16 +83,16 @@ class OembedController extends ActionController
             $result = $this->renderErrorMessage('error_message_unknown', [$exception->getMessage()]);
         }
 
-        return $result;
+        return $this->htmlResponse($result);
     }
 
     /**
      * Build all data for the register using the embed code reponse
      * of a matching provider.
      */
-    protected function getEmbedDataFromProvider(): void
+    protected function getEmbedDataFromProvider(Configuration $configuration): void
     {
-        $this->startRequestLoop();
+        $this->startRequestLoop($configuration);
     }
 
     /**
@@ -122,10 +117,7 @@ class OembedController extends ActionController
         }
     }
 
-    /**
-     * @return Provider|null
-     */
-    private function getNextMatchingProvider(ProviderResolver $providerResolver, string $url)
+    private function getNextMatchingProvider(ProviderResolver $providerResolver, string $url): ?Provider
     {
         try {
             return $providerResolver->getNextMatchingProvider($url);
@@ -139,14 +131,14 @@ class OembedController extends ActionController
         $requestHandlerClass = $provider->getRequestHandlerClass();
 
         if (!$requestHandlerClass) {
-            return $this->objectManager->get(HttpRequestHandler::class);
+            return $this->container->get(HttpRequestHandler::class);
         }
 
         if (!class_exists($requestHandlerClass)) {
             throw new RequestHandlerClassDoesNotExistsException($provider);
         }
 
-        $requestHandler = $this->objectManager->get($requestHandlerClass);
+        $requestHandler = $this->container->get($requestHandlerClass);
         if (!$requestHandler instanceof RequestHandlerInterface) {
             throw new RequestHandlerClassInvalidException($provider);
         }
@@ -154,19 +146,20 @@ class OembedController extends ActionController
         return $requestHandler;
     }
 
-    private function getResponseDataForProvider(Provider $provider): array
+    private function getResponseDataForProvider(Provider $provider, Configuration $configuration): array
     {
         $requestHandler = $this->getRequestHandlerForProvider($provider);
-        return $requestHandler->handle($provider);
+        return $requestHandler->handle($provider, $configuration);
     }
 
     private function processResponse(Provider $provider, GenericResponse $response): void
     {
         foreach ($provider->getProcessors() as $processorClass) {
             /** @var ResponseProcessorInterface $processor */
-            $processor = $this->objectManager->get($processorClass);
+            $processor = $this->container->get($processorClass);
             $processor->processResponse($response);
         }
+
         $this->processResponseWithHtml($response);
     }
 
@@ -176,9 +169,9 @@ class OembedController extends ActionController
             return;
         }
 
-        foreach ($this->configuration->getProcessorsForHtml() as $htmlProcessorClass) {
+        foreach ($response->getConfiguration()->getProcessorsForHtml() as $htmlProcessorClass) {
             /** @var HtmlResponseProcessorInterface $processor */
-            $processor = $this->objectManager->get($htmlProcessorClass);
+            $processor = $this->container->get($htmlProcessorClass);
             $processor->processHtmlResponse($response);
         }
     }
@@ -189,10 +182,7 @@ class OembedController extends ActionController
         return '<div class="alert alert-warning">' . htmlspecialchars($message) . '</div>';
     }
 
-    /**
-     * @param Provider|null $provider
-     */
-    private function shouldDisplayDirectLink($provider): bool
+    private function shouldDisplayDirectLink(?Provider $provider): bool
     {
         if (!$this->settings['view']['displayDirectLink']) {
             return false;
@@ -208,12 +198,12 @@ class OembedController extends ActionController
      * until the request was successful or no more providers / endpoints
      * are available.
      */
-    private function startRequestLoop(): void
+    private function startRequestLoop(Configuration $configuration): void
     {
         $response = null;
         $request = null;
 
-        $url = $this->configuration->getMediaUrl();
+        $url = $configuration->getMediaUrl();
         $this->checkIfUrlIsValid($url);
 
         $providerResolver = new ProviderResolver($this->providerRepository->findAll());
@@ -222,8 +212,8 @@ class OembedController extends ActionController
 
         while ($provider = $this->getNextMatchingProvider($providerResolver, $url)) {
             try {
-                $responseData = $this->getResponseDataForProvider($provider);
-                $response = $this->responseBuilder->buildResponse($url, $responseData);
+                $responseData = $this->getResponseDataForProvider($provider, $configuration);
+                $response = $this->responseBuilder->buildResponse($responseData, $configuration);
                 $this->processResponse($provider, $response);
                 break;
             } catch (RequestException $exception) {
@@ -247,8 +237,8 @@ class OembedController extends ActionController
         $this->view->assign('response', $response);
     }
 
-    private function translate(string $key, $arguments = null)
+    private function translate(string $key, $arguments = null): string
     {
-        return LocalizationUtility::translate($key, 'Mediaoembed', $arguments);
+        return (string)LocalizationUtility::translate($key, 'Mediaoembed', $arguments);
     }
 }

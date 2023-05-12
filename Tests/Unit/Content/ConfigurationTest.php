@@ -5,30 +5,28 @@ declare(strict_types=1);
 namespace Sto\Mediaoembed\Tests\Unit\Content;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sto\Mediaoembed\Content\Configuration;
+use Sto\Mediaoembed\Content\Settings;
 use Sto\Mediaoembed\Domain\Model\Content;
-use Sto\Mediaoembed\Domain\Repository\ContentRepository;
 use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
-use Sto\Mediaoembed\Service\ConfigurationService;
 
 class ConfigurationTest extends TestCase
 {
+    use ProphecyTrait;
+
     private $aspectRatioCalculatorProphecy;
 
-    private $configurationServiceProphecy;
+    private $settingsProphecy;
 
     private $contentProphecy;
-
-    private $contentRepositoryProphecy;
 
     protected function setUp(): void
     {
         $this->contentProphecy = $this->prophesize(Content::class);
         $this->aspectRatioCalculatorProphecy = $this->prophesize(AspectRatioCalculatorInterface::class);
-        $this->contentRepositoryProphecy = $this->prophesize(ContentRepository::class);
-        $this->contentRepositoryProphecy->getCurrentContent()->willReturn($this->contentProphecy->reveal());
 
-        $this->configurationServiceProphecy = $this->prophesize(ConfigurationService::class);
+        $this->settingsProphecy = $this->prophesize(Settings::class);
     }
 
     public function getMaxWidthHeightDataProvider(): array
@@ -62,7 +60,7 @@ class ConfigurationTest extends TestCase
         $this->contentProphecy->getAspectRatio()->shouldBeCalledOnce()->willReturn('12:1');
         $this->aspectRatioCalculatorProphecy->calculateAspectRatio('12:1')->shouldBeCalledOnce()->willReturn(0);
 
-        $this->configurationServiceProphecy->getAspectRatioFallback()->shouldBeCalledOnce()->willReturn('12:2');
+        $this->settingsProphecy->getAspectRatioFallback()->shouldBeCalledOnce()->willReturn('12:2');
         $this->aspectRatioCalculatorProphecy->calculateAspectRatio('12:2')->shouldBeCalledOnce()->willReturn(1.5);
 
         self::assertSame(1.5, $this->getConfiguration()->getAspectRatio(0.0));
@@ -73,7 +71,7 @@ class ConfigurationTest extends TestCase
         $this->contentProphecy->getAspectRatio()->shouldBeCalledOnce()->willReturn('12:1');
         $this->aspectRatioCalculatorProphecy->calculateAspectRatio('12:1')->shouldBeCalledOnce()->willReturn(0);
 
-        $this->configurationServiceProphecy->getAspectRatioFallback()->shouldBeCalledOnce()->willReturn('12:2');
+        $this->settingsProphecy->getAspectRatioFallback()->shouldBeCalledOnce()->willReturn('12:2');
         $this->aspectRatioCalculatorProphecy->calculateAspectRatio('12:2')->shouldBeCalledOnce()->willReturn(0);
 
         $this->aspectRatioCalculatorProphecy->calculateAspectRatio('16:9')->shouldBeCalledOnce()->willReturn(1.24);
@@ -85,7 +83,7 @@ class ConfigurationTest extends TestCase
     {
         $this->contentProphecy->getAspectRatio()->shouldBeCalledOnce()->willReturn('12:1');
         $this->aspectRatioCalculatorProphecy->calculateAspectRatio('12:1')->shouldBeCalledOnce()->willReturn(2);
-        self::assertSame(2, $this->getConfiguration()->getAspectRatio(0.0));
+        self::assertSame(2.0, $this->getConfiguration()->getAspectRatio(0.0));
     }
 
     public function testGetAspectRatioUsesResponse(): void
@@ -101,7 +99,7 @@ class ConfigurationTest extends TestCase
     public function testGetMaxheight(int $contentValue, int $settingsValue, int $expectedValue): void
     {
         $this->contentProphecy->getMaxHeight()->willReturn($contentValue);
-        $this->configurationServiceProphecy->getMaxHeight()->willReturn($settingsValue);
+        $this->settingsProphecy->getMaxHeight()->willReturn($settingsValue);
 
         self::assertSame($expectedValue, $this->getConfiguration()->getMaxheight());
     }
@@ -112,7 +110,7 @@ class ConfigurationTest extends TestCase
     public function testGetMaxwidth(int $contentValue, int $settingsValue, int $expectedValue): void
     {
         $this->contentProphecy->getMaxWidth()->willReturn($contentValue);
-        $this->configurationServiceProphecy->getMaxWidth()->willReturn($settingsValue);
+        $this->settingsProphecy->getMaxWidth()->willReturn($settingsValue);
 
         self::assertSame($expectedValue, $this->getConfiguration()->getMaxwidth());
     }
@@ -127,9 +125,9 @@ class ConfigurationTest extends TestCase
     protected function getConfiguration(): Configuration
     {
         return new Configuration(
-            $this->aspectRatioCalculatorProphecy->reveal(),
-            $this->configurationServiceProphecy->reveal(),
-            $this->contentRepositoryProphecy->reveal()
+            $this->contentProphecy->reveal(),
+            $this->settingsProphecy->reveal(),
+            $this->aspectRatioCalculatorProphecy->reveal()
         );
     }
 }

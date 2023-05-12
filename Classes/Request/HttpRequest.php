@@ -31,18 +31,14 @@ class HttpRequest
 {
     /**
      * The configuration.
-     *
-     * @var Configuration
      */
-    private $configuration;
+    private Configuration $configuration;
 
     /**
      * The endpoint URL that should be contacted to get the embed
      * information.
-     *
-     * @var string
      */
-    private $endpoint;
+    private string $endpoint;
 
     /**
      * The required response format. When not specified, the provider can return
@@ -52,30 +48,21 @@ class HttpRequest
      * This value is optional.
      *
      * Important! At the moment, we only handle JSON formatted Responses.
-     *
-     * @var string
      */
-    private $format = 'json';
+    private string $format = 'json';
 
-    /**
-     * @var HttpClientFactory
-     */
-    private $httpClientFactory;
+    private HttpClientFactory $httpClientFactory;
 
-    private $httpErrorHandlers = [
+    private array $httpErrorHandlers = [
         401,
         404,
         501,
     ];
 
-    public function __construct(Configuration $configuration, string $endpoint)
+    public function __construct(Configuration $configuration, string $endpoint, HttpClientFactory $httpClientFactory)
     {
         $this->configuration = $configuration;
         $this->endpoint = $endpoint;
-    }
-
-    public function injectHttpClientFactory(HttpClientFactory $httpClientFactory): void
-    {
         $this->httpClientFactory = $httpClientFactory;
     }
 
@@ -196,13 +183,13 @@ class HttpRequest
         );
     }
 
-    protected function handleErrorUnknown($requestException): void
+    protected function handleErrorUnknown(HttpClientRequestException $requestException): void
     {
         throw new \RuntimeException(
             'An unknown error occurred while contacting the provider: '
-            . $requestException->getMessage() . ' (' . $requestException->getErrorDetails() . ').'
-            . ' Please make sure CURL use is enabled in the install tool to get valid error codes.',
-            1303401545
+            . $requestException->getMessage() . '.',
+            1303401545,
+            $requestException
         );
     }
 
@@ -235,14 +222,10 @@ class HttpRequest
      * Sends a request to the given URL and returns the reponse
      * from the server.
      *
-     * @param string $requestUrl
-     *
      * @return string response data
      */
-    protected function sendRequest($requestUrl): string
+    protected function sendRequest(string $requestUrl): string
     {
-        $requestException = null;
-
         try {
             return $this->getHttpClient()->executeGetRequest($requestUrl);
         } catch (HttpClientRequestException $e) {
@@ -256,6 +239,6 @@ class HttpRequest
 
     private function getHttpClient(): HttpClientInterface
     {
-        return $this->httpClientFactory->getHttpClient();
+        return $this->httpClientFactory->getHttpClient($this->configuration);
     }
 }

@@ -1,0 +1,5 @@
+"tt_content",,,,,,,
+,"uid","pid","CType","header","tx_mediaoembed_url","sorting","tx_mediaoembed_play_related"
+,1,2,"mediaoembed_oembedmediarenderer","YouTube Element","https://www.youtube.com/watch?v=iwGFalTRHDA",10,1
+,2,3,"mediaoembed_oembedmediarenderer","YouTube Element without related","https://www.youtube.com/watch?v=iwGFalTRHDA",20,0
+,4,4,"mediaoembed_oembedmediarenderer","Panopto Element without direct link","https://demo.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=24573-4a48-4688c-965a-036878978a0fb",20,0

@@ -14,6 +14,7 @@ namespace Sto\Mediaoembed\Tests\Unit\Response;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Response\VideoResponse;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
 
@@ -66,7 +67,7 @@ class VideoResponseTest extends AbstractUnitTest
 
     public function testAspectRatioDoesNotDivideByZero(): void
     {
-        self::assertSame(0, $this->videoResponse->getAspectRatio());
+        self::assertSame(0.0, $this->videoResponse->getAspectRatio());
     }
 
     /**
@@ -84,7 +85,8 @@ class VideoResponseTest extends AbstractUnitTest
                 'html' => '<embed />',
                 'width' => $width,
                 'height' => $height,
-            ]
+            ],
+            $this->createMock(Configuration::class)
         );
         self::assertSame($expectedRatioType, $this->videoResponse->getAspectRatioType());
 
@@ -102,7 +104,8 @@ class VideoResponseTest extends AbstractUnitTest
                 'html' => '<embed />',
                 'width' => 160,
                 'height' => 190,
-            ]
+            ],
+            $this->createMock(Configuration::class)
         );
         self::assertSame(160 / 190, $this->videoResponse->getAspectRatio());
     }

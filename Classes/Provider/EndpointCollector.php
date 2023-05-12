@@ -6,15 +6,9 @@ namespace Sto\Mediaoembed\Provider;
 
 class EndpointCollector
 {
-    /**
-     * @var ProviderEndpoints
-     */
-    private $providerEndpoints;
+    private ProviderEndpoints $providerEndpoints;
 
-    /**
-     * @var ProviderUrls
-     */
-    private $providerUrls;
+    private ProviderUrls $providerUrls;
 
     public function __construct(
         ProviderEndpoints $providerEndpoints,
@@ -63,7 +57,7 @@ class EndpointCollector
     {
         $endpointLabels = $this->getEndpointLabels();
 
-        foreach ($this->getProviderData() as $urlScheme => $providerData) {
+        foreach ($this->getProviderData() as $providerData) {
             $endpointUrl = $providerData[0];
             if (!array_key_exists($endpointUrl, $endpointLabels)) {
                 throw new \RuntimeException('No label configured for endpoint URL ' . $endpointUrl);

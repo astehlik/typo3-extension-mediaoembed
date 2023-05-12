@@ -88,8 +88,8 @@ final class UrlServiceTest extends AbstractUnitTest
         $expectedParams = [
             'test1' => 'test',
             'testarr' => [
-                'test' => '1',
                 'test1' => '2',
+                'test' => '1',
             ],
         ];
         self::assertSame($expectedParams, $newParams);
