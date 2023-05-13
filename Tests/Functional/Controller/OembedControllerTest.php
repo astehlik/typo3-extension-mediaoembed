@@ -9,24 +9,33 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
 class OembedControllerTest extends AbstractFunctionalTestCase
 {
+    protected array $typoscriptConstantFiles = [
+        'EXT:fluid_styled_content/Configuration/TypoScript/constants.typoscript',
+        'EXT:mediaoembed/Configuration/TypoScript/constants.txt',
+    ];
+
+    private array $typoscriptSetupFilesDefault = [
+        'EXT:fluid_styled_content/Configuration/TypoScript/setup.typoscript',
+        'EXT:mediaoembed/Tests/Functional/Fixtures/MinimalPage.typoscript',
+        'EXT:mediaoembed/Configuration/TypoScript/setup.txt',
+        'EXT:mediaoembed/Configuration/TypoScript/DefaultProviders/setup.txt',
+        'EXT:mediaoembed/Tests/Functional/Fixtures/Mediaoembed.typoscript',
+    ];
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/Database/Pages.csv');
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/Database/ContentElements.csv');
-        $this->setUpFrontendSite(1);
         $this->setUpFrontendRootPage(
             1,
             [
-                'setup' => [
-                    'EXT:mediaoembed/Tests/Functional/Fixtures/MinimalPage.typoscript',
-                    'EXT:mediaoembed/Configuration/TypoScript/setup.txt',
-                    'EXT:mediaoembed/Configuration/TypoScript/DefaultProviders/setup.txt',
-                    'EXT:mediaoembed/Tests/Functional/Fixtures/Mediaoembed.typoscript',
-                ]
+                'setup' => $this->typoscriptSetupFilesDefault,
+                'constants' => $this->typoscriptConstantFiles,
             ]
         );
+        $this->setUpFrontendSite(1);
     }
 
     public function testPanoptoDirectLinkIsNotRendered(): void
@@ -80,8 +89,8 @@ class OembedControllerTest extends AbstractFunctionalTestCase
 
     private function renderOembedContent(int $openPageUid = 2): string
     {
-        $request = (new InternalRequest('https://website.local/'))->withPageId($openPageUid);
+        $request = (new InternalRequest())->withPageId($openPageUid)->withLanguageId(0);
         $response = $this->executeFrontendSubRequest($request);
-        return $response->getBody()->getContents();
+        return (string)$response->getBody();
     }
 }

@@ -11,6 +11,8 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 abstract class AbstractFunctionalTestCase extends FunctionalTestCase
 {
+    protected $coreExtensionsToLoad = ['fluid_styled_content'];
+
     protected $testExtensionsToLoad = ['typo3conf/ext/mediaoembed'];
 
     /**
@@ -50,7 +52,7 @@ abstract class AbstractFunctionalTestCase extends FunctionalTestCase
         $languages = array_merge($languages, $additionalLanguages);
         $configuration = [
             'rootPageId' => $pageId,
-            'base' => 'https://website.local/',
+            'base' => '/',
             'languages' => $languages,
             'errorHandling' => [],
             'routes' => [],
