@@ -21,6 +21,5 @@ return function (ContainerConfigurator $configurator): void {
         ->set(ResponseBuilder::class, ResponseBuilder::class)
         ->load('Sto\\Mediaoembed\\Service\\', __DIR__ . '/../Classes/Service/')
         ->set(AspectRatioCalculatorInterface::class, AspectRatioCalculator::class)
-        ->load('Sto\\Mediaoembed\\ViewHelpers\\', __DIR__ . '/../Classes/ViewHelpers/')
-    ;
+        ->load('Sto\\Mediaoembed\\ViewHelpers\\', __DIR__ . '/../Classes/ViewHelpers/');
 };

@@ -31,9 +31,6 @@ class PhotoDownloadService
      * Downloads the photo from the server and stores it in the typo3temp folder.
      *
      * @param string $downloadUrl the media URL returned by the oEmbed Service
-     * @param Configuration $configuration
-     *
-     * @return FileInterface|null
      */
     public function downloadPhoto(string $downloadUrl, Configuration $configuration): ?FileInterface
     {

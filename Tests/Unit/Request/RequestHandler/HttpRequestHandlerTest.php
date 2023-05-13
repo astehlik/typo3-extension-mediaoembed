@@ -17,7 +17,7 @@ use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
 final class HttpRequestHandlerTest extends AbstractUnitTest
 {
     /**
-     * @var MockObject|HttpClientFactory
+     * @var HttpClientFactory|MockObject
      */
     private $httpClientFactoryMock;
 

@@ -26,9 +26,9 @@ class Configuration
 
     private AspectRatioCalculatorInterface $aspectRatioCalculator;
 
-    private Settings $settings;
-
     private Content $content;
+
+    private Settings $settings;
 
     public function __construct(
         Content $content,

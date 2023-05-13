@@ -9,7 +9,6 @@ use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Exception\InvalidResponseException;
 use Sto\Mediaoembed\Request\HttpClient\HttpClientFactory;
 use Sto\Mediaoembed\Request\HttpRequest;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 final class HttpRequestHandler implements RequestHandlerInterface
 {

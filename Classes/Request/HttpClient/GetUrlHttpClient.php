@@ -14,6 +14,7 @@ class GetUrlHttpClient implements HttpClientInterface
     public function executeGetRequest(string $requestUrl): string
     {
         $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
+
         try {
             $response = $requestFactory->request($requestUrl);
         } catch (RequestException $exception) {

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Sto\Mediaoembed\Request\RequestHandler\Panopto;
 
 use Sto\Mediaoembed\Service\UrlService;
-use TYPO3\CMS\Core\Utility\StringUtility;
 
 final class PanoptoUrlProcessor
 {

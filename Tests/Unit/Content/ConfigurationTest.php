@@ -17,9 +17,9 @@ class ConfigurationTest extends TestCase
 
     private $aspectRatioCalculatorProphecy;
 
-    private $settingsProphecy;
-
     private $contentProphecy;
+
+    private $settingsProphecy;
 
     protected function setUp(): void
     {

@@ -100,8 +100,6 @@ class GenericResponse
     /**
      * The oEmbed version number. This must be 1.0.
      * This value is required.
-     *
-     * @var string
      */
     protected string $version;
 

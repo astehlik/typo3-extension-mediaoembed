@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Response\Processor\YouTube;
 
-use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Response\GenericResponse;
 use Sto\Mediaoembed\Response\Processor\ResponseProcessorInterface;
 use Sto\Mediaoembed\Response\Processor\Support\IframeAwareProcessorTrait;
