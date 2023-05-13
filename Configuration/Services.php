@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Content\ConfigurationFactory;
-use Sto\Mediaoembed\Request\ProviderResolver;
 use Sto\Mediaoembed\Response\ResponseBuilder;
 use Sto\Mediaoembed\Service\AspectRatioCalculator;
 use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
