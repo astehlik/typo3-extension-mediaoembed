@@ -16,4 +16,5 @@ $providerCommandController = new EndpointCollector($providerEndpoints, $provider
 $endpoints = $providerCommandController->collectEndpoints();
 
 $providerTypoScriptRenderer = new ProviderTypoScriptRenderer();
+// @extensionScannerIgnoreLine
 echo $providerTypoScriptRenderer->render($endpoints);

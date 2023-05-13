@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Backend;
 
+use TYPO3\CMS\Backend\Controller\Event\AfterFormEnginePageInitializedEvent;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -17,17 +19,14 @@ final class EditDocumentControllerHooks
         'success_iframe_src_extracted',
     ];
 
-    /**
-     * @noinspection PhpFullyQualifiedNameUsageInspection PhpUndefinedClassInspection PhpUndefinedNamespaceInspection
-     *
-     * @var \TYPO3\CMS\Core\Localization\LanguageService|\TYPO3\CMS\Lang\LanguageService
-     */
-    private $languageService;
+    private ?LanguageService $languageService = null;
 
-    /**
-     * @var PageRenderer
-     */
-    private $pageRenderer;
+    private ?PageRenderer $pageRenderer = null;
+
+    public function __invoke(AfterFormEnginePageInitializedEvent $afterFormEnginePageInitializedEvent): void
+    {
+        $this->addJsLanguageLabels();
+    }
 
     public function addJsLanguageLabels(): void
     {
@@ -37,12 +36,7 @@ final class EditDocumentControllerHooks
         $this->pageRenderer->addInlineLanguageLabelArray($languageLabels);
     }
 
-    /**
-     * @noinspection PhpFullyQualifiedNameUsageInspection PhpUndefinedClassInspection PhpUndefinedNamespaceInspection
-     *
-     * @param \TYPO3\CMS\Core\Localization\LanguageService|\TYPO3\CMS\Lang\LanguageService $languageService
-     */
-    public function setLanguageService($languageService): void
+    public function setLanguageService(LanguageService $languageService): void
     {
         $this->languageService = $languageService;
     }

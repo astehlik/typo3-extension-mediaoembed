@@ -26,7 +26,7 @@ class Configuration
 
     private AspectRatioCalculatorInterface $aspectRatioCalculator;
 
-    private Content $content;
+    private Content $contentElement;
 
     private Settings $settings;
 
@@ -35,7 +35,7 @@ class Configuration
         Settings $settings,
         AspectRatioCalculatorInterface $aspectRatioCalculator
     ) {
-        $this->content = $content;
+        $this->contentElement = $content;
         $this->settings = $settings;
 
         $this->aspectRatioCalculator = $aspectRatioCalculator;
@@ -142,6 +142,6 @@ class Configuration
      */
     private function getContent(): Content
     {
-        return $this->content;
+        return $this->contentElement;
     }
 }
