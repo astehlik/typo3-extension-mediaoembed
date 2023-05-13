@@ -7,11 +7,11 @@ namespace Sto\Mediaoembed\Tests\Functional\Request\RequestHandler;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Request\RequestHandler\Panopto\PanoptoRequestHandler;
-use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTest;
+use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTestCase;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-final class PanoptoRequestHandlerTest extends AbstractFunctionalTest
+final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
 {
     public function handleBuildsExpectedIframeDataProvider(): array
     {

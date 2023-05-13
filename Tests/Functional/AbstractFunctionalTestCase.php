@@ -9,7 +9,7 @@ use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-abstract class AbstractFunctionalTest extends FunctionalTestCase
+abstract class AbstractFunctionalTestCase extends FunctionalTestCase
 {
     protected $testExtensionsToLoad = ['typo3conf/ext/mediaoembed'];
 

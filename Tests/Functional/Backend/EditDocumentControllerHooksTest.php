@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Sto\Mediaoembed\Tests\Functional\Backend;
 
 use Sto\Mediaoembed\Backend\EditDocumentControllerHooks;
-use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTest;
+use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTestCase;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-final class EditDocumentControllerHooksTest extends AbstractFunctionalTest
+final class EditDocumentControllerHooksTest extends AbstractFunctionalTestCase
 {
     public function testAddJsLanguageLabels(): void
     {

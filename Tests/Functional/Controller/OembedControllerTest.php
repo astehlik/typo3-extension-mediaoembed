@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Functional\Controller;
 
-use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTest;
+use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTestCase;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
-class OembedControllerTest extends AbstractFunctionalTest
+class OembedControllerTest extends AbstractFunctionalTestCase
 {
     protected function setUp(): void
     {
@@ -82,8 +82,6 @@ class OembedControllerTest extends AbstractFunctionalTest
     {
         $request = (new InternalRequest('https://website.local/'))->withPageId($openPageUid);
         $response = $this->executeFrontendSubRequest($request);
-        var_dump($response->getBody()->isReadable());
-        die();
         return $response->getBody()->getContents();
     }
 }
