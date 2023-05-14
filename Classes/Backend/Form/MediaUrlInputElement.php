@@ -30,6 +30,7 @@ final class MediaUrlInputElement extends InputTextElement
     {
         $this->injectDependencies();
 
+        /** @extensionScannerIgnoreLine  */
         $wrapperId = $this->utilities->getUniqueId('tx-mediaoembed-url-input-wrapper-');
 
         $result['html'] = '<div id="' . $wrapperId . '">' . $result['html'] . '</div>';
