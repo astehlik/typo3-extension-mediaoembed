@@ -7,9 +7,9 @@ namespace Sto\Mediaoembed\Tests\Unit\Request;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Exception\NoMatchingProviderException;
 use Sto\Mediaoembed\Request\ProviderResolver;
-use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
+use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
-class ProviderResolverTest extends AbstractUnitTest
+class ProviderResolverTest extends AbstractUnitTestCase
 {
     /**
      * @var array|Provider[]

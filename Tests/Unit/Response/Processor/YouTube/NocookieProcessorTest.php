@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Response\Processor\YouTube;
 
-use Prophecy\PhpUnit\ProphecyTrait;
 use Sto\Mediaoembed\Response\Processor\YouTube\NocookieProcessor;
 use Sto\Mediaoembed\Response\VideoResponse;
 use Sto\Mediaoembed\Service\UrlService;
-use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
+use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
-class NocookieProcessorTest extends AbstractUnitTest
+class NocookieProcessorTest extends AbstractUnitTestCase
 {
-    use ProphecyTrait;
-
     public function testProcessResponse(): void
     {
         $videoHtml = '<iframe width="480" height="270" src="https://www.youtube.com/embed/P8bHMEh40JU?feature=oembed"'
@@ -21,11 +18,11 @@ class NocookieProcessorTest extends AbstractUnitTest
             . ' allowfullscreen=""></iframe>';
         $expectedHtml = str_replace('www.youtube.com', 'www.youtube-nocookie.com', $videoHtml);
 
-        $videoProphecy = $this->prophesize(VideoResponse::class);
-        $videoProphecy->getHtml()->shouldBeCalledOnce()->willReturn($videoHtml);
-        $videoProphecy->setHtml($expectedHtml)->shouldBeCalledOnce();
+        $videoMock = $this->createMock(VideoResponse::class);
+        $videoMock->expects(self::once())->method('getHtml')->willReturn($videoHtml);
+        $videoMock->expects(self::once())->method('setHtml')->with($expectedHtml);
 
         $processor = new NocookieProcessor(new UrlService());
-        $processor->processResponse($videoProphecy->reveal());
+        $processor->processResponse($videoMock);
     }
 }

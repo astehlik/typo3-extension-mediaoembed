@@ -11,6 +11,6 @@ class UtilityService implements SingletonInterface
 {
     public function getUniqueId(string $prefix): string
     {
-        return StringUtility::getUniqueId('tx-mediaoembed-url-input-wrapper-');
+        return StringUtility::getUniqueId($prefix);
     }
 }

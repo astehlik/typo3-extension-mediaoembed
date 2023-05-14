@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Response;
 
-use Prophecy\PhpUnit\ProphecyTrait;
+use PHPUnit\Framework\MockObject\MockObject;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Content\Settings;
 use Sto\Mediaoembed\Domain\Model\Content;
@@ -16,13 +16,11 @@ use Sto\Mediaoembed\Response\RichResponse;
 use Sto\Mediaoembed\Response\VideoResponse;
 use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
 use Sto\Mediaoembed\Service\PhotoDownloadService;
-use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
+use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 use TYPO3\CMS\Core\Resource\FileInterface;
 
-class ResponseBuilderTest extends AbstractUnitTest
+class ResponseBuilderTest extends AbstractUnitTestCase
 {
-    use ProphecyTrait;
-
     public function testBuildResponseGeneric(): void
     {
         $responseData = [
@@ -62,16 +60,14 @@ class ResponseBuilderTest extends AbstractUnitTest
 
         $configuration = $this->createConfiguration();
 
-        $photoDownloadServiceProphecy = $this->prophesize(PhotoDownloadService::class);
-        $photoDownloadServiceProphecy->downloadPhoto(
-            'https://my-awsome.tld/photo',
-            $configuration
-        )
-            ->shouldBeCalledOnce()
+        $photoDownloadServiceMock = $this->createMock(PhotoDownloadService::class);
+        $photoDownloadServiceMock->expects(self::once())
+            ->method('downloadPhoto')
+            ->with('https://my-awsome.tld/photo', $configuration)
             ->willReturn($fileMock);
 
         /** @var PhotoResponse $response */
-        $response = $this->buildResponse($responseClass, $responseData, $configuration, $photoDownloadServiceProphecy);
+        $response = $this->buildResponse($responseClass, $responseData, $configuration, $photoDownloadServiceMock);
         self::assertSame('https://my-awsome.tld/photo', $response->getUrl());
         self::assertSame($fileMock, $response->getLocalFile());
     }
@@ -110,13 +106,13 @@ class ResponseBuilderTest extends AbstractUnitTest
         string $responseClass,
         array $responseData,
         ?Configuration $configuration = null,
-        $photoDownloadServiceProphecy = null
+        PhotoDownloadService|MockObject $photoDownloadServiceMock = null
     ): GenericResponse {
-        if (!$photoDownloadServiceProphecy) {
-            $photoDownloadServiceProphecy = $this->prophesize(PhotoDownloadService::class);
+        if (!$photoDownloadServiceMock) {
+            $photoDownloadServiceMock = $this->createMock(PhotoDownloadService::class);
         }
 
-        $reponseBuilder = new ResponseBuilder($photoDownloadServiceProphecy->reveal());
+        $reponseBuilder = new ResponseBuilder($photoDownloadServiceMock);
 
         $response = $reponseBuilder->buildResponse(
             $responseData,

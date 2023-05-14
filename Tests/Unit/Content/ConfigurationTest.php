@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Content;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Content\Settings;
 use Sto\Mediaoembed\Domain\Model\Content;
@@ -13,23 +13,21 @@ use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
 
 class ConfigurationTest extends TestCase
 {
-    use ProphecyTrait;
+    private AspectRatioCalculatorInterface|MockObject $aspectRatioCalculatorMock;
 
-    private $aspectRatioCalculatorProphecy;
+    private Content|MockObject $contentMock;
 
-    private $contentProphecy;
-
-    private $settingsProphecy;
+    private Settings|MockObject $settingsMock;
 
     protected function setUp(): void
     {
-        $this->contentProphecy = $this->prophesize(Content::class);
-        $this->aspectRatioCalculatorProphecy = $this->prophesize(AspectRatioCalculatorInterface::class);
+        $this->contentMock = $this->createMock(Content::class);
+        $this->aspectRatioCalculatorMock = $this->createMock(AspectRatioCalculatorInterface::class);
 
-        $this->settingsProphecy = $this->prophesize(Settings::class);
+        $this->settingsMock = $this->createMock(Settings::class);
     }
 
-    public function getMaxWidthHeightDataProvider(): array
+    public static function getMaxWidthHeightDataProvider(): array
     {
         return [
             'settings and content object zero returns zero' => [
@@ -57,39 +55,46 @@ class ConfigurationTest extends TestCase
 
     public function testGetAspectRatioUsesFallbackFromConfig(): void
     {
-        $this->contentProphecy->getAspectRatio()->shouldBeCalledOnce()->willReturn('12:1');
-        $this->aspectRatioCalculatorProphecy->calculateAspectRatio('12:1')->shouldBeCalledOnce()->willReturn(0);
+        $this->aspectRatioCalculatorMock->expects(self::exactly(2))
+            ->method('calculateAspectRatio')
+            ->willReturnOnConsecutiveCalls(0.0, 1.5);
 
-        $this->settingsProphecy->getAspectRatioFallback()->shouldBeCalledOnce()->willReturn('12:2');
-        $this->aspectRatioCalculatorProphecy->calculateAspectRatio('12:2')->shouldBeCalledOnce()->willReturn(1.5);
+        $this->contentMock->expects(self::once())->method('getAspectRatio')->willReturn('12:1');
+        $this->settingsMock->expects(self::once())->method('getAspectRatioFallback')->willReturn('12:2');
 
         self::assertSame(1.5, $this->getConfiguration()->getAspectRatio(0.0));
     }
 
     public function testGetAspectRatioUsesFallbackFromConstant(): void
     {
-        $this->contentProphecy->getAspectRatio()->shouldBeCalledOnce()->willReturn('12:1');
-        $this->aspectRatioCalculatorProphecy->calculateAspectRatio('12:1')->shouldBeCalledOnce()->willReturn(0);
+        $this->aspectRatioCalculatorMock->expects(self::exactly(3))
+            ->method('calculateAspectRatio')
+            ->willReturnOnConsecutiveCalls(0.0, 0.0, 1.24);
 
-        $this->settingsProphecy->getAspectRatioFallback()->shouldBeCalledOnce()->willReturn('12:2');
-        $this->aspectRatioCalculatorProphecy->calculateAspectRatio('12:2')->shouldBeCalledOnce()->willReturn(0);
+        $this->contentMock->expects(self::once())->method('getAspectRatio')->willReturn('12:1');
 
-        $this->aspectRatioCalculatorProphecy->calculateAspectRatio('16:9')->shouldBeCalledOnce()->willReturn(1.24);
+        $this->settingsMock->expects(self::once())->method('getAspectRatioFallback')->willReturn('12:2');
 
         self::assertSame(1.24, $this->getConfiguration()->getAspectRatio(0.0));
     }
 
     public function testGetAspectRatioUsesOverride(): void
     {
-        $this->contentProphecy->getAspectRatio()->shouldBeCalledOnce()->willReturn('12:1');
-        $this->aspectRatioCalculatorProphecy->calculateAspectRatio('12:1')->shouldBeCalledOnce()->willReturn(2);
+        $this->contentMock->expects(self::once())->method('getAspectRatio')->willReturn('12:1');
+        $this->aspectRatioCalculatorMock->expects(self::once())
+            ->method('calculateAspectRatio')
+            ->with('12:1')
+            ->willReturn(2.0);
         self::assertSame(2.0, $this->getConfiguration()->getAspectRatio(0.0));
     }
 
     public function testGetAspectRatioUsesResponse(): void
     {
-        $this->contentProphecy->getAspectRatio()->shouldBeCalledOnce()->willReturn('12:1');
-        $this->aspectRatioCalculatorProphecy->calculateAspectRatio('12:1')->shouldBeCalledOnce()->willReturn(0);
+        $this->contentMock->expects(self::once())->method('getAspectRatio')->willReturn('12:1');
+        $this->aspectRatioCalculatorMock->expects(self::once())
+            ->method('calculateAspectRatio')
+            ->with('12:1')
+            ->willReturn(0.0);
         self::assertSame(0.5, $this->getConfiguration()->getAspectRatio(0.5));
     }
 
@@ -98,8 +103,8 @@ class ConfigurationTest extends TestCase
      */
     public function testGetMaxheight(int $contentValue, int $settingsValue, int $expectedValue): void
     {
-        $this->contentProphecy->getMaxHeight()->willReturn($contentValue);
-        $this->settingsProphecy->getMaxHeight()->willReturn($settingsValue);
+        $this->contentMock->method('getMaxHeight')->willReturn($contentValue);
+        $this->settingsMock->method('getMaxHeight')->willReturn($settingsValue);
 
         self::assertSame($expectedValue, $this->getConfiguration()->getMaxheight());
     }
@@ -109,15 +114,15 @@ class ConfigurationTest extends TestCase
      */
     public function testGetMaxwidth(int $contentValue, int $settingsValue, int $expectedValue): void
     {
-        $this->contentProphecy->getMaxWidth()->willReturn($contentValue);
-        $this->settingsProphecy->getMaxWidth()->willReturn($settingsValue);
+        $this->contentMock->method('getMaxWidth')->willReturn($contentValue);
+        $this->settingsMock->method('getMaxWidth')->willReturn($settingsValue);
 
         self::assertSame($expectedValue, $this->getConfiguration()->getMaxwidth());
     }
 
     public function testGetMediaUrlReturnsUrlFromContent(): void
     {
-        $this->contentProphecy->getUrl()->willReturn('http://my.test.url');
+        $this->contentMock->method('getUrl')->willReturn('http://my.test.url');
 
         self::assertSame('http://my.test.url', $this->getConfiguration()->getMediaUrl());
     }
@@ -125,9 +130,9 @@ class ConfigurationTest extends TestCase
     protected function getConfiguration(): Configuration
     {
         return new Configuration(
-            $this->contentProphecy->reveal(),
-            $this->settingsProphecy->reveal(),
-            $this->aspectRatioCalculatorProphecy->reveal()
+            $this->contentMock,
+            $this->settingsMock,
+            $this->aspectRatioCalculatorMock
         );
     }
 }
