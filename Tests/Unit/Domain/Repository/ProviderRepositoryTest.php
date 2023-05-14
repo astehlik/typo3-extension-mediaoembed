@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Sto\Mediaoembed\Tests\Unit\Domain\Repository;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Domain\Repository\ProviderRepository;
 use Sto\Mediaoembed\Exception\InvalidConfigurationException;
@@ -13,8 +12,6 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 class ProviderRepositoryTest extends TestCase
 {
-    use ProphecyTrait;
-
     public function testCreatesProviderWithEndpoint(): void
     {
         $provider = $this->callFindAll(
@@ -173,12 +170,13 @@ class ProviderRepositoryTest extends TestCase
 
     private function callFindAll(array $settings): Provider
     {
-        $configurationManagerProphecy = $this->prophesize(ConfigurationManagerInterface::class);
-        $configurationManagerProphecy->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
-            ->shouldBeCalledOnce()
+        $configurationManagerMock = $this->createMock(ConfigurationManagerInterface::class);
+        $configurationManagerMock->expects(self::once())
+            ->method('getConfiguration')
+            ->with(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
             ->willReturn(['providers' => $settings]);
 
-        $providerRepository = new ProviderRepository($configurationManagerProphecy->reveal());
+        $providerRepository = new ProviderRepository($configurationManagerMock);
         $providers = $providerRepository->findAll();
 
         return $providers[0];

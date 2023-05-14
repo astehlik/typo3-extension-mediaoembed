@@ -6,9 +6,9 @@ namespace Sto\Mediaoembed\Tests\Unit\Request\RequestHandler\Panopto;
 
 use Sto\Mediaoembed\Request\RequestHandler\Panopto\PanoptoUrlProcessor;
 use Sto\Mediaoembed\Service\UrlService;
-use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
+use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
-final class PanoptoUrlProcessorTest extends AbstractUnitTest
+final class PanoptoUrlProcessorTest extends AbstractUnitTestCase
 {
     /**
      * @var PanoptoUrlProcessor

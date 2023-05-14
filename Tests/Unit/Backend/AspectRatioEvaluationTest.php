@@ -7,19 +7,13 @@ namespace Sto\Mediaoembed\Tests\Unit\Backend;
 use PHPUnit\Framework\MockObject\MockObject;
 use Sto\Mediaoembed\Backend\AspectRatioEvaluation;
 use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
-use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
+use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
-final class AspectRatioEvaluationTest extends AbstractUnitTest
+final class AspectRatioEvaluationTest extends AbstractUnitTestCase
 {
-    /**
-     * @var AspectRatioCalculatorInterface|MockObject
-     */
-    private $aspectRatioCalculatorMock;
+    private AspectRatioCalculatorInterface|MockObject $aspectRatioCalculatorMock;
 
-    /**
-     * @var AspectRatioEvaluation
-     */
-    private $aspectRatioEvaluation;
+    private AspectRatioEvaluation $aspectRatioEvaluation;
 
     protected function setUp(): void
     {
@@ -29,7 +23,7 @@ final class AspectRatioEvaluationTest extends AbstractUnitTest
         $this->aspectRatioEvaluation->injectAspectRatioCalculator($this->aspectRatioCalculatorMock);
     }
 
-    public function deevaluateFieldValueReturnsExpectedValueDataProvider(): array
+    public static function deevaluateFieldValueReturnsExpectedValueDataProvider(): array
     {
         return [
             [
@@ -43,7 +37,7 @@ final class AspectRatioEvaluationTest extends AbstractUnitTest
         ];
     }
 
-    public function evaluateFieldValueReturnsEmptyStringForInvalidValuesDataProvider(): array
+    public static function evaluateFieldValueReturnsEmptyStringForInvalidValuesDataProvider(): array
     {
         return [
             [null],
@@ -63,10 +57,8 @@ final class AspectRatioEvaluationTest extends AbstractUnitTest
 
     /**
      * @dataProvider evaluateFieldValueReturnsEmptyStringForInvalidValuesDataProvider
-     *
-     * @param mixed $value
      */
-    public function testEvaluateFieldValueReturnsEmptyStringForInvalidValues($value): void
+    public function testEvaluateFieldValueReturnsEmptyStringForInvalidValues(mixed $value): void
     {
         if ($value === 'invalid') {
             $this->aspectRatioCalculatorMock->method('isValidAspectRatio')

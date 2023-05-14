@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Sto\Mediaoembed\Tests\Unit\Service;
 
 use Sto\Mediaoembed\Service\UrlService;
-use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
+use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
-final class UrlServiceTest extends AbstractUnitTest
+final class UrlServiceTest extends AbstractUnitTestCase
 {
     /**
      * @var UrlService
@@ -19,7 +19,7 @@ final class UrlServiceTest extends AbstractUnitTest
         $this->urlService = new UrlService();
     }
 
-    public function buildUrlReturnsExpectedStringDataProvider(): array
+    public static function buildUrlReturnsExpectedStringDataProvider(): array
     {
         return [
             [''],

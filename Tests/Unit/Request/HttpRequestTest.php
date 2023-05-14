@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Sto\Mediaoembed\Tests\Unit\Request;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Exception\HttpClientRequestException;
 use Sto\Mediaoembed\Exception\HttpNotFoundException;
@@ -18,8 +16,6 @@ use Sto\Mediaoembed\Request\HttpRequest;
 
 class HttpRequestTest extends TestCase
 {
-    use ProphecyTrait;
-
     public function testAddsMaxHeightToRequestUrl(): void
     {
         $this->assertUrlIs(
@@ -108,11 +104,13 @@ class HttpRequestTest extends TestCase
         string $expectedBaseUrl = 'https://the-provider.tld/endpoint'
     ): string {
         $expectedUrl = $expectedBaseUrl . '?' . $expectedQueryString;
-        $httpClientPromise = $this->prophesize(HttpClientInterface::class);
-        $httpClientPromise->executeGetRequest(Argument::any())->willReturn('the repsonse');
-        $httpClientPromise->executeGetRequest($expectedUrl)->shouldBeCalledOnce()->willReturn('the repsonse');
 
-        $httpRequest = $this->createHttpRequest($maxHeight, $maxWidth, $endpointUrl, $httpClientPromise->reveal());
+        $httpClientMock = $this->createMock(HttpClientInterface::class);
+        $httpClientMock->expects(self::once())->method('executeGetRequest')
+            ->with($expectedUrl)
+            ->willReturn('the repsonse');
+
+        $httpRequest = $this->createHttpRequest($maxHeight, $maxWidth, $endpointUrl, $httpClientMock);
 
         return $httpRequest->sendAndGetResponseData();
     }
@@ -123,23 +121,23 @@ class HttpRequestTest extends TestCase
         string $endpointUrl = 'https://the-provider.tld/endpoint',
         ?HttpClientInterface $httpClient = null
     ): HttpRequest {
-        $configurationProphecy = $this->prophesize(Configuration::class);
-        $configurationProphecy->getMaxheight()->shouldBeCalledOnce()->willReturn($maxHeight);
-        $configurationProphecy->getMaxwidth()->shouldBeCalledOnce()->willReturn($maxWidth);
-        $configurationProphecy->getMediaUrl()->shouldBeCalled()->willReturn('http://my-media.tld/theurl');
+        $configurationMock = $this->createMock(Configuration::class);
+        $configurationMock->expects(self::once())->method('getMaxheight')->willReturn($maxHeight);
+        $configurationMock->expects(self::once())->method('getMaxwidth')->willReturn($maxWidth);
+        $configurationMock->method('getMediaUrl')->willReturn('http://my-media.tld/theurl');
 
         $httpClientFactoryMock = $this->createMock(HttpClientFactory::class);
         $httpClientFactoryMock->expects(self::once())
             ->method('getHttpClient')
             ->willReturn($httpClient ?? $this->createMock(HttpClientInterface::class));
 
-        return new HttpRequest($configurationProphecy->reveal(), $endpointUrl, $httpClientFactoryMock);
+        return new HttpRequest($configurationMock, $endpointUrl, $httpClientFactoryMock);
     }
 
     private function sendWithException(int $errorCode): void
     {
-        $httpClientPromise = $this->prophesize(HttpClientInterface::class);
-        $httpClientPromise->executeGetRequest(Argument::any())->willThrow(
+        $httpClientMock = $this->createMock(HttpClientInterface::class);
+        $httpClientMock->method('executeGetRequest')->willThrowException(
             new HttpClientRequestException('an error', $errorCode)
         );
 
@@ -147,7 +145,7 @@ class HttpRequestTest extends TestCase
             0,
             0,
             'https://the-provider.tld/endpoint',
-            $httpClientPromise->reveal()
+            $httpClientMock
         );
 
         $httpRequest->sendAndGetResponseData();

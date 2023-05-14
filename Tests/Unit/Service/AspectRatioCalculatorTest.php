@@ -5,21 +5,18 @@ declare(strict_types=1);
 namespace Sto\Mediaoembed\Tests\Unit\Service;
 
 use Sto\Mediaoembed\Service\AspectRatioCalculator;
-use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
+use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
-final class AspectRatioCalculatorTest extends AbstractUnitTest
+final class AspectRatioCalculatorTest extends AbstractUnitTestCase
 {
-    /**
-     * @var AspectRatioCalculator
-     */
-    private $aspectRatioCalculator;
+    private AspectRatioCalculator $aspectRatioCalculator;
 
     protected function setUp(): void
     {
         $this->aspectRatioCalculator = new AspectRatioCalculator();
     }
 
-    public function calculateAspectRatioReturnsExpectedValuesDataProvider(): array
+    public static function calculateAspectRatioReturnsExpectedValuesDataProvider(): array
     {
         return [
             'invalid value' => [
@@ -37,7 +34,7 @@ final class AspectRatioCalculatorTest extends AbstractUnitTest
         ];
     }
 
-    public function isValidAspectRatioReturnsFalseForInvalidValuesDataProvider(): array
+    public static function isValidAspectRatioReturnsFalseForInvalidValuesDataProvider(): array
     {
         return [
             'regex not matching' => ['asdf'],

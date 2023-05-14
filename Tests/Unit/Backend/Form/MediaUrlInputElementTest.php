@@ -6,10 +6,10 @@ namespace Sto\Mediaoembed\Tests\Unit\Backend\Form;
 
 use Sto\Mediaoembed\Backend\Form\MediaUrlInputElement;
 use Sto\Mediaoembed\Service\UtilityService;
-use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
+use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 
-final class MediaUrlInputElementTest extends AbstractUnitTest
+final class MediaUrlInputElementTest extends AbstractUnitTestCase
 {
     public function testAddUrlParserJsToResultRequiresJsModules(): void
     {
