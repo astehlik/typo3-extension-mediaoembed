@@ -9,10 +9,7 @@ $EM_CONF[$_EXTKEY] = [
     'description' => 'External media (YouTube, Flickr, ...) content elements using the http://oembed.com/ standard.',
     'category' => 'fe',
     'constraints' => [
-        'depends' => [
-            'php' => '7.4.0-8.2.99',
-            'typo3' => '11.5.0-11.5.99',
-        ],
+        'depends' => ['typo3' => '12.4.0-12.4.99'],
         'conflicts' => [],
         'suggests' => [],
     ],
@@ -24,5 +21,5 @@ $EM_CONF[$_EXTKEY] = [
     'author' => 'Alexander Stehlik',
     'author_email' => 'alexander.stehlik.deleteme@gmail.com',
     'author_company' => '',
-    'version' => '11.0.1',
+    'version' => '12.0.0',
 ];

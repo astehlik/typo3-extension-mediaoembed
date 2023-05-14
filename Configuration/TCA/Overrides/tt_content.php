@@ -34,10 +34,9 @@ $ttContentColumns = [
         'label' => $lllPrefix . 'tt_content.tx_mediaoembed_maxwidth',
         'exclude' => true,
         'config' => [
-            'type' => 'input',
+            'type' => 'number',
+            'format' => 'integer',
             'size' => '4',
-            'max' => '4',
-            'eval' => 'int',
             'range' => ['lower' => '0'],
             'default' => 0,
             'behaviour' => ['allowLanguageSynchronization' => true],
@@ -47,10 +46,9 @@ $ttContentColumns = [
         'label' => $lllPrefix . 'tt_content.tx_mediaoembed_maxheight',
         'exclude' => true,
         'config' => [
-            'type' => 'input',
+            'type' => 'number',
+            'format' => 'integer',
             'size' => '4',
-            'max' => '4',
-            'eval' => 'int',
             'range' => ['lower' => '0'],
             'default' => 0,
             'behaviour' => ['allowLanguageSynchronization' => true],
@@ -72,9 +70,9 @@ ExtensionManagementUtility::addTcaSelectItem(
     'tt_content',
     'CType',
     [
-        $lllPrefix . 'tt_content.CType.I.tx_mediaoembed',
-        'mediaoembed_oembedmediarenderer',
-        'extensions-mediaoembed-content-externalmedia',
+        'label' => $lllPrefix . 'tt_content.CType.I.tx_mediaoembed',
+        'value' => 'mediaoembed_oembedmediarenderer',
+        'icon' => 'extensions-mediaoembed-content-externalmedia',
     ],
     'media',
     'after'

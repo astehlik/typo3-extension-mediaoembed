@@ -37,6 +37,7 @@ use Sto\Mediaoembed\Response\ResponseBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Controller for rendering oEmbed media.
@@ -70,7 +71,7 @@ class OembedController extends ActionController
     {
         try {
             $configuration = $this->configurationFactory->createConfiguration(
-                $this->configurationManager->getContentObject()->data,
+                $this->getCurrentContentObject()->data,
                 $this->settings
             );
             $this->getEmbedDataFromProvider($configuration);
@@ -115,6 +116,11 @@ class OembedController extends ActionController
         if (!$isValid) {
             throw new InvalidUrlException($url);
         }
+    }
+
+    private function getCurrentContentObject(): ContentObjectRenderer
+    {
+        return $this->request->getAttribute('currentContentObject');
     }
 
     private function getNextMatchingProvider(ProviderResolver $providerResolver, string $url): ?Provider

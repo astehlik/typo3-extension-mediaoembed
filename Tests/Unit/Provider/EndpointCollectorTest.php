@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Provider;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Sto\Mediaoembed\Provider\Endpoint;
 use Sto\Mediaoembed\Provider\EndpointCollector;
 use Sto\Mediaoembed\Provider\ProviderEndpoints;
@@ -13,34 +13,29 @@ use Sto\Mediaoembed\Provider\ProviderUrls;
 
 class EndpointCollectorTest extends TestCase
 {
-    use ProphecyTrait;
+    private EndpointCollector $collector;
 
-    /**
-     * @var EndpointCollector
-     */
-    private $collector;
+    private ProviderEndpoints|MockObject $providerEndpointsMock;
 
-    private $providerEndpointsProphecy;
-
-    private $providerUrlsProphecy;
+    private ProviderUrls|MockObject $providerUrlsMock;
 
     protected function setUp(): void
     {
-        $this->providerEndpointsProphecy = $this->prophesize(ProviderEndpoints::class);
-        $this->providerUrlsProphecy = $this->prophesize(ProviderUrls::class);
+        $this->providerEndpointsMock = $this->createMock(ProviderEndpoints::class);
+        $this->providerUrlsMock = $this->createMock(ProviderUrls::class);
 
         $this->collector = new EndpointCollector(
-            $this->providerEndpointsProphecy->reveal(),
-            $this->providerUrlsProphecy->reveal()
+            $this->providerEndpointsMock,
+            $this->providerUrlsMock
         );
     }
 
     public function testCollectEndpointCollectsEndpointUrls(): void
     {
-        $this->providerEndpointsProphecy->getEndpoints()->willReturn(
+        $this->providerEndpointsMock->method('getEndpoints')->willReturn(
             ['https://some.existing.endpoint/' => 'name']
         );
-        $this->providerUrlsProphecy->getUrls()->willReturn(
+        $this->providerUrlsMock->method('getUrls')->willReturn(
             [
                 '#https?://testscheme2/.*#i' => [
                     'https://some.existing.endpoint/',
@@ -68,13 +63,13 @@ class EndpointCollectorTest extends TestCase
 
     public function testCollectEndpointOrdersByName(): void
     {
-        $this->providerEndpointsProphecy->getEndpoints()->willReturn(
+        $this->providerEndpointsMock->method('getEndpoints')->willReturn(
             [
                 'https://some.existing.endpoint1/' => 'name2',
                 'https://some.existing.endpoint2/' => 'name1',
             ]
         );
-        $this->providerUrlsProphecy->getUrls()->willReturn(
+        $this->providerUrlsMock->method('getUrls')->willReturn(
             [
                 '#https?://testscheme2/.*#i' => [
                     'https://some.existing.endpoint1/',
@@ -100,13 +95,13 @@ class EndpointCollectorTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Duplicate endpoint label name1');
 
-        $this->providerEndpointsProphecy->getEndpoints()->willReturn(
+        $this->providerEndpointsMock->method('getEndpoints')->willReturn(
             [
                 'http://testurl.d' => 'name1',
                 'http://testurl.de' => 'name1',
             ]
         );
-        $this->providerUrlsProphecy->getUrls()->willReturn([]);
+        $this->providerUrlsMock->method('getUrls')->willReturn([]);
 
         $this->collector->collectEndpoints();
     }
@@ -116,10 +111,10 @@ class EndpointCollectorTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('No label configured for endpoint URL https://some.existing.endpoint/');
 
-        $this->providerEndpointsProphecy->getEndpoints()->willReturn(
+        $this->providerEndpointsMock->method('getEndpoints')->willReturn(
             ['#https?://testscheme1/.*#i' => 'name1']
         );
-        $this->providerUrlsProphecy->getUrls()->willReturn(
+        $this->providerUrlsMock->method('getUrls')->willReturn(
             [
                 '#https?://testscheme1/.*#i' => [
                     'https://some.existing.endpoint/',

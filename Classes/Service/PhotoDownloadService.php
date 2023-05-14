@@ -43,6 +43,7 @@ class PhotoDownloadService
         }
 
         try {
+            /** @extensionScannerIgnoreLine  */
             $response = $this->httpService->getUrl($downloadUrl);
         } catch (RequestException $e) {
             throw new PhotoDownloadException($downloadUrl, $e);

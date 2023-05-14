@@ -7,7 +7,4 @@
 	<rule ref="Squiz.NamingConventions.ValidVariableName">
 		<exclude-pattern>ext_emconf.php</exclude-pattern>
 	</rule>
-    <rule ref="Squiz.Commenting.InlineComment">
-        <exclude-pattern>Classes/Backend/AspectRatioEvaluation.js</exclude-pattern>
-    </rule>
 </ruleset>

@@ -12,9 +12,9 @@ use Sto\Mediaoembed\Request\HttpClient\HttpClientFactory;
 use Sto\Mediaoembed\Request\HttpClient\HttpClientInterface;
 use Sto\Mediaoembed\Request\HttpRequest;
 use Sto\Mediaoembed\Request\RequestHandler\HttpRequestHandler;
-use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
+use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
-final class HttpRequestHandlerTest extends AbstractUnitTest
+final class HttpRequestHandlerTest extends AbstractUnitTestCase
 {
     /**
      * @var HttpClientFactory|MockObject

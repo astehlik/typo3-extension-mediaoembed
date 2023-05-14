@@ -16,17 +16,14 @@ namespace Sto\Mediaoembed\Tests\Unit\Response;
 
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Response\VideoResponse;
-use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
+use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
 /**
  * Tests for the VideoResponse.
  */
-class VideoResponseTest extends AbstractUnitTest
+class VideoResponseTest extends AbstractUnitTestCase
 {
-    /**
-     * @var VideoResponse
-     */
-    protected $videoResponse;
+    protected VideoResponse $videoResponse;
 
     /**
      * Initialies the test subject.
@@ -36,10 +33,7 @@ class VideoResponseTest extends AbstractUnitTest
         $this->videoResponse = new VideoResponse();
     }
 
-    /**
-     * @return array
-     */
-    public function aspectRatioIsDetectedCorrectlyDataProvider()
+    public static function aspectRatioIsDetectedCorrectlyDataProvider(): array
     {
         return [
             '16 to 9 ratio' => [
@@ -72,12 +66,8 @@ class VideoResponseTest extends AbstractUnitTest
 
     /**
      * @dataProvider aspectRatioIsDetectedCorrectlyDataProvider
-     *
-     * @param int $width
-     * @param int $height
-     * @param string $expectedRatioType
      */
-    public function testAspectRatioTypeIsDetectedCorrectly($width, $height, $expectedRatioType): void
+    public function testAspectRatioTypeIsDetectedCorrectly(int $width, int $height, string $expectedRatioType): void
     {
         $this->videoResponse->initializeResponseData(
             [
