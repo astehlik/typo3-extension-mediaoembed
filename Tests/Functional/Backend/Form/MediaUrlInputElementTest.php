@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Sto\Mediaoembed\Tests\Unit\Backend\Form;
+namespace Sto\Mediaoembed\Tests\Functional\Backend\Form;
 
 use Sto\Mediaoembed\Backend\Form\MediaUrlInputElement;
 use Sto\Mediaoembed\Service\UtilityService;
-use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
+use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTestCase;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 
-final class MediaUrlInputElementTest extends AbstractUnitTestCase
+final class MediaUrlInputElementTest extends AbstractFunctionalTestCase
 {
     public function testAddUrlParserJsToResultRequiresJsModules(): void
     {

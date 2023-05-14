@@ -13,13 +13,6 @@ final class MediaUrlInputElement extends InputTextElement
 {
     private ?UtilityService $utilities = null;
 
-    /**
-     * @noinspection PhpMissingParentConstructorInspection Intentionally not calling the deprecated parent constructor!
-     */
-    public function __construct()
-    {
-    }
-
     public function addUrlParserJsToResult(array $result): array
     {
         $this->injectDependencies();
