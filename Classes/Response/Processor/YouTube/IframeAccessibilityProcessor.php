@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Response\Processor\YouTube;
 
-use InvalidArgumentException;
 use Sto\Mediaoembed\Response\GenericResponse;
 use Sto\Mediaoembed\Response\HtmlAwareResponseInterface;
 use Sto\Mediaoembed\Response\Processor\HtmlResponseProcessorInterface;
@@ -15,35 +14,31 @@ class IframeAccessibilityProcessor implements HtmlResponseProcessorInterface
 {
     use IframeAwareProcessorTrait;
 
-    public function processHtmlResponse(HtmlAwareResponseInterface $response)
+    public function processHtmlResponse(HtmlAwareResponseInterface $response): void
     {
         if (strpos($response->getHtml(), '<iframe') !== 0) {
             return;
         }
 
         if (!$response instanceof GenericResponse) {
-            throw new InvalidArgumentException('This processor only works GenericResponse instances!');
+            throw new \InvalidArgumentException('This processor only works GenericResponse instances!');
         }
 
         $ariaLabel = $this->getAriaLabel($response);
-        $this->addIframeAttributeIfNonExisting($response, 'aria-label', $ariaLabel);
+        $this->addIframeAttributeIfNonExisting($response, 'aria-label', htmlspecialchars($ariaLabel));
     }
 
-    /**
-     * @param GenericResponse $response
-     * @return string|null
-     */
-    private function getAriaLabel(GenericResponse $response)
+    private function getAriaLabel(GenericResponse $response): string
     {
         if (!$response->getTitle()) {
-            return LocalizationUtility::translate(
+            return (string)LocalizationUtility::translate(
                 'iframe_aria_label_fallback',
                 'Mediaoembed',
                 [$response->getProviderName()]
             );
         }
 
-        return LocalizationUtility::translate(
+        return (string)LocalizationUtility::translate(
             'iframe_aria_label',
             'Mediaoembed',
             [

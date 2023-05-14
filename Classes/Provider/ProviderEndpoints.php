@@ -6,7 +6,7 @@ namespace Sto\Mediaoembed\Provider;
 
 class ProviderEndpoints
 {
-    private $endpoints = [
+    private array $endpoints = [
         'https://www.youtube.com/oembed' => 'youtube',
         'https://vimeo.com/api/oembed.{format}' => 'vimeo',
         'https://www.dailymotion.com/services/oembed' => 'dailymotion',

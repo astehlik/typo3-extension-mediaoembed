@@ -1,5 +1,5 @@
 // noinspection JSAnnotator
-return (function(value) {
+return (function (value) {
     if (!value) {
         return '';
     }

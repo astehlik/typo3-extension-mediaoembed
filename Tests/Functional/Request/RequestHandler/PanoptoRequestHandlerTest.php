@@ -4,30 +4,36 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Functional\Request\RequestHandler;
 
+use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Request\RequestHandler\Panopto\PanoptoRequestHandler;
-use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTest;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTestCase;
 
-final class PanoptoRequestHandlerTest extends AbstractFunctionalTest
+final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
 {
-    /**
-     * @test
-     * @dataProvider handleBuildsExpectedIframeDataProvider
-     * @param string $mediaUrl
-     * @param string $expectedUrl
-     */
-    public function handleBuildsExpectedIframe(string $mediaUrl, string $expectedUrl)
+    public function handleBuildsExpectedIframeDataProvider(): array
     {
-        $objectManager = $this->getObjectManager();
+        return [
+            [
+                'https://the-iframe-url.tld',
+                'https://the-iframe-url.tld',
+            ],
+            [
+                'https://demo.hosted.panopto.com/Panopto/Pages/Viewer.aspx'
+                . '?id=af1d34c39-d435-45456-b5451-a45b045377&offerviewer=false',
+                'https://demo.hosted.panopto.com/Panopto/Pages/Embed.aspx'
+                . '?offerviewer=false&amp;autoplay=false&amp;id=af1d34c39-d435-45456-b5451-a45b045377',
+            ],
+        ];
+    }
 
-        $configurationManager = $objectManager->get(ConfigurationManagerInterface::class);
-        $configurationManager->setContentObject(new ContentObjectRenderer());
-        $configurationManager->getContentObject()->data = ['tx_mediaoembed_url' => $mediaUrl];
+    /**
+     * @dataProvider handleBuildsExpectedIframeDataProvider
+     */
+    public function testHandleBuildsExpectedIframe(string $mediaUrl, string $expectedUrl): void
+    {
+        $configurationMock = $this->createMock(Configuration::class);
+        $configurationMock->method('getMediaUrl')->willReturn($mediaUrl);
 
         $provider = new Provider(
             'panopto',
@@ -57,28 +63,7 @@ final class PanoptoRequestHandlerTest extends AbstractFunctionalTest
             'provider_name' => 'Panopto',
         ];
 
-        $requestHandler = $objectManager->get(PanoptoRequestHandler::class);
-        $this->assertEquals($expectedResponse, $requestHandler->handle($provider));
-    }
-
-    public function handleBuildsExpectedIframeDataProvider(): array
-    {
-        return [
-            [
-                'https://the-iframe-url.tld',
-                'https://the-iframe-url.tld',
-            ],
-            [
-                'https://demo.hosted.panopto.com/Panopto/Pages/Viewer.aspx'
-                . '?id=af1d34c39-d435-45456-b5451-a45b045377&offerviewer=false',
-                'https://demo.hosted.panopto.com/Panopto/Pages/Embed.aspx'
-                . '?offerviewer=false&amp;autoplay=false&amp;id=af1d34c39-d435-45456-b5451-a45b045377',
-            ],
-        ];
-    }
-
-    private function getObjectManager(): ObjectManagerInterface
-    {
-        return GeneralUtility::makeInstance(ObjectManager::class);
+        $requestHandler = $this->getContainer()->get(PanoptoRequestHandler::class);
+        self::assertSame($expectedResponse, $requestHandler->handle($provider, $configurationMock));
     }
 }

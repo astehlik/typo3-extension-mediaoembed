@@ -24,17 +24,15 @@ use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
  */
 class VideoResponse extends GenericResponse implements AspectRatioAwareResponseInterface, HtmlAwareResponseInterface
 {
-    const ASPECT_RATIO_16TO9 = '16to9';
+    public const ASPECT_RATIO_16TO9 = '16to9';
 
-    const ASPECT_RATIO_4TO3 = '4to3';
+    public const ASPECT_RATIO_4TO3 = '4to3';
 
     /**
      * The height in pixels required to display the HTML.
      * This value is required.
-     *
-     * @var int
      */
-    protected $height = 0;
+    protected int $height = 0;
 
     /**
      * The HTML required to embed a video player.
@@ -42,34 +40,17 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
      * Consumers may wish to load the HTML in an off-domain iframe to avoid
      * XSS vulnerabilities.
      * This value is required.
-     *
-     * @var string
      */
-    protected $html;
+    protected string $html;
 
     /**
      * The width in pixels required to display the HTML.
      * This value is required.
-     *
-     * @var int
      */
-    protected $width = 0;
-
-    /**
-     * Initializes the response parameters that are specific for this
-     * resource type.
-     */
-    public function initializeTypeSpecificResponseData()
-    {
-        $this->html = $this->responseDataArray['html'];
-        $this->width = (int)$this->responseDataArray['width'];
-        $this->height = (int)$this->responseDataArray['height'];
-    }
+    protected int $width = 0;
 
     /**
      * Returns the current aspect ratio.
-     *
-     * @return float
      */
     public function getAspectRatio(): float
     {
@@ -82,8 +63,6 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
 
     /**
      * Returns TRUE if the current aspect ratio looks like 16 to 9.
-     *
-     * @return bool
      */
     public function getAspectRatioIs16To9(): bool
     {
@@ -92,8 +71,6 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
 
     /**
      * Returns TRUE if the current aspect ratio looks like 4 to 3.
-     *
-     * @return bool
      */
     public function getAspectRatioIs4To3(): bool
     {
@@ -102,8 +79,6 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
 
     /**
      * Returns one of the ASPECT_RATIO_* constants depending on the current aspect ratio.
-     *
-     * @return string
      */
     public function getAspectRatioType(): string
     {
@@ -123,8 +98,6 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
 
     /**
      * Getter for the height in pixels required to display the HTML.
-     *
-     * @return int
      */
     public function getHeight(): int
     {
@@ -133,8 +106,6 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
 
     /**
      * Getter for the HTML required to embed a video player.
-     *
-     * @return string
      */
     public function getHtml(): string
     {
@@ -143,15 +114,24 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
 
     /**
      * Getter for the width in pixels required to display the HTML.
-     *
-     * @return int
      */
     public function getWidth(): int
     {
         return $this->width;
     }
 
-    public function setHtml(string $html)
+    /**
+     * Initializes the response parameters that are specific for this
+     * resource type.
+     */
+    public function initializeTypeSpecificResponseData(): void
+    {
+        $this->html = $this->responseDataArray['html'];
+        $this->width = (int)($this->responseDataArray['width'] ?? 0);
+        $this->height = (int)($this->responseDataArray['height'] ?? 0);
+    }
+
+    public function setHtml(string $html): void
     {
         $this->html = $html;
     }

@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sto\Mediaoembed\Tests\Unit\Domain\Repository;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Domain\Repository\ProviderRepository;
 use Sto\Mediaoembed\Exception\InvalidConfigurationException;
@@ -10,7 +13,9 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 class ProviderRepositoryTest extends TestCase
 {
-    public function testCreatesProviderWithEndpoint()
+    use ProphecyTrait;
+
+    public function testCreatesProviderWithEndpoint(): void
     {
         $provider = $this->callFindAll(
             [
@@ -21,10 +26,10 @@ class ProviderRepositoryTest extends TestCase
             ]
         );
 
-        $this->assertEquals('https://my-provider.tld/enpoint', $provider->getEndpoint());
+        self::assertSame('https://my-provider.tld/enpoint', $provider->getEndpoint());
     }
 
-    public function testCreatesProviderWithHiddenDirectLink()
+    public function testCreatesProviderWithHiddenDirectLink(): void
     {
         $provider = $this->callFindAll(
             [
@@ -36,10 +41,10 @@ class ProviderRepositoryTest extends TestCase
             ]
         );
 
-        $this->assertEquals(false, $provider->shouldDirectLinkBeDisplayed());
+        self::assertFalse($provider->shouldDirectLinkBeDisplayed());
     }
 
-    public function testCreatesProviderWithProcessors()
+    public function testCreatesProviderWithProcessors(): void
     {
         $provider = $this->callFindAll(
             [
@@ -51,10 +56,10 @@ class ProviderRepositoryTest extends TestCase
             ]
         );
 
-        $this->assertEquals(['my processor class'], $provider->getProcessors());
+        self::assertSame(['my processor class'], $provider->getProcessors());
     }
 
-    public function testCreatesProviderWithRequestHandler()
+    public function testCreatesProviderWithRequestHandler(): void
     {
         $provider = $this->callFindAll(
             [
@@ -67,11 +72,11 @@ class ProviderRepositoryTest extends TestCase
             ]
         );
 
-        $this->assertEquals('theclass', $provider->getRequestHandlerClass());
-        $this->assertEquals(['my' => 'setting'], $provider->getRequestHandlerSettings());
+        self::assertSame('theclass', $provider->getRequestHandlerClass());
+        self::assertSame(['my' => 'setting'], $provider->getRequestHandlerSettings());
     }
 
-    public function testCreatesProviderWithRequestHandlerClass()
+    public function testCreatesProviderWithRequestHandlerClass(): void
     {
         $provider = $this->callFindAll(
             [
@@ -83,10 +88,10 @@ class ProviderRepositoryTest extends TestCase
             ]
         );
 
-        $this->assertEquals('My\\Request\\Handler', $provider->getRequestHandlerClass());
+        self::assertSame('My\\Request\\Handler', $provider->getRequestHandlerClass());
     }
 
-    public function testCreatesProviderWithUrlRegex()
+    public function testCreatesProviderWithUrlRegex(): void
     {
         $provider = $this->callFindAll(
             [
@@ -97,11 +102,11 @@ class ProviderRepositoryTest extends TestCase
             ]
         );
 
-        $this->assertTrue($provider->hasRegexUrlSchemes());
-        $this->assertEquals(['https://my-url-regex.tld'], $provider->getUrlSchemes());
+        self::assertTrue($provider->hasRegexUrlSchemes());
+        self::assertSame(['https://my-url-regex.tld'], $provider->getUrlSchemes());
     }
 
-    public function testCreatesProviderWithUrlScheme()
+    public function testCreatesProviderWithUrlScheme(): void
     {
         $provider = $this->callFindAll(
             [
@@ -112,11 +117,11 @@ class ProviderRepositoryTest extends TestCase
             ]
         );
 
-        $this->assertFalse($provider->hasRegexUrlSchemes());
-        $this->assertEquals(['https://my-url-scheme.tld'], $provider->getUrlSchemes());
+        self::assertFalse($provider->hasRegexUrlSchemes());
+        self::assertSame(['https://my-url-scheme.tld'], $provider->getUrlSchemes());
     }
 
-    public function testEndpointMustBeAValidUrl()
+    public function testEndpointMustBeAValidUrl(): void
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage('Endpoint of provider test is an invalid URL: an invalid URL');
@@ -124,7 +129,7 @@ class ProviderRepositoryTest extends TestCase
         $this->callFindAll(['test' => ['endpoint' => 'an invalid URL']]);
     }
 
-    public function testEndpointMustNotBeEmpty()
+    public function testEndpointMustNotBeEmpty(): void
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage('Endpoint of provider test is empty.');
@@ -132,7 +137,7 @@ class ProviderRepositoryTest extends TestCase
         $this->callFindAll(['test' => []]);
     }
 
-    public function testMustHaveUrlSchemesOrUrlRegexes()
+    public function testMustHaveUrlSchemesOrUrlRegexes(): void
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage('The provider test has no URL schemes.');
@@ -140,7 +145,7 @@ class ProviderRepositoryTest extends TestCase
         $this->callFindAll(['test' => ['endpoint' => 'https://my-provider.tld/enpoint']]);
     }
 
-    public function testMustNotHaveUrlSchemesAndRegexesAtTheSameTime()
+    public function testMustNotHaveUrlSchemesAndRegexesAtTheSameTime(): void
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage(
@@ -158,7 +163,7 @@ class ProviderRepositoryTest extends TestCase
         );
     }
 
-    public function testProviderNameMustNotBeEmpty()
+    public function testProviderNameMustNotBeEmpty(): void
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage('Provider name must not be empty.');

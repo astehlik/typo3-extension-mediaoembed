@@ -15,7 +15,6 @@ namespace Sto\Mediaoembed\Response;
  *                                                                        */
 
 /**
- *
  * Responses of this type allow a provider to return any generic embed data
  * (such as title and author_name), without providing either the url or html
  * parameters.

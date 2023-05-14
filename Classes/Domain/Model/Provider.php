@@ -82,7 +82,7 @@ class Provider
     }
 
     /**
-     * @return string[]|array
+     * @return array|string[]
      */
     public function getProcessors(): array
     {
@@ -109,7 +109,7 @@ class Provider
         return $this->hasRegexUrlSchemes;
     }
 
-    public function hideDirectLink()
+    public function hideDirectLink(): void
     {
         $this->displayDirectLink = false;
     }
@@ -119,12 +119,12 @@ class Provider
         return $this->displayDirectLink;
     }
 
-    public function withProcessor(string $processorClass)
+    public function withProcessor(string $processorClass): void
     {
         $this->processors[] = $processorClass;
     }
 
-    public function withRequestHandler(string $requestHandlerClass, array $requestHandlerSettings)
+    public function withRequestHandler(string $requestHandlerClass, array $requestHandlerSettings): void
     {
         $this->requestHandlerClass = $requestHandlerClass;
         $this->requestHandlerSettings = $requestHandlerSettings;

@@ -8,7 +8,6 @@ use Sto\Mediaoembed\Service\UtilityService;
 use TYPO3\CMS\Backend\Form\Element\InputTextElement;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\StringUtility;
 
 final class MediaUrlInputElement extends InputTextElement
 {
@@ -27,11 +26,6 @@ final class MediaUrlInputElement extends InputTextElement
         parent::__construct($nodeFactory, $data);
     }
 
-    public function injectUtilityService(UtilityService $utilityService)
-    {
-        $this->utilities = $utilityService;
-    }
-
     public function addUrlParserJsToResult(array $result): array
     {
         $this->injectDependencies();
@@ -47,13 +41,18 @@ final class MediaUrlInputElement extends InputTextElement
         return $result;
     }
 
+    public function injectUtilityService(UtilityService $utilityService): void
+    {
+        $this->utilities = $utilityService;
+    }
+
     public function render(): array
     {
         $result = parent::render();
         return $this->addUrlParserJsToResult($result);
     }
 
-    private function injectDependencies()
+    private function injectDependencies(): void
     {
         if ($this->utilities) {
             return;

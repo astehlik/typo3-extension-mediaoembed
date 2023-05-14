@@ -11,26 +11,26 @@ use TYPO3\CMS\Backend\Form\NodeFactory;
 
 final class MediaUrlInputElementTest extends AbstractUnitTest
 {
-    public function testAddUrlParserJsToResultRequiresJsModules()
+    public function testAddUrlParserJsToResultRequiresJsModules(): void
     {
         $field = $this->createInputField();
 
         $result = ['html' => ''];
         $result = $field->addUrlParserJsToResult($result);
 
-        $this->assertCount(1, $result['requireJsModules']);
+        self::assertCount(1, $result['requireJsModules']);
         $expectedJs = 'function(UrlParser) { new UrlParser(\'some-random-string\'); }';
-        $this->assertEquals(['TYPO3/CMS/Mediaoembed/Backend/UrlParser' => $expectedJs], $result['requireJsModules'][0]);
+        self::assertSame(['TYPO3/CMS/Mediaoembed/Backend/UrlParser' => $expectedJs], $result['requireJsModules'][0]);
     }
 
-    public function testAddUrlParserJsToResultWrapsContainerWithId()
+    public function testAddUrlParserJsToResultWrapsContainerWithId(): void
     {
         $field = $this->createInputField();
 
         $result = ['html' => '<div id="inner">test</div>'];
         $result = $field->addUrlParserJsToResult($result);
 
-        $this->assertEquals('<div id="some-random-string"><div id="inner">test</div></div>', $result['html']);
+        self::assertSame('<div id="some-random-string"><div id="inner">test</div></div>', $result['html']);
     }
 
     private function createInputField(): MediaUrlInputElement
@@ -38,7 +38,7 @@ final class MediaUrlInputElementTest extends AbstractUnitTest
         $nodeFactoryMock = $this->createMock(NodeFactory::class);
 
         $utilityService = $this->createMock(UtilityService::class);
-        $utilityService->expects($this->once())
+        $utilityService->expects(self::once())
             ->method('getUniqueId')
             ->with('tx-mediaoembed-url-input-wrapper-')
             ->willReturn('some-random-string');

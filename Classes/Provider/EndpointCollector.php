@@ -1,20 +1,14 @@
 <?php
 
-namespace Sto\Mediaoembed\Provider;
+declare(strict_types=1);
 
-use RuntimeException;
+namespace Sto\Mediaoembed\Provider;
 
 class EndpointCollector
 {
-    /**
-     * @var ProviderEndpoints
-     */
-    private $providerEndpoints;
+    private ProviderEndpoints $providerEndpoints;
 
-    /**
-     * @var ProviderUrls
-     */
-    private $providerUrls;
+    private ProviderUrls $providerUrls;
 
     public function __construct(
         ProviderEndpoints $providerEndpoints,
@@ -48,25 +42,25 @@ class EndpointCollector
         return $endpointsByName;
     }
 
-    private function checkForDuplicateEndpointLabels()
+    private function checkForDuplicateEndpointLabels(): void
     {
         $checkedLabels = [];
         foreach ($this->getEndpointLabels() as $label) {
             if (array_key_exists($label, $checkedLabels)) {
-                throw new RuntimeException('Duplicate endpoint label ' . $label);
+                throw new \RuntimeException('Duplicate endpoint label ' . $label);
             }
             $checkedLabels[$label] = true;
         }
     }
 
-    private function checkForMissingEndpointLabels()
+    private function checkForMissingEndpointLabels(): void
     {
         $endpointLabels = $this->getEndpointLabels();
 
-        foreach ($this->getProviderData() as $urlScheme => $providerData) {
+        foreach ($this->getProviderData() as $providerData) {
             $endpointUrl = $providerData[0];
             if (!array_key_exists($endpointUrl, $endpointLabels)) {
-                throw new RuntimeException('No label configured for endpoint URL ' . $endpointUrl);
+                throw new \RuntimeException('No label configured for endpoint URL ' . $endpointUrl);
             }
         }
     }
@@ -93,8 +87,6 @@ class EndpointCollector
 
     /**
      * This data is based on the data from the WordPress class WP_oEmbed.
-     *
-     * @return array
      */
     private function getProviderData(): array
     {

@@ -8,49 +8,41 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Exception\InvalidResponseException;
+use Sto\Mediaoembed\Request\HttpClient\HttpClientFactory;
+use Sto\Mediaoembed\Request\HttpClient\HttpClientInterface;
 use Sto\Mediaoembed\Request\HttpRequest;
 use Sto\Mediaoembed\Request\RequestHandler\HttpRequestHandler;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTest;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 final class HttpRequestHandlerTest extends AbstractUnitTest
 {
     /**
-     * @var MockObject|Configuration
+     * @var HttpClientFactory|MockObject
      */
-    private $configurationMock;
+    private $httpClientFactoryMock;
 
-    /**
-     * @var MockObject|ObjectManagerInterface
-     */
-    private $objectManagerMock;
+    private HttpRequestHandler $requestHandler;
 
-    /**
-     * @var HttpRequestHandler
-     */
-    private $requestHandler;
-
-    public function setUp()
+    protected function setUp(): void
     {
-        $this->configurationMock = $this->createMock(Configuration::class);
-        $this->objectManagerMock = $this->createMock(ObjectManagerInterface::class);
+        $this->httpClientFactoryMock = $this->createMock(HttpClientFactory::class);
 
-        $this->requestHandler = new HttpRequestHandler($this->configurationMock, $this->objectManagerMock);
+        $this->requestHandler = new HttpRequestHandler($this->httpClientFactoryMock);
     }
 
-    public function testInvalidResponseDataThrowsException()
+    public function testInvalidResponseDataThrowsException(): void
     {
         $this->expectException(InvalidResponseException::class);
 
         $this->callHandler('invalid');
     }
 
-    public function testValidResponseReturnsDecodedJson()
+    public function testValidResponseReturnsDecodedJson(): void
     {
         $responseArray = ['my' => 'array'];
         $response = $this->callHandler(json_encode($responseArray));
 
-        $this->assertEquals($responseArray, $response);
+        self::assertSame($responseArray, $response);
     }
 
     private function callHandler(string $responseData): array
@@ -58,14 +50,15 @@ final class HttpRequestHandlerTest extends AbstractUnitTest
         $httpRequestMock = $this->createMock(HttpRequest::class);
         $httpRequestMock->method('sendAndGetResponseData')->willReturn($responseData);
 
-        /** @noinspection PhpParamsInspection */
-        $this->objectManagerMock->method('get')
-            ->with(HttpRequest::class, $this->configurationMock, 'https://the-endpoint.org')
-            ->willReturn($httpRequestMock);
+        $httpClientMock = $this->createMock(HttpClientInterface::class);
+        $httpClientMock->method('executeGetRequest')->willReturn($responseData);
+
+        $this->httpClientFactoryMock->method('getHttpClient')
+            ->willReturn($httpClientMock);
 
         $provider = $this->createMock(Provider::class);
         $provider->method('getEndpoint')->willReturn('https://the-endpoint.org');
 
-        return $this->requestHandler->handle($provider);
+        return $this->requestHandler->handle($provider, $this->createMock(Configuration::class));
     }
 }

@@ -14,7 +14,6 @@ namespace Sto\Mediaoembed\Request;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use RuntimeException;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Exception\HttpClientRequestException;
 use Sto\Mediaoembed\Exception\HttpNotFoundException;
@@ -26,24 +25,20 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Represents a HTTP request
+ * Represents a HTTP request.
  */
 class HttpRequest
 {
     /**
-     * The configuration
-     *
-     * @var Configuration
+     * The configuration.
      */
-    private $configuration;
+    private Configuration $configuration;
 
     /**
      * The endpoint URL that should be contacted to get the embed
      * information.
-     *
-     * @var string
      */
-    private $endpoint;
+    private string $endpoint;
 
     /**
      * The required response format. When not specified, the provider can return
@@ -53,30 +48,21 @@ class HttpRequest
      * This value is optional.
      *
      * Important! At the moment, we only handle JSON formatted Responses.
-     *
-     * @var string
      */
-    private $format = 'json';
+    private string $format = 'json';
 
-    /**
-     * @var HttpClientFactory
-     */
-    private $httpClientFactory;
+    private HttpClientFactory $httpClientFactory;
 
-    private $httpErrorHandlers = [
+    private array $httpErrorHandlers = [
         401,
         404,
         501,
     ];
 
-    public function __construct(Configuration $configuration, string $endpoint)
+    public function __construct(Configuration $configuration, string $endpoint, HttpClientFactory $httpClientFactory)
     {
         $this->configuration = $configuration;
         $this->endpoint = $endpoint;
-    }
-
-    public function injectHttpClientFactory(HttpClientFactory $httpClientFactory)
-    {
         $this->httpClientFactory = $httpClientFactory;
     }
 
@@ -93,14 +79,14 @@ class HttpRequest
         return $this->sendRequest($requestUrl);
     }
 
-    protected function addRequestParameterFormat(array &$parameters)
+    protected function addRequestParameterFormat(array &$parameters): void
     {
         if (isset($this->format)) {
             $parameters['format'] = $this->format;
         }
     }
 
-    protected function addRequestParameterMaxHeight(array &$parameters)
+    protected function addRequestParameterMaxHeight(array &$parameters): void
     {
         $maxheight = $this->configuration->getMaxheight();
         if ($maxheight > 0) {
@@ -108,7 +94,7 @@ class HttpRequest
         }
     }
 
-    protected function addRequestParameterMaxWidth(array &$parameters)
+    protected function addRequestParameterMaxWidth(array &$parameters): void
     {
         $maxwidth = $this->configuration->getMaxwidth();
         if ($maxwidth > 0) {
@@ -132,8 +118,6 @@ class HttpRequest
     /**
      * Builds an array of parameters that should be attached to the
      * endpoint url.
-     *
-     * @return array
      */
     protected function buildRequestParameterArray(): array
     {
@@ -155,9 +139,6 @@ class HttpRequest
      *
      * If the endpoint URL contains a marker ###FORMAT### or {format}
      * it will be replaced with the expected response data format.
-     *
-     * @param array $parameters
-     * @return string
      */
     protected function buildRequestUrl(array $parameters): string
     {
@@ -183,17 +164,17 @@ class HttpRequest
         return $endpointBaseUrl . '?' . $queryString;
     }
 
-    protected function handleError401(string $requestUrl)
+    protected function handleError401(string $requestUrl): void
     {
         throw new HttpUnauthorizedException($this->configuration->getMediaUrl(), $requestUrl);
     }
 
-    protected function handleError404(string $requestUrl)
+    protected function handleError404(string $requestUrl): void
     {
         throw new HttpNotFoundException($this->configuration->getMediaUrl(), $requestUrl);
     }
 
-    protected function handleError501(string $requestUrl)
+    protected function handleError501(string $requestUrl): void
     {
         throw new HttpNotImplementedException(
             $this->configuration->getMediaUrl(),
@@ -202,20 +183,17 @@ class HttpRequest
         );
     }
 
-    /**
-     * @param $requestException
-     */
-    protected function handleErrorUnknown($requestException)
+    protected function handleErrorUnknown(HttpClientRequestException $requestException): void
     {
-        throw new RuntimeException(
+        throw new \RuntimeException(
             'An unknown error occurred while contacting the provider: '
-            . $requestException->getMessage() . ' (' . $requestException->getErrorDetails() . ').'
-            . ' Please make sure CURL use is enabled in the install tool to get valid error codes.',
-            1303401545
+            . $requestException->getMessage() . '.',
+            1303401545,
+            $requestException
         );
     }
 
-    protected function handleRequestError(HttpClientRequestException $requestException, string $requestUrl)
+    protected function handleRequestError(HttpClientRequestException $requestException, string $requestUrl): void
     {
         $errorCode = $requestException->getCode();
         if (!in_array($errorCode, $this->httpErrorHandlers, true)) {
@@ -228,11 +206,10 @@ class HttpRequest
          * @uses handleError501()
          */
         $errorHandlerMethod = 'handleError' . $errorCode;
-        $this->$errorHandlerMethod($requestUrl);
+        $this->{$errorHandlerMethod}($requestUrl);
     }
 
     /**
-     * @param string $requestUrl
      * @return string|string[]
      */
     protected function replaceFormatPlaceholders(string $requestUrl)
@@ -245,12 +222,10 @@ class HttpRequest
      * Sends a request to the given URL and returns the reponse
      * from the server.
      *
-     * @param string $requestUrl
      * @return string response data
      */
-    protected function sendRequest($requestUrl): string
+    protected function sendRequest(string $requestUrl): string
     {
-        $requestException = null;
         try {
             return $this->getHttpClient()->executeGetRequest($requestUrl);
         } catch (HttpClientRequestException $e) {
@@ -259,11 +234,11 @@ class HttpRequest
 
         $this->handleRequestError($requestException, $requestUrl);
 
-        throw new RuntimeException('This step should never be reached!');
+        throw new \RuntimeException('This step should never be reached!');
     }
 
     private function getHttpClient(): HttpClientInterface
     {
-        return $this->httpClientFactory->getHttpClient();
+        return $this->httpClientFactory->getHttpClient($this->configuration);
     }
 }

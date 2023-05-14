@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sto\Mediaoembed\Tests\Unit\Provider;
 
 use PHPUnit\Framework\TestCase;
@@ -12,40 +14,40 @@ class EndpointTest extends TestCase
      */
     private $endpoint;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->endpoint = new Endpoint('endpoint_name', 'https://my.endpoint.url', true);
     }
 
-    public function testAddUrlScheme()
+    public function testAddUrlScheme(): void
     {
         $this->endpoint->addUrlScheme('https://my.url.scheme');
-        $this->assertEquals(['https://my.url.scheme'], $this->endpoint->getUrlSchemes());
+        self::assertSame(['https://my.url.scheme'], $this->endpoint->getUrlSchemes());
     }
 
-    public function testGetName()
+    public function testGetName(): void
     {
-        $this->assertEquals('endpoint_name', $this->endpoint->getName());
+        self::assertSame('endpoint_name', $this->endpoint->getName());
     }
 
-    public function testGetUrl()
+    public function testGetUrl(): void
     {
-        $this->assertEquals('https://my.endpoint.url', $this->endpoint->getUrl());
+        self::assertSame('https://my.endpoint.url', $this->endpoint->getUrl());
     }
 
-    public function testGetUrlConfigKeyForRegexes()
+    public function testGetUrlConfigKeyForRegexes(): void
     {
-        $this->assertEquals('urlRegexes', $this->endpoint->getUrlConfigKey());
+        self::assertSame('urlRegexes', $this->endpoint->getUrlConfigKey());
     }
 
-    public function testGetUrlConfigKeyForSchemes()
+    public function testGetUrlConfigKeyForSchemes(): void
     {
         $endpoint = new Endpoint('test', 'https://test.url', false);
-        $this->assertEquals('urlSchemes', $endpoint->getUrlConfigKey());
+        self::assertSame('urlSchemes', $endpoint->getUrlConfigKey());
     }
 
-    public function testIsRegex()
+    public function testIsRegex(): void
     {
-        $this->assertTrue($this->endpoint->isRegex());
+        self::assertTrue($this->endpoint->isRegex());
     }
 }

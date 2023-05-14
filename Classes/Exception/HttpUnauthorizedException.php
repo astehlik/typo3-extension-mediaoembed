@@ -15,7 +15,7 @@ namespace Sto\Mediaoembed\Exception;
  *                                                                        */
 
 /**
- * Exception if server returned 401 Unauthorized
+ * Exception if server returned 401 Unauthorized.
  *
  * The specified URL contains a private (non-public) resource.
  * The consumer should provide a link directly to the resource instead
