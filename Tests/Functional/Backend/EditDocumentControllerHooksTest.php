@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Functional\Backend;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Sto\Mediaoembed\Backend\EditDocumentControllerHooks;
 use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTestCase;
+use TYPO3\CMS\Backend\Controller\EditDocumentController;
+use TYPO3\CMS\Backend\Controller\Event\AfterFormEnginePageInitializedEvent;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -15,7 +20,6 @@ final class EditDocumentControllerHooksTest extends AbstractFunctionalTestCase
     {
         $pageRendererMock = $this->createMock(PageRenderer::class);
 
-        /** @noinspection PhpParamsInspection */
         $pageRendererMock->expects(self::once())
             ->method('addInlineLanguageLabelArray')
             ->with(
@@ -31,7 +35,12 @@ final class EditDocumentControllerHooksTest extends AbstractFunctionalTestCase
         $hooks = new EditDocumentControllerHooks();
         $hooks->setLanguageService($this->getLanguageService());
         $hooks->setPageRenderer($pageRendererMock);
-        $hooks->addJsLanguageLabels();
+        $hooks->__invoke(
+            new AfterFormEnginePageInitializedEvent(
+                $this->createMock(EditDocumentController::class),
+                $this->createMock(ServerRequestInterface::class)
+            )
+        );
     }
 
     private function assertArrayContainsExpectedTranslationKeys(array $translations): void
@@ -52,17 +61,8 @@ final class EditDocumentControllerHooksTest extends AbstractFunctionalTestCase
         }
     }
 
-    /**
-     * @noinspection PhpFullyQualifiedNameUsageInspection PhpUndefinedClassInspection PhpUndefinedNamespaceInspection
-     *
-     * @return \TYPO3\CMS\Core\Localization\LanguageService|\TYPO3\CMS\Lang\LanguageService
-     */
-    private function getLanguageService()
+    private function getLanguageService(): LanguageService
     {
-        if (!class_exists('TYPO3\CMS\Core\Localization\LanguageService')) {
-            return GeneralUtility::makeInstance('TYPO3\CMS\Lang\LanguageService');
-        }
-
-        return GeneralUtility::makeInstance('TYPO3\CMS\Core\Localization\LanguageService');
+        return GeneralUtility::makeInstance(LanguageServiceFactory::class)->create('default');
     }
 }
