@@ -6,7 +6,6 @@ namespace Sto\Mediaoembed\Exception\RequestHandler;
 
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Exception\OEmbedException;
-use Throwable;
 
 final class RequestHandlerClassDoesNotExistsException extends OEmbedException
 {

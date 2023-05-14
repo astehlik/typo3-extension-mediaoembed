@@ -5,12 +5,11 @@ declare(strict_types=1);
 use Sto\Mediaoembed\Backend\AspectRatioEvaluation;
 use Sto\Mediaoembed\Content\Configuration;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
-defined('TYPO3_MODE') or die();
+defined('TYPO3') || exit;
 
-$lllPrefix = 'LLL:' . 'EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
-$lllPrefixTtc = 'LLL:' . 'EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:';
+$lllPrefix = 'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
+$lllPrefixTtc = 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:';
 
 $ttContentColumns = [
     'tx_mediaoembed_url' => [
@@ -111,20 +110,3 @@ $GLOBALS['TCA']['tt_content']['types']['mediaoembed_oembedmediarenderer']['showi
         rowDescription,
     --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended
 ';
-
-// Use old structure before TCA was streamlined in 8.5.0 (https://forge.typo3.org/issues/78383)
-if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version) < 8005000) {
-    $GLOBALS['TCA']['tt_content']['types']['mediaoembed_oembedmediarenderer']['showitem'] = '
-        --palette--;' . $lllPrefixTtc . 'palette.general;general,
-        --palette--;' . $lllPrefixTtc . 'palette.header;header,rowDescription,
-        --palette--;' . $lllPrefix . 'palette.tx_mediaoembed_settings;tx_mediaoembed_settings,
-    --div--;' . $lllPrefixTtc . 'tabs.appearance,
-        --palette--;' . $lllPrefixTtc . 'palette.frames;frames,
-    --div--;' . $lllPrefixTtc . 'tabs.access,
-        --palette--;' . $lllPrefixTtc . 'palette.visibility;visibility,
-        --palette--;' . $lllPrefixTtc . 'palette.access;access,
-    --div--;' . $lllPrefixTtc . 'tabs.extended,
-    --div--;LLL:EXT:lang/locallang_tca.xlf:sys_category.tabs.category,
-        categories
-';
-}

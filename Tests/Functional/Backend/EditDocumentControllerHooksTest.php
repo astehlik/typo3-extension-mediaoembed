@@ -5,21 +5,21 @@ declare(strict_types=1);
 namespace Sto\Mediaoembed\Tests\Functional\Backend;
 
 use Sto\Mediaoembed\Backend\EditDocumentControllerHooks;
-use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTest;
+use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTestCase;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-final class EditDocumentControllerHooksTest extends AbstractFunctionalTest
+final class EditDocumentControllerHooksTest extends AbstractFunctionalTestCase
 {
-    public function testAddJsLanguageLabels()
+    public function testAddJsLanguageLabels(): void
     {
         $pageRendererMock = $this->createMock(PageRenderer::class);
 
         /** @noinspection PhpParamsInspection */
-        $pageRendererMock->expects($this->once())
+        $pageRendererMock->expects(self::once())
             ->method('addInlineLanguageLabelArray')
             ->with(
-                $this->callback(
+                self::callback(
                     function (array $translations) {
                         $this->assertArrayContainsExpectedTranslationKeys($translations);
                         $this->assertTranslationsAreNotEmpty($translations);
@@ -34,7 +34,7 @@ final class EditDocumentControllerHooksTest extends AbstractFunctionalTest
         $hooks->addJsLanguageLabels();
     }
 
-    private function assertArrayContainsExpectedTranslationKeys(array $translations)
+    private function assertArrayContainsExpectedTranslationKeys(array $translations): void
     {
         $expectedKeys = array_map(
             function ($value) {
@@ -42,19 +42,20 @@ final class EditDocumentControllerHooksTest extends AbstractFunctionalTest
             },
             EditDocumentControllerHooks::JS_LABEL_KEYS
         );
-        $this->assertEquals($expectedKeys, array_keys($translations));
+        self::assertSame($expectedKeys, array_keys($translations));
     }
 
-    private function assertTranslationsAreNotEmpty(array $translations)
+    private function assertTranslationsAreNotEmpty(array $translations): void
     {
         foreach ($translations as $key => $translation) {
-            $this->assertNotEmpty($translation, 'Expected translation to be not empty: ' . $key);
+            self::assertNotEmpty($translation, 'Expected translation to be not empty: ' . $key);
         }
     }
 
     /**
      * @noinspection PhpFullyQualifiedNameUsageInspection PhpUndefinedClassInspection PhpUndefinedNamespaceInspection
-     * @return \TYPO3\CMS\Lang\LanguageService|\TYPO3\CMS\Core\Localization\LanguageService
+     *
+     * @return \TYPO3\CMS\Core\Localization\LanguageService|\TYPO3\CMS\Lang\LanguageService
      */
     private function getLanguageService()
     {

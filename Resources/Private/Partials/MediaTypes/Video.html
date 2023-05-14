@@ -1,7 +1,7 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
 		xmlns:mo="http://typo3.org/ns/Sto/Mediaoembed/ViewHelpers"
 		data-namespace-typo3-fluid="true">
-<mo:embedResponsivePadding response="{response}" class="embed-responsive">
+<mo:embedResponsivePadding response="{response}" configuration="{configuration}" class="embed-responsive">
 	<f:format.raw>{response.html}</f:format.raw>
 </mo:embedResponsivePadding>
 <f:render partial="DirectLink" arguments="{_all}"/>

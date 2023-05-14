@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Backend;
 
+use TYPO3\CMS\Backend\Controller\Event\AfterFormEnginePageInitializedEvent;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 final class EditDocumentControllerHooks
 {
-    const JS_LABEL_KEYS = [
+    public const JS_LABEL_KEYS = [
         'error_iframe_extraction_failed',
         'error_iframe_has_no_src',
         'error_more_than_one_iframe_found',
@@ -17,18 +19,16 @@ final class EditDocumentControllerHooks
         'success_iframe_src_extracted',
     ];
 
-    /**
-     * @noinspection PhpFullyQualifiedNameUsageInspection PhpUndefinedClassInspection PhpUndefinedNamespaceInspection
-     * @var \TYPO3\CMS\Core\Localization\LanguageService|\TYPO3\CMS\Lang\LanguageService
-     */
-    private $languageService;
+    private ?LanguageService $languageService = null;
 
-    /**
-     * @var PageRenderer
-     */
-    private $pageRenderer;
+    private ?PageRenderer $pageRenderer = null;
 
-    public function addJsLanguageLabels()
+    public function __invoke(AfterFormEnginePageInitializedEvent $afterFormEnginePageInitializedEvent): void
+    {
+        $this->addJsLanguageLabels();
+    }
+
+    public function addJsLanguageLabels(): void
     {
         $this->initDependencies();
 
@@ -36,16 +36,12 @@ final class EditDocumentControllerHooks
         $this->pageRenderer->addInlineLanguageLabelArray($languageLabels);
     }
 
-    /**
-     * @noinspection PhpFullyQualifiedNameUsageInspection PhpUndefinedClassInspection PhpUndefinedNamespaceInspection
-     * @param \TYPO3\CMS\Lang\LanguageService|\TYPO3\CMS\Core\Localization\LanguageService $languageService
-     */
-    public function setLanguageService($languageService)
+    public function setLanguageService(LanguageService $languageService): void
     {
         $this->languageService = $languageService;
     }
 
-    public function setPageRenderer(PageRenderer $pageRenderer)
+    public function setPageRenderer(PageRenderer $pageRenderer): void
     {
         $this->pageRenderer = $pageRenderer;
     }
@@ -61,7 +57,7 @@ final class EditDocumentControllerHooks
         return $translations;
     }
 
-    private function initDependencies()
+    private function initDependencies(): void
     {
         if ($this->languageService) {
             return;

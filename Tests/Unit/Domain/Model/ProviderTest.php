@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sto\Mediaoembed\Tests\Unit\Domain\Model;
 
 use PHPUnit\Framework\TestCase;
@@ -12,7 +14,7 @@ class ProviderTest extends TestCase
      */
     private $provider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->provider = new Provider(
             'the_provider_name',
@@ -22,41 +24,41 @@ class ProviderTest extends TestCase
         );
     }
 
-    public function testGetEndpoint()
+    public function testGetEndpoint(): void
     {
-        $this->assertEquals('https://the.provider.endpoint.url', $this->provider->getEndpoint());
+        self::assertSame('https://the.provider.endpoint.url', $this->provider->getEndpoint());
     }
 
-    public function testGetName()
+    public function testGetName(): void
     {
-        $this->assertEquals('the_provider_name', $this->provider->getName());
+        self::assertSame('the_provider_name', $this->provider->getName());
     }
 
-    public function testGetRequestHandlerClass()
+    public function testGetRequestHandlerClass(): void
     {
         $this->provider->withRequestHandler('The\\Request\\Handler\\Class', []);
-        $this->assertEquals('The\\Request\\Handler\\Class', $this->provider->getRequestHandlerClass());
+        self::assertSame('The\\Request\\Handler\\Class', $this->provider->getRequestHandlerClass());
     }
 
-    public function testGetRequestHandlerSettings()
+    public function testGetRequestHandlerSettings(): void
     {
         $settings = ['this' => 'setting'];
         $this->provider->withRequestHandler('The\\Request\\Handler\\Class', $settings);
-        $this->assertEquals($settings, $this->provider->getRequestHandlerSettings());
+        self::assertSame($settings, $this->provider->getRequestHandlerSettings());
     }
 
-    public function testGetUrlSchemes()
+    public function testGetUrlSchemes(): void
     {
-        $this->assertEquals(['https://the.url.scheme'], $this->provider->getUrlSchemes());
+        self::assertSame(['https://the.url.scheme'], $this->provider->getUrlSchemes());
     }
 
-    public function testHasRegexUrlSchemes()
+    public function testHasRegexUrlSchemes(): void
     {
-        $this->assertTrue($this->provider->hasRegexUrlSchemes());
+        self::assertTrue($this->provider->hasRegexUrlSchemes());
     }
 
-    public function testShouldDirectLinkBeDisplayed()
+    public function testShouldDirectLinkBeDisplayed(): void
     {
-        $this->assertTrue($this->provider->shouldDirectLinkBeDisplayed());
+        self::assertTrue($this->provider->shouldDirectLinkBeDisplayed());
     }
 }

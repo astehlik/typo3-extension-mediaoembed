@@ -15,27 +15,27 @@ final class PanoptoUrlProcessorTest extends AbstractUnitTest
      */
     private $urlProcessor;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->urlProcessor = new PanoptoUrlProcessor(new UrlService());
     }
 
-    public function testProcessUrlWithEmbedUrlKeepsUrls()
+    public function testProcessUrlWithEmbedUrlKeepsUrls(): void
     {
         $url = 'https://demo.hosted.panopto.com/Panopto/Pages/Embed.aspx'
             . '?id=af1d3c39-d8455-41456-b005-ad52435b77'
             . '&autoplay=false&offerviewer=true&showtitle=true&showbrand=false&start=0&interactivity=all';
         $newUrl = $this->urlProcessor->processUrl($url, ['bla' => 'blubb']);
-        $this->assertEquals($url, $newUrl);
+        self::assertSame($url, $newUrl);
     }
 
-    public function testProcessUrlWithUnknownUrlKeepsUrls()
+    public function testProcessUrlWithUnknownUrlKeepsUrls(): void
     {
         $newUrl = $this->urlProcessor->processUrl('https://www.some-url.tld', ['bla' => 'blubb']);
-        $this->assertEquals('https://www.some-url.tld', $newUrl);
+        self::assertSame('https://www.some-url.tld', $newUrl);
     }
 
-    public function testProcessUrlWithViewerUrlConvertsItToEmbedUrl()
+    public function testProcessUrlWithViewerUrlConvertsItToEmbedUrl(): void
     {
         $url = 'https://demo.hosted.panopto.com/Panopto/Pages/Viewer.aspx'
             . '?id=af1d34c39-d435-45456-b5451-a45b045377&offerviewer=false';
@@ -46,6 +46,6 @@ final class PanoptoUrlProcessorTest extends AbstractUnitTest
         $newUrl = $this->urlProcessor->processUrl($url, $parameters);
         $expectedUrl = 'https://demo.hosted.panopto.com/Panopto/Pages/Embed.aspx'
             . '?offerviewer=false&autoplay=false&id=af1d34c39-d435-45456-b5451-a45b045377';
-        $this->assertEquals($expectedUrl, $newUrl);
+        self::assertSame($expectedUrl, $newUrl);
     }
 }

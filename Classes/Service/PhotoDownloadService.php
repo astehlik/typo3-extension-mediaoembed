@@ -4,36 +4,25 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Service;
 
-use SplFileInfo;
+use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Exception\PhotoDownload\NotAnImageFileException;
 use Sto\Mediaoembed\Exception\PhotoDownloadException;
 use Sto\Mediaoembed\Exception\RequestException;
+use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 
 class PhotoDownloadService
 {
-    /**
-     * @var ConfigurationService
-     */
-    private $configurationService;
+    private HttpService $httpService;
 
-    /**
-     * @var HttpService
-     */
-    private $httpService;
-
-    /**
-     * @var ResourceService
-     */
-    private $resourceService;
+    private ResourceService $resourceService;
 
     public function __construct(
-        ConfigurationService $configurationService,
         HttpService $httpService,
         ResourceService $resourceService
     ) {
-        $this->configurationService = $configurationService;
         $this->httpService = $httpService;
         $this->resourceService = $resourceService;
     }
@@ -41,17 +30,15 @@ class PhotoDownloadService
     /**
      * Downloads the photo from the server and stores it in the typo3temp folder.
      *
-     * @param string $embedUrl The URL specified by the editor that should be embedded.
-     * @param string $downloadUrl The media URL returned by the oEmbed Service.
-     * @return File|null
+     * @param string $downloadUrl the media URL returned by the oEmbed Service
      */
-    public function downloadPhoto(string $embedUrl, string $downloadUrl)
+    public function downloadPhoto(string $downloadUrl, Configuration $configuration): ?FileInterface
     {
         if (!$downloadUrl) {
             return null;
         }
 
-        if (!$this->configurationService->isPhotoDownloadEnabled()) {
+        if (!$configuration->isPhotoDownloadEnabled()) {
             return null;
         }
 
@@ -61,13 +48,13 @@ class PhotoDownloadService
             throw new PhotoDownloadException($downloadUrl, $e);
         }
 
-        $imageFilename = sha1($embedUrl);
+        $imageFilename = sha1($configuration->getMediaUrl());
         $extension = $this->detectExtension($downloadUrl);
         if ($extension) {
             $imageFilename .= '.' . $extension;
         }
 
-        $targetFolder = $this->getTargetFolder();
+        $targetFolder = $this->getTargetFolder($configuration);
 
         if ($targetFolder->hasFile($imageFilename)) {
             return $this->resourceService->getFileInFolder($targetFolder, $imageFilename);
@@ -80,25 +67,17 @@ class PhotoDownloadService
         return $file;
     }
 
-    /**
-     * @return Folder
-     */
-    public function getTargetFolder(): Folder
+    public function getTargetFolder(Configuration $configuration): Folder
     {
         return $this->resourceService->getOrCreateFolder(
-            $this->configurationService->getPhotoDownloadStorageUid(),
-            $this->configurationService->getPhotoDownloadFolderIdentifier()
+            $configuration->getPhotoDownloadStorageUid(),
+            $configuration->getPhotoDownloadFolderIdentifier()
         );
     }
 
-    /**
-     * @param string $downloadUrl
-     * @param File $file
-     * @throws NotAnImageFileException
-     */
-    public function validateMimeType(string $downloadUrl, File $file)
+    public function validateMimeType(string $downloadUrl, File $file): void
     {
-        if ($file->getType() !== File::FILETYPE_IMAGE) {
+        if ($file->getType() !== AbstractFile::FILETYPE_IMAGE) {
             $mimeType = $file->getMimeType();
             $file->delete();
             throw new NotAnImageFileException($downloadUrl, $mimeType);
@@ -107,7 +86,7 @@ class PhotoDownloadService
 
     private function detectExtension(string $photoUrl): string
     {
-        $fileInfo = new SplFileInfo($photoUrl);
+        $fileInfo = new \SplFileInfo($photoUrl);
         return $fileInfo->getExtension();
     }
 }

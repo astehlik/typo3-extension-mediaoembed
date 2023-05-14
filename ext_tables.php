@@ -2,7 +2,7 @@
 
 /** @noinspection PhpFullyQualifiedNameUsageInspection */
 
-defined('TYPO3_MODE') or die();
+defined('TYPO3') or die();
 
 /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
 $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);

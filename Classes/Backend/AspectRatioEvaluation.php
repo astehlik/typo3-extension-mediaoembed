@@ -25,15 +25,11 @@ final class AspectRatioEvaluation
      */
     private $aspectRatioCalculator;
 
-    public function injectAspectRatioCalculator(AspectRatioCalculatorInterface $aspectRatioCalculator)
-    {
-        $this->aspectRatioCalculator = $aspectRatioCalculator;
-    }
-
     /**
-     * Server-side validation/evaluation on opening the record
+     * Server-side validation/evaluation on opening the record.
      *
      * @param array $parameters Array with key 'value' containing the field value from the database
+     *
      * @return string Evaluated field value
      */
     public function deevaluateFieldValue(array $parameters): string
@@ -43,9 +39,10 @@ final class AspectRatioEvaluation
 
     /**
      * Server-side validation/evaluation on saving the record
-     * Tests if latutide is between -90 and +90, fills up with zeros to mach decimal (14,12) in database
+     * Tests if latutide is between -90 and +90, fills up with zeros to mach decimal (14,12) in database.
      *
      * @param mixed $value The field value to be evaluated
+     *
      * @return string Evaluated field value
      */
     public function evaluateFieldValue($value): string
@@ -60,8 +57,13 @@ final class AspectRatioEvaluation
         return $aspectRatioCalculator->isValidAspectRatio($value) ? $value : '';
     }
 
+    public function injectAspectRatioCalculator(AspectRatioCalculatorInterface $aspectRatioCalculator): void
+    {
+        $this->aspectRatioCalculator = $aspectRatioCalculator;
+    }
+
     /**
-     * JavaScript code for client side validation/evaluation
+     * JavaScript code for client side validation/evaluation.
      *
      * @return string JavaScript code for client side validation/evaluation
      */

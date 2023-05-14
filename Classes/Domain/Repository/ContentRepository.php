@@ -15,36 +15,20 @@ namespace Sto\Mediaoembed\Domain\Repository;
  *                                                                        */
 
 use Sto\Mediaoembed\Domain\Model\Content;
-use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * Repository for mediaoembed tt_content elements.
  */
-class ContentRepository implements SingletonInterface
+class ContentRepository
 {
-    /**
-     * @var ConfigurationManagerInterface
-     */
-    private $configurationManager;
-
-    public function __construct(ConfigurationManagerInterface $configurationManager)
+    public function createFromContentData(array $contentObjectData): Content
     {
-        $this->configurationManager = $configurationManager;
-    }
-
-    public function getCurrentContent(): Content
-    {
-        // We must rebuild the content object because it might have changed when the plugin
-        // is added multiple sites on one page.
-        $contentObjectData = $this->configurationManager->getContentObject()->data;
-
         return new Content(
-            (int)$contentObjectData['uid'],
-            (string)$contentObjectData['tx_mediaoembed_url'],
-            (int)$contentObjectData['tx_mediaoembed_maxheight'],
-            (int)$contentObjectData['tx_mediaoembed_maxwidth'],
-            (bool)$contentObjectData['tx_mediaoembed_play_related'],
+            (int)($contentObjectData['uid'] ?? 0),
+            (string)($contentObjectData['tx_mediaoembed_url'] ?? ''),
+            (int)($contentObjectData['tx_mediaoembed_maxheight'] ?? 0),
+            (int)($contentObjectData['tx_mediaoembed_maxwidth'] ?? 0),
+            (bool)($contentObjectData['tx_mediaoembed_play_related'] ?? true),
             (string)($contentObjectData['tx_mediaoembed_aspect_ratio'] ?? '')
         );
     }

@@ -16,39 +16,34 @@ namespace Sto\Mediaoembed\Domain\Repository;
 
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Exception\InvalidConfigurationException;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * Repository for fetching providers from the configuration.
  */
-class ProviderRepository implements SingletonInterface
+class ProviderRepository
 {
-    /**
-     * @var array
-     */
-    private $providersConfig;
+    private ConfigurationManagerInterface $configurationManager;
 
     public function __construct(ConfigurationManagerInterface $configurationManager)
     {
-        $settings = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
-        $this->providersConfig = (array)($settings['providers'] ?? []);
+        $this->configurationManager = $configurationManager;
     }
 
     /**
-     * @return Provider[]|array
+     * @return array|Provider[]
      */
     public function findAll(): array
     {
         $providers = [];
-        foreach ($this->providersConfig as $providerName => $providerConfig) {
+        foreach ($this->getProvidersConfig() as $providerName => $providerConfig) {
             $providers[] = $this->createProvider($providerName, $providerConfig);
         }
         return $providers;
     }
 
-    private function addProcessors(Provider $provider, array $processors)
+    private function addProcessors(Provider $provider, array $processors): void
     {
         foreach ($processors as $processor) {
             $provider->withProcessor($processor);
@@ -91,7 +86,16 @@ class ProviderRepository implements SingletonInterface
         return $provider;
     }
 
-    private function validateEndpoint(string $endpoint, string $providerName)
+    private function getProvidersConfig(): array
+    {
+        $settings = $this->configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
+        );
+
+        return (array)($settings['providers'] ?? []);
+    }
+
+    private function validateEndpoint(string $endpoint, string $providerName): void
     {
         if ($endpoint === '') {
             throw new InvalidConfigurationException(sprintf('Endpoint of provider %s is empty.', $providerName));
@@ -104,14 +108,14 @@ class ProviderRepository implements SingletonInterface
         }
     }
 
-    private function validateProviderName(string $providerName)
+    private function validateProviderName(string $providerName): void
     {
         if ($providerName === '') {
             throw new InvalidConfigurationException('Provider name must not be empty.');
         }
     }
 
-    private function validateUrlSchemes(array $urlRegexes, array $urlSchemes, string $providerName)
+    private function validateUrlSchemes(array $urlRegexes, array $urlSchemes, string $providerName): void
     {
         if (count($urlRegexes) && count($urlSchemes)) {
             throw new InvalidConfigurationException(
@@ -119,7 +123,7 @@ class ProviderRepository implements SingletonInterface
             );
         }
 
-        if ($urlSchemes === [] && $urlRegexes == []) {
+        if ($urlSchemes === [] && $urlRegexes === []) {
             throw new InvalidConfigurationException(sprintf('The provider %s has no URL schemes.', $providerName));
         }
     }

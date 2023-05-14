@@ -1,6 +1,8 @@
 <?php
 
-defined('TYPO3_MODE') or die();
+declare(strict_types=1);
+
+defined('TYPO3') || exit;
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
     'mediaoembed',

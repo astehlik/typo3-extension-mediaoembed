@@ -2,28 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Sto\Mediaoembed\Service;
+namespace Sto\Mediaoembed\Content;
 
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-
-class ConfigurationService
+class Settings
 {
-    /**
-     * @var array
-     */
-    private $settings = [];
+    private array $settings;
 
-    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
+    public function __construct(array $settings)
     {
-        $this->settings = $configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
-            'Mediaoembed'
-        );
+        $this->settings = $settings;
     }
 
     public function getAspectRatioFallback(): string
     {
         return $this->settings['aspectRatioFallback'] ?? '';
+    }
+
+    public function getHttpClientClass(): string
+    {
+        return $this->settings['httpClient'] ?? '';
     }
 
     public function getMaxHeight(): int

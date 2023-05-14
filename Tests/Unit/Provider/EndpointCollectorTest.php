@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sto\Mediaoembed\Tests\Unit\Provider;
 
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sto\Mediaoembed\Provider\Endpoint;
 use Sto\Mediaoembed\Provider\EndpointCollector;
 use Sto\Mediaoembed\Provider\ProviderEndpoints;
@@ -11,6 +13,8 @@ use Sto\Mediaoembed\Provider\ProviderUrls;
 
 class EndpointCollectorTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var EndpointCollector
      */
@@ -20,7 +24,7 @@ class EndpointCollectorTest extends TestCase
 
     private $providerUrlsProphecy;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->providerEndpointsProphecy = $this->prophesize(ProviderEndpoints::class);
         $this->providerUrlsProphecy = $this->prophesize(ProviderUrls::class);
@@ -31,7 +35,7 @@ class EndpointCollectorTest extends TestCase
         );
     }
 
-    public function testCollectEndpointCollectsEndpointUrls()
+    public function testCollectEndpointCollectsEndpointUrls(): void
     {
         $this->providerEndpointsProphecy->getEndpoints()->willReturn(
             ['https://some.existing.endpoint/' => 'name']
@@ -54,11 +58,15 @@ class EndpointCollectorTest extends TestCase
         $expectedEndpoint->addUrlScheme('#https?://testscheme1/.*#i');
 
         $endpoints = $this->collector->collectEndpoints();
+        $collectedEndpoint = $endpoints['name'];
 
-        $this->assertEquals($expectedEndpoint, $endpoints['name']);
+        self::assertSame($expectedEndpoint->getName(), $collectedEndpoint->getName());
+        self::assertSame($expectedEndpoint->getUrl(), $collectedEndpoint->getUrl());
+        self::assertSame($expectedEndpoint->getUrlSchemes(), $collectedEndpoint->getUrlSchemes());
+        self::assertSame($expectedEndpoint->getUrlConfigKey(), $collectedEndpoint->getUrlConfigKey());
     }
 
-    public function testCollectEndpointOrdersByName()
+    public function testCollectEndpointOrdersByName(): void
     {
         $this->providerEndpointsProphecy->getEndpoints()->willReturn(
             [
@@ -84,12 +92,12 @@ class EndpointCollectorTest extends TestCase
             'name1',
             'name2',
         ];
-        $this->assertEquals($expecteOrder, array_keys($endpoints));
+        self::assertSame($expecteOrder, array_keys($endpoints));
     }
 
-    public function testCollectEndpointsThrowsExceptionForDuplicateProviderName()
+    public function testCollectEndpointsThrowsExceptionForDuplicateProviderName(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Duplicate endpoint label name1');
 
         $this->providerEndpointsProphecy->getEndpoints()->willReturn(
@@ -103,9 +111,9 @@ class EndpointCollectorTest extends TestCase
         $this->collector->collectEndpoints();
     }
 
-    public function testCollectEndpointsThrowsExceptionIfEndpointLabelIsMissing()
+    public function testCollectEndpointsThrowsExceptionIfEndpointLabelIsMissing(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('No label configured for endpoint URL https://some.existing.endpoint/');
 
         $this->providerEndpointsProphecy->getEndpoints()->willReturn(

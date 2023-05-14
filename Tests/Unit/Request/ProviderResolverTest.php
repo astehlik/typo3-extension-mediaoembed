@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Request;
 
-use Prophecy\Prophecy\ObjectProphecy;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Exception\NoMatchingProviderException;
 use Sto\Mediaoembed\Request\ProviderResolver;
@@ -22,7 +21,7 @@ class ProviderResolverTest extends AbstractUnitTest
      */
     private $providerResolver;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $firstProvider = new Provider('test1', 'https://endpoint', ['testurl'], false);
         $secondProvider = new Provider('test2', 'https://endpoint2', ['testurl'], false);
@@ -35,21 +34,15 @@ class ProviderResolverTest extends AbstractUnitTest
         $this->providerResolver = new ProviderResolver($this->dummyProviders);
     }
 
-    /**
-     * @test
-     */
-    public function resolverReturnsSecondMatchingProviderOnSecondCall()
+    public function testResolverReturnsSecondMatchingProviderOnSecondCall(): void
     {
         $this->providerResolver->getNextMatchingProvider('testurl');
         $secondProvider = $this->providerResolver->getNextMatchingProvider('testurl');
 
-        $this->assertSame($this->dummyProviders[1], $secondProvider);
+        self::assertSame($this->dummyProviders[1], $secondProvider);
     }
 
-    /**
-     * @test
-     */
-    public function resolverThrowsNoMatchingProviderException()
+    public function testResolverThrowsNoMatchingProviderException(): void
     {
         $this->providerResolver->getNextMatchingProvider('testurl');
         $this->providerResolver->getNextMatchingProvider('testurl');

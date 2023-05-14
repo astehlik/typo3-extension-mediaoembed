@@ -5,14 +5,10 @@ declare(strict_types=1);
 namespace Sto\Mediaoembed\Request\RequestHandler\Panopto;
 
 use Sto\Mediaoembed\Service\UrlService;
-use TYPO3\CMS\Core\Utility\StringUtility;
 
 final class PanoptoUrlProcessor
 {
-    /**
-     * @var UrlService
-     */
-    private $urlService;
+    private UrlService $urlService;
 
     public function __construct(UrlService $urlService)
     {
@@ -26,7 +22,7 @@ final class PanoptoUrlProcessor
         $urlQuery = $urlParts['query'] ?? '';
 
         // URL is already an embed URL so we assume it contains all required parameters.
-        if (!StringUtility::endsWith($urlPath, 'Viewer.aspx')) {
+        if (!str_ends_with($urlPath, 'Viewer.aspx')) {
             return $mediaUrl;
         }
 

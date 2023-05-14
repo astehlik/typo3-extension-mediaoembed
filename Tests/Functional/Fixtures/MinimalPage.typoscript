@@ -1,19 +1,11 @@
-page >
 page = PAGE
-
-page.10 = CONTENT
-page.10 {
+page {
+  10 = CONTENT
+  10 {
     table = tt_content
     select {
-        orderBy = sorting
+      orderBy = sorting
+      where = {#colPos}=0
     }
-}
-
-tt_content >
-tt_content = USER
-tt_content {
-    userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
-    extensionName = Mediaoembed
-    pluginName = OembedMediaRenderer
-    vendorName = Sto
+  }
 }
