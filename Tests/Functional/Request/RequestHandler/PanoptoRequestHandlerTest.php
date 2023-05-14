@@ -11,7 +11,7 @@ use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTestCase;
 
 final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
 {
-    public function handleBuildsExpectedIframeDataProvider(): array
+    public static function handleBuildsExpectedIframeDataProvider(): array
     {
         return [
             [
