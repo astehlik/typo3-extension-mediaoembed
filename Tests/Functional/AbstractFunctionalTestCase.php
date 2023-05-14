@@ -11,9 +11,9 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 abstract class AbstractFunctionalTestCase extends FunctionalTestCase
 {
-    protected $coreExtensionsToLoad = ['fluid_styled_content'];
+    protected array $coreExtensionsToLoad = ['fluid_styled_content'];
 
-    protected $testExtensionsToLoad = ['typo3conf/ext/mediaoembed'];
+    protected array $testExtensionsToLoad = ['typo3conf/ext/mediaoembed'];
 
     /**
      * Create a simple site config for the tests that
