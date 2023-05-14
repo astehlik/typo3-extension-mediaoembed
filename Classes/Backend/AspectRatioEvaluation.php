@@ -16,14 +16,12 @@ namespace Sto\Mediaoembed\Backend;
 
 use Sto\Mediaoembed\Service\AspectRatioCalculator;
 use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
+use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 final class AspectRatioEvaluation
 {
-    /**
-     * @var AspectRatioCalculatorInterface
-     */
-    private $aspectRatioCalculator;
+    private ?AspectRatioCalculatorInterface $aspectRatioCalculator = null;
 
     /**
      * Server-side validation/evaluation on opening the record.
@@ -45,7 +43,7 @@ final class AspectRatioEvaluation
      *
      * @return string Evaluated field value
      */
-    public function evaluateFieldValue($value): string
+    public function evaluateFieldValue(mixed $value): string
     {
         $value = trim((string)$value);
 
@@ -65,11 +63,14 @@ final class AspectRatioEvaluation
     /**
      * JavaScript code for client side validation/evaluation.
      *
-     * @return string JavaScript code for client side validation/evaluation
+     * @return JavaScriptModuleInstruction JavaScript code for client side validation/evaluation
      */
-    public function returnFieldJS(): string
+    public function returnFieldJS(): JavaScriptModuleInstruction
     {
-        return file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'AspectRatioEvaluation.js');
+        return JavaScriptModuleInstruction::create(
+            '@de-swebhosting/mediaoembed/backend/form-engine-evaluation.js',
+            'FormEngineEvaluation'
+        );
     }
 
     private function getAspectRatioCalculator(): AspectRatioCalculatorInterface

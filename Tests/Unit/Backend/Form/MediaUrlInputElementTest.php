@@ -8,6 +8,7 @@ use Sto\Mediaoembed\Backend\Form\MediaUrlInputElement;
 use Sto\Mediaoembed\Service\UtilityService;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 use TYPO3\CMS\Backend\Form\NodeFactory;
+use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 
 final class MediaUrlInputElementTest extends AbstractUnitTestCase
 {
@@ -18,9 +19,18 @@ final class MediaUrlInputElementTest extends AbstractUnitTestCase
         $result = ['html' => ''];
         $result = $field->addUrlParserJsToResult($result);
 
-        self::assertCount(1, $result['requireJsModules']);
-        $expectedJs = 'function(UrlParser) { new UrlParser(\'some-random-string\'); }';
-        self::assertSame(['TYPO3/CMS/Mediaoembed/Backend/UrlParser' => $expectedJs], $result['requireJsModules'][0]);
+        self::assertCount(1, $result['javaScriptModules']);
+
+        $moduleInstruction = $result['javaScriptModules'][0];
+        self::assertInstanceOf(JavaScriptModuleInstruction::class, $moduleInstruction);
+
+        $expectedInstanceItem = [
+            'type' => JavaScriptModuleInstruction::ITEM_INSTANCE,
+            'args' => ['some-random-string'],
+        ];
+        $instanceItem = $moduleInstruction->getItems()[0];
+
+        self::assertSame($expectedInstanceItem, $instanceItem);
     }
 
     public function testAddUrlParserJsToResultWrapsContainerWithId(): void
@@ -43,9 +53,7 @@ final class MediaUrlInputElementTest extends AbstractUnitTestCase
             ->with('tx-mediaoembed-url-input-wrapper-')
             ->willReturn('some-random-string');
 
-        MediaUrlInputElement::$testMode = true;
-        $field = new MediaUrlInputElement($nodeFactoryMock, []);
-        MediaUrlInputElement::$testMode = false;
+        $field = new MediaUrlInputElement();
 
         $field->injectUtilityService($utilityService);
         return $field;

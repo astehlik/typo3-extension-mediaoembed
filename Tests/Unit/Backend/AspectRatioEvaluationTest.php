@@ -8,6 +8,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Sto\Mediaoembed\Backend\AspectRatioEvaluation;
 use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
+use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 
 final class AspectRatioEvaluationTest extends AbstractUnitTestCase
 {
@@ -80,8 +81,8 @@ final class AspectRatioEvaluationTest extends AbstractUnitTestCase
 
     public function testReturnFieldJSReturnsJsContents(): void
     {
-        self::assertStringEqualsFile(
-            __DIR__ . '/../../../Classes/Backend/AspectRatioEvaluation.js',
+        self::assertInstanceOf(
+            JavaScriptModuleInstruction::class,
             $this->aspectRatioEvaluation->returnFieldJS()
         );
     }

@@ -6,24 +6,18 @@ namespace Sto\Mediaoembed\Backend\Form;
 
 use Sto\Mediaoembed\Service\UtilityService;
 use TYPO3\CMS\Backend\Form\Element\InputTextElement;
-use TYPO3\CMS\Backend\Form\NodeFactory;
+use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 final class MediaUrlInputElement extends InputTextElement
 {
-    public static $testMode = false;
+    private ?UtilityService $utilities = null;
 
     /**
-     * @var UtilityService
+     * @noinspection PhpMissingParentConstructorInspection Intentionally not calling the deprecated parent constructor!
      */
-    private $utilities;
-
-    public function __construct(NodeFactory $nodeFactory, array $data)
+    public function __construct()
     {
-        if (self::$testMode) {
-            return;
-        }
-        parent::__construct($nodeFactory, $data);
     }
 
     public function addUrlParserJsToResult(array $result): array
@@ -35,9 +29,9 @@ final class MediaUrlInputElement extends InputTextElement
 
         $result['html'] = '<div id="' . $wrapperId . '">' . $result['html'] . '</div>';
 
-        $initJs = 'function(UrlParser) { new UrlParser(' . GeneralUtility::quoteJSvalue($wrapperId) . '); }';
-
-        $result['requireJsModules'][] = ['TYPO3/CMS/Mediaoembed/Backend/UrlParser' => $initJs];
+        $result['javaScriptModules'][] = JavaScriptModuleInstruction::create(
+            '@de-swebhosting/mediaoembed/backend/url-parser.js'
+        )->instance($wrapperId);
 
         return $result;
     }
