@@ -112,6 +112,11 @@ class Configuration
         return $this->settings->getProcessorsForHtml();
     }
 
+    public function getProviders(): array
+    {
+        return $this->settings->getProviders();
+    }
+
     public function isPhotoDownloadEnabled(): bool
     {
         return $this->settings->isPhotoDownloadEnabled();
