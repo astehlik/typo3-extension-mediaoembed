@@ -319,3 +319,5 @@ plugin.tx_mediaoembed.settings.providers {
         }
     }
 }
+
+module.tx_mediaoembed.settings.providers < plugin.tx_mediaoembed.settings.providers

@@ -46,6 +46,18 @@ mod.wizards.newContentElement {
         'class' => \Sto\Mediaoembed\Backend\Form\MediaUrlInputElement::class,
         'priority' => 50,
     ];
+
+    // We must be the first entry here, the priority is not respected when creating new media :(
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['onlineMediaHelpers'] = array_merge(
+        ['oembed' => \Sto\Mediaoembed\Resource\OembedHelper::class],
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['onlineMediaHelpers'] ?? []
+    );
+
+    $rendererRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+        \TYPO3\CMS\Core\Resource\Rendering\RendererRegistry::class
+    );
+    $rendererRegistry->registerRendererClass(\Sto\Mediaoembed\Resource\OembedRenderer::class);
+    unset($rendererRegistry);
 };
 
 $bootMediaoembed();
