@@ -56,6 +56,11 @@ class Settings
         return $this->settings['reponseProcessors']['html'] ?? [];
     }
 
+    public function getProviders(): array
+    {
+        return $this->settings['providers'] ?? [];
+    }
+
     public function isPhotoDownloadEnabled(): bool
     {
         return (bool)$this->settings['downloadPhoto'];

@@ -33,3 +33,5 @@ plugin.tx_mediaoembed.settings {
         }
     }
 }
+
+module.tx_mediaoembed.settings < plugin.tx_mediaoembed.settings
