@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2011-10-17T20:22:32Z" product-name="mediaoembed" target-language="vi">
+    <header/>
+    <body>
+      <trans-unit id="iframe_aria_label" xml:space="preserve">
+				<source>%s media: %s</source>
+			<target state="needs-translation">%s media: %s</target></trans-unit>
+      <trans-unit id="iframe_aria_label_fallback" xml:space="preserve">
+				<source>%s media</source>
+			<target state="needs-translation">%s media</target></trans-unit>
+      <trans-unit id="error" xml:space="preserve">
+				<source>Error!</source>
+			<target state="needs-translation">Error!</target></trans-unit>
+      <trans-unit id="error_label_url" xml:space="preserve">
+				<source>No embed code could be retrieved for this URL:</source>
+			<target state="needs-translation">No embed code could be retrieved for this URL:</target></trans-unit>
+      <trans-unit id="error_label_error" xml:space="preserve">
+				<source>Error:</source>
+			<target state="needs-translation">Error:</target></trans-unit>
+      <trans-unit id="error_label_provider" xml:space="preserve">
+				<source>Provider:</source>
+			<target state="needs-translation">Provider:</target></trans-unit>
+      <trans-unit id="error_message_invalid_url" xml:space="preserve">
+				<source>The configured URL &quot;%s&quot; is empty or invalid. Please make sure the URL is a valid http:// or https:// URL.</source>
+			<target state="needs-translation">The configured URL "%s" is empty or invalid. Please make sure the URL is a valid http:// or https:// URL.</target></trans-unit>
+      <trans-unit id="error_message_unknown" xml:space="preserve">
+				<source>An unexpected error occured: %s</source>
+			<target state="needs-translation">An unexpected error occured: %s</target></trans-unit>
+      <trans-unit id="direct_link" xml:space="preserve">
+				<source>direct link</source>
+			<target state="needs-translation">direct link</target></trans-unit>
+    </body>
+  </file>
+</xliff>
