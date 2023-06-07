@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2011-10-17T20:22:32Z" product-name="mediaoembed" target-language="fi">
+    <header/>
+    <body>
+      <trans-unit id="tx_mediaoembed_provider" xml:space="preserve">
+				<source>oEmbed provider</source>
+			<target state="needs-translation">oEmbed provider</target></trans-unit>
+      <trans-unit id="tx_mediaoembed_provider.name" xml:space="preserve">
+				<source>Provider name</source>
+			<target state="needs-translation">Provider name</target></trans-unit>
+      <trans-unit id="tx_mediaoembed_provider.is_generic" xml:space="preserve">
+				<source>Is generic</source>
+			<target state="needs-translation">Is generic</target></trans-unit>
+      <trans-unit id="tx_mediaoembed_provider.url_schemes" xml:space="preserve">
+				<source>URL schemes</source>
+			<target state="needs-translation">URL schemes</target></trans-unit>
+      <trans-unit id="tx_mediaoembed_provider.endpoint" xml:space="preserve">
+				<source>Endpoint URL</source>
+			<target state="needs-translation">Endpoint URL</target></trans-unit>
+      <trans-unit id="tx_mediaoembed_provider.use_generic_providers" xml:space="preserve">
+				<source>Use generic providers</source>
+			<target state="needs-translation">Use generic providers</target></trans-unit>
+      <trans-unit id="tx_mediaoembed_provider.embedly_shortname" xml:space="preserve">
+				<source>embed.ly Shortname</source>
+			<target state="needs-translation">embed.ly Shortname</target></trans-unit>
+      <trans-unit id="palette.tx_mediaoembed_settings" xml:space="preserve">
+				<source>Media Element</source>
+			<target state="needs-translation">Media Element</target></trans-unit>
+      <trans-unit id="tt_content.CType.I.tx_mediaoembed" xml:space="preserve">
+				<source>External media</source>
+			<target state="needs-translation">External media</target></trans-unit>
+      <trans-unit id="tt_content.tx_mediaoembed_aspect_ratio" xml:space="preserve">
+				<source>Overwrite aspect ratio (video only)</source>
+			<target state="needs-translation">Overwrite aspect ratio (video only)</target></trans-unit>
+      <trans-unit id="tt_content.tx_mediaoembed_url" xml:space="preserve">
+				<source>Media URL</source>
+			<target state="needs-translation">Media URL</target></trans-unit>
+      <trans-unit id="tt_content.tx_mediaoembed_maxwidth" xml:space="preserve">
+				<source>Maximum width</source>
+			<target state="needs-translation">Maximum width</target></trans-unit>
+      <trans-unit id="tt_content.tx_mediaoembed_maxheight" xml:space="preserve">
+				<source>Maximum height</source>
+			<target state="needs-translation">Maximum height</target></trans-unit>
+      <trans-unit id="tt_content.tx_mediaoembed_play_related" xml:space="preserve">
+				<source>Play related videos (YouTube only)</source>
+			<target state="needs-translation">Play related videos (YouTube only)</target></trans-unit>
+      <trans-unit id="new_content_element_wizard_oembedmediarenderer_description" xml:space="preserve">
+				<source>Embed external media like YouTube videos by simply using the URL to the external media element.</source>
+			<target state="needs-translation">Embed external media like YouTube videos by simply using the URL to the external media element.</target></trans-unit>
+    </body>
+  </file>
+</xliff>
