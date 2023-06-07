@@ -3,51 +3,51 @@
   <file source-language="en" datatype="plaintext" original="messages" date="2011-10-17T20:22:32Z" product-name="mediaoembed" target-language="de">
     <header/>
     <body>
-      <trans-unit id="tx_mediaoembed_provider" xml:space="preserve">
+      <trans-unit id="tx_mediaoembed_provider" xml:space="preserve" approved="yes">
 				<source>oEmbed provider</source>
-			<target state="needs-translation">oEmbed provider</target></trans-unit>
-      <trans-unit id="tx_mediaoembed_provider.name" xml:space="preserve">
+			<target state="final">oEmbed Provider</target></trans-unit>
+      <trans-unit id="tx_mediaoembed_provider.name" xml:space="preserve" approved="yes">
 				<source>Provider name</source>
-			<target state="needs-translation">Provider name</target></trans-unit>
-      <trans-unit id="tx_mediaoembed_provider.is_generic" xml:space="preserve">
+			<target state="final">Name</target></trans-unit>
+      <trans-unit id="tx_mediaoembed_provider.is_generic" xml:space="preserve" approved="yes">
 				<source>Is generic</source>
-			<target state="needs-translation">Is generic</target></trans-unit>
-      <trans-unit id="tx_mediaoembed_provider.url_schemes" xml:space="preserve">
+			<target state="final">Generisch</target></trans-unit>
+      <trans-unit id="tx_mediaoembed_provider.url_schemes" xml:space="preserve" approved="yes">
 				<source>URL schemes</source>
-			<target state="needs-translation">URL schemes</target></trans-unit>
-      <trans-unit id="tx_mediaoembed_provider.endpoint" xml:space="preserve">
+			<target state="final">URL Schemas</target></trans-unit>
+      <trans-unit id="tx_mediaoembed_provider.endpoint" xml:space="preserve" approved="yes">
 				<source>Endpoint URL</source>
-			<target state="needs-translation">Endpoint URL</target></trans-unit>
-      <trans-unit id="tx_mediaoembed_provider.use_generic_providers" xml:space="preserve">
+			<target state="final">Endpunkt-URL</target></trans-unit>
+      <trans-unit id="tx_mediaoembed_provider.use_generic_providers" xml:space="preserve" approved="yes">
 				<source>Use generic providers</source>
-			<target state="needs-translation">Use generic providers</target></trans-unit>
-      <trans-unit id="tx_mediaoembed_provider.embedly_shortname" xml:space="preserve">
+			<target state="final">Benutze generische Provider</target></trans-unit>
+      <trans-unit id="tx_mediaoembed_provider.embedly_shortname" xml:space="preserve" approved="yes">
 				<source>embed.ly Shortname</source>
-			<target state="needs-translation">embed.ly Shortname</target></trans-unit>
-      <trans-unit id="palette.tx_mediaoembed_settings" xml:space="preserve">
+			<target state="final">embed.ly Kurzname</target></trans-unit>
+      <trans-unit id="palette.tx_mediaoembed_settings" xml:space="preserve" approved="yes">
 				<source>Media Element</source>
-			<target state="needs-translation">Media Element</target></trans-unit>
-      <trans-unit id="tt_content.CType.I.tx_mediaoembed" xml:space="preserve">
+			<target state="final">Externes Medium</target></trans-unit>
+      <trans-unit id="tt_content.CType.I.tx_mediaoembed" xml:space="preserve" approved="yes">
 				<source>External media</source>
-			<target state="needs-translation">External media</target></trans-unit>
-      <trans-unit id="tt_content.tx_mediaoembed_aspect_ratio" xml:space="preserve">
+			<target state="final">Externes Medium</target></trans-unit>
+      <trans-unit id="tt_content.tx_mediaoembed_aspect_ratio" xml:space="preserve" approved="yes">
 				<source>Overwrite aspect ratio (video only)</source>
-			<target state="needs-translation">Overwrite aspect ratio (video only)</target></trans-unit>
-      <trans-unit id="tt_content.tx_mediaoembed_url" xml:space="preserve">
+			<target state="final">Seitenverhältnis überschreiben (nur für Videos)</target></trans-unit>
+      <trans-unit id="tt_content.tx_mediaoembed_url" xml:space="preserve" approved="yes">
 				<source>Media URL</source>
-			<target state="needs-translation">Media URL</target></trans-unit>
-      <trans-unit id="tt_content.tx_mediaoembed_maxwidth" xml:space="preserve">
+			<target state="final">URL zum Medium</target></trans-unit>
+      <trans-unit id="tt_content.tx_mediaoembed_maxwidth" xml:space="preserve" approved="yes">
 				<source>Maximum width</source>
-			<target state="needs-translation">Maximum width</target></trans-unit>
-      <trans-unit id="tt_content.tx_mediaoembed_maxheight" xml:space="preserve">
+			<target state="final">Maximale Breite</target></trans-unit>
+      <trans-unit id="tt_content.tx_mediaoembed_maxheight" xml:space="preserve" approved="yes">
 				<source>Maximum height</source>
-			<target state="needs-translation">Maximum height</target></trans-unit>
-      <trans-unit id="tt_content.tx_mediaoembed_play_related" xml:space="preserve">
+			<target state="final">Maximale Höhe</target></trans-unit>
+      <trans-unit id="tt_content.tx_mediaoembed_play_related" xml:space="preserve" approved="yes">
 				<source>Play related videos (YouTube only)</source>
-			<target state="needs-translation">Play related videos (YouTube only)</target></trans-unit>
-      <trans-unit id="new_content_element_wizard_oembedmediarenderer_description" xml:space="preserve">
+			<target state="final">Ähnliche Videos abspielen (nur YouTube)</target></trans-unit>
+      <trans-unit id="new_content_element_wizard_oembedmediarenderer_description" xml:space="preserve" approved="yes">
 				<source>Embed external media like YouTube videos by simply using the URL to the external media element.</source>
-			<target state="needs-translation">Embed external media like YouTube videos by simply using the URL to the external media element.</target></trans-unit>
+			<target state="final">Externes Medium (z. B. YouTube Video) durch einfache Angabe der URL einbinden.</target></trans-unit>
     </body>
   </file>
 </xliff>
