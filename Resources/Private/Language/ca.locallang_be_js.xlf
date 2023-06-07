@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2011-10-17T20:22:32Z" product-name="mediaoembed" target-language="ca">
+    <header/>
+    <body>
+      <trans-unit id="error_iframe_extraction_failed" xml:space="preserve">
+				<source>The iframe element could not be extracted from the given input. Please make sure you entered valid HTML.</source>
+			<target state="needs-translation">The iframe element could not be extracted from the given input. Please make sure you entered valid HTML.</target></trans-unit>
+      <trans-unit id="error_iframe_has_no_src" xml:space="preserve">
+				<source>The found iframe element does not have a src attribute. The URL could not be extracted.</source>
+			<target state="needs-translation">The found iframe element does not have a src attribute. The URL could not be extracted.</target></trans-unit>
+      <trans-unit id="error_more_than_one_iframe_found" xml:space="preserve">
+				<source>More than one iframe was found in the input. URL extraction is only possible for single iframes.</source>
+			<target state="needs-translation">More than one iframe was found in the input. URL extraction is only possible for single iframes.</target></trans-unit>
+      <trans-unit id="success_iframe_aspect_ratio_extracted" xml:space="preserve">
+				<source>The aspect ratio of the media element was extracted from the iframe's width and height.</source>
+			<target state="needs-translation">The aspect ratio of the media element was extracted from the iframe's width and height.</target></trans-unit>
+      <trans-unit id="success_iframe_src_extracted" xml:space="preserve">
+				<source>The media URL was successfully extracted from the iframe.</source>
+			<target state="needs-translation">The media URL was successfully extracted from the iframe.</target></trans-unit>
+    </body>
+  </file>
+</xliff>
