@@ -24,15 +24,11 @@ use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
  */
 class VideoResponse extends GenericResponse implements AspectRatioAwareResponseInterface, HtmlAwareResponseInterface
 {
+    use AspectRatioAwareResponseTrait;
+
     public const ASPECT_RATIO_16TO9 = '16to9';
 
     public const ASPECT_RATIO_4TO3 = '4to3';
-
-    /**
-     * The height in pixels required to display the HTML.
-     * This value is required.
-     */
-    protected int $height = 0;
 
     /**
      * The HTML required to embed a video player.
@@ -42,24 +38,6 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
      * This value is required.
      */
     protected string $html;
-
-    /**
-     * The width in pixels required to display the HTML.
-     * This value is required.
-     */
-    protected int $width = 0;
-
-    /**
-     * Returns the current aspect ratio.
-     */
-    public function getAspectRatio(): float
-    {
-        if ($this->getHeight() === 0) {
-            return 0;
-        }
-
-        return $this->getWidth() / $this->getHeight();
-    }
 
     /**
      * Returns TRUE if the current aspect ratio looks like 16 to 9.
@@ -97,27 +75,11 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
     }
 
     /**
-     * Getter for the height in pixels required to display the HTML.
-     */
-    public function getHeight(): int
-    {
-        return $this->height;
-    }
-
-    /**
      * Getter for the HTML required to embed a video player.
      */
     public function getHtml(): string
     {
         return $this->html;
-    }
-
-    /**
-     * Getter for the width in pixels required to display the HTML.
-     */
-    public function getWidth(): int
-    {
-        return $this->width;
     }
 
     /**
@@ -127,8 +89,8 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
     public function initializeTypeSpecificResponseData(): void
     {
         $this->html = $this->responseDataArray['html'];
-        $this->width = (int)($this->responseDataArray['width'] ?? 0);
-        $this->height = (int)($this->responseDataArray['height'] ?? 0);
+
+        $this->initializeAspectRatioData($this->responseDataArray);
     }
 
     public function setHtml(string $html): void

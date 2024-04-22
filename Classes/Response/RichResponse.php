@@ -14,20 +14,16 @@ namespace Sto\Mediaoembed\Response;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
+
 /**
  * This type is used for rich HTML content that does not fall under one of
  * the other categories.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
  */
-class RichResponse extends GenericResponse implements HtmlAwareResponseInterface
+class RichResponse extends GenericResponse implements AspectRatioAwareResponseInterface, HtmlAwareResponseInterface
 {
-    /**
-     * The height in pixels required to display the HTML.
-     * This value is required.
-     *
-     * @var string
-     */
-    protected $height;
+    use AspectRatioAwareResponseTrait;
 
     /**
      * The HTML required to display the resource.
@@ -36,28 +32,8 @@ class RichResponse extends GenericResponse implements HtmlAwareResponseInterface
      * XSS vulnerabilities.
      * The markup should be valid XHTML 1.0 Basic.
      * This value is required.
-     *
-     * @var string
      */
-    protected $html;
-
-    /**
-     * The width in pixels required to display the HTML.
-     * This value is required.
-     *
-     * @var string
-     */
-    protected $width;
-
-    /**
-     * Getter for the height in pixels required to display the HTML.
-     *
-     * @return string
-     */
-    public function getHeight()
-    {
-        return $this->height;
-    }
+    protected string $html;
 
     /**
      * Getter for the HTML required to display the resource.
@@ -68,24 +44,14 @@ class RichResponse extends GenericResponse implements HtmlAwareResponseInterface
     }
 
     /**
-     * Getter for the width in pixels required to display the HTML.
-     *
-     * @return string
-     */
-    public function getWidth()
-    {
-        return $this->width;
-    }
-
-    /**
      * Initializes the response parameters that are specific for this
      * resource type.
      */
     public function initializeTypeSpecificResponseData(): void
     {
         $this->html = $this->responseDataArray['html'];
-        $this->width = $this->responseDataArray['width'];
-        $this->height = $this->responseDataArray['height'];
+
+        $this->initializeAspectRatioData($this->responseDataArray);
     }
 
     public function setHtml(string $html): void

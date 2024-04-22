@@ -14,19 +14,16 @@ namespace Sto\Mediaoembed\Response;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
 use TYPO3\CMS\Core\Resource\FileInterface;
 
 /**
  * This type is used for representing static photos.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
  */
-class PhotoResponse extends GenericResponse
+class PhotoResponse extends GenericResponse implements AspectRatioAwareResponseInterface
 {
-    /**
-     * The height in pixels of the image specified in the url parameter.
-     * This value is required.
-     */
-    protected int $height;
+    use AspectRatioAwareResponseTrait;
 
     /**
      * Path to the local version of the photo.
@@ -40,20 +37,6 @@ class PhotoResponse extends GenericResponse
      * This value is required.
      */
     protected string $url;
-
-    /**
-     * The width in pixels of the image specified in the url parameter.
-     * This value is required.
-     */
-    protected int $width;
-
-    /**
-     * Getter for the height in pixels of the image specified in the url parameter.
-     */
-    public function getHeight(): int
-    {
-        return $this->height;
-    }
 
     /**
      * Getter for the path to a locally stored version of the image.
@@ -72,14 +55,6 @@ class PhotoResponse extends GenericResponse
     }
 
     /**
-     * Getter for the width in pixels of the image specified in the url parameter.
-     */
-    public function getWidth(): int
-    {
-        return $this->width;
-    }
-
-    /**
      * Initializes the response parameters that are specific for this
      * resource type.
      */
@@ -87,8 +62,7 @@ class PhotoResponse extends GenericResponse
     {
         $this->url = $this->responseDataArray['url'];
 
-        $this->height = (int)$this->responseDataArray['height'];
-        $this->width = (int)$this->responseDataArray['width'];
+        $this->initializeAspectRatioData($this->responseDataArray);
 
         $this->localFile = $this->responseDataArray['localFile'];
     }

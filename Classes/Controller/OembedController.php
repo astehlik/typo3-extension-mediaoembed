@@ -14,26 +14,14 @@ namespace Sto\Mediaoembed\Controller;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Content\ConfigurationFactory;
 use Sto\Mediaoembed\Domain\Model\Provider;
-use Sto\Mediaoembed\Domain\Repository\ProviderRepository;
 use Sto\Mediaoembed\Exception\InvalidUrlException;
-use Sto\Mediaoembed\Exception\NoMatchingProviderException;
 use Sto\Mediaoembed\Exception\OEmbedException;
-use Sto\Mediaoembed\Exception\RequestException;
-use Sto\Mediaoembed\Exception\RequestHandler\RequestHandlerClassDoesNotExistsException;
-use Sto\Mediaoembed\Exception\RequestHandler\RequestHandlerClassInvalidException;
-use Sto\Mediaoembed\Request\ProviderResolver;
-use Sto\Mediaoembed\Request\RequestHandler\HttpRequestHandler;
-use Sto\Mediaoembed\Request\RequestHandler\RequestHandlerInterface;
-use Sto\Mediaoembed\Response\GenericResponse;
-use Sto\Mediaoembed\Response\HtmlAwareResponseInterface;
-use Sto\Mediaoembed\Response\Processor\HtmlResponseProcessorInterface;
-use Sto\Mediaoembed\Response\Processor\ResponseProcessorInterface;
-use Sto\Mediaoembed\Response\ResponseBuilder;
+use Sto\Mediaoembed\Exception\ProviderResolveFailedException;
+use Sto\Mediaoembed\Service\ResolverService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -44,24 +32,10 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class OembedController extends ActionController
 {
-    private ConfigurationFactory $configurationFactory;
-
-    private ContainerInterface $container;
-
-    private ProviderRepository $providerRepository;
-
-    private ResponseBuilder $responseBuilder;
-
     public function __construct(
-        ConfigurationFactory $configurationFactory,
-        ContainerInterface $container,
-        ProviderRepository $providerRepository,
-        ResponseBuilder $responseBuilder
+        private readonly ConfigurationFactory $configurationFactory,
+        private readonly ResolverService $responseResolver
     ) {
-        $this->configurationFactory = $configurationFactory;
-        $this->container = $container;
-        $this->providerRepository = $providerRepository;
-        $this->responseBuilder = $responseBuilder;
     }
 
     /**
@@ -96,90 +70,9 @@ class OembedController extends ActionController
         $this->startRequestLoop($configuration);
     }
 
-    /**
-     * Checks if the current URL is valid.
-     *
-     * @throws InvalidUrlException
-     */
-    private function checkIfUrlIsValid(string $url): void
-    {
-        $isValid = true;
-
-        if (empty($url)) {
-            $isValid = false;
-        }
-
-        if ($isValid && !GeneralUtility::isValidUrl($url)) {
-            $isValid = false;
-        }
-
-        if (!$isValid) {
-            throw new InvalidUrlException($url);
-        }
-    }
-
     private function getCurrentContentObject(): ContentObjectRenderer
     {
         return $this->request->getAttribute('currentContentObject');
-    }
-
-    private function getNextMatchingProvider(ProviderResolver $providerResolver, string $url): ?Provider
-    {
-        try {
-            return $providerResolver->getNextMatchingProvider($url);
-        } catch (NoMatchingProviderException $e) {
-            return null;
-        }
-    }
-
-    private function getRequestHandlerForProvider(Provider $provider): RequestHandlerInterface
-    {
-        $requestHandlerClass = $provider->getRequestHandlerClass();
-
-        if (!$requestHandlerClass) {
-            return $this->container->get(HttpRequestHandler::class);
-        }
-
-        if (!class_exists($requestHandlerClass)) {
-            throw new RequestHandlerClassDoesNotExistsException($provider);
-        }
-
-        $requestHandler = $this->container->get($requestHandlerClass);
-        if (!$requestHandler instanceof RequestHandlerInterface) {
-            throw new RequestHandlerClassInvalidException($provider);
-        }
-
-        return $requestHandler;
-    }
-
-    private function getResponseDataForProvider(Provider $provider, Configuration $configuration): array
-    {
-        $requestHandler = $this->getRequestHandlerForProvider($provider);
-        return $requestHandler->handle($provider, $configuration);
-    }
-
-    private function processResponse(Provider $provider, GenericResponse $response): void
-    {
-        foreach ($provider->getProcessors() as $processorClass) {
-            /** @var ResponseProcessorInterface $processor */
-            $processor = $this->container->get($processorClass);
-            $processor->processResponse($response);
-        }
-
-        $this->processResponseWithHtml($response);
-    }
-
-    private function processResponseWithHtml(GenericResponse $response): void
-    {
-        if (!$response instanceof HtmlAwareResponseInterface) {
-            return;
-        }
-
-        foreach ($response->getConfiguration()->getProcessorsForHtml() as $htmlProcessorClass) {
-            /** @var HtmlResponseProcessorInterface $processor */
-            $processor = $this->container->get($htmlProcessorClass);
-            $processor->processHtmlResponse($response);
-        }
     }
 
     private function renderErrorMessage(string $translationKey, array $arguments): string
@@ -206,41 +99,17 @@ class OembedController extends ActionController
      */
     private function startRequestLoop(Configuration $configuration): void
     {
-        $response = null;
-        $request = null;
-
-        $url = $configuration->getMediaUrl();
-        $this->checkIfUrlIsValid($url);
-
-        $providerResolver = new ProviderResolver($this->providerRepository->findAll());
-
-        $providerExceptions = [];
-
-        while ($provider = $this->getNextMatchingProvider($providerResolver, $url)) {
-            try {
-                $responseData = $this->getResponseDataForProvider($provider, $configuration);
-                $response = $this->responseBuilder->buildResponse($responseData, $configuration);
-                $this->processResponse($provider, $response);
-                break;
-            } catch (RequestException $exception) {
-                $providerExceptions[] = [
-                    'provider' => $provider,
-                    'exception' => $exception,
-                ];
-                $response = null;
-            }
-        }
-
-        if ($response === null) {
+        try {
+            $resolverResult = $this->responseResolver->resolve($configuration);
+        } catch (ProviderResolveFailedException $e) {
             $this->view->assign('hasErrors', true);
-            $this->view->assign('providerExceptions', $providerExceptions);
+            $this->view->assign('providerExceptions', $e->getExceptions());
             return;
         }
 
-        $this->view->assign('request', $request);
-        $this->view->assign('provider', $provider);
-        $this->view->assign('displayDirectLink', $this->shouldDisplayDirectLink($provider));
-        $this->view->assign('response', $response);
+        $this->view->assign('provider', $resolverResult->getProvider());
+        $this->view->assign('displayDirectLink', $this->shouldDisplayDirectLink($resolverResult->getProvider()));
+        $this->view->assign('response', $resolverResult->getResponse());
     }
 
     private function translate(string $key, $arguments = null): string

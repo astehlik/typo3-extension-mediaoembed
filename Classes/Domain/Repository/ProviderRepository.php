@@ -14,6 +14,7 @@ namespace Sto\Mediaoembed\Domain\Repository;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Exception\InvalidConfigurationException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -38,6 +39,18 @@ class ProviderRepository
     {
         $providers = [];
         foreach ($this->getProvidersConfig() as $providerName => $providerConfig) {
+            $providers[] = $this->createProvider($providerName, $providerConfig);
+        }
+        return $providers;
+    }
+
+    /**
+     * @return array|Provider[]
+     */
+    public function getFromConfig(Configuration $configuration): array
+    {
+        $providers = [];
+        foreach ($configuration->getProviders() as $providerName => $providerConfig) {
             $providers[] = $this->createProvider($providerName, $providerConfig);
         }
         return $providers;
