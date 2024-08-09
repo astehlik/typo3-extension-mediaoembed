@@ -11,14 +11,14 @@ class OembedControllerTest extends AbstractFunctionalTestCase
 {
     protected array $typoscriptConstantFiles = [
         'EXT:fluid_styled_content/Configuration/TypoScript/constants.typoscript',
-        'EXT:mediaoembed/Configuration/TypoScript/constants.txt',
+        'EXT:mediaoembed/Configuration/TypoScript/constants.typoscript',
     ];
 
     private array $typoscriptSetupFilesDefault = [
         'EXT:fluid_styled_content/Configuration/TypoScript/setup.typoscript',
         'EXT:mediaoembed/Tests/Functional/Fixtures/MinimalPage.typoscript',
-        'EXT:mediaoembed/Configuration/TypoScript/setup.txt',
-        'EXT:mediaoembed/Configuration/TypoScript/DefaultProviders/setup.txt',
+        'EXT:mediaoembed/Configuration/TypoScript/setup.typoscript',
+        'EXT:mediaoembed/Configuration/TypoScript/DefaultProviders/setup.typoscript',
         'EXT:mediaoembed/Tests/Functional/Fixtures/Mediaoembed.typoscript',
     ];
 
