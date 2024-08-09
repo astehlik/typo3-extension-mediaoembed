@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Service;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Sto\Mediaoembed\Service\AspectRatioCalculator;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
@@ -45,17 +46,13 @@ final class AspectRatioCalculatorTest extends AbstractUnitTestCase
         ];
     }
 
-    /**
-     * @dataProvider provideCalculateAspectRatioReturnsExpectedValuesCases
-     */
+    #[DataProvider('provideCalculateAspectRatioReturnsExpectedValuesCases')]
     public function testCalculateAspectRatioReturnsExpectedValues(float $expectedValue, string $aspectRatio): void
     {
         self::assertSame($expectedValue, $this->aspectRatioCalculator->calculateAspectRatio($aspectRatio));
     }
 
-    /**
-     * @dataProvider provideIsValidAspectRatioReturnsFalseForInvalidValuesCases
-     */
+    #[DataProvider('provideIsValidAspectRatioReturnsFalseForInvalidValuesCases')]
     public function testIsValidAspectRatioReturnsFalseForInvalidValues(string $value): void
     {
         self::assertFalse($this->aspectRatioCalculator->isValidAspectRatio($value));

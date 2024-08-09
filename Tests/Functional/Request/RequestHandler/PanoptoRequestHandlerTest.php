@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Functional\Request\RequestHandler;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Request\RequestHandler\Panopto\PanoptoRequestHandler;
@@ -27,9 +28,7 @@ final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
         ];
     }
 
-    /**
-     * @dataProvider provideHandleBuildsExpectedIframeCases
-     */
+    #[DataProvider('provideHandleBuildsExpectedIframeCases')]
     public function testHandleBuildsExpectedIframe(string $mediaUrl, string $expectedUrl): void
     {
         $configurationMock = $this->createMock(Configuration::class);

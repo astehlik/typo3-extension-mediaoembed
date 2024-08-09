@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Content;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Sto\Mediaoembed\Content\Configuration;
@@ -98,9 +99,7 @@ class ConfigurationTest extends TestCase
         self::assertSame(0.5, $this->getConfiguration()->getAspectRatio(0.5));
     }
 
-    /**
-     * @dataProvider getMaxWidthHeightDataProvider
-     */
+    #[DataProvider('getMaxWidthHeightDataProvider')]
     public function testGetMaxheight(int $contentValue, int $settingsValue, int $expectedValue): void
     {
         $this->contentMock->method('getMaxHeight')->willReturn($contentValue);
@@ -109,9 +108,7 @@ class ConfigurationTest extends TestCase
         self::assertSame($expectedValue, $this->getConfiguration()->getMaxheight());
     }
 
-    /**
-     * @dataProvider getMaxWidthHeightDataProvider
-     */
+    #[DataProvider('getMaxWidthHeightDataProvider')]
     public function testGetMaxwidth(int $contentValue, int $settingsValue, int $expectedValue): void
     {
         $this->contentMock->method('getMaxWidth')->willReturn($contentValue);

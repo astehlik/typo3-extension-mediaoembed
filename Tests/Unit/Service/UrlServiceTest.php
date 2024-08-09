@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Service;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Sto\Mediaoembed\Service\UrlService;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
@@ -57,9 +58,7 @@ final class UrlServiceTest extends AbstractUnitTestCase
         self::assertSame($expectedUrlParameters, $newUrlParameters);
     }
 
-    /**
-     * @dataProvider provideBuildUrlReturnsExpectedStringCases
-     */
+    #[DataProvider('provideBuildUrlReturnsExpectedStringCases')]
     public function testBuildUrlReturnsExpectedString(string $url): void
     {
         $originalUrlParts = parse_url($url);

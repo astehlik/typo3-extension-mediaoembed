@@ -14,6 +14,7 @@ namespace Sto\Mediaoembed\Tests\Unit\Response;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Response\VideoResponse;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
@@ -64,9 +65,7 @@ class VideoResponseTest extends AbstractUnitTestCase
         self::assertSame(0.0, $this->videoResponse->getAspectRatio());
     }
 
-    /**
-     * @dataProvider provideAspectRatioTypeIsDetectedCorrectlyCases
-     */
+    #[DataProvider('provideAspectRatioTypeIsDetectedCorrectlyCases')]
     public function testAspectRatioTypeIsDetectedCorrectly(int $width, int $height, string $expectedRatioType): void
     {
         $this->videoResponse->initializeResponseData(
