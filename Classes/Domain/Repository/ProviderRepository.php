@@ -119,7 +119,10 @@ class ProviderRepository
     {
         if (count($urlRegexes) && count($urlSchemes)) {
             throw new InvalidConfigurationException(
-                sprintf('A provider can have either urlRegexes or urlSchemes. The provider %s has both.', $providerName),
+                sprintf(
+                    'A provider can have either urlRegexes or urlSchemes. The provider %s has both.',
+                    $providerName,
+                ),
             );
         }
 
