@@ -23,7 +23,7 @@ class EmbedResponsivePaddingViewHelper extends AbstractTagBasedViewHelper
             'string',
             'CSS class(es) for this element',
             false,
-            'tx-mediaoembed-embed-responsive-padding'
+            'tx-mediaoembed-embed-responsive-padding',
         );
     }
 

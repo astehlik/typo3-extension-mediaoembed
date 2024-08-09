@@ -75,7 +75,7 @@ ExtensionManagementUtility::addTcaSelectItem(
         'icon' => 'extensions-mediaoembed-content-externalmedia',
     ],
     'media',
-    'after'
+    'after',
 );
 
 $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes']['mediaoembed_oembedmediarenderer'] =

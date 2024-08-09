@@ -9,6 +9,7 @@ use Sto\Mediaoembed\Response\HtmlAwareResponseInterface;
 use Sto\Mediaoembed\Response\Processor\HtmlResponseProcessorInterface;
 use Sto\Mediaoembed\Response\Processor\Support\IframeAwareProcessorTrait;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use InvalidArgumentException;
 
 class IframeAccessibilityProcessor implements HtmlResponseProcessorInterface
 {
@@ -21,7 +22,7 @@ class IframeAccessibilityProcessor implements HtmlResponseProcessorInterface
         }
 
         if (!$response instanceof GenericResponse) {
-            throw new \InvalidArgumentException('This processor only works GenericResponse instances!');
+            throw new InvalidArgumentException('This processor only works GenericResponse instances!');
         }
 
         $ariaLabel = $this->getAriaLabel($response);
@@ -34,7 +35,7 @@ class IframeAccessibilityProcessor implements HtmlResponseProcessorInterface
             return (string)LocalizationUtility::translate(
                 'iframe_aria_label_fallback',
                 'Mediaoembed',
-                [$response->getProviderName()]
+                [$response->getProviderName()],
             );
         }
 
@@ -44,7 +45,7 @@ class IframeAccessibilityProcessor implements HtmlResponseProcessorInterface
             [
                 $response->getProviderName(),
                 $response->getTitle(),
-            ]
+            ],
         );
     }
 }

@@ -16,7 +16,7 @@ final class AspectRatioCalculatorTest extends AbstractUnitTestCase
         $this->aspectRatioCalculator = new AspectRatioCalculator();
     }
 
-    public static function calculateAspectRatioReturnsExpectedValuesDataProvider(): array
+    public static function provideCalculateAspectRatioReturnsExpectedValuesCases(): iterable
     {
         return [
             'invalid value' => [
@@ -34,7 +34,7 @@ final class AspectRatioCalculatorTest extends AbstractUnitTestCase
         ];
     }
 
-    public static function isValidAspectRatioReturnsFalseForInvalidValuesDataProvider(): array
+    public static function provideIsValidAspectRatioReturnsFalseForInvalidValuesCases(): iterable
     {
         return [
             'regex not matching' => ['asdf'],
@@ -46,7 +46,7 @@ final class AspectRatioCalculatorTest extends AbstractUnitTestCase
     }
 
     /**
-     * @dataProvider calculateAspectRatioReturnsExpectedValuesDataProvider
+     * @dataProvider provideCalculateAspectRatioReturnsExpectedValuesCases
      */
     public function testCalculateAspectRatioReturnsExpectedValues(float $expectedValue, string $aspectRatio): void
     {
@@ -54,7 +54,7 @@ final class AspectRatioCalculatorTest extends AbstractUnitTestCase
     }
 
     /**
-     * @dataProvider isValidAspectRatioReturnsFalseForInvalidValuesDataProvider
+     * @dataProvider provideIsValidAspectRatioReturnsFalseForInvalidValuesCases
      */
     public function testIsValidAspectRatioReturnsFalseForInvalidValues(string $value): void
     {

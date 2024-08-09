@@ -33,7 +33,7 @@ class VideoResponseTest extends AbstractUnitTestCase
         $this->videoResponse = new VideoResponse();
     }
 
-    public static function aspectRatioIsDetectedCorrectlyDataProvider(): array
+    public static function provideAspectRatioTypeIsDetectedCorrectlyCases(): iterable
     {
         return [
             '16 to 9 ratio' => [
@@ -65,7 +65,7 @@ class VideoResponseTest extends AbstractUnitTestCase
     }
 
     /**
-     * @dataProvider aspectRatioIsDetectedCorrectlyDataProvider
+     * @dataProvider provideAspectRatioTypeIsDetectedCorrectlyCases
      */
     public function testAspectRatioTypeIsDetectedCorrectly(int $width, int $height, string $expectedRatioType): void
     {
@@ -76,7 +76,7 @@ class VideoResponseTest extends AbstractUnitTestCase
                 'width' => $width,
                 'height' => $height,
             ],
-            $this->createMock(Configuration::class)
+            $this->createMock(Configuration::class),
         );
         self::assertSame($expectedRatioType, $this->videoResponse->getAspectRatioType());
 
@@ -95,7 +95,7 @@ class VideoResponseTest extends AbstractUnitTestCase
                 'width' => 160,
                 'height' => 190,
             ],
-            $this->createMock(Configuration::class)
+            $this->createMock(Configuration::class),
         );
         self::assertSame(160 / 190, $this->videoResponse->getAspectRatio());
     }

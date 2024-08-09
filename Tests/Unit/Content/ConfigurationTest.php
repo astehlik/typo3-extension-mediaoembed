@@ -17,7 +17,7 @@ class ConfigurationTest extends TestCase
 
     private Content|MockObject $contentMock;
 
-    private Settings|MockObject $settingsMock;
+    private MockObject|Settings $settingsMock;
 
     protected function setUp(): void
     {
@@ -27,7 +27,7 @@ class ConfigurationTest extends TestCase
         $this->settingsMock = $this->createMock(Settings::class);
     }
 
-    public static function getMaxWidthHeightDataProvider(): array
+    public static function getMaxWidthHeightDataProvider(): iterable
     {
         return [
             'settings and content object zero returns zero' => [
@@ -132,7 +132,7 @@ class ConfigurationTest extends TestCase
         return new Configuration(
             $this->contentMock,
             $this->settingsMock,
-            $this->aspectRatioCalculatorMock
+            $this->aspectRatioCalculatorMock,
         );
     }
 }

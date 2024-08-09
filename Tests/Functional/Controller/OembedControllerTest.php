@@ -33,7 +33,7 @@ class OembedControllerTest extends AbstractFunctionalTestCase
             [
                 'setup' => $this->typoscriptSetupFilesDefault,
                 'constants' => $this->typoscriptConstantFiles,
-            ]
+            ],
         );
         $this->setUpFrontendSite(1);
     }

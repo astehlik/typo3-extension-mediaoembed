@@ -67,13 +67,13 @@ class ProviderRepository
             $providerName,
             $endpoint,
             $hasRegexUrlSchemes ? $urlRegexes : $urlSchemes,
-            $hasRegexUrlSchemes
+            $hasRegexUrlSchemes,
         );
 
         if (!empty($providerConfig['requestHandlerClass'])) {
             $provider->withRequestHandler(
                 $providerConfig['requestHandlerClass'],
-                $providerConfig['requestHandlerSettings'] ?? []
+                $providerConfig['requestHandlerSettings'] ?? [],
             );
         }
 
@@ -89,7 +89,7 @@ class ProviderRepository
     private function getProvidersConfig(): array
     {
         $settings = $this->configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
         );
 
         return (array)($settings['providers'] ?? []);
@@ -103,7 +103,7 @@ class ProviderRepository
 
         if (!GeneralUtility::isValidUrl($endpoint)) {
             throw new InvalidConfigurationException(
-                sprintf('Endpoint of provider %s is an invalid URL: %s', $providerName, $endpoint)
+                sprintf('Endpoint of provider %s is an invalid URL: %s', $providerName, $endpoint),
             );
         }
     }
@@ -119,7 +119,7 @@ class ProviderRepository
     {
         if (count($urlRegexes) && count($urlSchemes)) {
             throw new InvalidConfigurationException(
-                sprintf('A provider can have either urlRegexes or urlSchemes. The provider %s has both.', $providerName)
+                sprintf('A provider can have either urlRegexes or urlSchemes. The provider %s has both.', $providerName),
             );
         }
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Provider;
 
+use RuntimeException;
+
 class EndpointCollector
 {
     private ProviderEndpoints $providerEndpoints;
@@ -12,7 +14,7 @@ class EndpointCollector
 
     public function __construct(
         ProviderEndpoints $providerEndpoints,
-        ProviderUrls $providerUrls
+        ProviderUrls $providerUrls,
     ) {
         $this->providerEndpoints = $providerEndpoints;
         $this->providerUrls = $providerUrls;
@@ -47,7 +49,7 @@ class EndpointCollector
         $checkedLabels = [];
         foreach ($this->getEndpointLabels() as $label) {
             if (array_key_exists($label, $checkedLabels)) {
-                throw new \RuntimeException('Duplicate endpoint label ' . $label);
+                throw new RuntimeException('Duplicate endpoint label ' . $label);
             }
             $checkedLabels[$label] = true;
         }
@@ -60,7 +62,7 @@ class EndpointCollector
         foreach ($this->getProviderData() as $providerData) {
             $endpointUrl = $providerData[0];
             if (!array_key_exists($endpointUrl, $endpointLabels)) {
-                throw new \RuntimeException('No label configured for endpoint URL ' . $endpointUrl);
+                throw new RuntimeException('No label configured for endpoint URL ' . $endpointUrl);
             }
         }
     }
@@ -74,7 +76,7 @@ class EndpointCollector
         array &$endpointsByName,
         string $endpointName,
         string $endpointUrl,
-        bool $isRegex
+        bool $isRegex,
     ): Endpoint {
         if (isset($endpointsByName[$endpointName])) {
             return $endpointsByName[$endpointName];

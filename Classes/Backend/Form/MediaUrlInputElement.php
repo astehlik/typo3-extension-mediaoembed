@@ -23,7 +23,7 @@ final class MediaUrlInputElement extends InputTextElement
         $result['html'] = '<div id="' . $wrapperId . '">' . $result['html'] . '</div>';
 
         $result['javaScriptModules'][] = JavaScriptModuleInstruction::create(
-            '@de-swebhosting/mediaoembed/backend/url-parser.js'
+            '@de-swebhosting/mediaoembed/backend/url-parser.js',
         )->instance($wrapperId);
 
         return $result;

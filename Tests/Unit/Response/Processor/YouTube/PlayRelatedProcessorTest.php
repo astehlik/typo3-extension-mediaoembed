@@ -12,7 +12,7 @@ use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
 class PlayRelatedProcessorTest extends AbstractUnitTestCase
 {
-    public static function processResponseModifesIframeUrlDataProvider(): array
+    public static function provideProcessResponseModifesIframeUrlCases(): iterable
     {
         return [
             [true],
@@ -21,7 +21,7 @@ class PlayRelatedProcessorTest extends AbstractUnitTestCase
     }
 
     /**
-     * @dataProvider processResponseModifesIframeUrlDataProvider
+     * @dataProvider provideProcessResponseModifesIframeUrlCases
      */
     public function testProcessResponseModifesIframeUrl(bool $shouldPlayRelated): void
     {

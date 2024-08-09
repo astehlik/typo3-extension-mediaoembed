@@ -37,7 +37,7 @@ class Content
         int $maxHeight = 0,
         int $maxWidth = 0,
         bool $playRelated = true,
-        string $aspectRatio = ''
+        string $aspectRatio = '',
     ) {
         $this->maxHeight = $maxHeight;
         $this->maxWidth = $maxWidth;

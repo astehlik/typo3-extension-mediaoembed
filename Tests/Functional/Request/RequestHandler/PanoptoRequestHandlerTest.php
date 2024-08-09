@@ -11,7 +11,7 @@ use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTestCase;
 
 final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
 {
-    public static function handleBuildsExpectedIframeDataProvider(): array
+    public static function provideHandleBuildsExpectedIframeCases(): iterable
     {
         return [
             [
@@ -28,7 +28,7 @@ final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
     }
 
     /**
-     * @dataProvider handleBuildsExpectedIframeDataProvider
+     * @dataProvider provideHandleBuildsExpectedIframeCases
      */
     public function testHandleBuildsExpectedIframe(string $mediaUrl, string $expectedUrl): void
     {
@@ -39,7 +39,7 @@ final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
             'panopto',
             'https://demo.',
             ['https://'],
-            false
+            false,
         );
         $provider->withRequestHandler(
             PanoptoRequestHandler::class,
@@ -48,7 +48,7 @@ final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
                     'offerviewer' => 'true',
                     'autoplay' => 'false',
                 ],
-            ]
+            ],
         );
 
         $html = '<iframe'

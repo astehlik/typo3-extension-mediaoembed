@@ -23,6 +23,7 @@ use Sto\Mediaoembed\Request\HttpClient\HttpClientFactory;
 use Sto\Mediaoembed\Request\HttpClient\HttpClientInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use RuntimeException;
 
 /**
  * Represents a HTTP request.
@@ -179,17 +180,17 @@ class HttpRequest
         throw new HttpNotImplementedException(
             $this->configuration->getMediaUrl(),
             $this->format,
-            $requestUrl
+            $requestUrl,
         );
     }
 
     protected function handleErrorUnknown(HttpClientRequestException $requestException): void
     {
-        throw new \RuntimeException(
+        throw new RuntimeException(
             'An unknown error occurred while contacting the provider: '
             . $requestException->getMessage() . '.',
             1303401545,
-            $requestException
+            $requestException,
         );
     }
 
@@ -234,7 +235,7 @@ class HttpRequest
 
         $this->handleRequestError($requestException, $requestUrl);
 
-        throw new \RuntimeException('This step should never be reached!');
+        throw new RuntimeException('This step should never be reached!');
     }
 
     private function getHttpClient(): HttpClientInterface

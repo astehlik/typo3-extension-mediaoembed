@@ -14,6 +14,4 @@ namespace Sto\Mediaoembed\Exception;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-class InvalidConfigurationException extends OEmbedException
-{
-}
+class InvalidConfigurationException extends OEmbedException {}

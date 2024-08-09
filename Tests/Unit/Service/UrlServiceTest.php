@@ -19,7 +19,7 @@ final class UrlServiceTest extends AbstractUnitTestCase
         $this->urlService = new UrlService();
     }
 
-    public static function buildUrlReturnsExpectedStringDataProvider(): array
+    public static function provideBuildUrlReturnsExpectedStringCases(): iterable
     {
         return [
             [''],
@@ -58,7 +58,7 @@ final class UrlServiceTest extends AbstractUnitTestCase
     }
 
     /**
-     * @dataProvider buildUrlReturnsExpectedStringDataProvider
+     * @dataProvider provideBuildUrlReturnsExpectedStringCases
      */
     public function testBuildUrlReturnsExpectedString(string $url): void
     {
