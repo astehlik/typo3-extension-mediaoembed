@@ -12,6 +12,7 @@ use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
+use SplFileInfo;
 
 class PhotoDownloadService
 {
@@ -21,7 +22,7 @@ class PhotoDownloadService
 
     public function __construct(
         HttpService $httpService,
-        ResourceService $resourceService
+        ResourceService $resourceService,
     ) {
         $this->httpService = $httpService;
         $this->resourceService = $resourceService;
@@ -72,7 +73,7 @@ class PhotoDownloadService
     {
         return $this->resourceService->getOrCreateFolder(
             $configuration->getPhotoDownloadStorageUid(),
-            $configuration->getPhotoDownloadFolderIdentifier()
+            $configuration->getPhotoDownloadFolderIdentifier(),
         );
     }
 
@@ -87,7 +88,7 @@ class PhotoDownloadService
 
     private function detectExtension(string $photoUrl): string
     {
-        $fileInfo = new \SplFileInfo($photoUrl);
+        $fileInfo = new SplFileInfo($photoUrl);
         return $fileInfo->getExtension();
     }
 }

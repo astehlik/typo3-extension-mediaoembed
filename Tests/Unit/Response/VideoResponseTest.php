@@ -14,6 +14,7 @@ namespace Sto\Mediaoembed\Tests\Unit\Response;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Response\VideoResponse;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
@@ -33,7 +34,7 @@ class VideoResponseTest extends AbstractUnitTestCase
         $this->videoResponse = new VideoResponse();
     }
 
-    public static function aspectRatioIsDetectedCorrectlyDataProvider(): array
+    public static function provideAspectRatioTypeIsDetectedCorrectlyCases(): iterable
     {
         return [
             '16 to 9 ratio' => [
@@ -64,9 +65,7 @@ class VideoResponseTest extends AbstractUnitTestCase
         self::assertSame(0.0, $this->videoResponse->getAspectRatio());
     }
 
-    /**
-     * @dataProvider aspectRatioIsDetectedCorrectlyDataProvider
-     */
+    #[DataProvider('provideAspectRatioTypeIsDetectedCorrectlyCases')]
     public function testAspectRatioTypeIsDetectedCorrectly(int $width, int $height, string $expectedRatioType): void
     {
         $this->videoResponse->initializeResponseData(
@@ -76,7 +75,7 @@ class VideoResponseTest extends AbstractUnitTestCase
                 'width' => $width,
                 'height' => $height,
             ],
-            $this->createMock(Configuration::class)
+            $this->createMock(Configuration::class),
         );
         self::assertSame($expectedRatioType, $this->videoResponse->getAspectRatioType());
 
@@ -95,7 +94,7 @@ class VideoResponseTest extends AbstractUnitTestCase
                 'width' => 160,
                 'height' => 190,
             ],
-            $this->createMock(Configuration::class)
+            $this->createMock(Configuration::class),
         );
         self::assertSame(160 / 190, $this->videoResponse->getAspectRatio());
     }

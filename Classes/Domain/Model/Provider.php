@@ -63,7 +63,7 @@ class Provider
         string $name,
         string $endpoint,
         array $urlSchemes,
-        bool $hasRegexUrlSchemes
+        bool $hasRegexUrlSchemes,
     ) {
         $this->name = $name;
         $this->endpoint = $endpoint;

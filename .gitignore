@@ -1,7 +1,8 @@
-/.Build
+/.Build/*
 /codesniffer
 /var
 /.cache
 /.php-cs-fixer.cache
 /.phpunit.result.cache
+/bin
 /composer.lock

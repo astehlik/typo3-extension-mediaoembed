@@ -33,7 +33,7 @@ class Configuration
     public function __construct(
         Content $content,
         Settings $settings,
-        AspectRatioCalculatorInterface $aspectRatioCalculator
+        AspectRatioCalculatorInterface $aspectRatioCalculator,
     ) {
         $this->contentElement = $content;
         $this->settings = $settings;

@@ -106,7 +106,7 @@ class ResponseBuilderTest extends AbstractUnitTestCase
         string $responseClass,
         array $responseData,
         ?Configuration $configuration = null,
-        PhotoDownloadService|MockObject $photoDownloadServiceMock = null
+        null|MockObject|PhotoDownloadService $photoDownloadServiceMock = null,
     ): GenericResponse {
         if (!$photoDownloadServiceMock) {
             $photoDownloadServiceMock = $this->createMock(PhotoDownloadService::class);
@@ -116,7 +116,7 @@ class ResponseBuilderTest extends AbstractUnitTestCase
 
         $response = $reponseBuilder->buildResponse(
             $responseData,
-            $configuration ?: $this->createConfiguration()
+            $configuration ?: $this->createConfiguration(),
         );
 
         self::assertInstanceOf($responseClass, $response);
@@ -129,7 +129,7 @@ class ResponseBuilderTest extends AbstractUnitTestCase
         return new Configuration(
             new Content(12, 'https://the-url.tld/embed'),
             new Settings([]),
-            $this->createMock(AspectRatioCalculatorInterface::class)
+            $this->createMock(AspectRatioCalculatorInterface::class),
         );
     }
 }

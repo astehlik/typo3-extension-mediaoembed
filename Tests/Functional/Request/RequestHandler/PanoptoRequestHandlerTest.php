@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Functional\Request\RequestHandler;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Request\RequestHandler\Panopto\PanoptoRequestHandler;
@@ -11,7 +12,7 @@ use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTestCase;
 
 final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
 {
-    public static function handleBuildsExpectedIframeDataProvider(): array
+    public static function provideHandleBuildsExpectedIframeCases(): iterable
     {
         return [
             [
@@ -27,9 +28,7 @@ final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
         ];
     }
 
-    /**
-     * @dataProvider handleBuildsExpectedIframeDataProvider
-     */
+    #[DataProvider('provideHandleBuildsExpectedIframeCases')]
     public function testHandleBuildsExpectedIframe(string $mediaUrl, string $expectedUrl): void
     {
         $configurationMock = $this->createMock(Configuration::class);
@@ -39,7 +38,7 @@ final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
             'panopto',
             'https://demo.',
             ['https://'],
-            false
+            false,
         );
         $provider->withRequestHandler(
             PanoptoRequestHandler::class,
@@ -48,7 +47,7 @@ final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
                     'offerviewer' => 'true',
                     'autoplay' => 'false',
                 ],
-            ]
+            ],
         );
 
         $html = '<iframe'

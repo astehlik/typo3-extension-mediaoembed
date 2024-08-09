@@ -28,8 +28,8 @@ final class EditDocumentControllerHooksTest extends AbstractFunctionalTestCase
                         $this->assertArrayContainsExpectedTranslationKeys($translations);
                         $this->assertTranslationsAreNotEmpty($translations);
                         return true;
-                    }
-                )
+                    },
+                ),
             );
 
         $hooks = new EditDocumentControllerHooks();
@@ -38,18 +38,18 @@ final class EditDocumentControllerHooksTest extends AbstractFunctionalTestCase
         $hooks->__invoke(
             new AfterFormEnginePageInitializedEvent(
                 $this->createMock(EditDocumentController::class),
-                $this->createMock(ServerRequestInterface::class)
-            )
+                $this->createMock(ServerRequestInterface::class),
+            ),
         );
     }
 
     private function assertArrayContainsExpectedTranslationKeys(array $translations): void
     {
         $expectedKeys = array_map(
-            function ($value) {
+            static function ($value) {
                 return 'tx_mediaoembed_' . $value;
             },
-            EditDocumentControllerHooks::JS_LABEL_KEYS
+            EditDocumentControllerHooks::JS_LABEL_KEYS,
         );
         self::assertSame($expectedKeys, array_keys($translations));
     }

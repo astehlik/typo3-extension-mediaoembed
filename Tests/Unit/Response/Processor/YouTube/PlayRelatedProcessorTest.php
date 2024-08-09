@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Response\Processor\YouTube;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Response\Processor\YouTube\PlayRelatedProcessor;
 use Sto\Mediaoembed\Response\VideoResponse;
@@ -12,7 +13,7 @@ use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
 class PlayRelatedProcessorTest extends AbstractUnitTestCase
 {
-    public static function processResponseModifesIframeUrlDataProvider(): array
+    public static function provideProcessResponseModifesIframeUrlCases(): iterable
     {
         return [
             [true],
@@ -20,9 +21,7 @@ class PlayRelatedProcessorTest extends AbstractUnitTestCase
         ];
     }
 
-    /**
-     * @dataProvider processResponseModifesIframeUrlDataProvider
-     */
+    #[DataProvider('provideProcessResponseModifesIframeUrlCases')]
     public function testProcessResponseModifesIframeUrl(bool $shouldPlayRelated): void
     {
         /** @noinspection HtmlUnknownTarget */

@@ -13,6 +13,7 @@ use Sto\Mediaoembed\Exception\HttpUnauthorizedException;
 use Sto\Mediaoembed\Request\HttpClient\HttpClientFactory;
 use Sto\Mediaoembed\Request\HttpClient\HttpClientInterface;
 use Sto\Mediaoembed\Request\HttpRequest;
+use RuntimeException;
 
 class HttpRequestTest extends TestCase
 {
@@ -21,7 +22,7 @@ class HttpRequestTest extends TestCase
         $this->assertUrlIs(
             'maxheight=100&format=json&url=http%3A%2F%2Fmy-media.tld%2Ftheurl',
             0,
-            100
+            100,
         );
     }
 
@@ -30,7 +31,7 @@ class HttpRequestTest extends TestCase
         $this->assertUrlIs(
             'maxwidth=55&maxheight=100&format=json&url=http%3A%2F%2Fmy-media.tld%2Ftheurl',
             55,
-            100
+            100,
         );
     }
 
@@ -38,7 +39,7 @@ class HttpRequestTest extends TestCase
     {
         $this->assertUrlIs(
             'maxwidth=100&format=json&url=http%3A%2F%2Fmy-media.tld%2Ftheurl',
-            100
+            100,
         );
     }
 
@@ -48,7 +49,7 @@ class HttpRequestTest extends TestCase
             'some=get&para=meter&format=json&url=http%3A%2F%2Fmy-media.tld%2Ftheurl',
             0,
             0,
-            'https://the-provider.tld/endpoint?some=get&para=meter'
+            'https://the-provider.tld/endpoint?some=get&para=meter',
         );
     }
 
@@ -72,7 +73,7 @@ class HttpRequestTest extends TestCase
 
     public function testErrorUnknown(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->sendWithException(500);
     }
 
@@ -83,7 +84,7 @@ class HttpRequestTest extends TestCase
             0,
             0,
             'https://the-provider.tld/###FORMAT###?some=get&format={format}&someother=param',
-            'https://the-provider.tld/json'
+            'https://the-provider.tld/json',
         );
     }
 
@@ -91,7 +92,7 @@ class HttpRequestTest extends TestCase
     {
         $response = $this->assertUrlIs(
             'maxwidth=100&format=json&url=http%3A%2F%2Fmy-media.tld%2Ftheurl',
-            100
+            100,
         );
         self::assertSame('the repsonse', $response);
     }
@@ -101,7 +102,7 @@ class HttpRequestTest extends TestCase
         int $maxWidth = 0,
         int $maxHeight = 0,
         string $endpointUrl = 'https://the-provider.tld/endpoint',
-        string $expectedBaseUrl = 'https://the-provider.tld/endpoint'
+        string $expectedBaseUrl = 'https://the-provider.tld/endpoint',
     ): string {
         $expectedUrl = $expectedBaseUrl . '?' . $expectedQueryString;
 
@@ -119,7 +120,7 @@ class HttpRequestTest extends TestCase
         int $maxHeight = 0,
         int $maxWidth = 0,
         string $endpointUrl = 'https://the-provider.tld/endpoint',
-        ?HttpClientInterface $httpClient = null
+        ?HttpClientInterface $httpClient = null,
     ): HttpRequest {
         $configurationMock = $this->createMock(Configuration::class);
         $configurationMock->expects(self::once())->method('getMaxheight')->willReturn($maxHeight);
@@ -138,14 +139,14 @@ class HttpRequestTest extends TestCase
     {
         $httpClientMock = $this->createMock(HttpClientInterface::class);
         $httpClientMock->method('executeGetRequest')->willThrowException(
-            new HttpClientRequestException('an error', $errorCode)
+            new HttpClientRequestException('an error', $errorCode),
         );
 
         $httpRequest = $this->createHttpRequest(
             0,
             0,
             'https://the-provider.tld/endpoint',
-            $httpClientMock
+            $httpClientMock,
         );
 
         $httpRequest->sendAndGetResponseData();

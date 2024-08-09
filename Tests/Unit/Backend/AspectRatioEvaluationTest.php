@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Backend;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Sto\Mediaoembed\Backend\AspectRatioEvaluation;
 use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
@@ -24,7 +25,7 @@ final class AspectRatioEvaluationTest extends AbstractUnitTestCase
         $this->aspectRatioEvaluation->injectAspectRatioCalculator($this->aspectRatioCalculatorMock);
     }
 
-    public static function deevaluateFieldValueReturnsExpectedValueDataProvider(): array
+    public static function provideDeevaluateFieldValueReturnsExpectedValueCases(): iterable
     {
         return [
             [
@@ -38,7 +39,7 @@ final class AspectRatioEvaluationTest extends AbstractUnitTestCase
         ];
     }
 
-    public static function evaluateFieldValueReturnsEmptyStringForInvalidValuesDataProvider(): array
+    public static function provideEvaluateFieldValueReturnsEmptyStringForInvalidValuesCases(): iterable
     {
         return [
             [null],
@@ -48,17 +49,13 @@ final class AspectRatioEvaluationTest extends AbstractUnitTestCase
         ];
     }
 
-    /**
-     * @dataProvider deevaluateFieldValueReturnsExpectedValueDataProvider
-     */
+    #[DataProvider('provideDeevaluateFieldValueReturnsExpectedValueCases')]
     public function testDeevaluateFieldValueReturnsExpectedValue(array $parameters, string $expectedValue): void
     {
         self::assertSame($expectedValue, $this->aspectRatioEvaluation->deevaluateFieldValue($parameters));
     }
 
-    /**
-     * @dataProvider evaluateFieldValueReturnsEmptyStringForInvalidValuesDataProvider
-     */
+    #[DataProvider('provideEvaluateFieldValueReturnsEmptyStringForInvalidValuesCases')]
     public function testEvaluateFieldValueReturnsEmptyStringForInvalidValues(mixed $value): void
     {
         if ($value === 'invalid') {
@@ -83,7 +80,7 @@ final class AspectRatioEvaluationTest extends AbstractUnitTestCase
     {
         self::assertInstanceOf(
             JavaScriptModuleInstruction::class,
-            $this->aspectRatioEvaluation->returnFieldJS()
+            $this->aspectRatioEvaluation->returnFieldJS(),
         );
     }
 }

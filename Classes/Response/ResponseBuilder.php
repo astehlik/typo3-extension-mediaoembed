@@ -83,7 +83,7 @@ class ResponseBuilder implements SingletonInterface
     {
         $responseData['localFile'] = $this->photoDownloadService->downloadPhoto(
             $responseData['url'],
-            $configuration
+            $configuration,
         );
 
         /** @noinspection PhpIncompatibleReturnTypeInspection */
@@ -105,7 +105,7 @@ class ResponseBuilder implements SingletonInterface
     protected function createResponseWithData(
         string $responseClass,
         array $responseData,
-        Configuration $configuration
+        Configuration $configuration,
     ): GenericResponse {
         /** @var GenericResponse $response */
         $response = new $responseClass();

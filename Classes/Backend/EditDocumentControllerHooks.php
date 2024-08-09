@@ -69,7 +69,7 @@ final class EditDocumentControllerHooks
     private function translate(string $key): string
     {
         return $this->languageService->sL(
-            'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_be_js.xlf:' . $key
+            'LLL:EXT:mediaoembed/Resources/Private/Language/locallang_be_js.xlf:' . $key,
         );
     }
 }

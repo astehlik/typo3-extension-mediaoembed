@@ -18,26 +18,6 @@ $bootMediaoembed = function () {
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
 
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
-        '
-mod.wizards.newContentElement {
-	wizardItems {
-		special.elements {
-			mediaoembed_oembedmediarenderer {
-				iconIdentifier = extensions-mediaoembed-content-externalmedia
-				title = ' . $lllPrefix . 'tt_content.CType.I.tx_mediaoembed
-				description = ' . $lllPrefix . 'new_content_element_wizard_oembedmediarenderer_description
-				tt_content_defValues {
-					CType = mediaoembed_oembedmediarenderer
-				}
-			}
-		}
-		special.show := addToList(mediaoembed_oembedmediarenderer)
-	}
-}
-'
-    );
-
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][\Sto\Mediaoembed\Backend\AspectRatioEvaluation::class]
         = '';
 

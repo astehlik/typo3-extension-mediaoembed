@@ -40,7 +40,7 @@ final class PanoptoRequestHandler implements RequestHandlerInterface
     private function getTemplatePath(): string
     {
         return GeneralUtility::getFileAbsFileName(
-            'EXT:mediaoembed/Resources/Private/Templates/RequestHandler/Panopto.html'
+            'EXT:mediaoembed/Resources/Private/Templates/RequestHandler/Panopto.html',
         );
     }
 }
