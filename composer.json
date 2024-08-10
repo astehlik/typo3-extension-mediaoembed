@@ -15,13 +15,10 @@
 		"typo3/cms-core": "~13.2.1"
 	},
 	"require-dev": {
-		"de-swebhosting/php-codestyle": "^5.2",
 		"de-swebhosting/typo3-extension-buildtools": "dev-TYPO3_13",
-		"ergebnis/composer-normalize": "^2.28",
-		"friendsofphp/php-cs-fixer": "^3.14",
-		"michielroos/typo3scan": "^1.7",
-		"squizlabs/php_codesniffer": "^3.7",
+		"typo3/cms-filelist": "*",
 		"typo3/cms-fluid-styled-content": "*",
+		"typo3/cms-install": "*",
 		"typo3/testing-framework": "dev-main"
 	},
 	"replace": {
