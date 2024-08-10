@@ -16,7 +16,9 @@
 	},
 	"require-dev": {
 		"de-swebhosting/typo3-extension-buildtools": "dev-TYPO3_13",
+		"typo3/cms-filelist": "*",
 		"typo3/cms-fluid-styled-content": "*",
+		"typo3/cms-install": "*",
 		"typo3/testing-framework": "dev-main"
 	},
 	"replace": {

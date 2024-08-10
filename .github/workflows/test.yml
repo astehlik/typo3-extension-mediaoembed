@@ -14,6 +14,7 @@ on:
 env:
   TYPO3_EXTENSION_KEY: mediaoembed
   MAIN_PHP_VERSION: 8.3
+  CI: true
 
 jobs:
   "composer-validate":
@@ -37,7 +38,7 @@ jobs:
       - run: composer normalize --dry-run --diff
 
   "check-codestyle-codesniffer":
-    name: "PHP code style check"
+    name: "PHP_CodeSniffer check"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -51,7 +52,7 @@ jobs:
           bash bin/t3_check_codestyle.sh PerCodeStyleT3Ext
 
   "check-codestyle-php-cs-fixer":
-    name: "PHP code style check"
+    name: "PHP CS Fixer check"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -97,6 +98,23 @@ jobs:
       - run: |
           bash bin/t3_run_tests.sh -s functional -d mariadb -p ${{ env.MAIN_PHP_VERSION }}
 
+  "php-acceptance-tests-mariadb":
+    name: "Acceptance tests on MariaDB"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/workflows/composer
+        with:
+          php_version: ${{ env.MAIN_PHP_VERSION }}
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "${{ env.MAIN_PHP_VERSION }}"
+          extensions: intl zip
+      - run: |
+          rm -f .Build/Web/typo3/sysext/* .Build/Web/typo3conf/ext/*
+          composer run post-autoload-dump
+          bash bin/t3_run_tests.sh -s acceptance -d mariadb -p ${{ env.MAIN_PHP_VERSION }} -b docker
+
   "php-lint":
     name: "PHP linting"
     strategy:
@@ -110,6 +128,22 @@ jobs:
           php_version: ${{ matrix.php_version }}
       - run: |
           bash bin/t3_run_tests.sh -s lintPhp -p ${{ matrix.php_version }}
+
+  "phpstan":
+    name: "PHPStan"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/workflows/composer
+        with:
+          php_version: "${{ env.MAIN_PHP_VERSION }}"
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "${{ env.MAIN_PHP_VERSION }}"
+          extensions: intl zip
+      - run: |
+          php -dxdebug.mode=off bin/codecept build -c Tests/codeception.yml
+          php -dxdebug.mode=off bin/phpstan analyse -c Build/phpstan/phpstan.ci.neon --no-progress --no-interaction --memory-limit 4G --debug
 
   "coverage-phpunit":
     name: "Test coverage by Unit Tests"

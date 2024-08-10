@@ -1,12 +1,16 @@
 <?xml version="1.0"?>
 <ruleset name="PerCodeStyleT3Ext">
-	<description>Based on PSRDefault. Adjust only if REALLY neccessary!</description>
-	<rule ref="PSRDefault">
-		<exclude name="PSR12.Properties.ConstantVisibility"/>
-	</rule>
-	<rule ref="Squiz.NamingConventions.ValidVariableName">
-		<exclude-pattern>ext_emconf.php</exclude-pattern>
-	</rule>
+    <description>Based on PSRDefault. Adjust only if REALLY neccessary!</description>
+    <rule ref="PSRDefault">
+        <exclude name="PSR12.Properties.ConstantVisibility"/>
+    </rule>
+    <rule ref="PSR2.Methods.MethodDeclaration.Underscore">
+        <exclude-pattern>Tests/Acceptance/*/*Cest.php</exclude-pattern>
+    </rule>
+    <rule ref="Squiz.NamingConventions.ValidVariableName">
+        <exclude-pattern>Tests/Acceptance/*</exclude-pattern>
+        <exclude-pattern>ext_emconf.php</exclude-pattern>
+    </rule>
     <!-- Exceptions for classes with empty body -->
     <rule ref="PSR2.Classes.ClassDeclaration">
         <exclude-pattern>Classes/Exception/InvalidConfigurationException.php</exclude-pattern>
