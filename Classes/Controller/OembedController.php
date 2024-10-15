@@ -127,7 +127,7 @@ class OembedController extends ActionController
     {
         try {
             return $providerResolver->getNextMatchingProvider($url);
-        } catch (NoMatchingProviderException $e) {
+        } catch (NoMatchingProviderException) {
             return null;
         }
     }
