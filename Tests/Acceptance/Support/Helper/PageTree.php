@@ -17,25 +17,13 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Acceptance\Support\Helper;
 
+use De\SWebhosting\Buildtools\Tests\Acceptance\Support\Helper\AbstractPageTree;
 use Sto\Mediaoembed\Tests\Acceptance\Support\BackendTester;
 
-final class PageTree extends AbstractTree
+final class PageTree extends AbstractPageTree
 {
-    public static $treeSelector = '#typo3-pagetree-treeContainer';
-
-    /**
-     * Inject our core AcceptanceTester actor into PageTree.
-     */
     public function __construct(BackendTester $I)
     {
         $this->tester = $I;
-    }
-
-    /**
-     * Get node identifier of given page.
-     */
-    public function getPageXPathByPageName(string $pageName): string
-    {
-        return '//*[@class="node-name" and text()=\'' . $pageName . '\']/..';
     }
 }

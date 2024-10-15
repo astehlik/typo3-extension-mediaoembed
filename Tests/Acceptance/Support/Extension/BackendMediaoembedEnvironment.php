@@ -5,30 +5,25 @@ declare(strict_types=1);
 namespace Sto\Mediaoembed\Tests\Acceptance\Support\Extension;
 
 use Codeception\Event\SuiteEvent;
+use De\SWebhosting\Buildtools\Tests\Acceptance\Helper\AcceptanceHelper;
 use RuntimeException;
 use TYPO3\TestingFramework\Core\Acceptance\Extension\BackendEnvironment;
 
 class BackendMediaoembedEnvironment extends BackendEnvironment
 {
-    /**
-     * Load a list of core extensions and styleguide.
-     *
-     * @var array
-     */
-    protected $localConfig = [
-        'coreExtensionsToLoad' => [
-            'core',
-            'extbase',
-            'fluid',
-            'backend',
-            'filelist',
-            'install',
-            'frontend',
-            'fluid_styled_content',
-        ],
-        'testExtensionsToLoad' => ['typo3conf/ext/mediaoembed'],
-        'csvDatabaseFixtures' => [__DIR__ . '/../../Fixtures/BackendEnvironment.csv'],
-    ];
+    public function __construct(array $config, array $options)
+    {
+        $this->localConfig = [
+            'coreExtensionsToLoad' => [
+                ...AcceptanceHelper::getExtensionsForMinimalUsableSystem(),
+                'fluid_styled_content',
+            ],
+            'testExtensionsToLoad' => ['typo3conf/ext/mediaoembed'],
+            'csvDatabaseFixtures' => [__DIR__ . '/../../Fixtures/BackendEnvironment.csv'],
+        ];
+
+        parent::__construct($config, $options);
+    }
 
     public function bootstrapTypo3Environment(SuiteEvent $suiteEvent): void
     {
@@ -60,6 +55,11 @@ class BackendMediaoembedEnvironment extends BackendEnvironment
             $indexPath = $typo3RootPath . '/' . $indexFile;
             $indexContexts = file_get_contents($indexPath);
             $indexContexts = str_replace('<?php', '<?php ' . $putenvCode, $indexContexts);
+            $indexContexts = str_replace(
+                'SystemEnvironmentBuilder::run()',
+                'SystemEnvironmentBuilder::run(composerMode: false)',
+                $indexContexts,
+            );
             file_put_contents($indexPath, $indexContexts);
         }
     }

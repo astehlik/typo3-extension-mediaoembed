@@ -12,14 +12,13 @@
 	"require": {
 		"php": "^8.2",
 		"ext-dom": "*",
-		"typo3/cms-core": "~13.2.1"
+		"typo3/cms-core": "~13.4.0"
 	},
 	"require-dev": {
 		"de-swebhosting/typo3-extension-buildtools": "dev-TYPO3_13",
 		"typo3/cms-filelist": "*",
 		"typo3/cms-fluid-styled-content": "*",
-		"typo3/cms-install": "*",
-		"typo3/testing-framework": "dev-main"
+		"typo3/cms-install": "*"
 	},
 	"replace": {
 		"typo3-ter/mediaoembed": "self.version"
@@ -31,8 +30,7 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Sto\\Mediaoembed\\Tests\\": "Tests/",
-			"TYPO3\\JsonResponse\\": ".Build/vendor/typo3/testing-framework/Resources/Core/Functional/Extensions/json_response/Classes"
+			"Sto\\Mediaoembed\\Tests\\": "Tests/"
 		}
 	},
 	"config": {
