@@ -1,22 +1,31 @@
 actor: BackendTester
-modules:
-  enabled:
-    - WebDriver:
-        url: '%typo3TestingAcceptanceBaseUrl%'
-        browser: chrome
-        wait: 1
-        host: chrome
-    - \TYPO3\TestingFramework\Core\Acceptance\Helper\Acceptance
-    - \TYPO3\TestingFramework\Core\Acceptance\Helper\Login:
-        sessions:
-          # This sessions must exist in the database fixture to get a logged in state.
-          editor: ff83dfd81e20b34c27d3e97771a4525a
-          admin: 886526ce72b86870739cc41991144ec1
-    - Asserts
 
 extensions:
   enabled:
     - Sto\Mediaoembed\Tests\Acceptance\Support\Extension\BackendMediaoembedEnvironment
+
+
+step_decorators:
+  - \Codeception\Step\ConditionalAssertion
+  - \Codeception\Step\TryTo
+
+modules:
+  enabled:
+    - \TYPO3\TestingFramework\Core\Acceptance\Helper\Acceptance
+    - \De\SWebhosting\Buildtools\Tests\Acceptance\Helper\PasswordLogin
+  config:
+    \De\SWebhosting\Buildtools\Tests\Acceptance\Helper\PasswordLogin:
+      passwords:
+        admin: '%typo3TestingAcceptanceAdminPassword%'
+        editor: '%typo3TestingAcceptanceEditorPassword%'
+
+env:
+  classic:
+    extensions:
+      enabled:
+        - Sto\Mediaoembed\Tests\Acceptance\Support\Extension\BackendMediaoembedEnvironment
+  systemplate:
+  sets:
 
 groups:
   AcceptanceTests-Job-*: AcceptanceTests-Job-*

@@ -4,3 +4,5 @@
 # e.g. in Build/testing-docker/local/docker-compose.yml
 #
 typo3TestingAcceptanceBaseUrl: http://web
+typo3TestingAcceptanceAdminPassword: password
+typo3TestingAcceptanceEditorPassword: password

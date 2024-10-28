@@ -14,4 +14,4 @@ parameters:
     - ../../Tests
 
   excludePaths:
-    - ../../Tests/Acceptance/Support
+      - ../../Tests/Acceptance
