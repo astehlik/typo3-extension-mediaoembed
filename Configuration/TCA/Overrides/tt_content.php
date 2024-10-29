@@ -71,11 +71,13 @@ ExtensionManagementUtility::addTcaSelectItem(
     'CType',
     [
         'label' => $lllPrefix . 'tt_content.CType.I.tx_mediaoembed',
+        'description' => $lllPrefix . 'new_content_element_wizard_oembedmediarenderer_description',
         'value' => 'mediaoembed_oembedmediarenderer',
         'icon' => 'extensions-mediaoembed-content-externalmedia',
+        'group' => 'special',
     ],
     'media',
-    'after'
+    'after',
 );
 
 $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes']['mediaoembed_oembedmediarenderer'] =

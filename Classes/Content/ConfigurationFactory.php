@@ -25,7 +25,7 @@ class ConfigurationFactory
 
     public function __construct(
         AspectRatioCalculatorInterface $aspectRatioCalculator,
-        ContentRepository $contentRepository
+        ContentRepository $contentRepository,
     ) {
         $this->aspectRatioCalculator = $aspectRatioCalculator;
         $this->contentRepository = $contentRepository;

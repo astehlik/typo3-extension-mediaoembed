@@ -69,7 +69,7 @@ final class AspectRatioEvaluation
     {
         return JavaScriptModuleInstruction::create(
             '@de-swebhosting/mediaoembed/backend/form-engine-evaluation.js',
-            'FormEngineEvaluation'
+            'FormEngineEvaluation',
         );
     }
 

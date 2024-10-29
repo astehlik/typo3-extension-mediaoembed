@@ -54,18 +54,13 @@ class ResponseBuilder implements SingletonInterface
 
         $responseType = (string)$parsedResponseData['type'];
 
-        switch ($responseType) {
-            case 'link':
-                return $this->createResponseLink($finalResponseData, $configuration);
-            case 'photo':
-                return $this->createResponsePhoto($finalResponseData, $configuration);
-            case 'rich':
-                return $this->createResponseRich($finalResponseData, $configuration);
-            case 'video':
-                return $this->createResponseVideo($finalResponseData, $configuration);
-            default:
-                return $this->createResponseGeneric($finalResponseData, $configuration);
-        }
+        return match ($responseType) {
+            'link' => $this->createResponseLink($finalResponseData, $configuration),
+            'photo' => $this->createResponsePhoto($finalResponseData, $configuration),
+            'rich' => $this->createResponseRich($finalResponseData, $configuration),
+            'video' => $this->createResponseVideo($finalResponseData, $configuration),
+            default => $this->createResponseGeneric($finalResponseData, $configuration),
+        };
     }
 
     protected function createResponseGeneric(array $responseData, Configuration $configuration): GenericResponse
@@ -75,7 +70,6 @@ class ResponseBuilder implements SingletonInterface
 
     protected function createResponseLink(array $responseData, Configuration $configuration): LinkResponse
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->createResponseWithData(LinkResponse::class, $responseData, $configuration);
     }
 
@@ -83,29 +77,35 @@ class ResponseBuilder implements SingletonInterface
     {
         $responseData['localFile'] = $this->photoDownloadService->downloadPhoto(
             $responseData['url'],
-            $configuration
+            $configuration,
         );
 
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->createResponseWithData(PhotoResponse::class, $responseData, $configuration);
     }
 
     protected function createResponseRich(array $responseData, Configuration $configuration): RichResponse
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->createResponseWithData(RichResponse::class, $responseData, $configuration);
     }
 
     protected function createResponseVideo(array $responseData, Configuration $configuration): VideoResponse
     {
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->createResponseWithData(VideoResponse::class, $responseData, $configuration);
     }
 
+    /**
+     * @template T of GenericResponse
+     *
+     * @param class-string<T> $responseClass
+     *
+     * @return T
+     *
+     * @noinspection PhpDocSignatureInspection
+     */
     protected function createResponseWithData(
         string $responseClass,
         array $responseData,
-        Configuration $configuration
+        Configuration $configuration,
     ): GenericResponse {
         /** @var GenericResponse $response */
         $response = new $responseClass();

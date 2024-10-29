@@ -10,14 +10,15 @@ use Sto\Mediaoembed\Provider\Endpoint;
 use Sto\Mediaoembed\Provider\EndpointCollector;
 use Sto\Mediaoembed\Provider\ProviderEndpoints;
 use Sto\Mediaoembed\Provider\ProviderUrls;
+use RuntimeException;
 
 class EndpointCollectorTest extends TestCase
 {
     private EndpointCollector $collector;
 
-    private ProviderEndpoints|MockObject $providerEndpointsMock;
+    private MockObject|ProviderEndpoints $providerEndpointsMock;
 
-    private ProviderUrls|MockObject $providerUrlsMock;
+    private MockObject|ProviderUrls $providerUrlsMock;
 
     protected function setUp(): void
     {
@@ -26,14 +27,14 @@ class EndpointCollectorTest extends TestCase
 
         $this->collector = new EndpointCollector(
             $this->providerEndpointsMock,
-            $this->providerUrlsMock
+            $this->providerUrlsMock,
         );
     }
 
     public function testCollectEndpointCollectsEndpointUrls(): void
     {
         $this->providerEndpointsMock->method('getEndpoints')->willReturn(
-            ['https://some.existing.endpoint/' => 'name']
+            ['https://some.existing.endpoint/' => 'name'],
         );
         $this->providerUrlsMock->method('getUrls')->willReturn(
             [
@@ -45,7 +46,7 @@ class EndpointCollectorTest extends TestCase
                     'https://some.existing.endpoint/',
                     true,
                 ],
-            ]
+            ],
         );
 
         $expectedEndpoint = new Endpoint('name', 'https://some.existing.endpoint/', true);
@@ -67,7 +68,7 @@ class EndpointCollectorTest extends TestCase
             [
                 'https://some.existing.endpoint1/' => 'name2',
                 'https://some.existing.endpoint2/' => 'name1',
-            ]
+            ],
         );
         $this->providerUrlsMock->method('getUrls')->willReturn(
             [
@@ -79,7 +80,7 @@ class EndpointCollectorTest extends TestCase
                     'https://some.existing.endpoint2/',
                     true,
                 ],
-            ]
+            ],
         );
 
         $endpoints = $this->collector->collectEndpoints();
@@ -92,14 +93,14 @@ class EndpointCollectorTest extends TestCase
 
     public function testCollectEndpointsThrowsExceptionForDuplicateProviderName(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Duplicate endpoint label name1');
 
         $this->providerEndpointsMock->method('getEndpoints')->willReturn(
             [
                 'http://testurl.d' => 'name1',
                 'http://testurl.de' => 'name1',
-            ]
+            ],
         );
         $this->providerUrlsMock->method('getUrls')->willReturn([]);
 
@@ -108,11 +109,11 @@ class EndpointCollectorTest extends TestCase
 
     public function testCollectEndpointsThrowsExceptionIfEndpointLabelIsMissing(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('No label configured for endpoint URL https://some.existing.endpoint/');
 
         $this->providerEndpointsMock->method('getEndpoints')->willReturn(
-            ['#https?://testscheme1/.*#i' => 'name1']
+            ['#https?://testscheme1/.*#i' => 'name1'],
         );
         $this->providerUrlsMock->method('getUrls')->willReturn(
             [
@@ -124,7 +125,7 @@ class EndpointCollectorTest extends TestCase
                     'https://some.non.existing.endpoint/',
                     true,
                 ],
-            ]
+            ],
         );
 
         $this->collector->collectEndpoints();

@@ -16,6 +16,4 @@ namespace Sto\Mediaoembed\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 
-abstract class AbstractUnitTestCase extends TestCase
-{
-}
+abstract class AbstractUnitTestCase extends TestCase {}

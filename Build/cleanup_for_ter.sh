@@ -14,10 +14,12 @@ fi
 rm -Rf .git
 rm -Rf .github
 rm -Rf .phpstorm.meta.php
+rm -Rf .Build
 rm -Rf Build
 rm -Rf Tests
 rm -Rf typo3temp
 rm -f .codeclimate.yml
+rm -f .crowdin.yml
 rm -f .editorconfig
 rm -f .gitignore
 rm ready_for_release.txt

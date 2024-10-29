@@ -56,7 +56,7 @@ class OembedController extends ActionController
         ConfigurationFactory $configurationFactory,
         ContainerInterface $container,
         ProviderRepository $providerRepository,
-        ResponseBuilder $responseBuilder
+        ResponseBuilder $responseBuilder,
     ) {
         $this->configurationFactory = $configurationFactory;
         $this->container = $container;
@@ -72,7 +72,7 @@ class OembedController extends ActionController
         try {
             $configuration = $this->configurationFactory->createConfiguration(
                 $this->getCurrentContentObject()->data,
-                $this->settings
+                $this->settings,
             );
             $this->getEmbedDataFromProvider($configuration);
             $this->view->assign('configuration', $configuration);
@@ -127,7 +127,7 @@ class OembedController extends ActionController
     {
         try {
             return $providerResolver->getNextMatchingProvider($url);
-        } catch (NoMatchingProviderException $e) {
+        } catch (NoMatchingProviderException) {
             return null;
         }
     }

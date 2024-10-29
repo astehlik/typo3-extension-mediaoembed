@@ -29,7 +29,7 @@ class ContentRepository
             (int)($contentObjectData['tx_mediaoembed_maxheight'] ?? 0),
             (int)($contentObjectData['tx_mediaoembed_maxwidth'] ?? 0),
             (bool)($contentObjectData['tx_mediaoembed_play_related'] ?? true),
-            (string)($contentObjectData['tx_mediaoembed_aspect_ratio'] ?? '')
+            (string)($contentObjectData['tx_mediaoembed_aspect_ratio'] ?? ''),
         );
     }
 }

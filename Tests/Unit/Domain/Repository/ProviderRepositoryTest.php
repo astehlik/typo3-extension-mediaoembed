@@ -20,7 +20,7 @@ class ProviderRepositoryTest extends TestCase
                     'endpoint' => 'https://my-provider.tld/enpoint',
                     'urlSchemes' => ['https://my-url-scheme.tld'],
                 ],
-            ]
+            ],
         );
 
         self::assertSame('https://my-provider.tld/enpoint', $provider->getEndpoint());
@@ -35,7 +35,7 @@ class ProviderRepositoryTest extends TestCase
                     'urlSchemes' => ['https://my-url-scheme.tld'],
                     'displayDirectLink' => '0',
                 ],
-            ]
+            ],
         );
 
         self::assertFalse($provider->shouldDirectLinkBeDisplayed());
@@ -50,7 +50,7 @@ class ProviderRepositoryTest extends TestCase
                     'urlSchemes' => ['https://my-url-scheme.tld'],
                     'processors' => ['my processor class'],
                 ],
-            ]
+            ],
         );
 
         self::assertSame(['my processor class'], $provider->getProcessors());
@@ -66,7 +66,7 @@ class ProviderRepositoryTest extends TestCase
                     'requestHandlerClass' => 'theclass',
                     'requestHandlerSettings' => ['my' => 'setting'],
                 ],
-            ]
+            ],
         );
 
         self::assertSame('theclass', $provider->getRequestHandlerClass());
@@ -79,13 +79,13 @@ class ProviderRepositoryTest extends TestCase
             [
                 'test' => [
                     'endpoint' => 'https://my-provider.tld/enpoint',
-                    'requestHandlerClass' => 'My\\Request\\Handler',
+                    'requestHandlerClass' => 'My\Request\Handler',
                     'urlSchemes' => ['https://my-url-scheme.tld'],
                 ],
-            ]
+            ],
         );
 
-        self::assertSame('My\\Request\\Handler', $provider->getRequestHandlerClass());
+        self::assertSame('My\Request\Handler', $provider->getRequestHandlerClass());
     }
 
     public function testCreatesProviderWithUrlRegex(): void
@@ -96,7 +96,7 @@ class ProviderRepositoryTest extends TestCase
                     'endpoint' => 'https://my-provider.tld/enpoint',
                     'urlRegexes' => ['https://my-url-regex.tld'],
                 ],
-            ]
+            ],
         );
 
         self::assertTrue($provider->hasRegexUrlSchemes());
@@ -111,7 +111,7 @@ class ProviderRepositoryTest extends TestCase
                     'endpoint' => 'https://my-provider.tld/enpoint',
                     'urlSchemes' => ['https://my-url-scheme.tld'],
                 ],
-            ]
+            ],
         );
 
         self::assertFalse($provider->hasRegexUrlSchemes());
@@ -146,7 +146,7 @@ class ProviderRepositoryTest extends TestCase
     {
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage(
-            'A provider can have either urlRegexes or urlSchemes. The provider test has both.'
+            'A provider can have either urlRegexes or urlSchemes. The provider test has both.',
         );
 
         $this->callFindAll(
@@ -156,7 +156,7 @@ class ProviderRepositoryTest extends TestCase
                     'urlSchemes' => ['https://my-url-scheme.tld'],
                     'urlRegexes' => ['https://my-url-regex.tld'],
                 ],
-            ]
+            ],
         );
     }
 

@@ -8,21 +8,20 @@ use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Request\RequestHandler\RequestHandlerInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Core\View\ViewFactoryData;
+use TYPO3\CMS\Core\View\ViewFactoryInterface;
 
-final class PanoptoRequestHandler implements RequestHandlerInterface
+final readonly class PanoptoRequestHandler implements RequestHandlerInterface
 {
-    private PanoptoUrlProcessor $urlProcessor;
-
-    public function __construct(PanoptoUrlProcessor $urlProcessor)
-    {
-        $this->urlProcessor = $urlProcessor;
-    }
+    public function __construct(
+        private PanoptoUrlProcessor $urlProcessor,
+        private ViewFactoryInterface $viewFactory,
+    ) {}
 
     public function handle(Provider $provider, Configuration $configuration): array
     {
-        $view = new StandaloneView();
-        $view->setTemplatePathAndFilename($this->getTemplatePath());
+        $viewFactoryData = new ViewFactoryData(templatePathAndFilename: $this->getTemplatePath());
+        $view = $this->viewFactory->create($viewFactoryData);
 
         $settings = $provider->getRequestHandlerSettings();
 
@@ -40,7 +39,7 @@ final class PanoptoRequestHandler implements RequestHandlerInterface
     private function getTemplatePath(): string
     {
         return GeneralUtility::getFileAbsFileName(
-            'EXT:mediaoembed/Resources/Private/Templates/RequestHandler/Panopto.html'
+            'EXT:mediaoembed/Resources/Private/Templates/RequestHandler/Panopto.html',
         );
     }
 }

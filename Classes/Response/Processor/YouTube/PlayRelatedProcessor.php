@@ -9,6 +9,7 @@ use Sto\Mediaoembed\Response\Processor\ResponseProcessorInterface;
 use Sto\Mediaoembed\Response\Processor\Support\IframeAwareProcessorTrait;
 use Sto\Mediaoembed\Response\VideoResponse;
 use Sto\Mediaoembed\Service\UrlService;
+use InvalidArgumentException;
 
 class PlayRelatedProcessor implements ResponseProcessorInterface
 {
@@ -24,7 +25,7 @@ class PlayRelatedProcessor implements ResponseProcessorInterface
     public function processResponse(GenericResponse $response): void
     {
         if (!$response instanceof VideoResponse) {
-            throw new \InvalidArgumentException('This processor only works with video responses!');
+            throw new InvalidArgumentException('This processor only works with video responses!');
         }
 
         $this->processVideoResponse($response);

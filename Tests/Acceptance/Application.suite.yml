@@ -1,0 +1,31 @@
+actor: BackendTester
+
+extensions:
+  enabled:
+    - Sto\Mediaoembed\Tests\Acceptance\Support\Extension\BackendMediaoembedEnvironment
+
+
+step_decorators:
+  - \Codeception\Step\ConditionalAssertion
+  - \Codeception\Step\TryTo
+
+modules:
+  enabled:
+    - \TYPO3\TestingFramework\Core\Acceptance\Helper\Acceptance
+    - \De\SWebhosting\Buildtools\Tests\Acceptance\Helper\PasswordLogin
+  config:
+    \De\SWebhosting\Buildtools\Tests\Acceptance\Helper\PasswordLogin:
+      passwords:
+        admin: '%typo3TestingAcceptanceAdminPassword%'
+        editor: '%typo3TestingAcceptanceEditorPassword%'
+
+env:
+  classic:
+    extensions:
+      enabled:
+        - Sto\Mediaoembed\Tests\Acceptance\Support\Extension\BackendMediaoembedEnvironment
+  systemplate:
+  sets:
+
+groups:
+  AcceptanceTests-Job-*: AcceptanceTests-Job-*

@@ -17,14 +17,6 @@ class EmbedResponsivePaddingViewHelper extends AbstractTagBasedViewHelper
         $this->registerArgument('configuration', Configuration::class, '', true);
         $this->registerArgument('response', AspectRatioAwareResponseInterface::class, '', true);
         $this->registerArgument('style-property', 'string', '', false, 'padding-top');
-
-        $this->registerTagAttribute(
-            'class',
-            'string',
-            'CSS class(es) for this element',
-            false,
-            'tx-mediaoembed-embed-responsive-padding'
-        );
     }
 
     public function render(): string

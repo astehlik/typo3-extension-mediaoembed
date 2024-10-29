@@ -12,7 +12,7 @@ class HttpClientFactory
     private ContainerInterface $container;
 
     public function __construct(
-        ContainerInterface $container
+        ContainerInterface $container,
     ) {
         $this->container = $container;
     }

@@ -21,7 +21,7 @@ class GetUrlHttpClient implements HttpClientInterface
             throw new HttpClientRequestException(
                 $exception->getMessage(),
                 $exception->getCode(),
-                $exception
+                $exception,
             );
         }
 

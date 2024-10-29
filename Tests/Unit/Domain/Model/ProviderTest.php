@@ -20,7 +20,7 @@ class ProviderTest extends TestCase
             'the_provider_name',
             'https://the.provider.endpoint.url',
             ['https://the.url.scheme'],
-            true
+            true,
         );
     }
 
@@ -36,14 +36,14 @@ class ProviderTest extends TestCase
 
     public function testGetRequestHandlerClass(): void
     {
-        $this->provider->withRequestHandler('The\\Request\\Handler\\Class', []);
-        self::assertSame('The\\Request\\Handler\\Class', $this->provider->getRequestHandlerClass());
+        $this->provider->withRequestHandler('The\Request\Handler\Class', []);
+        self::assertSame('The\Request\Handler\Class', $this->provider->getRequestHandlerClass());
     }
 
     public function testGetRequestHandlerSettings(): void
     {
         $settings = ['this' => 'setting'];
-        $this->provider->withRequestHandler('The\\Request\\Handler\\Class', $settings);
+        $this->provider->withRequestHandler('The\Request\Handler\Class', $settings);
         self::assertSame($settings, $this->provider->getRequestHandlerSettings());
     }
 
