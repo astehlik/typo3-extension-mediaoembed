@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Service;
 
+use SplFileInfo;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Exception\PhotoDownload\NotAnImageFileException;
 use Sto\Mediaoembed\Exception\PhotoDownloadException;
@@ -12,7 +13,6 @@ use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
-use SplFileInfo;
 
 class PhotoDownloadService
 {

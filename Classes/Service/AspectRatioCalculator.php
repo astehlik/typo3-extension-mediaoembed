@@ -19,7 +19,7 @@ final class AspectRatioCalculator implements AspectRatioCalculatorInterface
 
     public function isValidAspectRatio(string $aspectRatio): bool
     {
-        if (!preg_match('/^\d+:\d+$/', $aspectRatio)) {
+        if (!preg_match('/^\\d+:\\d+$/', $aspectRatio)) {
             return false;
         }
 

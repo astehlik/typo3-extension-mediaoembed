@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sto\Mediaoembed\Tests\Unit\Request;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Exception\HttpClientRequestException;
 use Sto\Mediaoembed\Exception\HttpNotFoundException;
@@ -13,7 +14,6 @@ use Sto\Mediaoembed\Exception\HttpUnauthorizedException;
 use Sto\Mediaoembed\Request\HttpClient\HttpClientFactory;
 use Sto\Mediaoembed\Request\HttpClient\HttpClientInterface;
 use Sto\Mediaoembed\Request\HttpRequest;
-use RuntimeException;
 
 class HttpRequestTest extends TestCase
 {

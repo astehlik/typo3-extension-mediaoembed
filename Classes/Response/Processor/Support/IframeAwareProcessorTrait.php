@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Response\Processor\Support;
 
-use Sto\Mediaoembed\Exception\ProcessorException;
-use Sto\Mediaoembed\Response\HtmlAwareResponseInterface;
 use Closure;
 use DOMDocument;
 use DOMElement;
+use Sto\Mediaoembed\Exception\ProcessorException;
+use Sto\Mediaoembed\Response\HtmlAwareResponseInterface;
 
 trait IframeAwareProcessorTrait
 {

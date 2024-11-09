@@ -14,6 +14,7 @@ namespace Sto\Mediaoembed\Request;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use RuntimeException;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Exception\HttpClientRequestException;
 use Sto\Mediaoembed\Exception\HttpNotFoundException;
@@ -23,7 +24,6 @@ use Sto\Mediaoembed\Request\HttpClient\HttpClientFactory;
 use Sto\Mediaoembed\Request\HttpClient\HttpClientInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use RuntimeException;
 
 /**
  * Represents a HTTP request.

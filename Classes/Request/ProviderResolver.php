@@ -59,7 +59,7 @@ class ProviderResolver
         $urlSchemeWithWildcard = preg_quote($urlSchemeWithWildcard, '#');
         $regexedUrlScheme = str_replace('___wildcard___', '(.+)', $urlSchemeWithWildcard);
         $urlRegex = '#' . $regexedUrlScheme . '#i';
-        return preg_replace('|^#http\\\://|', '#https?\://', $urlRegex);
+        return preg_replace('|^#http\\\\://|', '#https?\\://', $urlRegex);
     }
 
     private function isResponsibleForUrl(Provider $provider, string $url): bool

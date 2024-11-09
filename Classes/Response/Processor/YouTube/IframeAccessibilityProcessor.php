@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Response\Processor\YouTube;
 
+use InvalidArgumentException;
 use Sto\Mediaoembed\Response\GenericResponse;
 use Sto\Mediaoembed\Response\HtmlAwareResponseInterface;
 use Sto\Mediaoembed\Response\Processor\HtmlResponseProcessorInterface;
 use Sto\Mediaoembed\Response\Processor\Support\IframeAwareProcessorTrait;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use InvalidArgumentException;
 
 class IframeAccessibilityProcessor implements HtmlResponseProcessorInterface
 {

@@ -20,12 +20,12 @@ class ProviderTypoScriptRendererTest extends TestCase
     public function testRenderReturnsExpectedResult(): void
     {
         $testProvider1 = new Endpoint('test_provider_1', 'https://test.endpoint.tld', true);
-        $testProvider1->addUrlScheme('#https?://([a-z0-9-]+\.)?test\.tld/.*#i');
-        $testProvider1->addUrlScheme('#https?://(www\.)?test2\.tld/.*#i');
+        $testProvider1->addUrlScheme('#https?://([a-z0-9-]+\\.)?test\\.tld/.*#i');
+        $testProvider1->addUrlScheme('#https?://(www\\.)?test2\\.tld/.*#i');
 
         $testProvider2 = new Endpoint('test_provider_2', 'https://test.endpoint2.tld/api/oembed', false);
-        $testProvider2->addUrlScheme('#https?://([a-z0-9-]+\.)?t3st\.tld/.*#i');
-        $testProvider2->addUrlScheme('#https?://(www\.)?t3st2\.tld/.*#i');
+        $testProvider2->addUrlScheme('#https?://([a-z0-9-]+\\.)?t3st\\.tld/.*#i');
+        $testProvider2->addUrlScheme('#https?://(www\\.)?t3st2\\.tld/.*#i');
 
         $providers = [
             'test_provider_1' => $testProvider1,
@@ -42,16 +42,16 @@ plugin.tx_mediaoembed.settings.providers {
     test_provider_1 {
         endpoint = https://test.endpoint.tld
         urlRegexes {
-            10 = #https?://([a-z0-9-]+\.)?test\.tld/.*#i
-            20 = #https?://(www\.)?test2\.tld/.*#i
+            10 = #https?://([a-z0-9-]+\\.)?test\\.tld/.*#i
+            20 = #https?://(www\\.)?test2\\.tld/.*#i
         }
     }
 
     test_provider_2 {
         endpoint = https://test.endpoint2.tld/api/oembed
         urlSchemes {
-            10 = #https?://([a-z0-9-]+\.)?t3st\.tld/.*#i
-            20 = #https?://(www\.)?t3st2\.tld/.*#i
+            10 = #https?://([a-z0-9-]+\\.)?t3st\\.tld/.*#i
+            20 = #https?://(www\\.)?t3st2\\.tld/.*#i
         }
     }
 

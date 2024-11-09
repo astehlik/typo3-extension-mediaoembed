@@ -79,13 +79,13 @@ class ProviderRepositoryTest extends TestCase
             [
                 'test' => [
                     'endpoint' => 'https://my-provider.tld/enpoint',
-                    'requestHandlerClass' => 'My\Request\Handler',
+                    'requestHandlerClass' => 'My\\Request\\Handler',
                     'urlSchemes' => ['https://my-url-scheme.tld'],
                 ],
             ],
         );
 
-        self::assertSame('My\Request\Handler', $provider->getRequestHandlerClass());
+        self::assertSame('My\\Request\\Handler', $provider->getRequestHandlerClass());
     }
 
     public function testCreatesProviderWithUrlRegex(): void

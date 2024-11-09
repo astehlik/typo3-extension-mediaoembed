@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Response\Processor\YouTube;
 
+use InvalidArgumentException;
 use Sto\Mediaoembed\Response\GenericResponse;
 use Sto\Mediaoembed\Response\Processor\ResponseProcessorInterface;
 use Sto\Mediaoembed\Response\Processor\Support\IframeAwareProcessorTrait;
 use Sto\Mediaoembed\Response\VideoResponse;
 use Sto\Mediaoembed\Service\UrlService;
-use InvalidArgumentException;
 
 class PlayRelatedProcessor implements ResponseProcessorInterface
 {

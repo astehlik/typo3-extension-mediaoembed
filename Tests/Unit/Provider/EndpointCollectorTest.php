@@ -6,11 +6,11 @@ namespace Sto\Mediaoembed\Tests\Unit\Provider;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Sto\Mediaoembed\Provider\Endpoint;
 use Sto\Mediaoembed\Provider\EndpointCollector;
 use Sto\Mediaoembed\Provider\ProviderEndpoints;
 use Sto\Mediaoembed\Provider\ProviderUrls;
-use RuntimeException;
 
 class EndpointCollectorTest extends TestCase
 {
