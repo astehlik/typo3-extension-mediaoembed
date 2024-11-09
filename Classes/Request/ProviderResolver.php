@@ -34,7 +34,7 @@ class ProviderResolver
     }
 
     /**
-     * Returns the next active provider whos url scheme matches the URL in
+     * Returns the next active provider of which the url scheme matches the URL in
      * the current configuration.
      *
      * @return Provider The next matching provider
