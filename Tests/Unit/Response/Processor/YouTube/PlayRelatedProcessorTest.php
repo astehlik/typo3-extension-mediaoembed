@@ -13,14 +13,6 @@ use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
 class PlayRelatedProcessorTest extends AbstractUnitTestCase
 {
-    public static function provideProcessResponseModifesIframeUrlCases(): iterable
-    {
-        return [
-            [true],
-            [false],
-        ];
-    }
-
     #[DataProvider('provideProcessResponseModifesIframeUrlCases')]
     public function testProcessResponseModifesIframeUrl(bool $shouldPlayRelated): void
     {
@@ -45,5 +37,13 @@ class PlayRelatedProcessorTest extends AbstractUnitTestCase
 
         $processor = new PlayRelatedProcessor(new UrlService());
         $processor->processResponse($videoMock);
+    }
+
+    public static function provideProcessResponseModifesIframeUrlCases(): iterable
+    {
+        return [
+            [true],
+            [false],
+        ];
     }
 }

@@ -28,32 +28,6 @@ class ConfigurationTest extends TestCase
         $this->settingsMock = $this->createMock(Settings::class);
     }
 
-    public static function getMaxWidthHeightDataProvider(): iterable
-    {
-        return [
-            'settings and content object zero returns zero' => [
-                0,
-                0,
-                0,
-            ],
-            'settings zero, content object set uses content object' => [
-                10,
-                0,
-                10,
-            ],
-            'settings set, content object zero uses settings' => [
-                0,
-                20,
-                20,
-            ],
-            'settings set, content object set uses content object' => [
-                30,
-                20,
-                30,
-            ],
-        ];
-    }
-
     public function testGetAspectRatioUsesFallbackFromConfig(): void
     {
         $this->aspectRatioCalculatorMock->expects(self::exactly(2))
@@ -115,6 +89,32 @@ class ConfigurationTest extends TestCase
         $this->settingsMock->method('getMaxWidth')->willReturn($settingsValue);
 
         self::assertSame($expectedValue, $this->getConfiguration()->getMaxwidth());
+    }
+
+    public static function getMaxWidthHeightDataProvider(): iterable
+    {
+        return [
+            'settings and content object zero returns zero' => [
+                0,
+                0,
+                0,
+            ],
+            'settings zero, content object set uses content object' => [
+                10,
+                0,
+                10,
+            ],
+            'settings set, content object zero uses settings' => [
+                0,
+                20,
+                20,
+            ],
+            'settings set, content object set uses content object' => [
+                30,
+                20,
+                30,
+            ],
+        ];
     }
 
     public function testGetMediaUrlReturnsUrlFromContent(): void
