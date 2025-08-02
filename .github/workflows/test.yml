@@ -22,7 +22,7 @@ jobs:
     uses: astehlik/typo3-extension-buildtools/.github/workflows/extension-test.yml@TYPO3_13
 
   extension-qltysh-coverage:
-    name: 'QLTY_COVERAGE_TOKEN coverage'
+    name: 'Qlty coverage'
     uses: astehlik/typo3-extension-buildtools/.github/workflows/extension-qltysh-coverage.yml@TYPO3_13
     if: github.ref == 'refs/heads/develop'
     secrets:
