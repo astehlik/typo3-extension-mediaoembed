@@ -1,7 +1,7 @@
 # mediaoembed TYPO3 Extension
 
 [![.github/workflows/test.yml](https://github.com/astehlik/typo3-extension-mediaoembed/actions/workflows/test.yml/badge.svg)](https://github.com/astehlik/typo3-extension-mediaoembed/actions/workflows/test.yml)
-[![Maintainability](https://api.codeclimate.com/v1/badges/e709f7de64e6002f1ee8/maintainability)](https://codeclimate.com/github/astehlik/typo3-extension-mediaoembed/maintainability)
+[![Maintainability](https://qlty.sh/gh/astehlik/projects/typo3-extension-mediaoembed/maintainability.svg)](https://qlty.sh/gh/astehlik/projects/typo3-extension-mediaoembed)
 
 This is a TYPO3 Extension for embedding third party content via oEmbed.
 
