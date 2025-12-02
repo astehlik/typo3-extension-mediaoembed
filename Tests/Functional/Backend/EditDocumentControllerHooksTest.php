@@ -46,9 +46,7 @@ final class EditDocumentControllerHooksTest extends AbstractFunctionalTestCase
     private function assertArrayContainsExpectedTranslationKeys(array $translations): void
     {
         $expectedKeys = array_map(
-            static function ($value) {
-                return 'tx_mediaoembed_' . $value;
-            },
+            static fn($value) => 'tx_mediaoembed_' . $value,
             EditDocumentControllerHooks::JS_LABEL_KEYS,
         );
         self::assertSame($expectedKeys, array_keys($translations));

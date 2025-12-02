@@ -17,7 +17,7 @@ class IframeAccessibilityProcessor implements HtmlResponseProcessorInterface
 
     public function processHtmlResponse(HtmlAwareResponseInterface $response): void
     {
-        if (strpos($response->getHtml(), '<iframe') !== 0) {
+        if (!str_starts_with($response->getHtml(), '<iframe')) {
             return;
         }
 

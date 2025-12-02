@@ -95,9 +95,7 @@ trait IframeAwareProcessorTrait
         /**
          * @return mixed
          */
-        $attributeModifier = static function (?string $iframeSrc) use ($urlModifier) {
-            return $urlModifier($iframeSrc);
-        };
+        $attributeModifier = static fn(?string $iframeSrc) => $urlModifier($iframeSrc);
 
         $this->modifyIframeAttribute($response, 'src', $attributeModifier);
     }

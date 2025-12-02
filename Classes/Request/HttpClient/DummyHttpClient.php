@@ -10,7 +10,7 @@ class DummyHttpClient implements HttpClientInterface
 {
     public function executeGetRequest(string $requestUrl): string
     {
-        if (strpos(strtolower($requestUrl), 'youtube') !== false) {
+        if (str_contains(strtolower($requestUrl), 'youtube')) {
             return file_get_contents(__DIR__ . '/../../../Tests/Functional/Fixtures/Provider/YouTube.json');
         }
 

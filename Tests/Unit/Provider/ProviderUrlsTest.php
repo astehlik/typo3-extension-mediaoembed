@@ -12,6 +12,6 @@ class ProviderUrlsTest extends TestCase
     public function testGetUrls(): void
     {
         $urls = new ProviderUrls();
-        self::assertTrue(is_array($urls->getUrls()));
+        self::assertIsArray($urls->getUrls());
     }
 }

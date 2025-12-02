@@ -36,9 +36,7 @@ class NocookieProcessor implements ResponseProcessorInterface
 
     private function processVideoResponse(VideoResponse $response): void
     {
-        $replaceYoutubeUrl = function (string $url) {
-            return $this->urlService->replaceSchemeAndHost($url, 'https', 'www.youtube-nocookie.com');
-        };
+        $replaceYoutubeUrl = fn(string $url) => $this->urlService->replaceSchemeAndHost($url, 'https', 'www.youtube-nocookie.com');
 
         $this->modifyIframeUrl($response, $replaceYoutubeUrl);
     }

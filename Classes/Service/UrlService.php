@@ -15,8 +15,8 @@ final class UrlService
      */
     public function buildUrl(array $urlParts, string $originalUrl): string
     {
-        $hasFragment = strpos($originalUrl, '#') !== false;
-        $hasQuery = strpos($originalUrl, '?') !== false;
+        $hasFragment = str_contains($originalUrl, '#');
+        $hasQuery = str_contains($originalUrl, '?');
 
         $pass = $urlParts['pass'] ?? null;
         $user = $urlParts['user'] ?? null;
