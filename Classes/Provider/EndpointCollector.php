@@ -32,7 +32,10 @@ class EndpointCollector
         $endpointsByName = [];
 
         foreach ($this->getProviderData() as $urlScheme => $providerData) {
-            [$endpointUrl, $isRegex] = $providerData;
+            [
+                $endpointUrl,
+                $isRegex,
+            ] = $providerData;
             $endpointLabel = $endpointLabels[$endpointUrl];
 
             $endpoint = $this->getOrCreateEndpoint($endpointsByName, $endpointLabel, $endpointUrl, $isRegex);

@@ -13,7 +13,10 @@ final class AspectRatioCalculator implements AspectRatioCalculatorInterface
         if (!$this->isValidAspectRatio($aspectRatio)) {
             return 0.0;
         }
-        [$width, $height] = $this->getAspectRatioParts($aspectRatio);
+        [
+            $width,
+            $height,
+        ] = $this->getAspectRatioParts($aspectRatio);
         return $width / $height;
     }
 
@@ -23,7 +26,10 @@ final class AspectRatioCalculator implements AspectRatioCalculatorInterface
             return false;
         }
 
-        [$width, $height] = $this->getAspectRatioParts($aspectRatio);
+        [
+            $width,
+            $height,
+        ] = $this->getAspectRatioParts($aspectRatio);
         return $width > 0 && $height > 0
             && MathUtility::canBeInterpretedAsInteger($width) && MathUtility::canBeInterpretedAsInteger($height);
     }
