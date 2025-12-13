@@ -107,7 +107,7 @@ class HttpRequestTest extends TestCase
         $expectedUrl = $expectedBaseUrl . '?' . $expectedQueryString;
 
         $httpClientMock = $this->createMock(HttpClientInterface::class);
-        $httpClientMock->expects(self::once())->method('executeGetRequest')
+        $httpClientMock->expects($this->once())->method('executeGetRequest')
             ->with($expectedUrl)
             ->willReturn('the repsonse');
 
@@ -123,12 +123,12 @@ class HttpRequestTest extends TestCase
         ?HttpClientInterface $httpClient = null,
     ): HttpRequest {
         $configurationMock = $this->createMock(Configuration::class);
-        $configurationMock->expects(self::once())->method('getMaxheight')->willReturn($maxHeight);
-        $configurationMock->expects(self::once())->method('getMaxwidth')->willReturn($maxWidth);
+        $configurationMock->expects($this->once())->method('getMaxheight')->willReturn($maxHeight);
+        $configurationMock->expects($this->once())->method('getMaxwidth')->willReturn($maxWidth);
         $configurationMock->method('getMediaUrl')->willReturn('http://my-media.tld/theurl');
 
         $httpClientFactoryMock = $this->createMock(HttpClientFactory::class);
-        $httpClientFactoryMock->expects(self::once())
+        $httpClientFactoryMock->expects($this->once())
             ->method('getHttpClient')
             ->willReturn($httpClient ?? $this->createMock(HttpClientInterface::class));
 

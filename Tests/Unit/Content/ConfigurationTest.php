@@ -30,33 +30,33 @@ class ConfigurationTest extends TestCase
 
     public function testGetAspectRatioUsesFallbackFromConfig(): void
     {
-        $this->aspectRatioCalculatorMock->expects(self::exactly(2))
+        $this->aspectRatioCalculatorMock->expects($this->exactly(2))
             ->method('calculateAspectRatio')
             ->willReturnOnConsecutiveCalls(0.0, 1.5);
 
-        $this->contentMock->expects(self::once())->method('getAspectRatio')->willReturn('12:1');
-        $this->settingsMock->expects(self::once())->method('getAspectRatioFallback')->willReturn('12:2');
+        $this->contentMock->expects($this->once())->method('getAspectRatio')->willReturn('12:1');
+        $this->settingsMock->expects($this->once())->method('getAspectRatioFallback')->willReturn('12:2');
 
         self::assertSame(1.5, $this->getConfiguration()->getAspectRatio(0.0));
     }
 
     public function testGetAspectRatioUsesFallbackFromConstant(): void
     {
-        $this->aspectRatioCalculatorMock->expects(self::exactly(3))
+        $this->aspectRatioCalculatorMock->expects($this->exactly(3))
             ->method('calculateAspectRatio')
             ->willReturnOnConsecutiveCalls(0.0, 0.0, 1.24);
 
-        $this->contentMock->expects(self::once())->method('getAspectRatio')->willReturn('12:1');
+        $this->contentMock->expects($this->once())->method('getAspectRatio')->willReturn('12:1');
 
-        $this->settingsMock->expects(self::once())->method('getAspectRatioFallback')->willReturn('12:2');
+        $this->settingsMock->expects($this->once())->method('getAspectRatioFallback')->willReturn('12:2');
 
         self::assertSame(1.24, $this->getConfiguration()->getAspectRatio(0.0));
     }
 
     public function testGetAspectRatioUsesOverride(): void
     {
-        $this->contentMock->expects(self::once())->method('getAspectRatio')->willReturn('12:1');
-        $this->aspectRatioCalculatorMock->expects(self::once())
+        $this->contentMock->expects($this->once())->method('getAspectRatio')->willReturn('12:1');
+        $this->aspectRatioCalculatorMock->expects($this->once())
             ->method('calculateAspectRatio')
             ->with('12:1')
             ->willReturn(2.0);
@@ -65,8 +65,8 @@ class ConfigurationTest extends TestCase
 
     public function testGetAspectRatioUsesResponse(): void
     {
-        $this->contentMock->expects(self::once())->method('getAspectRatio')->willReturn('12:1');
-        $this->aspectRatioCalculatorMock->expects(self::once())
+        $this->contentMock->expects($this->once())->method('getAspectRatio')->willReturn('12:1');
+        $this->aspectRatioCalculatorMock->expects($this->once())
             ->method('calculateAspectRatio')
             ->with('12:1')
             ->willReturn(0.0);

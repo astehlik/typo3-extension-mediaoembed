@@ -61,7 +61,7 @@ class ResponseBuilderTest extends AbstractUnitTestCase
         $configuration = $this->createConfiguration();
 
         $photoDownloadServiceMock = $this->createMock(PhotoDownloadService::class);
-        $photoDownloadServiceMock->expects(self::once())
+        $photoDownloadServiceMock->expects($this->once())
             ->method('downloadPhoto')
             ->with('https://my-awsome.tld/photo', $configuration)
             ->willReturn($fileMock);

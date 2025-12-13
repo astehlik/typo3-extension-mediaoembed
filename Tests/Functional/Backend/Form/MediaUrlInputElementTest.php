@@ -48,7 +48,7 @@ final class MediaUrlInputElementTest extends AbstractFunctionalTestCase
         $nodeFactoryMock = $this->createMock(NodeFactory::class);
 
         $utilityService = $this->createMock(UtilityService::class);
-        $utilityService->expects(self::once())
+        $utilityService->expects($this->once())
             ->method('getUniqueId')
             ->with('tx-mediaoembed-url-input-wrapper-')
             ->willReturn('some-random-string');

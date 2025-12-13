@@ -19,8 +19,8 @@ class NocookieProcessorTest extends AbstractUnitTestCase
         $expectedHtml = str_replace('www.youtube.com', 'www.youtube-nocookie.com', $videoHtml);
 
         $videoMock = $this->createMock(VideoResponse::class);
-        $videoMock->expects(self::once())->method('getHtml')->willReturn($videoHtml);
-        $videoMock->expects(self::once())->method('setHtml')->with($expectedHtml);
+        $videoMock->expects($this->once())->method('getHtml')->willReturn($videoHtml);
+        $videoMock->expects($this->once())->method('setHtml')->with($expectedHtml);
 
         $processor = new NocookieProcessor(new UrlService());
         $processor->processResponse($videoMock);

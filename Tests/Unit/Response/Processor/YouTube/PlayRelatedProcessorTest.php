@@ -28,12 +28,12 @@ class PlayRelatedProcessorTest extends AbstractUnitTestCase
         $expectedHtml = sprintf($videoHtmlTemplate, $modifiedUrl);
 
         $configurationMock = $this->createMock(Configuration::class);
-        $configurationMock->expects(self::once())->method('shouldPlayRelated')->willReturn($shouldPlayRelated);
+        $configurationMock->expects($this->once())->method('shouldPlayRelated')->willReturn($shouldPlayRelated);
 
         $videoMock = $this->createMock(VideoResponse::class);
-        $videoMock->expects(self::once())->method('getHtml')->willReturn($videoHtml);
-        $videoMock->expects(self::once())->method('setHtml')->with($expectedHtml);
-        $videoMock->expects(self::once())->method('getConfiguration')->willReturn($configurationMock);
+        $videoMock->expects($this->once())->method('getHtml')->willReturn($videoHtml);
+        $videoMock->expects($this->once())->method('setHtml')->with($expectedHtml);
+        $videoMock->expects($this->once())->method('getConfiguration')->willReturn($configurationMock);
 
         $processor = new PlayRelatedProcessor(new UrlService());
         $processor->processResponse($videoMock);

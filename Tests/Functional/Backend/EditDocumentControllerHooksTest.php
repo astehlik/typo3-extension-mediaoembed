@@ -20,7 +20,7 @@ final class EditDocumentControllerHooksTest extends AbstractFunctionalTestCase
     {
         $pageRendererMock = $this->createMock(PageRenderer::class);
 
-        $pageRendererMock->expects(self::once())
+        $pageRendererMock->expects($this->once())
             ->method('addInlineLanguageLabelArray')
             ->with(
                 self::callback(

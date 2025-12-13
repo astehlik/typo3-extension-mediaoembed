@@ -171,7 +171,7 @@ class ProviderRepositoryTest extends TestCase
     private function callFindAll(array $settings): Provider
     {
         $configurationManagerMock = $this->createMock(ConfigurationManagerInterface::class);
-        $configurationManagerMock->expects(self::once())
+        $configurationManagerMock->expects($this->once())
             ->method('getConfiguration')
             ->with(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
             ->willReturn(['providers' => $settings]);
