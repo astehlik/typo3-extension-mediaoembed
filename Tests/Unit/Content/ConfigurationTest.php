@@ -37,7 +37,7 @@ class ConfigurationTest extends TestCase
         $this->contentMock->expects($this->once())->method('getAspectRatio')->willReturn('12:1');
         $this->settingsMock->expects($this->once())->method('getAspectRatioFallback')->willReturn('12:2');
 
-        self::assertSame(1.5, $this->getConfiguration()->getAspectRatio(0.0));
+        $this->assertSame(1.5, $this->getConfiguration()->getAspectRatio(0.0));
     }
 
     public function testGetAspectRatioUsesFallbackFromConstant(): void
@@ -50,7 +50,7 @@ class ConfigurationTest extends TestCase
 
         $this->settingsMock->expects($this->once())->method('getAspectRatioFallback')->willReturn('12:2');
 
-        self::assertSame(1.24, $this->getConfiguration()->getAspectRatio(0.0));
+        $this->assertSame(1.24, $this->getConfiguration()->getAspectRatio(0.0));
     }
 
     public function testGetAspectRatioUsesOverride(): void
@@ -60,7 +60,7 @@ class ConfigurationTest extends TestCase
             ->method('calculateAspectRatio')
             ->with('12:1')
             ->willReturn(2.0);
-        self::assertSame(2.0, $this->getConfiguration()->getAspectRatio(0.0));
+        $this->assertSame(2.0, $this->getConfiguration()->getAspectRatio(0.0));
     }
 
     public function testGetAspectRatioUsesResponse(): void
@@ -70,7 +70,7 @@ class ConfigurationTest extends TestCase
             ->method('calculateAspectRatio')
             ->with('12:1')
             ->willReturn(0.0);
-        self::assertSame(0.5, $this->getConfiguration()->getAspectRatio(0.5));
+        $this->assertSame(0.5, $this->getConfiguration()->getAspectRatio(0.5));
     }
 
     #[DataProvider('getMaxWidthHeightDataProvider')]
@@ -79,7 +79,7 @@ class ConfigurationTest extends TestCase
         $this->contentMock->method('getMaxHeight')->willReturn($contentValue);
         $this->settingsMock->method('getMaxHeight')->willReturn($settingsValue);
 
-        self::assertSame($expectedValue, $this->getConfiguration()->getMaxheight());
+        $this->assertSame($expectedValue, $this->getConfiguration()->getMaxheight());
     }
 
     #[DataProvider('getMaxWidthHeightDataProvider')]
@@ -88,7 +88,7 @@ class ConfigurationTest extends TestCase
         $this->contentMock->method('getMaxWidth')->willReturn($contentValue);
         $this->settingsMock->method('getMaxWidth')->willReturn($settingsValue);
 
-        self::assertSame($expectedValue, $this->getConfiguration()->getMaxwidth());
+        $this->assertSame($expectedValue, $this->getConfiguration()->getMaxwidth());
     }
 
     public static function getMaxWidthHeightDataProvider(): iterable
@@ -121,7 +121,7 @@ class ConfigurationTest extends TestCase
     {
         $this->contentMock->method('getUrl')->willReturn('http://my.test.url');
 
-        self::assertSame('http://my.test.url', $this->getConfiguration()->getMediaUrl());
+        $this->assertSame('http://my.test.url', $this->getConfiguration()->getMediaUrl());
     }
 
     protected function getConfiguration(): Configuration

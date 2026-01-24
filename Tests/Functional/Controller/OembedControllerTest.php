@@ -43,7 +43,7 @@ class OembedControllerTest extends AbstractFunctionalTestCase
         $expectedDirectLink = '<a rel="noreferrer noopener" target="_blank"'
             . ' href="https://demo.hosted.panopto.com/Panopto';
 
-        self::assertStringNotContainsString($expectedDirectLink, $this->renderOembedContent(4));
+        $this->assertStringNotContainsString($expectedDirectLink, $this->renderOembedContent(4));
     }
 
     public function testPanoptoViewerIsConvertedToEmbed(): void
@@ -54,7 +54,7 @@ class OembedControllerTest extends AbstractFunctionalTestCase
             . 'showbrand=false&amp;start=0&amp;interactivity=all&amp;'
             . 'id=24573-4a48-4688c-965a-036878978a0fb';
 
-        self::assertStringContainsString($expectedIframeUrl, $this->renderOembedContent(4));
+        $this->assertStringContainsString($expectedIframeUrl, $this->renderOembedContent(4));
     }
 
     public function testYouTubeDirectLinkIsRendered(): void
@@ -62,7 +62,7 @@ class OembedControllerTest extends AbstractFunctionalTestCase
         $expectedDirectLink = '<a rel="noreferrer noopener" target="_blank"'
             . ' href="https://www.youtube.com/watch?v=iwGFalTRHDA">';
 
-        self::assertStringContainsString($expectedDirectLink, $this->renderOembedContent());
+        $this->assertStringContainsString($expectedDirectLink, $this->renderOembedContent());
     }
 
     public function testYouTubeIframeIsRendered(): void
@@ -72,7 +72,7 @@ class OembedControllerTest extends AbstractFunctionalTestCase
             . ' frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"'
             . ' allowfullscreen aria-label="YouTube media: Trololo"></iframe>';
 
-        self::assertStringContainsString($expectedIframe, $this->renderOembedContent());
+        $this->assertStringContainsString($expectedIframe, $this->renderOembedContent());
     }
 
     public function testYouTubeIframeIsRenderedWithoutRelated(): void
@@ -84,7 +84,7 @@ class OembedControllerTest extends AbstractFunctionalTestCase
 
         $this->renderOembedContent(3);
 
-        self::assertStringContainsString($expectedIframe, $this->renderOembedContent(3));
+        $this->assertStringContainsString($expectedIframe, $this->renderOembedContent(3));
     }
 
     private function renderOembedContent(int $openPageUid = 2): string

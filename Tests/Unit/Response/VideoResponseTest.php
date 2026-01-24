@@ -36,7 +36,7 @@ class VideoResponseTest extends AbstractUnitTestCase
 
     public function testAspectRatioDoesNotDivideByZero(): void
     {
-        self::assertSame(0.0, $this->videoResponse->getAspectRatio());
+        $this->assertSame(0.0, $this->videoResponse->getAspectRatio());
     }
 
     #[DataProvider('provideAspectRatioTypeIsDetectedCorrectlyCases')]
@@ -51,12 +51,12 @@ class VideoResponseTest extends AbstractUnitTestCase
             ],
             $this->createMock(Configuration::class),
         );
-        self::assertSame($expectedRatioType, $this->videoResponse->getAspectRatioType());
+        $this->assertSame($expectedRatioType, $this->videoResponse->getAspectRatioType());
 
         $is4To3 = $expectedRatioType === VideoResponse::ASPECT_RATIO_4TO3;
         $is16To9 = $expectedRatioType === VideoResponse::ASPECT_RATIO_16TO9;
-        self::assertSame($is4To3, $this->videoResponse->getAspectRatioIs4To3());
-        self::assertSame($is16To9, $this->videoResponse->getAspectRatioIs16To9());
+        $this->assertSame($is4To3, $this->videoResponse->getAspectRatioIs4To3());
+        $this->assertSame($is16To9, $this->videoResponse->getAspectRatioIs16To9());
     }
 
     public static function provideAspectRatioTypeIsDetectedCorrectlyCases(): iterable
@@ -96,12 +96,12 @@ class VideoResponseTest extends AbstractUnitTestCase
             ],
             $this->createMock(Configuration::class),
         );
-        self::assertSame(160 / 190, $this->videoResponse->getAspectRatio());
+        $this->assertSame(160 / 190, $this->videoResponse->getAspectRatio());
     }
 
     public function testSetHtml(): void
     {
         $this->videoResponse->setHtml('the new html');
-        self::assertSame('the new html', $this->videoResponse->getHtml());
+        $this->assertSame('the new html', $this->videoResponse->getHtml());
     }
 }

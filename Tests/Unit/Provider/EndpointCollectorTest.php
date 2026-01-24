@@ -56,10 +56,10 @@ class EndpointCollectorTest extends TestCase
         $endpoints = $this->collector->collectEndpoints();
         $collectedEndpoint = $endpoints['name'];
 
-        self::assertSame($expectedEndpoint->getName(), $collectedEndpoint->getName());
-        self::assertSame($expectedEndpoint->getUrl(), $collectedEndpoint->getUrl());
-        self::assertSame($expectedEndpoint->getUrlSchemes(), $collectedEndpoint->getUrlSchemes());
-        self::assertSame($expectedEndpoint->getUrlConfigKey(), $collectedEndpoint->getUrlConfigKey());
+        $this->assertSame($expectedEndpoint->getName(), $collectedEndpoint->getName());
+        $this->assertSame($expectedEndpoint->getUrl(), $collectedEndpoint->getUrl());
+        $this->assertSame($expectedEndpoint->getUrlSchemes(), $collectedEndpoint->getUrlSchemes());
+        $this->assertSame($expectedEndpoint->getUrlConfigKey(), $collectedEndpoint->getUrlConfigKey());
     }
 
     public function testCollectEndpointOrdersByName(): void
@@ -88,7 +88,7 @@ class EndpointCollectorTest extends TestCase
             'name1',
             'name2',
         ];
-        self::assertSame($expecteOrder, array_keys($endpoints));
+        $this->assertSame($expecteOrder, array_keys($endpoints));
     }
 
     public function testCollectEndpointsThrowsExceptionForDuplicateProviderName(): void

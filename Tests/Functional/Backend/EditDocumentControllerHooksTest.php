@@ -23,7 +23,7 @@ final class EditDocumentControllerHooksTest extends AbstractFunctionalTestCase
         $pageRendererMock->expects($this->once())
             ->method('addInlineLanguageLabelArray')
             ->with(
-                self::callback(
+                $this->callback(
                     function (array $translations) {
                         $this->assertArrayContainsExpectedTranslationKeys($translations);
                         $this->assertTranslationsAreNotEmpty($translations);
@@ -49,13 +49,13 @@ final class EditDocumentControllerHooksTest extends AbstractFunctionalTestCase
             static fn($value) => 'tx_mediaoembed_' . $value,
             EditDocumentControllerHooks::JS_LABEL_KEYS,
         );
-        self::assertSame($expectedKeys, array_keys($translations));
+        $this->assertSame($expectedKeys, array_keys($translations));
     }
 
     private function assertTranslationsAreNotEmpty(array $translations): void
     {
         foreach ($translations as $key => $translation) {
-            self::assertNotEmpty($translation, 'Expected translation to be not empty: ' . $key);
+            $this->assertNotEmpty($translation, 'Expected translation to be not empty: ' . $key);
         }
     }
 

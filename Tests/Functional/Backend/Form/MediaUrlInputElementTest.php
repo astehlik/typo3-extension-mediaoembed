@@ -19,10 +19,10 @@ final class MediaUrlInputElementTest extends AbstractFunctionalTestCase
         $result = ['html' => ''];
         $result = $field->addUrlParserJsToResult($result);
 
-        self::assertCount(1, $result['javaScriptModules']);
+        $this->assertCount(1, $result['javaScriptModules']);
 
         $moduleInstruction = $result['javaScriptModules'][0];
-        self::assertInstanceOf(JavaScriptModuleInstruction::class, $moduleInstruction);
+        $this->assertInstanceOf(JavaScriptModuleInstruction::class, $moduleInstruction);
 
         $expectedInstanceItem = [
             'type' => JavaScriptModuleInstruction::ITEM_INSTANCE,
@@ -30,7 +30,7 @@ final class MediaUrlInputElementTest extends AbstractFunctionalTestCase
         ];
         $instanceItem = $moduleInstruction->getItems()[0];
 
-        self::assertSame($expectedInstanceItem, $instanceItem);
+        $this->assertSame($expectedInstanceItem, $instanceItem);
     }
 
     public function testAddUrlParserJsToResultWrapsContainerWithId(): void
@@ -40,7 +40,7 @@ final class MediaUrlInputElementTest extends AbstractFunctionalTestCase
         $result = ['html' => '<div id="inner">test</div>'];
         $result = $field->addUrlParserJsToResult($result);
 
-        self::assertSame('<div id="some-random-string"><div id="inner">test</div></div>', $result['html']);
+        $this->assertSame('<div id="some-random-string"><div id="inner">test</div></div>', $result['html']);
     }
 
     private function createInputField(): MediaUrlInputElement

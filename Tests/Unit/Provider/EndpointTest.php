@@ -22,32 +22,32 @@ class EndpointTest extends TestCase
     public function testAddUrlScheme(): void
     {
         $this->endpoint->addUrlScheme('https://my.url.scheme');
-        self::assertSame(['https://my.url.scheme'], $this->endpoint->getUrlSchemes());
+        $this->assertSame(['https://my.url.scheme'], $this->endpoint->getUrlSchemes());
     }
 
     public function testGetName(): void
     {
-        self::assertSame('endpoint_name', $this->endpoint->getName());
+        $this->assertSame('endpoint_name', $this->endpoint->getName());
     }
 
     public function testGetUrl(): void
     {
-        self::assertSame('https://my.endpoint.url', $this->endpoint->getUrl());
+        $this->assertSame('https://my.endpoint.url', $this->endpoint->getUrl());
     }
 
     public function testGetUrlConfigKeyForRegexes(): void
     {
-        self::assertSame('urlRegexes', $this->endpoint->getUrlConfigKey());
+        $this->assertSame('urlRegexes', $this->endpoint->getUrlConfigKey());
     }
 
     public function testGetUrlConfigKeyForSchemes(): void
     {
         $endpoint = new Endpoint('test', 'https://test.url', false);
-        self::assertSame('urlSchemes', $endpoint->getUrlConfigKey());
+        $this->assertSame('urlSchemes', $endpoint->getUrlConfigKey());
     }
 
     public function testIsRegex(): void
     {
-        self::assertTrue($this->endpoint->isRegex());
+        $this->assertTrue($this->endpoint->isRegex());
     }
 }

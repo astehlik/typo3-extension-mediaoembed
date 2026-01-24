@@ -42,7 +42,7 @@ final class HttpRequestHandlerTest extends AbstractUnitTestCase
         $responseArray = ['my' => 'array'];
         $response = $this->callHandler(json_encode($responseArray));
 
-        self::assertSame($responseArray, $response);
+        $this->assertSame($responseArray, $response);
     }
 
     private function callHandler(string $responseData): array

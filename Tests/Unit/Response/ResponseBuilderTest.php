@@ -30,7 +30,7 @@ class ResponseBuilderTest extends AbstractUnitTestCase
         $responseClass = GenericResponse::class;
 
         $response = $this->buildResponse($responseClass, $responseData);
-        self::assertSame('Some generic response', $response->getTitle());
+        $this->assertSame('Some generic response', $response->getTitle());
     }
 
     public function testBuildResponseLink(): void
@@ -43,7 +43,7 @@ class ResponseBuilderTest extends AbstractUnitTestCase
 
         /** @var LinkResponse $response */
         $response = $this->buildResponse($responseClass, $responseData);
-        self::assertSame('My link title', $response->getTitle());
+        $this->assertSame('My link title', $response->getTitle());
     }
 
     public function testBuildResponsePhoto(): void
@@ -68,8 +68,8 @@ class ResponseBuilderTest extends AbstractUnitTestCase
 
         /** @var PhotoResponse $response */
         $response = $this->buildResponse($responseClass, $responseData, $configuration, $photoDownloadServiceMock);
-        self::assertSame('https://my-awsome.tld/photo', $response->getUrl());
-        self::assertSame($fileMock, $response->getLocalFile());
+        $this->assertSame('https://my-awsome.tld/photo', $response->getUrl());
+        $this->assertSame($fileMock, $response->getLocalFile());
     }
 
     public function testBuildResponseRich(): void
@@ -84,7 +84,7 @@ class ResponseBuilderTest extends AbstractUnitTestCase
 
         /** @var RichResponse $response */
         $response = $this->buildResponse($responseClass, $responseData);
-        self::assertSame('<div>dummyrich</div>', $response->getHtml());
+        $this->assertSame('<div>dummyrich</div>', $response->getHtml());
     }
 
     public function testBuildResponseVideo(): void
@@ -99,7 +99,7 @@ class ResponseBuilderTest extends AbstractUnitTestCase
 
         /** @var VideoResponse $response */
         $response = $this->buildResponse($responseClass, $responseData);
-        self::assertSame('<div>dummyvideo</div>', $response->getHtml());
+        $this->assertSame('<div>dummyvideo</div>', $response->getHtml());
     }
 
     protected function buildResponse(
@@ -119,7 +119,7 @@ class ResponseBuilderTest extends AbstractUnitTestCase
             $configuration ?: $this->createConfiguration(),
         );
 
-        self::assertInstanceOf($responseClass, $response);
+        $this->assertInstanceOf($responseClass, $response);
 
         return $response;
     }

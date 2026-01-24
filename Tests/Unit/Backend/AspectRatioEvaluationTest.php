@@ -28,7 +28,7 @@ final class AspectRatioEvaluationTest extends AbstractUnitTestCase
     #[DataProvider('provideDeevaluateFieldValueReturnsExpectedValueCases')]
     public function testDeevaluateFieldValueReturnsExpectedValue(array $parameters, string $expectedValue): void
     {
-        self::assertSame($expectedValue, $this->aspectRatioEvaluation->deevaluateFieldValue($parameters));
+        $this->assertSame($expectedValue, $this->aspectRatioEvaluation->deevaluateFieldValue($parameters));
     }
 
     public static function provideDeevaluateFieldValueReturnsExpectedValueCases(): iterable
@@ -54,7 +54,7 @@ final class AspectRatioEvaluationTest extends AbstractUnitTestCase
                 ->willReturn(false);
         }
 
-        self::assertSame('', $this->aspectRatioEvaluation->evaluateFieldValue($value));
+        $this->assertSame('', $this->aspectRatioEvaluation->evaluateFieldValue($value));
     }
 
     public static function provideEvaluateFieldValueReturnsEmptyStringForInvalidValuesCases(): iterable
@@ -73,12 +73,12 @@ final class AspectRatioEvaluationTest extends AbstractUnitTestCase
             ->with('valid')
             ->willReturn(true);
 
-        self::assertSame('valid', $this->aspectRatioEvaluation->evaluateFieldValue('valid'));
+        $this->assertSame('valid', $this->aspectRatioEvaluation->evaluateFieldValue('valid'));
     }
 
     public function testReturnFieldJSReturnsJsContents(): void
     {
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             JavaScriptModuleInstruction::class,
             $this->aspectRatioEvaluation->returnFieldJS(),
         );

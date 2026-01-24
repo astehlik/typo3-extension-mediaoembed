@@ -94,7 +94,7 @@ class HttpRequestTest extends TestCase
             'maxwidth=100&format=json&url=http%3A%2F%2Fmy-media.tld%2Ftheurl',
             100,
         );
-        self::assertSame('the repsonse', $response);
+        $this->assertSame('the repsonse', $response);
     }
 
     private function assertUrlIs(

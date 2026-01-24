@@ -40,7 +40,7 @@ final class UrlServiceTest extends AbstractUnitTestCase
             'arr1' => ['2'],
             'new' => 'neu',
         ];
-        self::assertSame($expectedUrlParameters, $newUrlParameters);
+        $this->assertSame($expectedUrlParameters, $newUrlParameters);
     }
 
     #[DataProvider('provideBuildUrlReturnsExpectedStringCases')]
@@ -51,8 +51,8 @@ final class UrlServiceTest extends AbstractUnitTestCase
         $rebuildUrl = $this->urlService->buildUrl($originalUrlParts, $url);
         $rebuildUrlParts = parse_url($rebuildUrl);
 
-        self::assertSame($url, $rebuildUrl);
-        self::assertSame($originalUrlParts, $rebuildUrlParts);
+        $this->assertSame($url, $rebuildUrl);
+        $this->assertSame($originalUrlParts, $rebuildUrlParts);
     }
 
     public static function provideBuildUrlReturnsExpectedStringCases(): iterable
@@ -91,7 +91,7 @@ final class UrlServiceTest extends AbstractUnitTestCase
                 'test' => '1',
             ],
         ];
-        self::assertSame($expectedParams, $newParams);
+        $this->assertSame($expectedParams, $newParams);
     }
 
     public function testReplaceSchemeAndHost(): void
@@ -99,6 +99,6 @@ final class UrlServiceTest extends AbstractUnitTestCase
         /** @noinspection HttpUrlsUsage */
         $oldUrl = 'http://test@bla.com?blubb=1#test';
         $newUrl = $this->urlService->replaceSchemeAndHost($oldUrl, 'https', 'www.my-new-host.com');
-        self::assertSame('https://test@www.my-new-host.com?blubb=1#test', $newUrl);
+        $this->assertSame('https://test@www.my-new-host.com?blubb=1#test', $newUrl);
     }
 }

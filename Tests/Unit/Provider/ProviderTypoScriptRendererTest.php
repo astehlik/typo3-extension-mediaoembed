@@ -32,7 +32,7 @@ class ProviderTypoScriptRendererTest extends TestCase
             'test_provider_2' => $testProvider2,
         ];
         // @extensionScannerIgnoreLine
-        self::assertSame($this->getExpectedResult(), $this->renderer->render($providers));
+        $this->assertSame($this->getExpectedResult(), $this->renderer->render($providers));
     }
 
     private function getExpectedResult(): string

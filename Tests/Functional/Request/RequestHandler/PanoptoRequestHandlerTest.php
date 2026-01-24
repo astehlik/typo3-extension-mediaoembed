@@ -47,7 +47,7 @@ final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
         ];
 
         $requestHandler = $this->getContainer()->get(PanoptoRequestHandler::class);
-        self::assertSame($expectedResponse, $requestHandler->handle($provider, $configurationMock));
+        $this->assertSame($expectedResponse, $requestHandler->handle($provider, $configurationMock));
     }
 
     public static function provideHandleBuildsExpectedIframeCases(): iterable

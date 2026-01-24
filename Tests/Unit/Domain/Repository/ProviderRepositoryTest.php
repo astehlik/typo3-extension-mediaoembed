@@ -23,7 +23,7 @@ class ProviderRepositoryTest extends TestCase
             ],
         );
 
-        self::assertSame('https://my-provider.tld/enpoint', $provider->getEndpoint());
+        $this->assertSame('https://my-provider.tld/enpoint', $provider->getEndpoint());
     }
 
     public function testCreatesProviderWithHiddenDirectLink(): void
@@ -38,7 +38,7 @@ class ProviderRepositoryTest extends TestCase
             ],
         );
 
-        self::assertFalse($provider->shouldDirectLinkBeDisplayed());
+        $this->assertFalse($provider->shouldDirectLinkBeDisplayed());
     }
 
     public function testCreatesProviderWithProcessors(): void
@@ -53,7 +53,7 @@ class ProviderRepositoryTest extends TestCase
             ],
         );
 
-        self::assertSame(['my processor class'], $provider->getProcessors());
+        $this->assertSame(['my processor class'], $provider->getProcessors());
     }
 
     public function testCreatesProviderWithRequestHandler(): void
@@ -69,8 +69,8 @@ class ProviderRepositoryTest extends TestCase
             ],
         );
 
-        self::assertSame('theclass', $provider->getRequestHandlerClass());
-        self::assertSame(['my' => 'setting'], $provider->getRequestHandlerSettings());
+        $this->assertSame('theclass', $provider->getRequestHandlerClass());
+        $this->assertSame(['my' => 'setting'], $provider->getRequestHandlerSettings());
     }
 
     public function testCreatesProviderWithRequestHandlerClass(): void
@@ -85,7 +85,7 @@ class ProviderRepositoryTest extends TestCase
             ],
         );
 
-        self::assertSame('My\\Request\\Handler', $provider->getRequestHandlerClass());
+        $this->assertSame('My\\Request\\Handler', $provider->getRequestHandlerClass());
     }
 
     public function testCreatesProviderWithUrlRegex(): void
@@ -99,8 +99,8 @@ class ProviderRepositoryTest extends TestCase
             ],
         );
 
-        self::assertTrue($provider->hasRegexUrlSchemes());
-        self::assertSame(['https://my-url-regex.tld'], $provider->getUrlSchemes());
+        $this->assertTrue($provider->hasRegexUrlSchemes());
+        $this->assertSame(['https://my-url-regex.tld'], $provider->getUrlSchemes());
     }
 
     public function testCreatesProviderWithUrlScheme(): void
@@ -114,8 +114,8 @@ class ProviderRepositoryTest extends TestCase
             ],
         );
 
-        self::assertFalse($provider->hasRegexUrlSchemes());
-        self::assertSame(['https://my-url-scheme.tld'], $provider->getUrlSchemes());
+        $this->assertFalse($provider->hasRegexUrlSchemes());
+        $this->assertSame(['https://my-url-scheme.tld'], $provider->getUrlSchemes());
     }
 
     public function testEndpointMustBeAValidUrl(): void

@@ -20,7 +20,7 @@ final class AspectRatioCalculatorTest extends AbstractUnitTestCase
     #[DataProvider('provideCalculateAspectRatioReturnsExpectedValuesCases')]
     public function testCalculateAspectRatioReturnsExpectedValues(float $expectedValue, string $aspectRatio): void
     {
-        self::assertSame($expectedValue, $this->aspectRatioCalculator->calculateAspectRatio($aspectRatio));
+        $this->assertSame($expectedValue, $this->aspectRatioCalculator->calculateAspectRatio($aspectRatio));
     }
 
     public static function provideCalculateAspectRatioReturnsExpectedValuesCases(): iterable
@@ -44,7 +44,7 @@ final class AspectRatioCalculatorTest extends AbstractUnitTestCase
     #[DataProvider('provideIsValidAspectRatioReturnsFalseForInvalidValuesCases')]
     public function testIsValidAspectRatioReturnsFalseForInvalidValues(string $value): void
     {
-        self::assertFalse($this->aspectRatioCalculator->isValidAspectRatio($value));
+        $this->assertFalse($this->aspectRatioCalculator->isValidAspectRatio($value));
     }
 
     public static function provideIsValidAspectRatioReturnsFalseForInvalidValuesCases(): iterable
@@ -60,6 +60,6 @@ final class AspectRatioCalculatorTest extends AbstractUnitTestCase
 
     public function testIsValidAspectRatioReturnsTrueForValidValue(): void
     {
-        self::assertTrue($this->aspectRatioCalculator->isValidAspectRatio('10:5'));
+        $this->assertTrue($this->aspectRatioCalculator->isValidAspectRatio('10:5'));
     }
 }

@@ -35,21 +35,21 @@ class ProviderResolverTest extends AbstractUnitTestCase
     {
         $provider = $this->providerResolver->getNextMatchingProvider('https://url_with_http');
 
-        self::assertSame($this->dummyProviders[3], $provider);
+        $this->assertSame($this->dummyProviders[3], $provider);
     }
 
     public function testResolverMatchesRegexUrl(): void
     {
         $provider = $this->providerResolver->getNextMatchingProvider('https://my.provider.tld/playlist/blabla');
 
-        self::assertSame($this->dummyProviders[4], $provider);
+        $this->assertSame($this->dummyProviders[4], $provider);
     }
 
     public function testResolverMatchesUrlWithWildcard(): void
     {
         $provider = $this->providerResolver->getNextMatchingProvider('wildcard_fill_test');
 
-        self::assertSame($this->dummyProviders[2], $provider);
+        $this->assertSame($this->dummyProviders[2], $provider);
     }
 
     public function testResolverReturnsSecondMatchingProviderOnSecondCall(): void
@@ -57,7 +57,7 @@ class ProviderResolverTest extends AbstractUnitTestCase
         $this->providerResolver->getNextMatchingProvider('testurl');
         $secondProvider = $this->providerResolver->getNextMatchingProvider('testurl');
 
-        self::assertSame($this->dummyProviders[1], $secondProvider);
+        $this->assertSame($this->dummyProviders[1], $secondProvider);
     }
 
     public function testResolverThrowsNoMatchingProviderException(): void

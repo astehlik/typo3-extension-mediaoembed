@@ -12,6 +12,6 @@ class ProviderEndpointsTest extends TestCase
     public function testGetEndpoints(): void
     {
         $endpoints = new ProviderEndpoints();
-        self::assertIsArray($endpoints->getEndpoints());
+        $this->assertIsArray($endpoints->getEndpoints());
     }
 }
