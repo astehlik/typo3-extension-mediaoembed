@@ -77,7 +77,6 @@ class OembedController extends ActionController
             );
             $this->getEmbedDataFromProvider($configuration);
             $this->view->assign('configuration', $configuration);
-            $this->view->assign('isSSLRequest', GeneralUtility::getIndpEnv('TYPO3_SSL'));
             $result = $this->view->render();
         } catch (InvalidUrlException $invalidUrlException) {
             $result = $this->renderErrorMessage('error_message_invalid_url', [$invalidUrlException->getUrl()]);
