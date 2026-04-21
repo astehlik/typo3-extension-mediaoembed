@@ -4,22 +4,18 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Service;
 
-use TYPO3\CMS\Core\Resource\DuplicationBehavior;
+use TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class ResourceService
+readonly class ResourceService
 {
-    /**
-     * @var ResourceFactory
-     */
-    private $resourceFactory;
-
-    public function __construct(ResourceFactory $resourceFactory)
-    {
-        $this->resourceFactory = $resourceFactory;
+    public function __construct(
+        private StorageRepository $storageRepository,
+    ) {
     }
 
     public function addFile(Folder $folder, string $fileName, string $fileContents): File
@@ -34,15 +30,10 @@ class ResourceService
         return $file;
     }
 
-    public function getFileInFolder(Folder $targetFolder, string $imageFilename): File
+    public function getOrCreateFolder(int $storageUid, string $folderIdentifier): Folder
     {
-        $storage = $this->resourceFactory->getStorageObject($targetFolder->getStorage()->getUid());
-        return $storage->getFileInFolder($imageFilename, $targetFolder);
-    }
+        $storage = $this->storageRepository->getStorageObject($storageUid);
 
-    public function getOrCreateFolder($storageUid, $folderIdentifier): Folder
-    {
-        $storage = $this->resourceFactory->getStorageObject($storageUid);
         if ($storage->hasFolder($folderIdentifier)) {
             return $storage->getFolder($folderIdentifier);
         }

@@ -9,9 +9,9 @@ use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Exception\PhotoDownload\NotAnImageFileException;
 use Sto\Mediaoembed\Exception\PhotoDownloadException;
 use Sto\Mediaoembed\Exception\RequestException;
-use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\FileType;
 use TYPO3\CMS\Core\Resource\Folder;
 
 class PhotoDownloadService
@@ -59,7 +59,7 @@ class PhotoDownloadService
         $targetFolder = $this->getTargetFolder($configuration);
 
         if ($targetFolder->hasFile($imageFilename)) {
-            return $this->resourceService->getFileInFolder($targetFolder, $imageFilename);
+            return $targetFolder->getFile($imageFilename);
         }
 
         $file = $this->resourceService->addFile($targetFolder, $imageFilename, $response->getBody()->getContents());
@@ -79,7 +79,7 @@ class PhotoDownloadService
 
     public function validateMimeType(string $downloadUrl, File $file): void
     {
-        if ($file->getType() !== AbstractFile::FILETYPE_IMAGE) {
+        if (!$file->isType(FileType::IMAGE)) {
             $mimeType = $file->getMimeType();
             $file->delete();
             throw new NotAnImageFileException($downloadUrl, $mimeType);
