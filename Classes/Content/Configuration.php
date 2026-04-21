@@ -24,6 +24,8 @@ class Configuration
 {
     public const ASPECT_RATIO_DEFAULT = '16:9';
 
+    public const EMBED_RESPONSIVE_CLASS_DEFAULT = 'ratio';
+
     private AspectRatioCalculatorInterface $aspectRatioCalculator;
 
     private Content $contentElement;
@@ -53,6 +55,16 @@ class Configuration
         }
 
         return $this->getAspectRatioFallback();
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function getEmbedResponsiveClass(): string
+    {
+        $class = $this->settings->getEmbedResponsiveClass();
+
+        return $class !== '' ? $class : self::EMBED_RESPONSIVE_CLASS_DEFAULT;
     }
 
     public function getHttpClientClass(): string

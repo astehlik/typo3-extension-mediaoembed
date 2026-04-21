@@ -18,6 +18,11 @@ class Settings
         return $this->settings['aspectRatioFallback'] ?? '';
     }
 
+    public function getEmbedResponsiveClass(): string
+    {
+        return $this->settings['embedResponsiveClass'] ?? '';
+    }
+
     public function getHttpClientClass(): string
     {
         return $this->settings['httpClient'] ?? '';

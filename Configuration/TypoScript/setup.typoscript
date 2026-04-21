@@ -21,6 +21,8 @@ plugin.tx_mediaoembed.settings {
   // Aspect ratio to use when no width / height is available.
   aspectRatioFallback = 16:9
 
+  embedResponsiveClass = ratio
+
   view {
     displayDirectLink = 1
 
