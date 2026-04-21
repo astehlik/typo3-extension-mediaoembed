@@ -1,35 +1,35 @@
 plugin.tx_mediaoembed.settings {
-    httpClient = Sto\Mediaoembed\Request\HttpClient\GetUrlHttpClient
+  httpClient = Sto\Mediaoembed\Request\HttpClient\GetUrlHttpClient
 
-    media {
-        maxwidth = {$plugin.tx_mediaoembed.defaultMaximumMediaWidth}
-        maxheight =
+  media {
+    maxwidth = {$plugin.tx_mediaoembed.defaultMaximumMediaWidth}
+    maxheight =
+  }
+
+  downloadPhoto = {$plugin.tx_mediaoembed.downloadPhoto}
+  downloadPhotoSettings {
+    storageUid = {$plugin.tx_mediaoembed.downloadPhotoSettings.storageUid}
+    folderIdentifier = {$plugin.tx_mediaoembed.downloadPhotoSettings.folderIdentifier}
+  }
+
+  reponseProcessors {
+    html {
+      10 = Sto\Mediaoembed\Response\Processor\YouTube\IframeAccessibilityProcessor
     }
+  }
 
-    downloadPhoto = {$plugin.tx_mediaoembed.downloadPhoto}
-    downloadPhotoSettings {
-        storageUid = {$plugin.tx_mediaoembed.downloadPhotoSettings.storageUid}
-        folderIdentifier = {$plugin.tx_mediaoembed.downloadPhotoSettings.folderIdentifier}
+  // Aspect ratio to use when no width / height is available.
+  aspectRatioFallback = 16:9
+
+  view {
+    displayDirectLink = 1
+
+    directLink {
+      target = _blank
+
+      // Security! Do not change this, if you use target=_blank, see:
+      // https://www.jitbit.com/alexblog/256-targetblank---the-most-underestimated-vulnerability-ever/
+      rel = noreferrer noopener
     }
-
-    reponseProcessors {
-        html {
-            10 = Sto\Mediaoembed\Response\Processor\YouTube\IframeAccessibilityProcessor
-        }
-    }
-
-    // Aspect ratio to use when no width / height is available.
-    aspectRatioFallback = 16:9
-
-    view {
-        displayDirectLink = 1
-
-        directLink {
-            target = _blank
-
-            // Security! Do not change this, if you use target=_blank, see:
-            // https://www.jitbit.com/alexblog/256-targetblank---the-most-underestimated-vulnerability-ever/
-            rel = noreferrer noopener
-        }
-    }
+  }
 }
