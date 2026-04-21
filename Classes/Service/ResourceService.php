@@ -7,7 +7,6 @@ namespace Sto\Mediaoembed\Service;
 use TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
-use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -15,8 +14,7 @@ readonly class ResourceService
 {
     public function __construct(
         private StorageRepository $storageRepository,
-    ) {
-    }
+    ) {}
 
     public function addFile(Folder $folder, string $fileName, string $fileContents): File
     {
