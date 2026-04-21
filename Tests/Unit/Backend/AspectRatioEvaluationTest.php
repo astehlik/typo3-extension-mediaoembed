@@ -78,9 +78,9 @@ final class AspectRatioEvaluationTest extends AbstractUnitTestCase
 
     public function testReturnFieldJSReturnsJsContents(): void
     {
-        $this->assertInstanceOf(
-            JavaScriptModuleInstruction::class,
-            $this->aspectRatioEvaluation->returnFieldJS(),
+        $this->assertSame(
+            'FormEngineEvaluation',
+            $this->aspectRatioEvaluation->returnFieldJS()->getExportName(),
         );
     }
 }

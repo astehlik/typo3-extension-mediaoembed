@@ -82,7 +82,8 @@ class HttpRequest
 
     protected function addRequestParameterFormat(array &$parameters): void
     {
-        if (isset($this->format)) {
+        if ($this->format !== '') {
+            // @extensionScannerIgnoreLine - False positive
             $parameters['format'] = $this->format;
         }
     }
@@ -210,10 +211,7 @@ class HttpRequest
         $this->{$errorHandlerMethod}($requestUrl);
     }
 
-    /**
-     * @return string|string[]
-     */
-    protected function replaceFormatPlaceholders(string $requestUrl)
+    protected function replaceFormatPlaceholders(string $requestUrl): string
     {
         $requestUrl = str_replace('###FORMAT###', $this->format, $requestUrl);
         return str_replace('{format}', $this->format, $requestUrl);

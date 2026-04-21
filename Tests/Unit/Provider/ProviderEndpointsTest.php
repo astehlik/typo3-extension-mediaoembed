@@ -12,6 +12,6 @@ class ProviderEndpointsTest extends TestCase
     public function testGetEndpoints(): void
     {
         $endpoints = new ProviderEndpoints();
-        $this->assertIsArray($endpoints->getEndpoints());
+        $this->assertCount(39, $endpoints->getEndpoints());
     }
 }
