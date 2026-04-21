@@ -71,6 +71,7 @@ class OembedController extends ActionController
     {
         try {
             $configuration = $this->configurationFactory->createConfiguration(
+                /** @extensionScannerIgnoreLine - False positive */
                 $this->getCurrentContentObject()->data,
                 $this->settings,
             );

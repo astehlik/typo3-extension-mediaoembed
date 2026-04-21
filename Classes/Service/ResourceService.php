@@ -32,6 +32,7 @@ readonly class ResourceService
 
     public function getOrCreateFolder(int $storageUid, string $folderIdentifier): Folder
     {
+        /** @extensionScannerIgnoreLine - False positive */
         $storage = $this->storageRepository->getStorageObject($storageUid);
 
         if ($storage->hasFolder($folderIdentifier)) {
