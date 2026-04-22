@@ -75,7 +75,7 @@ class OembedControllerTest extends AbstractFunctionalTestCase
         $this->assertStringContainsString($expectedIframe, $this->renderOembedContent());
 
         $expectedAspectRatio = 100 / (459 / 344);
-        $expectedWrapper = "<div class=\"ratio\" style=\"padding-top: {$expectedAspectRatio}%;\">";
+        $expectedWrapper = '<div class="ratio" style="padding-top: ' . $expectedAspectRatio . '%;">';
         $this->assertStringContainsString($expectedWrapper, $this->renderOembedContent());
     }
 
@@ -93,7 +93,7 @@ class OembedControllerTest extends AbstractFunctionalTestCase
         );
 
         $expectedAspectRatio = 100 / (459 / 344);
-        $expectedWrapper = "<div class=\"custom-responsive-class\" style=\"padding-top: {$expectedAspectRatio}%;\">";
+        $expectedWrapper = '<div class="custom-responsive-class" style="padding-top: ' . $expectedAspectRatio . '%;">';
         $this->assertStringContainsString($expectedWrapper, $this->renderOembedContent());
     }
 
