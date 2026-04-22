@@ -12,6 +12,6 @@ class ProviderUrlsTest extends TestCase
     public function testGetUrls(): void
     {
         $urls = new ProviderUrls();
-        $this->assertIsArray($urls->getUrls());
+        $this->assertCount(66, $urls->getUrls());
     }
 }

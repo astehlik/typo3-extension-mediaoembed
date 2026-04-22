@@ -6,6 +6,7 @@ namespace Sto\Mediaoembed\ViewHelpers;
 
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
 class EmbedResponsivePaddingViewHelper extends AbstractTagBasedViewHelper
@@ -23,9 +24,19 @@ class EmbedResponsivePaddingViewHelper extends AbstractTagBasedViewHelper
     {
         $aspectRatio = $this->getAspectRatio();
         $paddingTop = 100 / $aspectRatio . '%';
+        $this->addEmbedReponsiveClass();
         $this->tag->addAttribute('style', $this->arguments['style-property'] . ': ' . $paddingTop . ';');
         $this->tag->setContent($this->renderChildren());
         return $this->tag->render();
+    }
+
+    private function addEmbedReponsiveClass(): void
+    {
+        $classes = GeneralUtility::trimExplode(' ', $this->tag->getAttribute('class') ?? '', true);
+
+        $classes[] = $this->getConfiguration()->getEmbedResponsiveClass();
+
+        $this->tag->addAttribute('class', implode(' ', $classes));
     }
 
     private function getAspectRatio(): float

@@ -9,7 +9,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Sto\Mediaoembed\Backend\AspectRatioEvaluation;
 use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
-use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 
 final class AspectRatioEvaluationTest extends AbstractUnitTestCase
 {
@@ -78,9 +77,9 @@ final class AspectRatioEvaluationTest extends AbstractUnitTestCase
 
     public function testReturnFieldJSReturnsJsContents(): void
     {
-        $this->assertInstanceOf(
-            JavaScriptModuleInstruction::class,
-            $this->aspectRatioEvaluation->returnFieldJS(),
+        $this->assertSame(
+            'FormEngineEvaluation',
+            $this->aspectRatioEvaluation->returnFieldJS()->getExportName(),
         );
     }
 }

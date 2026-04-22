@@ -71,12 +71,12 @@ class OembedController extends ActionController
     {
         try {
             $configuration = $this->configurationFactory->createConfiguration(
+                // @extensionScannerIgnoreLine - False positive
                 $this->getCurrentContentObject()->data,
                 $this->settings,
             );
             $this->getEmbedDataFromProvider($configuration);
             $this->view->assign('configuration', $configuration);
-            $this->view->assign('isSSLRequest', GeneralUtility::getIndpEnv('TYPO3_SSL'));
             $result = $this->view->render();
         } catch (InvalidUrlException $invalidUrlException) {
             $result = $this->renderErrorMessage('error_message_invalid_url', [$invalidUrlException->getUrl()]);

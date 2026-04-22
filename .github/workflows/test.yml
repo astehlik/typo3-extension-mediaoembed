@@ -19,11 +19,14 @@ env:
 jobs:
   extension-test:
     name: 'Testing and linting'
-    uses: astehlik/typo3-extension-buildtools/.github/workflows/extension-test.yml@TYPO3_13
+    uses: astehlik/typo3-extension-buildtools/.github/workflows/extension-test.yml@TYPO3_14
+    with:
+      # Ignore 108277 because it causes to many false positives with the with() method in PHPUnit tests
+      typo3-scan-ignore: 108277
 
   extension-qltysh-coverage:
     name: 'Qlty coverage'
-    uses: astehlik/typo3-extension-buildtools/.github/workflows/extension-qltysh-coverage.yml@TYPO3_13
+    uses: astehlik/typo3-extension-buildtools/.github/workflows/extension-qltysh-coverage.yml@TYPO3_14
     if: github.ref == 'refs/heads/develop'
     secrets:
       QLTY_COVERAGE_TOKEN: ${{ secrets.QLTY_COVERAGE_TOKEN }}

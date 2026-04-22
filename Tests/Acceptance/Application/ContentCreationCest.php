@@ -17,7 +17,6 @@ class ContentCreationCest
 
     public function html5MediaCanBeCreated(BackendTester $I, PageTree $pageTree, ModalDialog $modalDialog): void
     {
-        $I->click('Page');
         $pageTree->openPath(['root Page']);
 
         $I->wait(0.2);

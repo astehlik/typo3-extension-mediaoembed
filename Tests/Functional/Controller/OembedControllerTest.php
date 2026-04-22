@@ -73,6 +73,28 @@ class OembedControllerTest extends AbstractFunctionalTestCase
             . ' allowfullscreen aria-label="YouTube media: Trololo"></iframe>';
 
         $this->assertStringContainsString($expectedIframe, $this->renderOembedContent());
+
+        $expectedAspectRatio = 100 / (459 / 344);
+        $expectedWrapper = '<div class="ratio" style="padding-top: ' . $expectedAspectRatio . '%;">';
+        $this->assertStringContainsString($expectedWrapper, $this->renderOembedContent());
+    }
+
+    public function testYouTubeIframeIsRenderedWithCustomResponseClass(): void
+    {
+        $this->setUpFrontendRootPage(
+            1,
+            [
+                'setup' => array_merge(
+                    $this->typoscriptSetupFilesDefault,
+                    ['EXT:mediaoembed/Tests/Functional/Fixtures/CustomResponsiveClass.typoscript'],
+                ),
+                'constants' => $this->typoscriptConstantFiles,
+            ],
+        );
+
+        $expectedAspectRatio = 100 / (459 / 344);
+        $expectedWrapper = '<div class="custom-responsive-class" style="padding-top: ' . $expectedAspectRatio . '%;">';
+        $this->assertStringContainsString($expectedWrapper, $this->renderOembedContent());
     }
 
     public function testYouTubeIframeIsRenderedWithoutRelated(): void
