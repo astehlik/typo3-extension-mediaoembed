@@ -48,12 +48,12 @@ class Settings
 
     public function getPhotoDownloadFolderIdentifier(): string
     {
-        return $this->settings['downloadPhotoSettings']['folderIdentifier'];
+        return $this->settings['downloadPhotoSettings']['folderIdentifier'] ?? '';
     }
 
     public function getPhotoDownloadStorageUid(): int
     {
-        return (int)$this->settings['downloadPhotoSettings']['storageUid'];
+        return (int)($this->settings['downloadPhotoSettings']['storageUid'] ?? 0);
     }
 
     public function getProcessorsForHtml(): array
@@ -63,6 +63,6 @@ class Settings
 
     public function isPhotoDownloadEnabled(): bool
     {
-        return (bool)$this->settings['downloadPhoto'];
+        return (bool)($this->settings['downloadPhoto'] ?? false);
     }
 }
