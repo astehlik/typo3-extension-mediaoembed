@@ -7,7 +7,7 @@ namespace Sto\Mediaoembed\Service;
 use SplFileInfo;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Exception\PhotoDownload\NotAnImageFileException;
-use Sto\Mediaoembed\Exception\PhotoDownloadException;
+use Sto\Mediaoembed\Exception\PhotoDownload\PhotoDownloadException;
 use Sto\Mediaoembed\Exception\RequestException;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
