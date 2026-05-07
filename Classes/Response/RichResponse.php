@@ -14,20 +14,23 @@ namespace Sto\Mediaoembed\Response;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
+use Sto\Mediaoembed\Response\Trait\AspectRatioTrait;
+
 /**
  * This type is used for rich HTML content that does not fall under one of
  * the other categories.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
  */
-class RichResponse extends GenericResponse implements HtmlAwareResponseInterface
+class RichResponse extends GenericResponse implements AspectRatioAwareResponseInterface, HtmlAwareResponseInterface
 {
+    use AspectRatioTrait;
+
     /**
      * The height in pixels required to display the HTML.
      * This value is required.
-     *
-     * @var string
      */
-    protected $height;
+    protected int $height;
 
     /**
      * The HTML required to display the resource.
@@ -36,25 +39,19 @@ class RichResponse extends GenericResponse implements HtmlAwareResponseInterface
      * XSS vulnerabilities.
      * The markup should be valid XHTML 1.0 Basic.
      * This value is required.
-     *
-     * @var string
      */
-    protected $html;
+    protected string $html;
 
     /**
      * The width in pixels required to display the HTML.
      * This value is required.
-     *
-     * @var string
      */
-    protected $width;
+    protected int $width;
 
     /**
      * Getter for the height in pixels required to display the HTML.
-     *
-     * @return string
      */
-    public function getHeight()
+    public function getHeight(): int
     {
         return $this->height;
     }
@@ -69,10 +66,8 @@ class RichResponse extends GenericResponse implements HtmlAwareResponseInterface
 
     /**
      * Getter for the width in pixels required to display the HTML.
-     *
-     * @return string
      */
-    public function getWidth()
+    public function getWidth(): int
     {
         return $this->width;
     }
@@ -84,8 +79,9 @@ class RichResponse extends GenericResponse implements HtmlAwareResponseInterface
     public function initializeTypeSpecificResponseData(): void
     {
         $this->html = $this->responseDataArray['html'];
-        $this->width = $this->responseDataArray['width'];
-        $this->height = $this->responseDataArray['height'];
+
+        $this->width = (int)$this->responseDataArray['width'];
+        $this->height = (int)$this->responseDataArray['height'];
     }
 
     public function setHtml(string $html): void
