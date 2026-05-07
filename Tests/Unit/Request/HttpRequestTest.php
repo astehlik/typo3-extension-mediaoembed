@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Request;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Sto\Mediaoembed\Content\Configuration;
@@ -15,6 +16,7 @@ use Sto\Mediaoembed\Request\HttpClient\HttpClientFactory;
 use Sto\Mediaoembed\Request\HttpClient\HttpClientInterface;
 use Sto\Mediaoembed\Request\HttpRequest;
 
+#[CoversClass(HttpRequest::class)]
 class HttpRequestTest extends TestCase
 {
     public function testAddsMaxHeightToRequestUrl(): void

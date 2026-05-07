@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Provider;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -12,6 +13,7 @@ use Sto\Mediaoembed\Provider\EndpointCollector;
 use Sto\Mediaoembed\Provider\ProviderEndpoints;
 use Sto\Mediaoembed\Provider\ProviderUrls;
 
+#[CoversClass(EndpointCollector::class)]
 class EndpointCollectorTest extends TestCase
 {
     private EndpointCollector $collector;

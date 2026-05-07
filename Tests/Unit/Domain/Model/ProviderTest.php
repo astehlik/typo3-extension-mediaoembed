@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Domain\Model;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Sto\Mediaoembed\Domain\Model\Provider;
 
+#[CoversClass(Provider::class)]
 class ProviderTest extends TestCase
 {
     /**

@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Domain\Repository;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Domain\Repository\ProviderRepository;
 use Sto\Mediaoembed\Exception\InvalidConfigurationException;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
+#[CoversClass(ProviderRepository::class)]
 class ProviderRepositoryTest extends TestCase
 {
     public function testCreatesProviderWithEndpoint(): void

@@ -14,6 +14,7 @@ namespace Sto\Mediaoembed\Tests\Unit\Response;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Response\VideoResponse;
@@ -22,6 +23,7 @@ use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 /**
  * Tests for the VideoResponse.
  */
+#[CoversClass(VideoResponse::class)]
 class VideoResponseTest extends AbstractUnitTestCase
 {
     protected VideoResponse $videoResponse;

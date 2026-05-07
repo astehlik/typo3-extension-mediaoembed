@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Service;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Sto\Mediaoembed\Service\AspectRatioCalculator;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
+#[CoversClass(AspectRatioCalculator::class)]
 final class AspectRatioCalculatorTest extends AbstractUnitTestCase
 {
     private AspectRatioCalculator $aspectRatioCalculator;

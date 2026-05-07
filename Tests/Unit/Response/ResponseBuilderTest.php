@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Response;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Content\Settings;
@@ -19,6 +20,7 @@ use Sto\Mediaoembed\Service\PhotoDownloadService;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 use TYPO3\CMS\Core\Resource\FileInterface;
 
+#[CoversClass(ResponseBuilder::class)]
 class ResponseBuilderTest extends AbstractUnitTestCase
 {
     public function testBuildResponseGeneric(): void

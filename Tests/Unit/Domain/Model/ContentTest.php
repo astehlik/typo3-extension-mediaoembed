@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Domain\Model;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Sto\Mediaoembed\Domain\Model\Content;
 
+#[CoversClass(Content::class)]
 class ContentTest extends TestCase
 {
     private Content $contentElement;

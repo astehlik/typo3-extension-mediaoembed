@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Request\RequestHandler\Panopto;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Sto\Mediaoembed\Request\RequestHandler\Panopto\PanoptoUrlProcessor;
 use Sto\Mediaoembed\Service\UrlService;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
+#[CoversClass(PanoptoUrlProcessor::class)]
 final class PanoptoUrlProcessorTest extends AbstractUnitTestCase
 {
     /**
