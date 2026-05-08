@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Response;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Response\GenericResponse;
 
+#[CoversClass(GenericResponse::class)]
 class GenericResponseTest extends TestCase
 {
     public function testGetAuthorName(): void
@@ -28,6 +30,14 @@ class GenericResponseTest extends TestCase
         $this->assertSame(4564765, $response->getCacheAge());
     }
 
+    public function testGetConfiguration(): void
+    {
+        $configurationMock = $this->createMock(Configuration::class);
+        $response = new GenericResponse();
+        $response->initializeResponseData([], $configurationMock);
+        $this->assertSame($configurationMock, $response->getConfiguration());
+    }
+
     public function testGetProviderName(): void
     {
         $response = $this->createResponse(['provider_name' => 'The name of the provider']);
@@ -38,6 +48,16 @@ class GenericResponseTest extends TestCase
     {
         $response = $this->createResponse(['provider_url' => 'https://the-provider.tld']);
         $this->assertSame('https://the-provider.tld', $response->getProviderUrl());
+    }
+
+    public function testGetResponseDataArray(): void
+    {
+        $data = [
+            'type' => 'test',
+            'version' => '1.0',
+        ];
+        $response = $this->createResponse($data);
+        $this->assertSame($data, $response->getResponseDataArray());
     }
 
     public function testGetThumbnailHeight(): void

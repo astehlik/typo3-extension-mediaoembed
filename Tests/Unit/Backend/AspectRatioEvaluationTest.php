@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Backend;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Sto\Mediaoembed\Backend\AspectRatioEvaluation;
 use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
+#[CoversClass(AspectRatioEvaluation::class)]
 final class AspectRatioEvaluationTest extends AbstractUnitTestCase
 {
     private AspectRatioCalculatorInterface|MockObject $aspectRatioCalculatorMock;
@@ -42,6 +44,12 @@ final class AspectRatioEvaluationTest extends AbstractUnitTestCase
                 'test',
             ],
         ];
+    }
+
+    public function testEvaluateFieldValueInstantiatesCalculatorIfNotInjected(): void
+    {
+        $evaluation = new AspectRatioEvaluation();
+        $this->assertSame('16:9', $evaluation->evaluateFieldValue('16:9'));
     }
 
     #[DataProvider('provideEvaluateFieldValueReturnsEmptyStringForInvalidValuesCases')]
