@@ -75,7 +75,8 @@ class OembedControllerTest extends AbstractFunctionalTestCase
         $this->assertStringContainsString($expectedIframe, $this->renderOembedContent());
 
         $expectedAspectRatio = 100 / (459 / 344);
-        $expectedWrapper = '<div class="ratio" style="padding-top: ' . $expectedAspectRatio . '%;">';
+        $expectedWrapper = '<div class="tx-mediaoembed-embed ratio"'
+            . ' style="padding-top: ' . $expectedAspectRatio . '%;">';
         $this->assertStringContainsString($expectedWrapper, $this->renderOembedContent());
     }
 

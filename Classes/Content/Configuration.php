@@ -24,7 +24,7 @@ class Configuration
 {
     public const ASPECT_RATIO_DEFAULT = '16:9';
 
-    public const EMBED_RESPONSIVE_CLASS_DEFAULT = 'ratio';
+    public const EMBED_RESPONSIVE_CLASS_DEFAULT = 'tx-mediaoembed-embed ratio';
 
     private AspectRatioCalculatorInterface $aspectRatioCalculator;
 
@@ -55,6 +55,11 @@ class Configuration
         }
 
         return $this->getAspectRatioFallback();
+    }
+
+    public function getContentUid(): int
+    {
+        return $this->getContent()->getUid();
     }
 
     /**
@@ -122,6 +127,16 @@ class Configuration
     public function getProcessorsForHtml(): array
     {
         return $this->settings->getProcessorsForHtml();
+    }
+
+    public function isConsentEnabled(): bool
+    {
+        return $this->settings->isConsentEnabled();
+    }
+
+    public function isConsentPreviewEnabled(): bool
+    {
+        return $this->settings->isConsentPreviewEnabled();
     }
 
     public function isPhotoDownloadEnabled(): bool

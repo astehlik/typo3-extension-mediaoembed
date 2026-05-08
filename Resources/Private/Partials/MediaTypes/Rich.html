@@ -1,4 +1,7 @@
-<html data-namespace-typo3-fluid="true" xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
-<f:format.raw>{response.html}</f:format.raw>
+<html data-namespace-typo3-fluid="true" xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+		xmlns:mo="http://typo3.org/ns/Sto/Mediaoembed/ViewHelpers">
+<mo:embed response="{response}" configuration="{configuration}">
+	<f:format.raw>{response.html}</f:format.raw>
+</mo:embed>
 <f:render partial="DirectLink" arguments="{_all}" />
 </html>

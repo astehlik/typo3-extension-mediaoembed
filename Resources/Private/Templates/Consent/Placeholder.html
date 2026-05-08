@@ -1,0 +1,36 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+<div class="tx-mediaoembed-consent__inner">
+    <div class="tx-mediaoembed-consent__message">
+        <f:if condition="{response.providerName}">
+            <f:then>
+                <p class="tx-mediaoembed-consent__message-text">
+                    <f:format.raw><f:translate key="consent.message" arguments="{providerName: response.providerName, mediaUrl: configuration.mediaUrl}" /></f:format.raw>
+                </p>
+            </f:then>
+            <f:else>
+                <p class="tx-mediaoembed-consent__message-text">
+                    <f:translate key="consent.message_fallback" />
+                </p>
+            </f:else>
+        </f:if>
+        <button type="button" class="tx-mediaoembed-consent__accept btn btn-primary">
+            <f:translate key="consent.accept_button" />
+        </button>
+
+        <f:if condition="{configuration.consentPreviewEnabled}">
+            <details class="tx-mediaoembed-consent__preview">
+                <summary class="tx-mediaoembed-consent__preview-summary" aria-expanded="false" aria-controls="tx-mediaoembed-preview-content-{configuration.contentUid}">
+                    <f:translate key="consent.preview_label" />
+                </summary>
+                <div id="tx-mediaoembed-preview-content-{configuration.contentUid}">
+                    <p class="tx-mediaoembed-consent__preview-description">
+                        <f:translate key="consent.preview_description" />
+                    </p>
+                    <pre class="tx-mediaoembed-consent__preview-code"><code><f:spaceless><f:format.raw>{previewHtml}</f:format.raw></f:spaceless></code></pre>
+                </div>
+            </details>
+        </f:if>
+    </div>
+</div>
+</html>

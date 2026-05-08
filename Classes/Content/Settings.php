@@ -61,6 +61,16 @@ class Settings
         return $this->settings['reponseProcessors']['html'] ?? [];
     }
 
+    public function isConsentEnabled(): bool
+    {
+        return (bool)($this->settings['consent']['enabled'] ?? false);
+    }
+
+    public function isConsentPreviewEnabled(): bool
+    {
+        return (bool)($this->settings['consent']['showPreview'] ?? false);
+    }
+
     public function isPhotoDownloadEnabled(): bool
     {
         return (bool)($this->settings['downloadPhoto'] ?? false);

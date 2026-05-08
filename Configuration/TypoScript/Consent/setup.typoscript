@@ -1,0 +1,11 @@
+plugin.tx_mediaoembed.settings {
+  consent {
+    enabled = 1
+    showPreview = 1
+  }
+}
+
+page {
+  includeJSFooter.mediaoembed_consent = EXT:mediaoembed/Resources/Public/JavaScript/ConsentHandler.js
+  includeCSS.mediaoembed_consent = EXT:mediaoembed/Resources/Public/Css/Consent.css
+}
