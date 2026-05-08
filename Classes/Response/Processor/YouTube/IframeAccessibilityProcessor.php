@@ -8,12 +8,15 @@ use InvalidArgumentException;
 use Sto\Mediaoembed\Response\GenericResponse;
 use Sto\Mediaoembed\Response\HtmlAwareResponseInterface;
 use Sto\Mediaoembed\Response\Processor\HtmlResponseProcessorInterface;
-use Sto\Mediaoembed\Response\Processor\Support\IframeAwareProcessorTrait;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use Sto\Mediaoembed\Response\Processor\Support\IframeManipulator;
+use Sto\Mediaoembed\Service\LocalizationService;
 
-class IframeAccessibilityProcessor implements HtmlResponseProcessorInterface
+readonly class IframeAccessibilityProcessor implements HtmlResponseProcessorInterface
 {
-    use IframeAwareProcessorTrait;
+    public function __construct(
+        private IframeManipulator $iframeManipulator,
+        private LocalizationService $localizationService,
+    ) {}
 
     public function processHtmlResponse(HtmlAwareResponseInterface $response): void
     {
@@ -25,23 +28,21 @@ class IframeAccessibilityProcessor implements HtmlResponseProcessorInterface
             throw new InvalidArgumentException('This processor only works GenericResponse instances!');
         }
 
-        $ariaLabel = $this->getAriaLabel($response);
-        $this->addIframeAttributeIfNonExisting($response, 'aria-label', htmlspecialchars($ariaLabel));
+        $ariaLabelCallback = fn(): string => $this->getAriaLabel($response);
+        $this->iframeManipulator->addIframeAttributeIfNonExisting($response, 'aria-label', $ariaLabelCallback);
     }
 
     private function getAriaLabel(GenericResponse $response): string
     {
         if (!$response->getTitle()) {
-            return (string)LocalizationUtility::translate(
+            return $this->localizationService->translate(
                 'iframe_aria_label_fallback',
-                'Mediaoembed',
                 [$response->getProviderName()],
             );
         }
 
-        return (string)LocalizationUtility::translate(
+        return $this->localizationService->translate(
             'iframe_aria_label',
-            'Mediaoembed',
             [
                 $response->getProviderName(),
                 $response->getTitle(),

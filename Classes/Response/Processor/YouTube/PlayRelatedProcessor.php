@@ -7,20 +7,16 @@ namespace Sto\Mediaoembed\Response\Processor\YouTube;
 use InvalidArgumentException;
 use Sto\Mediaoembed\Response\GenericResponse;
 use Sto\Mediaoembed\Response\Processor\ResponseProcessorInterface;
-use Sto\Mediaoembed\Response\Processor\Support\IframeAwareProcessorTrait;
+use Sto\Mediaoembed\Response\Processor\Support\IframeManipulator;
 use Sto\Mediaoembed\Response\VideoResponse;
 use Sto\Mediaoembed\Service\UrlService;
 
-class PlayRelatedProcessor implements ResponseProcessorInterface
+readonly class PlayRelatedProcessor implements ResponseProcessorInterface
 {
-    use IframeAwareProcessorTrait;
-
-    private UrlService $urlService;
-
-    public function __construct(UrlService $urlService)
-    {
-        $this->urlService = $urlService;
-    }
+    public function __construct(
+        private IframeManipulator $iframeManipulator,
+        private UrlService $urlService
+    ) {}
 
     public function processResponse(GenericResponse $response): void
     {
@@ -38,6 +34,6 @@ class PlayRelatedProcessor implements ResponseProcessorInterface
             return $this->urlService->mergeQueryParameters($url, $queryParams);
         };
 
-        $this->modifyIframeUrl($response, $replaceYoutubeUrl);
+        $this->iframeManipulator->modifyIframeUrl($response, $replaceYoutubeUrl);
     }
 }

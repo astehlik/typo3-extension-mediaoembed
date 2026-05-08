@@ -4,15 +4,27 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Response\Processor\YouTube;
 
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Sto\Mediaoembed\Content\Configuration;
+use Sto\Mediaoembed\Response\GenericResponse;
+use Sto\Mediaoembed\Response\Processor\Support\IframeManipulator;
 use Sto\Mediaoembed\Response\Processor\YouTube\PlayRelatedProcessor;
 use Sto\Mediaoembed\Response\VideoResponse;
 use Sto\Mediaoembed\Service\UrlService;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
+#[CoversClass(PlayRelatedProcessor::class)]
 class PlayRelatedProcessorTest extends AbstractUnitTestCase
 {
+    private PlayRelatedProcessor $processor;
+
+    protected function setUp(): void
+    {
+        $this->processor = new PlayRelatedProcessor(new IframeManipulator(), new UrlService());
+    }
+
     #[DataProvider('provideProcessResponseModifesIframeUrlCases')]
     public function testProcessResponseModifesIframeUrl(bool $shouldPlayRelated): void
     {
@@ -35,8 +47,7 @@ class PlayRelatedProcessorTest extends AbstractUnitTestCase
         $videoMock->expects($this->once())->method('setHtml')->with($expectedHtml);
         $videoMock->expects($this->once())->method('getConfiguration')->willReturn($configurationMock);
 
-        $processor = new PlayRelatedProcessor(new UrlService());
-        $processor->processResponse($videoMock);
+        $this->processor->processResponse($videoMock);
     }
 
     public static function provideProcessResponseModifesIframeUrlCases(): iterable
@@ -45,5 +56,15 @@ class PlayRelatedProcessorTest extends AbstractUnitTestCase
             [true],
             [false],
         ];
+    }
+
+    public function testProcessResponseThrowsExceptionForInvalidResponseType(): void
+    {
+        $responseMock = $this->createMock(GenericResponse::class);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('This processor only works with video responses!');
+
+        $this->processor->processResponse($responseMock);
     }
 }
