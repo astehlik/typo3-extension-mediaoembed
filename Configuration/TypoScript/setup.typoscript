@@ -1,4 +1,9 @@
 plugin.tx_mediaoembed.settings {
+  consent {
+    enabled = 0
+    showPreview = 0
+  }
+
   httpClient = Sto\Mediaoembed\Request\HttpClient\GetUrlHttpClient
 
   media {
@@ -21,7 +26,7 @@ plugin.tx_mediaoembed.settings {
   // Aspect ratio to use when no width / height is available.
   aspectRatioFallback = 16:9
 
-  embedResponsiveClass = ratio
+  embedResponsiveClass = tx-mediaoembed-embed ratio
 
   view {
     displayDirectLink = 1

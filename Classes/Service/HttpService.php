@@ -4,15 +4,21 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Service;
 
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Http\RequestFactory;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class HttpService
+readonly class HttpService
 {
+    public function __construct(
+        private RequestFactoryInterface $requestFactory,
+        private ClientInterface $client,
+    ) {}
+
     public function getUrl(string $uri): ResponseInterface
     {
-        $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
-        return $requestFactory->request($uri);
+        $req = $this->requestFactory->createRequest('GET', $uri);
+
+        return $this->client->sendRequest($req);
     }
 }

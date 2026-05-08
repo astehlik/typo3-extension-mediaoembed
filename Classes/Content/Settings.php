@@ -48,12 +48,12 @@ class Settings
 
     public function getPhotoDownloadFolderIdentifier(): string
     {
-        return $this->settings['downloadPhotoSettings']['folderIdentifier'];
+        return $this->settings['downloadPhotoSettings']['folderIdentifier'] ?? '';
     }
 
     public function getPhotoDownloadStorageUid(): int
     {
-        return (int)$this->settings['downloadPhotoSettings']['storageUid'];
+        return (int)($this->settings['downloadPhotoSettings']['storageUid'] ?? 0);
     }
 
     public function getProcessorsForHtml(): array
@@ -61,8 +61,18 @@ class Settings
         return $this->settings['reponseProcessors']['html'] ?? [];
     }
 
+    public function isConsentEnabled(): bool
+    {
+        return (bool)($this->settings['consent']['enabled'] ?? false);
+    }
+
+    public function isConsentPreviewEnabled(): bool
+    {
+        return (bool)($this->settings['consent']['showPreview'] ?? false);
+    }
+
     public function isPhotoDownloadEnabled(): bool
     {
-        return (bool)$this->settings['downloadPhoto'];
+        return (bool)($this->settings['downloadPhoto'] ?? false);
     }
 }

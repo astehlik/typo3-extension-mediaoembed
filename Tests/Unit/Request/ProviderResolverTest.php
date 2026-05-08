@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Request;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Sto\Mediaoembed\Domain\Model\Provider;
 use Sto\Mediaoembed\Exception\NoMatchingProviderException;
 use Sto\Mediaoembed\Request\ProviderResolver;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
+#[CoversClass(ProviderResolver::class)]
 class ProviderResolverTest extends AbstractUnitTestCase
 {
     /**

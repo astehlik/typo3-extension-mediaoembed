@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Request\RequestHandler;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Domain\Model\Provider;
@@ -14,6 +15,7 @@ use Sto\Mediaoembed\Request\HttpRequest;
 use Sto\Mediaoembed\Request\RequestHandler\HttpRequestHandler;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
+#[CoversClass(HttpRequestHandler::class)]
 final class HttpRequestHandlerTest extends AbstractUnitTestCase
 {
     /**

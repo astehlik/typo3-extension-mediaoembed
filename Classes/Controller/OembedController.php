@@ -34,9 +34,9 @@ use Sto\Mediaoembed\Response\HtmlAwareResponseInterface;
 use Sto\Mediaoembed\Response\Processor\HtmlResponseProcessorInterface;
 use Sto\Mediaoembed\Response\Processor\ResponseProcessorInterface;
 use Sto\Mediaoembed\Response\ResponseBuilder;
+use Sto\Mediaoembed\Service\LocalizationService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
@@ -44,25 +44,13 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class OembedController extends ActionController
 {
-    private ConfigurationFactory $configurationFactory;
-
-    private ContainerInterface $container;
-
-    private ProviderRepository $providerRepository;
-
-    private ResponseBuilder $responseBuilder;
-
     public function __construct(
-        ConfigurationFactory $configurationFactory,
-        ContainerInterface $container,
-        ProviderRepository $providerRepository,
-        ResponseBuilder $responseBuilder,
-    ) {
-        $this->configurationFactory = $configurationFactory;
-        $this->container = $container;
-        $this->providerRepository = $providerRepository;
-        $this->responseBuilder = $responseBuilder;
-    }
+        private readonly ConfigurationFactory $configurationFactory,
+        private readonly ContainerInterface $container,
+        private readonly LocalizationService $localizationService,
+        private readonly ProviderRepository $providerRepository,
+        private readonly ResponseBuilder $responseBuilder,
+    ) {}
 
     /**
      * Renders the external media.
@@ -184,7 +172,7 @@ class OembedController extends ActionController
 
     private function renderErrorMessage(string $translationKey, array $arguments): string
     {
-        $message = $this->translate($translationKey, $arguments);
+        $message = $this->localizationService->translate($translationKey, $arguments);
         return '<div class="alert alert-warning">' . htmlspecialchars($message) . '</div>';
     }
 
@@ -241,10 +229,5 @@ class OembedController extends ActionController
         $this->view->assign('provider', $provider);
         $this->view->assign('displayDirectLink', $this->shouldDisplayDirectLink($provider));
         $this->view->assign('response', $response);
-    }
-
-    private function translate(string $key, $arguments = null): string
-    {
-        return (string)LocalizationUtility::translate($key, 'Mediaoembed', $arguments);
     }
 }

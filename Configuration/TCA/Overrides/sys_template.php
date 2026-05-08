@@ -17,3 +17,9 @@ ExtensionManagementUtility::addStaticFile(
     'Configuration/TypoScript/DefaultProviders',
     'Media oEmbed default providers',
 );
+
+ExtensionManagementUtility::addStaticFile(
+    'mediaoembed',
+    'Configuration/TypoScript/Consent',
+    'Media oEmbed consent handling',
+);

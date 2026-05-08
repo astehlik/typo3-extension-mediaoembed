@@ -4,29 +4,20 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Service;
 
-use SplFileInfo;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Exception\PhotoDownload\NotAnImageFileException;
-use Sto\Mediaoembed\Exception\PhotoDownloadException;
+use Sto\Mediaoembed\Exception\PhotoDownload\PhotoDownloadException;
 use Sto\Mediaoembed\Exception\RequestException;
-use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileType;
 use TYPO3\CMS\Core\Resource\Folder;
 
-class PhotoDownloadService
+readonly class PhotoDownloadService
 {
-    private HttpService $httpService;
-
-    private ResourceService $resourceService;
-
     public function __construct(
-        HttpService $httpService,
-        ResourceService $resourceService,
-    ) {
-        $this->httpService = $httpService;
-        $this->resourceService = $resourceService;
-    }
+        private HttpService $httpService,
+        private ResourceService $resourceService,
+    ) {}
 
     /**
      * Downloads the photo from the server and stores it in the typo3temp folder.
@@ -51,7 +42,12 @@ class PhotoDownloadService
         }
 
         $imageFilename = sha1($configuration->getMediaUrl());
-        $extension = $this->detectExtension($downloadUrl);
+        $temporaryFile = $this->resourceService->saveTemporaryFile($response->getBody()->getContents());
+
+        $mimeType = $this->resourceService->getMimeTypeForLocalFile($temporaryFile);
+        $this->validateMimeType($downloadUrl, $mimeType);
+
+        $extension = $this->resourceService->getFileExtensionByMimeType($mimeType);
         if ($extension) {
             $imageFilename .= '.' . $extension;
         }
@@ -62,11 +58,7 @@ class PhotoDownloadService
             return $targetFolder->getFile($imageFilename);
         }
 
-        $file = $this->resourceService->addFile($targetFolder, $imageFilename, $response->getBody()->getContents());
-
-        $this->validateMimeType($downloadUrl, $file);
-
-        return $file;
+        return $this->resourceService->addFileFromLocal($targetFolder, $temporaryFile, $imageFilename);
     }
 
     public function getTargetFolder(Configuration $configuration): Folder
@@ -77,18 +69,12 @@ class PhotoDownloadService
         );
     }
 
-    public function validateMimeType(string $downloadUrl, File $file): void
+    public function validateMimeType(string $downloadUrl, string $mimeType): void
     {
-        if (!$file->isType(FileType::IMAGE)) {
-            $mimeType = $file->getMimeType();
-            $file->delete();
+        $fileType = FileType::tryFromMimeType($mimeType);
+
+        if ($fileType !== FileType::IMAGE) {
             throw new NotAnImageFileException($downloadUrl, $mimeType);
         }
-    }
-
-    private function detectExtension(string $photoUrl): string
-    {
-        $fileInfo = new SplFileInfo($photoUrl);
-        return $fileInfo->getExtension();
     }
 }

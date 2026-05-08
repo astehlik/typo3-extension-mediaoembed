@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Sto\Mediaoembed\Exception;
+namespace Sto\Mediaoembed\Exception\PhotoDownload;
 
 use Exception;
+use Sto\Mediaoembed\Exception\OEmbedException;
 
 class PhotoDownloadException extends OEmbedException
 {

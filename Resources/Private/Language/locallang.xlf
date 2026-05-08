@@ -31,6 +31,21 @@
 			<trans-unit id="direct_link" xml:space="preserve">
 				<source>direct link</source>
 			</trans-unit>
+			<trans-unit id="consent.message" xml:space="preserve">
+				<source>This content is hosted by &lt;strong&gt;{providerName}&lt;/strong&gt; from &lt;code&gt;{mediaUrl}&lt;/code&gt; and requires your consent to be loaded.</source>
+			</trans-unit>
+			<trans-unit id="consent.accept_button" xml:space="preserve">
+				<source>Accept and load content</source>
+			</trans-unit>
+			<trans-unit id="consent.preview_label" xml:space="preserve">
+				<source>Click here to show technical preview</source>
+			</trans-unit>
+			<trans-unit id="consent.preview_description" xml:space="preserve">
+				<source>This HTML will be loaded when you accept to load the content.</source>
+			</trans-unit>
+			<trans-unit id="consent.message_fallback" xml:space="preserve">
+				<source>This content requires your consent to be loaded.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

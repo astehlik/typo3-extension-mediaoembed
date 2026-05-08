@@ -15,6 +15,7 @@ namespace Sto\Mediaoembed\Response;
  *                                                                        */
 
 use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
+use Sto\Mediaoembed\Response\Trait\AspectRatioTrait;
 
 /**
  * This type is used for representing playable videos.
@@ -24,9 +25,7 @@ use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
  */
 class VideoResponse extends GenericResponse implements AspectRatioAwareResponseInterface, HtmlAwareResponseInterface
 {
-    public const ASPECT_RATIO_16TO9 = '16to9';
-
-    public const ASPECT_RATIO_4TO3 = '4to3';
+    use AspectRatioTrait;
 
     /**
      * The height in pixels required to display the HTML.
@@ -48,53 +47,6 @@ class VideoResponse extends GenericResponse implements AspectRatioAwareResponseI
      * This value is required.
      */
     protected int $width = 0;
-
-    /**
-     * Returns the current aspect ratio.
-     */
-    public function getAspectRatio(): float
-    {
-        if ($this->getHeight() === 0) {
-            return 0;
-        }
-
-        return $this->getWidth() / $this->getHeight();
-    }
-
-    /**
-     * Returns TRUE if the current aspect ratio looks like 16 to 9.
-     */
-    public function getAspectRatioIs16To9(): bool
-    {
-        return $this->getAspectRatioType() === static::ASPECT_RATIO_16TO9;
-    }
-
-    /**
-     * Returns TRUE if the current aspect ratio looks like 4 to 3.
-     */
-    public function getAspectRatioIs4To3(): bool
-    {
-        return $this->getAspectRatioType() === static::ASPECT_RATIO_4TO3;
-    }
-
-    /**
-     * Returns one of the ASPECT_RATIO_* constants depending on the current aspect ratio.
-     */
-    public function getAspectRatioType(): string
-    {
-        $ratio4To3 = 4 / 3;
-        $ratio16To9 = 16 / 9;
-        $currentRatio = $this->getAspectRatio();
-
-        $ratioDiff4To3 = $currentRatio - $ratio4To3;
-        $ratioDiff16To9 = $currentRatio - $ratio16To9;
-
-        if (abs($ratioDiff4To3) < abs($ratioDiff16To9)) {
-            return static::ASPECT_RATIO_4TO3;
-        }
-
-        return static::ASPECT_RATIO_16TO9;
-    }
 
     /**
      * Getter for the height in pixels required to display the HTML.

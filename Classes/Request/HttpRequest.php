@@ -120,6 +120,8 @@ class HttpRequest
     /**
      * Builds an array of parameters that should be attached to the
      * endpoint url.
+     *
+     * @return non-empty-array<non-empty-string, int|string>
      */
     protected function buildRequestParameterArray(): array
     {
@@ -141,6 +143,8 @@ class HttpRequest
      *
      * If the endpoint URL contains a marker ###FORMAT### or {format}
      * it will be replaced with the expected response data format.
+     *
+     * @param non-empty-array<string, int|string> $parameters
      */
     protected function buildRequestUrl(array $parameters): string
     {
@@ -152,9 +156,6 @@ class HttpRequest
         $endpointQueryParameters = $urlParts[1] ?? '';
 
         $finalParameters = $this->buildQueryStringParameters($endpointQueryParameters, $parameters);
-        if (count($finalParameters) === 0) {
-            return $endpointBaseUrl;
-        }
 
         return $this->buildUrlWithQueryString($endpointBaseUrl, $finalParameters);
     }
@@ -233,7 +234,7 @@ class HttpRequest
 
         $this->handleRequestError($requestException, $requestUrl);
 
-        throw new RuntimeException('This step should never be reached!');
+        throw new RuntimeException('This step should never be reached!'); // @codeCoverageIgnore
     }
 
     private function getHttpClient(): HttpClientInterface

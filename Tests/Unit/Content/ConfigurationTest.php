@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Content;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -12,6 +13,7 @@ use Sto\Mediaoembed\Content\Settings;
 use Sto\Mediaoembed\Domain\Model\Content;
 use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
 
+#[CoversClass(Configuration::class)]
 class ConfigurationTest extends TestCase
 {
     private AspectRatioCalculatorInterface|MockObject $aspectRatioCalculatorMock;
@@ -73,6 +75,31 @@ class ConfigurationTest extends TestCase
         $this->assertSame(0.5, $this->getConfiguration()->getAspectRatio(0.5));
     }
 
+    public function testGetContentUidReturnsUidFromContent(): void
+    {
+        $this->contentMock->method('getUid')->willReturn(123);
+
+        $this->assertSame(123, $this->getConfiguration()->getContentUid());
+    }
+
+    public function testGetEmbedResponsiveClassReturnsDefault(): void
+    {
+        $this->settingsMock->method('getEmbedResponsiveClass')->willReturn('');
+        $this->assertSame('tx-mediaoembed-embed ratio', $this->getConfiguration()->getEmbedResponsiveClass());
+    }
+
+    public function testGetEmbedResponsiveClassReturnsValueFromSettings(): void
+    {
+        $this->settingsMock->method('getEmbedResponsiveClass')->willReturn('my-class');
+        $this->assertSame('my-class', $this->getConfiguration()->getEmbedResponsiveClass());
+    }
+
+    public function testGetHttpClientClassReturnsValueFromSettings(): void
+    {
+        $this->settingsMock->method('getHttpClientClass')->willReturn('MyClient');
+        $this->assertSame('MyClient', $this->getConfiguration()->getHttpClientClass());
+    }
+
     #[DataProvider('getMaxWidthHeightDataProvider')]
     public function testGetMaxheight(int $contentValue, int $settingsValue, int $expectedValue): void
     {
@@ -122,6 +149,56 @@ class ConfigurationTest extends TestCase
         $this->contentMock->method('getUrl')->willReturn('http://my.test.url');
 
         $this->assertSame('http://my.test.url', $this->getConfiguration()->getMediaUrl());
+    }
+
+    public function testGetPhotoDownloadFolderIdentifierReturnsValueFromSettings(): void
+    {
+        $this->settingsMock->method('getPhotoDownloadFolderIdentifier')->willReturn('folder');
+        $this->assertSame('folder', $this->getConfiguration()->getPhotoDownloadFolderIdentifier());
+    }
+
+    public function testGetPhotoDownloadStorageUidReturnsValueFromSettings(): void
+    {
+        $this->settingsMock->method('getPhotoDownloadStorageUid')->willReturn(5);
+        $this->assertSame(5, $this->getConfiguration()->getPhotoDownloadStorageUid());
+    }
+
+    public function testGetProcessorsForHtmlReturnsValueFromSettings(): void
+    {
+        $this->settingsMock->method('getProcessorsForHtml')->willReturn(['Processor']);
+        $this->assertSame(['Processor'], $this->getConfiguration()->getProcessorsForHtml());
+    }
+
+    public function testIsConsentEnabledReturnsValueFromSettings(): void
+    {
+        $this->settingsMock->method('isConsentEnabled')->willReturn(true);
+        $this->assertTrue($this->getConfiguration()->isConsentEnabled());
+    }
+
+    public function testIsConsentPreviewEnabledDelegatesToSettings(): void
+    {
+        $this->settingsMock->method('isConsentPreviewEnabled')->willReturn(true);
+
+        $this->assertTrue($this->getConfiguration()->isConsentPreviewEnabled());
+    }
+
+    public function testIsConsentPreviewEnabledReturnsFalseWhenSettingsReturnsFalse(): void
+    {
+        $this->settingsMock->method('isConsentPreviewEnabled')->willReturn(false);
+
+        $this->assertFalse($this->getConfiguration()->isConsentPreviewEnabled());
+    }
+
+    public function testIsPhotoDownloadEnabledReturnsValueFromSettings(): void
+    {
+        $this->settingsMock->method('isPhotoDownloadEnabled')->willReturn(true);
+        $this->assertTrue($this->getConfiguration()->isPhotoDownloadEnabled());
+    }
+
+    public function testShouldPlayRelatedDelegatesToContent(): void
+    {
+        $this->contentMock->method('shouldPlayRelated')->willReturn(true);
+        $this->assertTrue($this->getConfiguration()->shouldPlayRelated());
     }
 
     protected function getConfiguration(): Configuration

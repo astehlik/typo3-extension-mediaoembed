@@ -10,24 +10,31 @@ use DOMElement;
 use Sto\Mediaoembed\Exception\ProcessorException;
 use Sto\Mediaoembed\Response\HtmlAwareResponseInterface;
 
-trait IframeAwareProcessorTrait
+class IframeManipulator
 {
-    private function addIframeAttributeIfNonExisting(
+    /**
+     * @param callable(): string|string $value
+     */
+    public function addIframeAttributeIfNonExisting(
         HtmlAwareResponseInterface $response,
         string $attribute,
-        string $value,
+        string|callable $value,
     ): void {
-        /**
-         * @return string
-         */
-        $attributeModifier = static function (?string $currentValue) use ($value) {
-            if ($currentValue !== null && $currentValue !== '') {
-                return $currentValue;
-            }
-            return $value;
-        };
+        $attributeModifier = static fn(?string $currentValue): string => $currentValue !== null && $currentValue !== ''
+            ? $currentValue
+            : (is_string($value) ? $value : $value());
 
         $this->modifyIframeAttribute($response, $attribute, $attributeModifier);
+    }
+
+    /**
+     * @param callable(?string $iframeSrc): ?string $urlModifier
+     */
+    public function modifyIframeUrl(HtmlAwareResponseInterface $response, callable $urlModifier): void
+    {
+        $attributeModifier = static fn(?string $iframeSrc): ?string => $urlModifier($iframeSrc);
+
+        $this->modifyIframeAttribute($response, 'src', $attributeModifier);
     }
 
     private function getAttributeValue(DOMElement $iframe, string $attribute): ?string
@@ -40,10 +47,7 @@ trait IframeAwareProcessorTrait
         return $attributeValue;
     }
 
-    /**
-     * @param string|null $attributeValue
-     */
-    private function modifyAttribute(DOMElement $iframe, string $attribute, $attributeValue): void
+    private function modifyAttribute(DOMElement $iframe, string $attribute, ?string $attributeValue): void
     {
         if ($attributeValue === null) {
             $iframe->removeAttribute($attribute);
@@ -53,23 +57,27 @@ trait IframeAwareProcessorTrait
         $iframe->setAttribute($attribute, $attributeValue);
     }
 
+    /**
+     * @param callable(?string $currentValue): ?string $attributeModifier
+     */
     private function modifyIframeAttribute(
         HtmlAwareResponseInterface $response,
         string $attribute,
-        Closure $attributeModifier,
+        callable $attributeModifier,
     ): void {
         $document = new DOMDocument();
         $loadSuccess = false;
         $this->withoutXmlErrors(
             static function () use ($response, $document, &$loadSuccess): void {
                 $xmlPrefixForEncodingFix = '<?xml version="1.0" encoding="utf-8" ?>';
-                $htmlWrapping = '<html><body><div id="oembed-response">%s</div></body></html>';
+                $htmlWrapping = '<html lang="de"><body><div id="oembed-response">%s</div></body></html>';
                 $template = $xmlPrefixForEncodingFix . $htmlWrapping;
                 $loadSuccess = $document->loadHTML(sprintf($template, $response->getHtml()));
             },
         );
         if (!$loadSuccess) {
-            throw new ProcessorException('Error parsing HTML from YouTube response.');
+            // No possiblity was found to let this fail, therefore coverage is ignored.
+            throw new ProcessorException('Error parsing HTML from YouTube response.'); // @codeCoverageIgnore
         }
 
         /** @var DOMElement $iframe */
@@ -88,16 +96,6 @@ trait IframeAwareProcessorTrait
         $this->modifyAttribute($iframe, $attribute, $modifiedAttributeValue);
         $modifiedHtml = $iframe->ownerDocument->saveHTML($iframe);
         $response->setHtml($modifiedHtml);
-    }
-
-    private function modifyIframeUrl(HtmlAwareResponseInterface $response, Closure $urlModifier): void
-    {
-        /**
-         * @return mixed
-         */
-        $attributeModifier = static fn(?string $iframeSrc) => $urlModifier($iframeSrc);
-
-        $this->modifyIframeAttribute($response, 'src', $attributeModifier);
     }
 
     private function withoutXmlErrors(Closure $callback): void

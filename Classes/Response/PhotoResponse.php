@@ -14,14 +14,18 @@ namespace Sto\Mediaoembed\Response;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
+use Sto\Mediaoembed\Response\Trait\AspectRatioTrait;
 use TYPO3\CMS\Core\Resource\FileInterface;
 
 /**
  * This type is used for representing static photos.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
  */
-class PhotoResponse extends GenericResponse
+class PhotoResponse extends GenericResponse implements AspectRatioAwareResponseInterface
 {
+    use AspectRatioTrait;
+
     /**
      * The height in pixels of the image specified in the url parameter.
      * This value is required.

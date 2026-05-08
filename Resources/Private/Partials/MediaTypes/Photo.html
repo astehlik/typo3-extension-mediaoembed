@@ -1,10 +1,13 @@
-<html data-namespace-typo3-fluid="true" xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
+<html data-namespace-typo3-fluid="true" xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+		xmlns:mo="http://typo3.org/ns/Sto/Mediaoembed/ViewHelpers">
 <f:if condition="{response.localFile}">
     <f:then>
         <f:image alt="{response.title}" height="{response.height}" image="{response.localFile}" width="{response.width}"/>
     </f:then>
     <f:else>
-        <img alt="{response.title}" height="{response.height}" src="{response.url}" width="{response.width}"/>
+        <mo:embed response="{response}" configuration="{configuration}">
+            <img alt="{response.title}" height="{response.height}" src="{response.url}" width="{response.width}"/>
+        </mo:embed>
     </f:else>
 </f:if>
 </html>

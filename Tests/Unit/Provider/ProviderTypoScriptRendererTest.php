@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Provider;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Sto\Mediaoembed\Provider\Endpoint;
 use Sto\Mediaoembed\Provider\ProviderTypoScriptRenderer;
 
+#[CoversClass(ProviderTypoScriptRenderer::class)]
 class ProviderTypoScriptRendererTest extends TestCase
 {
     private ProviderTypoScriptRenderer $renderer;

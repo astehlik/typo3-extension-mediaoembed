@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Provider;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Sto\Mediaoembed\Provider\Endpoint;
 
+#[CoversClass(Endpoint::class)]
 class EndpointTest extends TestCase
 {
     /**
