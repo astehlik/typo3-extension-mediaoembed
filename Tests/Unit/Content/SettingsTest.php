@@ -35,6 +35,18 @@ final class SettingsTest extends AbstractUnitTestCase
         $this->assertSame('', $settings->getEmbedResponsiveClass());
     }
 
+    public function testGetEmbedResponsiveStylePropertyReturnsConfiguredValue(): void
+    {
+        $settings = new Settings(['embedResponsiveStyleProperty' => 'padding-top']);
+        $this->assertSame('padding-top', $settings->getEmbedResponsiveStyleProperty());
+    }
+
+    public function testGetEmbedResponsiveStylePropertyReturnsDefault(): void
+    {
+        $settings = new Settings([]);
+        $this->assertSame('', $settings->getEmbedResponsiveStyleProperty());
+    }
+
     public function testGetHttpClientClassReturnsConfiguredValue(): void
     {
         $settings = new Settings(['httpClient' => 'Custom\\HttpClient']);

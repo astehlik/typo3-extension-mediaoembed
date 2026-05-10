@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\ViewHelpers;
 
-use RuntimeException;
 use Sto\Mediaoembed\Content\Configuration;
-use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
 use Sto\Mediaoembed\Response\GenericResponse;
 use Sto\Mediaoembed\Service\ViewFactory;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Sto\Mediaoembed\ViewHelpers\Behavior\EmbedResponsiveTrait;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 
 /**
  * ViewHelper for rendering embedded media content with optional consent.
@@ -18,6 +17,8 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
  */
 class EmbedViewHelper extends AbstractTagBasedViewHelper
 {
+    use EmbedResponsiveTrait;
+
     protected $escapeOutput = false;
 
     private ViewFactory $viewFactory;
@@ -33,9 +34,10 @@ class EmbedViewHelper extends AbstractTagBasedViewHelper
      */
     public function initializeArguments(): void
     {
+        parent::initializeArguments();
+
         $this->registerArgument('configuration', Configuration::class, '', true);
         $this->registerArgument('response', GenericResponse::class, '', true);
-        $this->registerArgument('style-property', 'string', '', false, 'padding-top');
     }
 
     public function render(): string
@@ -47,25 +49,19 @@ class EmbedViewHelper extends AbstractTagBasedViewHelper
         return $this->renderEmbedWithPadding();
     }
 
-    private function getArgumentConfiguration(): Configuration
+    protected function getArgumentConfiguration(): Configuration
     {
         return $this->arguments['configuration'];
     }
 
-    private function getArgumentResponse(): GenericResponse
+    protected function getArgumentResponse(): GenericResponse
     {
         return $this->arguments['response'];
     }
 
-    private function getAspectRatio(): float
+    protected function getTagBuilder(): TagBuilder
     {
-        $response = $this->getArgumentResponse();
-
-        if (!$response instanceof AspectRatioAwareResponseInterface) {
-            throw new RuntimeException('Response must implement AspectRatioAwareResponseInterface');
-        }
-
-        return $this->getArgumentConfiguration()->getAspectRatio($response->getAspectRatio());
+        return $this->tag;
     }
 
     private function renderConsentPlaceholder(): string
@@ -101,18 +97,5 @@ class EmbedViewHelper extends AbstractTagBasedViewHelper
         ]);
 
         return $view->render('Consent/Placeholder');
-    }
-
-    private function setupEmbedContainer(): void
-    {
-        $aspectRatio = $this->getAspectRatio();
-        $paddingTop = 100 / $aspectRatio . '%';
-
-        $classes = GeneralUtility::trimExplode(' ', $this->tag->getAttribute('class') ?? '', true);
-        $classes[] = $this->getArgumentConfiguration()->getEmbedResponsiveClass();
-
-        $this->tag->setTagName('div');
-        $this->tag->addAttribute('class', implode(' ', $classes));
-        $this->tag->addAttribute('style', $this->arguments['style-property'] . ': ' . $paddingTop . ';');
     }
 }

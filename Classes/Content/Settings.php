@@ -23,6 +23,11 @@ class Settings
         return $this->settings['embedResponsiveClass'] ?? '';
     }
 
+    public function getEmbedResponsiveStyleProperty(): string
+    {
+        return $this->settings['embedResponsiveStyleProperty'] ?? '';
+    }
+
     public function getHttpClientClass(): string
     {
         return $this->settings['httpClient'] ?? '';
