@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Sto\Mediaoembed\Response\Trait;
+namespace Sto\Mediaoembed\Response\Behavior;
 
 /**
  * Trait for response types that have width and height properties and support aspect ratio handling.

@@ -14,8 +14,8 @@ namespace Sto\Mediaoembed\Response;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
+use Sto\Mediaoembed\Response\Behavior\AspectRatioTrait;
 use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
-use Sto\Mediaoembed\Response\Trait\AspectRatioTrait;
 
 /**
  * This type is used for representing playable videos.
