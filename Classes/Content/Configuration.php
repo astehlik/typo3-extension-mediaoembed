@@ -26,6 +26,8 @@ class Configuration
 
     public const EMBED_RESPONSIVE_CLASS_DEFAULT = 'tx-mediaoembed-embed ratio';
 
+    public const EMBED_RESPONSIVE_STYLE_PROPERTY_DEFAULT = '--bs-aspect-ratio';
+
     private AspectRatioCalculatorInterface $aspectRatioCalculator;
 
     private Content $contentElement;
@@ -70,6 +72,16 @@ class Configuration
         $class = $this->settings->getEmbedResponsiveClass();
 
         return $class !== '' ? $class : self::EMBED_RESPONSIVE_CLASS_DEFAULT;
+    }
+
+    /**
+     * @return non-empty-string
+     */
+    public function getEmbedResponsiveStyleProperty(): string
+    {
+        $class = $this->settings->getEmbedResponsiveStyleProperty();
+
+        return $class !== '' ? $class : self::EMBED_RESPONSIVE_STYLE_PROPERTY_DEFAULT;
     }
 
     public function getHttpClientClass(): string

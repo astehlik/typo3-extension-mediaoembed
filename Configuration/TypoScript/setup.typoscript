@@ -27,6 +27,7 @@ plugin.tx_mediaoembed.settings {
   aspectRatioFallback = 16:9
 
   embedResponsiveClass = tx-mediaoembed-embed ratio
+  embedResponsiveStyleProperty = --bs-aspect-ratio
 
   view {
     displayDirectLink = 1

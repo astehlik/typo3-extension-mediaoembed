@@ -94,6 +94,18 @@ class ConfigurationTest extends TestCase
         $this->assertSame('my-class', $this->getConfiguration()->getEmbedResponsiveClass());
     }
 
+    public function testGetEmbedResponsiveStylePropertyReturnsDefault(): void
+    {
+        $this->settingsMock->method('getEmbedResponsiveStyleProperty')->willReturn('');
+        $this->assertSame('--bs-aspect-ratio', $this->getConfiguration()->getEmbedResponsiveStyleProperty());
+    }
+
+    public function testGetEmbedResponsiveStylePropertyReturnsValueFromSettings(): void
+    {
+        $this->settingsMock->method('getEmbedResponsiveStyleProperty')->willReturn('my-class');
+        $this->assertSame('my-class', $this->getConfiguration()->getEmbedResponsiveStyleProperty());
+    }
+
     public function testGetHttpClientClassReturnsValueFromSettings(): void
     {
         $this->settingsMock->method('getHttpClientClass')->willReturn('MyClient');

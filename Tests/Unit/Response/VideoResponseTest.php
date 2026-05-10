@@ -17,12 +17,14 @@ namespace Sto\Mediaoembed\Tests\Unit\Response;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Sto\Mediaoembed\Content\Configuration;
+use Sto\Mediaoembed\Response\Behavior\AspectRatioTrait;
 use Sto\Mediaoembed\Response\VideoResponse;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
 /**
  * Tests for the VideoResponse.
  */
+#[CoversClass(AspectRatioTrait::class)]
 #[CoversClass(VideoResponse::class)]
 class VideoResponseTest extends AbstractUnitTestCase
 {
@@ -84,10 +86,35 @@ class VideoResponseTest extends AbstractUnitTestCase
                 150,
                 VideoResponse::ASPECT_RATIO_4TO3,
             ],
+            'square ratio' => [
+                100,
+                100,
+                VideoResponse::ASPECT_RATIO_4TO3,
+            ],
+            'cinematic ratio (21:9)' => [
+                210,
+                90,
+                VideoResponse::ASPECT_RATIO_16TO9,
+            ],
+            'portrait ratio (9:16)' => [
+                90,
+                160,
+                VideoResponse::ASPECT_RATIO_4TO3,
+            ],
+            'exactly in the middle (14:9)' => [
+                140,
+                90,
+                VideoResponse::ASPECT_RATIO_16TO9,
+            ],
+            'zero width' => [
+                0,
+                100,
+                VideoResponse::ASPECT_RATIO_4TO3,
+            ],
         ];
     }
 
-    public function testGetAspectRatioTypeReturnsWidthDividedByHeight(): void
+    public function testGetAspectRatioReturnsWidthDividedByHeight(): void
     {
         $this->videoResponse->initializeResponseData(
             [

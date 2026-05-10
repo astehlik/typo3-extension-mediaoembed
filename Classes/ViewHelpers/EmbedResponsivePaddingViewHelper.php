@@ -5,53 +5,44 @@ declare(strict_types=1);
 namespace Sto\Mediaoembed\ViewHelpers;
 
 use Sto\Mediaoembed\Content\Configuration;
-use Sto\Mediaoembed\Response\Contract\AspectRatioAwareResponseInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Sto\Mediaoembed\Response\GenericResponse;
+use Sto\Mediaoembed\ViewHelpers\Behavior\EmbedResponsiveTrait;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 
 class EmbedResponsivePaddingViewHelper extends AbstractTagBasedViewHelper
 {
+    use EmbedResponsiveTrait;
+
     protected $escapeOutput = false;
 
     public function initializeArguments(): void
     {
         $this->registerArgument('configuration', Configuration::class, '', true);
-        $this->registerArgument('response', AspectRatioAwareResponseInterface::class, '', true);
-        $this->registerArgument('style-property', 'string', '', false, 'padding-top');
+        $this->registerArgument('response', GenericResponse::class, '', true);
     }
 
     public function render(): string
     {
-        $aspectRatio = $this->getAspectRatio();
-        $paddingTop = 100 / $aspectRatio . '%';
-        $this->addEmbedReponsiveClass();
-        $this->tag->addAttribute('style', $this->arguments['style-property'] . ': ' . $paddingTop . ';');
+        $this->setupEmbedContainer();
+
         $this->tag->setContent($this->renderChildren());
+
         return $this->tag->render();
     }
 
-    private function addEmbedReponsiveClass(): void
-    {
-        $classes = GeneralUtility::trimExplode(' ', $this->tag->getAttribute('class') ?? '', true);
-
-        $classes[] = $this->getConfiguration()->getEmbedResponsiveClass();
-
-        $this->tag->addAttribute('class', implode(' ', $classes));
-    }
-
-    private function getAspectRatio(): float
-    {
-        $response = $this->getResponse();
-        return $this->getConfiguration()->getAspectRatio($response->getAspectRatio());
-    }
-
-    private function getConfiguration(): Configuration
+    protected function getArgumentConfiguration(): Configuration
     {
         return $this->arguments['configuration'];
     }
 
-    private function getResponse(): AspectRatioAwareResponseInterface
+    protected function getArgumentResponse(): GenericResponse
     {
         return $this->arguments['response'];
+    }
+
+    protected function getTagBuilder(): TagBuilder
+    {
+        return $this->tag;
     }
 }
