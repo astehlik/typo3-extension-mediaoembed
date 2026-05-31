@@ -21,8 +21,7 @@
 		"phpunit/phpunit": "^11.5.50",
 		"typo3/cms-filelist": "*",
 		"typo3/cms-fluid-styled-content": "*",
-		"typo3/cms-install": "*",
-		"typo3/testing-framework": "dev-main"
+		"typo3/cms-install": "*"
 	},
 	"replace": {
 		"typo3-ter/mediaoembed": "self.version"
