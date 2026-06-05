@@ -15,6 +15,7 @@ namespace Sto\Mediaoembed\Domain\Repository;
  *                                                                        */
 
 use Sto\Mediaoembed\Domain\Model\Provider;
+use Sto\Mediaoembed\Domain\Model\ProviderRequestHandlerConfig;
 use Sto\Mediaoembed\Exception\InvalidConfigurationException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -22,14 +23,11 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 /**
  * Repository for fetching providers from the configuration.
  */
-class ProviderRepository
+final readonly class ProviderRepository
 {
-    private ConfigurationManagerInterface $configurationManager;
-
-    public function __construct(ConfigurationManagerInterface $configurationManager)
-    {
-        $this->configurationManager = $configurationManager;
-    }
+    public function __construct(
+        private ConfigurationManagerInterface $configurationManager
+    ) {}
 
     /**
      * @return array|Provider[]
@@ -41,13 +39,6 @@ class ProviderRepository
             $providers[] = $this->createProvider($providerName, $providerConfig);
         }
         return $providers;
-    }
-
-    private function addProcessors(Provider $provider, array $processors): void
-    {
-        foreach ($processors as $processor) {
-            $provider->withProcessor($processor);
-        }
     }
 
     private function createProvider(string $providerName, array $providerConfig): Provider
@@ -63,27 +54,25 @@ class ProviderRepository
 
         $hasRegexUrlSchemes = count($urlRegexes) > 0;
 
-        $provider = new Provider(
-            $providerName,
-            $endpoint,
-            $hasRegexUrlSchemes ? $urlRegexes : $urlSchemes,
-            $hasRegexUrlSchemes,
-        );
+        $requestHandlerConfig = null;
 
         if (!empty($providerConfig['requestHandlerClass'])) {
-            $provider->withRequestHandler(
+            $requestHandlerConfig = new ProviderRequestHandlerConfig(
                 $providerConfig['requestHandlerClass'],
                 $providerConfig['requestHandlerSettings'] ?? [],
             );
         }
 
-        if (isset($providerConfig['displayDirectLink']) && !$providerConfig['displayDirectLink']) {
-            $provider->hideDirectLink();
-        }
 
-        $this->addProcessors($provider, (array)($providerConfig['processors'] ?? []));
-
-        return $provider;
+        return new Provider(
+            $providerName,
+            $endpoint,
+            $hasRegexUrlSchemes ? $urlRegexes : $urlSchemes,
+            $hasRegexUrlSchemes,
+            !isset($providerConfig['displayDirectLink']) || $providerConfig['displayDirectLink'],
+            (array)($providerConfig['processors'] ?? []),
+            $requestHandlerConfig,
+        );
     }
 
     private function getProvidersConfig(): array

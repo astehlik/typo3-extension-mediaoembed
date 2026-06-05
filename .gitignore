@@ -2,5 +2,7 @@
 /.cache
 /.phpunit.result.cache
 /bin
+/config
+/packages
 /var
 /composer.lock

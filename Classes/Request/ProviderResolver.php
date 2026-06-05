@@ -23,13 +23,11 @@ use Sto\Mediaoembed\Exception\NoMatchingProviderException;
 class ProviderResolver
 {
     /**
-     * @var array|Provider[]
+     * @param array|Provider[] $providerList
      */
-    protected array $providerList;
-
-    public function __construct(array $providerList)
-    {
-        $this->providerList = $providerList;
+    public function __construct(
+        protected array $providerList
+    ) {
         reset($this->providerList);
     }
 

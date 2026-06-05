@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Tests\Unit\Service;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Sto\Mediaoembed\Exception\InvalidUrlException;
 use Sto\Mediaoembed\Service\UrlService;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
+use TYPO3\CMS\Core\Http\Uri;
 
 #[CoversClass(UrlService::class)]
 final class UrlServiceTest extends AbstractUnitTestCase
@@ -22,7 +24,7 @@ final class UrlServiceTest extends AbstractUnitTestCase
 
     public function testAddQueryParameters(): void
     {
-        $testUrl = 'https://www.intera.de?bla=blubb&arr[test]=1&arr1[]=1';
+        $testUrl = new Uri('https://www.intera.de?bla=blubb&arr[test]=1&arr1[]=1');
         $addParameters = [
             'new' => 'neu',
             'arr' => ['test1' => 'test'],
@@ -30,7 +32,7 @@ final class UrlServiceTest extends AbstractUnitTestCase
         ];
         $newUrl = $this->urlService->mergeQueryParameters($testUrl, $addParameters);
         $newUrlParameters = [];
-        parse_str(parse_url($newUrl, PHP_URL_QUERY), $newUrlParameters);
+        parse_str(parse_url((string)$newUrl, PHP_URL_QUERY), $newUrlParameters);
         $expectedUrlParameters = [
             'bla' => 'blubb',
             'arr' => [
@@ -43,48 +45,34 @@ final class UrlServiceTest extends AbstractUnitTestCase
         $this->assertSame($expectedUrlParameters, $newUrlParameters);
     }
 
-    #[DataProvider('provideBuildUrlReturnsExpectedStringCases')]
-    public function testBuildUrlReturnsExpectedString(string $url): void
-    {
-        $originalUrlParts = parse_url($url);
-
-        $rebuildUrl = $this->urlService->buildUrl($originalUrlParts, $url);
-        $rebuildUrlParts = parse_url($rebuildUrl);
-
-        $this->assertSame($url, $rebuildUrl);
-        $this->assertSame($originalUrlParts, $rebuildUrlParts);
-    }
-
-    public static function provideBuildUrlReturnsExpectedStringCases(): iterable
-    {
-        return [
-            [''],
-            ['foo'],
-            ['https://www.google.com/'],
-            ['https://u:p@foo:1/path/path?q#frag'],
-            ['https://u:p@foo:1/path/path?#'],
-            ['ssh://root@host'],
-            ['://:@:1/?#'],
-            ['https://:@foo:1/path/path?#'],
-            ['https://@foo:1/path/path?#'],
-        ];
-    }
-
     public function testMergeQueryParametersWithEmptyParameters(): void
     {
         $url = 'https://example.com/path?existing=value';
-        $result = $this->urlService->mergeQueryParameters($url, []);
-        $this->assertSame($url, $result);
+        $result = $this->urlService->mergeQueryParameters(new Uri($url), []);
+        $this->assertSame($url, (string)$result);
     }
 
-    #[DataProvider('provideParseUrlReturnsExpectedArrayCases')]
-    public function testParseUrlReturnsExpectedArray(string $url, array $expected): void
+    #[DataProvider('provideParseUrlReturnsExpectedUriCases')]
+    public function testParseUrlReturnsExpectedUri(string $url, array $expected): void
     {
         $result = $this->urlService->parseUrl($url);
-        $this->assertSame($expected, $result);
+
+        foreach ($expected as $name => $expectedValue) {
+            $value = match ($name) {
+                'scheme' => $result->getScheme(),
+                'host' => $result->getHost(),
+                'port' => $result->getPort(),
+                'path' => $result->getPath(),
+                'query' => $result->getQuery(),
+                'fragment' => $result->getFragment(),
+                default => throw new InvalidArgumentException('Invalid name: ' . $name),
+            };
+
+            $this->assertSame($expectedValue, $value);
+        }
     }
 
-    public static function provideParseUrlReturnsExpectedArrayCases(): iterable
+    public static function provideParseUrlReturnsExpectedUriCases(): iterable
     {
         return [
             'simple url' => [
@@ -191,8 +179,8 @@ final class UrlServiceTest extends AbstractUnitTestCase
     {
         /** @noinspection HttpUrlsUsage */
         $oldUrl = 'http://test@bla.com?blubb=1#test';
-        $newUrl = $this->urlService->replaceSchemeAndHost($oldUrl, 'https', 'www.my-new-host.com');
-        $this->assertSame('https://test@www.my-new-host.com?blubb=1#test', $newUrl);
+        $newUrl = $this->urlService->replaceSchemeAndHost(new Uri($oldUrl), 'https', 'www.my-new-host.com');
+        $this->assertSame('https://test@www.my-new-host.com?blubb=1#test', (string)$newUrl);
     }
 
     #[DataProvider('provideReplaceSchemeAndHostWithVariousUrlsCases')]
@@ -202,8 +190,8 @@ final class UrlServiceTest extends AbstractUnitTestCase
         string $newHost,
         string $expected
     ): void {
-        $result = $this->urlService->replaceSchemeAndHost($url, $newScheme, $newHost);
-        $this->assertSame($expected, $result);
+        $result = $this->urlService->replaceSchemeAndHost(new Uri($url), $newScheme, $newHost);
+        $this->assertSame($expected, (string)$result);
     }
 
     public static function provideReplaceSchemeAndHostWithVariousUrlsCases(): iterable

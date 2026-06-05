@@ -35,7 +35,7 @@ class PhotoResponse extends GenericResponse implements AspectRatioAwareResponseI
     /**
      * Path to the local version of the photo.
      */
-    protected ?FileInterface $localFile;
+    protected ?FileInterface $localFile = null;
 
     /**
      * The source URL of the image.

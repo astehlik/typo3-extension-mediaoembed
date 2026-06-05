@@ -7,6 +7,7 @@ namespace Sto\Mediaoembed\Tests\Functional\Request\RequestHandler;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Sto\Mediaoembed\Content\Configuration;
 use Sto\Mediaoembed\Domain\Model\Provider;
+use Sto\Mediaoembed\Domain\Model\ProviderRequestHandlerConfig;
 use Sto\Mediaoembed\Request\RequestHandler\Panopto\PanoptoRequestHandler;
 use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTestCase;
 
@@ -18,13 +19,7 @@ final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
         $configurationMock = $this->createMock(Configuration::class);
         $configurationMock->method('getMediaUrl')->willReturn($mediaUrl);
 
-        $provider = new Provider(
-            'panopto',
-            'https://demo.',
-            ['https://'],
-            false,
-        );
-        $provider->withRequestHandler(
+        $requestHandlerConfig = new ProviderRequestHandlerConfig(
             PanoptoRequestHandler::class,
             [
                 'defaultViewerUrlParameters' => [
@@ -32,6 +27,14 @@ final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
                     'autoplay' => 'false',
                 ],
             ],
+        );
+
+        $provider = new Provider(
+            'panopto',
+            'https://demo.',
+            ['https://'],
+            false,
+            requestHandlerConfig: $requestHandlerConfig,
         );
 
         $html = '<iframe'

@@ -14,14 +14,14 @@ namespace Sto\Mediaoembed\Backend;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use Sto\Mediaoembed\Service\AspectRatioCalculator;
 use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
 use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-final class AspectRatioEvaluation
+final readonly class AspectRatioEvaluation
 {
-    private ?AspectRatioCalculatorInterface $aspectRatioCalculator = null;
+    public function __construct(
+        private AspectRatioCalculatorInterface $aspectRatioCalculator
+    ) {}
 
     /**
      * Server-side validation/evaluation on opening the record.
@@ -47,17 +47,11 @@ final class AspectRatioEvaluation
     {
         $value = trim((string)$value);
 
-        if (!$value) {
+        if ($value === '') {
             return '';
         }
 
-        $aspectRatioCalculator = $this->getAspectRatioCalculator();
-        return $aspectRatioCalculator->isValidAspectRatio($value) ? $value : '';
-    }
-
-    public function injectAspectRatioCalculator(AspectRatioCalculatorInterface $aspectRatioCalculator): void
-    {
-        $this->aspectRatioCalculator = $aspectRatioCalculator;
+        return $this->aspectRatioCalculator->isValidAspectRatio($value) ? $value : '';
     }
 
     /**
@@ -71,13 +65,5 @@ final class AspectRatioEvaluation
             '@de-swebhosting/mediaoembed/backend/form-engine-evaluation.js',
             'FormEngineEvaluation',
         );
-    }
-
-    private function getAspectRatioCalculator(): AspectRatioCalculatorInterface
-    {
-        if (!$this->aspectRatioCalculator) {
-            $this->aspectRatioCalculator = GeneralUtility::makeInstance(AspectRatioCalculator::class);
-        }
-        return $this->aspectRatioCalculator;
     }
 }

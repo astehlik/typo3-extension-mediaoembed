@@ -10,7 +10,9 @@ use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 
 final class MediaUrlInputElement extends InputTextElement
 {
-    private ?UtilityService $utilities = null;
+    public function __construct(
+        private readonly UtilityService $utilities
+    ) {}
 
     public function addUrlParserJsToResult(array $result): array
     {
@@ -24,11 +26,6 @@ final class MediaUrlInputElement extends InputTextElement
         )->instance($wrapperId);
 
         return $result;
-    }
-
-    public function injectUtilityService(UtilityService $utilityService): void
-    {
-        $this->utilities = $utilityService;
     }
 
     public function render(): array

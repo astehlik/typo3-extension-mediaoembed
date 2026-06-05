@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Sto\Mediaoembed\Backend\AspectRatioEvaluation;
 use Sto\Mediaoembed\Backend\EditDocumentControllerHooks;
 use Sto\Mediaoembed\Backend\Form\MediaUrlInputElement;
 use Sto\Mediaoembed\Content\ConfigurationFactory;
@@ -15,6 +16,7 @@ return static function (ContainerConfigurator $configurator): void {
     $configurator->services()
         ->defaults()->autowire()->autoconfigure()->public()
         ->set(MediaUrlInputElement::class, MediaUrlInputElement::class)
+        ->set(AspectRatioEvaluation::class, AspectRatioEvaluation::class)
         ->set(EditDocumentControllerHooks::class, EditDocumentControllerHooks::class)
         ->tag(
             'event.listener',

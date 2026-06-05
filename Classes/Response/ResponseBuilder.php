@@ -22,14 +22,11 @@ use TYPO3\CMS\Core\SingletonInterface;
  * This type is used for representing static photos.
  * Responses of this type must obey the maxwidth and maxheight request parameters.
  */
-class ResponseBuilder implements SingletonInterface
+readonly class ResponseBuilder implements SingletonInterface
 {
-    private PhotoDownloadService $photoDownloadService;
-
-    public function __construct(PhotoDownloadService $photoDownloadService)
-    {
-        $this->photoDownloadService = $photoDownloadService;
-    }
+    public function __construct(
+        private PhotoDownloadService $photoDownloadService
+    ) {}
 
     /**
      * Builds a response object using the reponse data returned

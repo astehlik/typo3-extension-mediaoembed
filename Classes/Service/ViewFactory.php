@@ -19,7 +19,7 @@ readonly class ViewFactory
 
     public function createChildView(?RenderingContextInterface $renderingContext): ViewInterface
     {
-        if ($renderingContext === null) {
+        if (!$renderingContext instanceof RenderingContextInterface) {
             throw new RuntimeException('Rendering context is required');
         }
 

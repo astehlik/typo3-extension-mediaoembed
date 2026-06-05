@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Sto\Mediaoembed\Exception;
-
-use Throwable;
+namespace Sto\Mediaoembed\Domain\Model;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Extension "mediaoembed".              *
@@ -16,25 +14,10 @@ use Throwable;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-/**
- * This Exception will be thrown when an invalid URL is provided.
- */
-class InvalidUrlException extends OEmbedException
+readonly class ProviderRequestHandlerConfig
 {
-    /**
-     * Initializes the Exception with a default message and a default code (1303248111).
-     */
     public function __construct(
-        private readonly string $url,
-        ?Throwable $previous = null
-    ) {
-        $message = 'The URL %s is not a valid URL. Please make sure the URL is a valid http:// or https:// URL.';
-        $message = sprintf($message, $url);
-        parent::__construct($message, 1303248111, $previous);
-    }
-
-    public function getUrl(): string
-    {
-        return $this->url;
-    }
+        public string $requestHandlerClass,
+        public array $requestHandlerSettings,
+    ) {}
 }

@@ -21,12 +21,10 @@ class EmbedViewHelper extends AbstractTagBasedViewHelper
 
     protected $escapeOutput = false;
 
-    private ViewFactory $viewFactory;
-
-    public function __construct(ViewFactory $viewFactory)
-    {
+    public function __construct(
+        private readonly ViewFactory $viewFactory
+    ) {
         parent::__construct();
-        $this->viewFactory = $viewFactory;
     }
 
     /**
@@ -68,7 +66,7 @@ class EmbedViewHelper extends AbstractTagBasedViewHelper
     {
         $response = $this->getArgumentResponse();
         $html = $this->renderChildren();
-        $encodedHtml = base64_encode($html);
+        $encodedHtml = base64_encode((string)$html);
 
         $this->setupEmbedContainer();
         $this->tag->addAttribute('data-oembed-html', $encodedHtml);

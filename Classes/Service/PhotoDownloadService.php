@@ -26,7 +26,7 @@ readonly class PhotoDownloadService
      */
     public function downloadPhoto(string $downloadUrl, Configuration $configuration): ?FileInterface
     {
-        if (!$downloadUrl) {
+        if ($downloadUrl === '') {
             return null;
         }
 
@@ -48,7 +48,7 @@ readonly class PhotoDownloadService
         $this->validateMimeType($downloadUrl, $mimeType);
 
         $extension = $this->resourceService->getFileExtensionByMimeType($mimeType);
-        if ($extension) {
+        if ($extension !== '') {
             $imageFilename .= '.' . $extension;
         }
 

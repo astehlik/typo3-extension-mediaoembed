@@ -10,14 +10,11 @@ use Sto\Mediaoembed\Exception\InvalidResponseException;
 use Sto\Mediaoembed\Request\HttpClient\HttpClientFactory;
 use Sto\Mediaoembed\Request\HttpRequest;
 
-final class HttpRequestHandler implements RequestHandlerInterface
+final readonly class HttpRequestHandler implements RequestHandlerInterface
 {
-    private HttpClientFactory $httpClientFactory;
-
-    public function __construct(HttpClientFactory $httpClientFactory)
-    {
-        $this->httpClientFactory = $httpClientFactory;
-    }
+    public function __construct(
+        private HttpClientFactory $httpClientFactory
+    ) {}
 
     public function handle(Provider $provider, Configuration $configuration): array
     {

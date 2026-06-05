@@ -7,7 +7,6 @@ namespace Sto\Mediaoembed\Tests\Functional\Backend\Form;
 use Sto\Mediaoembed\Backend\Form\MediaUrlInputElement;
 use Sto\Mediaoembed\Service\UtilityService;
 use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTestCase;
-use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 
 final class MediaUrlInputElementTest extends AbstractFunctionalTestCase
@@ -45,17 +44,12 @@ final class MediaUrlInputElementTest extends AbstractFunctionalTestCase
 
     private function createInputField(): MediaUrlInputElement
     {
-        $nodeFactoryMock = $this->createMock(NodeFactory::class);
-
         $utilityService = $this->createMock(UtilityService::class);
         $utilityService->expects($this->once())
             ->method('getUniqueId')
             ->with('tx-mediaoembed-url-input-wrapper-')
             ->willReturn('some-random-string');
 
-        $field = new MediaUrlInputElement();
-
-        $field->injectUtilityService($utilityService);
-        return $field;
+        return new MediaUrlInputElement($utilityService);
     }
 }

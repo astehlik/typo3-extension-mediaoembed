@@ -22,7 +22,7 @@ class PlayRelatedProcessorTest extends AbstractUnitTestCase
 
     protected function setUp(): void
     {
-        $this->processor = new PlayRelatedProcessor(new IframeManipulator(), new UrlService());
+        $this->processor = new PlayRelatedProcessor(new IframeManipulator(new UrlService()), new UrlService());
     }
 
     #[DataProvider('provideProcessResponseModifesIframeUrlCases')]

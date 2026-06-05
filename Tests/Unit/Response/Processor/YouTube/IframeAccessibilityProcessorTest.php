@@ -12,6 +12,7 @@ use Sto\Mediaoembed\Response\Processor\Support\IframeManipulator;
 use Sto\Mediaoembed\Response\Processor\YouTube\IframeAccessibilityProcessor;
 use Sto\Mediaoembed\Response\VideoResponse;
 use Sto\Mediaoembed\Service\LocalizationService;
+use Sto\Mediaoembed\Service\UrlService;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
 
 #[CoversClass(IframeAccessibilityProcessor::class)]
@@ -27,7 +28,10 @@ class IframeAccessibilityProcessorTest extends AbstractUnitTestCase
     {
         $this->localizationServiceMock = $this->createMock(LocalizationService::class);
 
-        $this->processor = new IframeAccessibilityProcessor(new IframeManipulator(), $this->localizationServiceMock);
+        $this->processor = new IframeAccessibilityProcessor(
+            new IframeManipulator(new UrlService()),
+            $this->localizationServiceMock
+        );
     }
 
     public function testProcessHtmlResponseAddsFallbackAriaLabelForEmptyTitle(): void

@@ -28,31 +28,20 @@ class Configuration
 
     public const EMBED_RESPONSIVE_STYLE_PROPERTY_DEFAULT = '--bs-aspect-ratio';
 
-    private AspectRatioCalculatorInterface $aspectRatioCalculator;
-
-    private Content $contentElement;
-
-    private Settings $settings;
-
     public function __construct(
-        Content $content,
-        Settings $settings,
-        AspectRatioCalculatorInterface $aspectRatioCalculator,
-    ) {
-        $this->contentElement = $content;
-        $this->settings = $settings;
-
-        $this->aspectRatioCalculator = $aspectRatioCalculator;
-    }
+        private readonly Content $contentElement,
+        private readonly Settings $settings,
+        private readonly AspectRatioCalculatorInterface $aspectRatioCalculator
+    ) {}
 
     public function getAspectRatio(float $responseAspectRatio): float
     {
         $overrideAspectRatio = $this->calculateAspectRatio($this->getContent()->getAspectRatio());
-        if ($overrideAspectRatio) {
+        if ($overrideAspectRatio !== 0.0) {
             return $overrideAspectRatio;
         }
 
-        if ($responseAspectRatio) {
+        if ($responseAspectRatio !== 0.0) {
             return $responseAspectRatio;
         }
 
@@ -98,7 +87,7 @@ class Configuration
     public function getMaxheight(): int
     {
         $contentMaxHeight = $this->getContent()->getMaxHeight();
-        if (!empty($contentMaxHeight)) {
+        if ($contentMaxHeight !== 0) {
             return $contentMaxHeight;
         }
 
@@ -114,7 +103,7 @@ class Configuration
     public function getMaxwidth(): int
     {
         $contentMaxWidth = $this->getContent()->getMaxWidth();
-        if (!empty($contentMaxWidth)) {
+        if ($contentMaxWidth !== 0) {
             return $contentMaxWidth;
         }
 
@@ -169,7 +158,7 @@ class Configuration
     private function getAspectRatioFallback(): float
     {
         $fallbackAspectRatio = $this->calculateAspectRatio($this->settings->getAspectRatioFallback());
-        if ($fallbackAspectRatio) {
+        if ($fallbackAspectRatio !== 0.0) {
             return $fallbackAspectRatio;
         }
 

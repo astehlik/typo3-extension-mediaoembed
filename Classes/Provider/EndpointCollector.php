@@ -6,19 +6,12 @@ namespace Sto\Mediaoembed\Provider;
 
 use RuntimeException;
 
-class EndpointCollector
+final readonly class EndpointCollector
 {
-    private ProviderEndpoints $providerEndpoints;
-
-    private ProviderUrls $providerUrls;
-
     public function __construct(
-        ProviderEndpoints $providerEndpoints,
-        ProviderUrls $providerUrls,
-    ) {
-        $this->providerEndpoints = $providerEndpoints;
-        $this->providerUrls = $providerUrls;
-    }
+        private ProviderEndpoints $providerEndpoints,
+        private ProviderUrls $providerUrls
+    ) {}
 
     /**
      * @return array|Endpoint[]

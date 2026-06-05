@@ -17,59 +17,17 @@ namespace Sto\Mediaoembed\Domain\Model;
 /**
  * An oEmbed provider.
  */
-class Provider
+readonly class Provider
 {
-    /**
-     * @var string
-     */
-    protected $endpoint;
-
-    /**
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @var array
-     */
-    protected $urlSchemes;
-
-    /**
-     * @var bool
-     */
-    private $displayDirectLink = true;
-
-    /**
-     * @var bool
-     */
-    private $hasRegexUrlSchemes;
-
-    /**
-     * @var array
-     */
-    private $processors = [];
-
-    /**
-     * @var string
-     */
-    private $requestHandlerClass = '';
-
-    /**
-     * @var array
-     */
-    private $requestHandlerSettings = [];
-
     public function __construct(
-        string $name,
-        string $endpoint,
-        array $urlSchemes,
-        bool $hasRegexUrlSchemes,
-    ) {
-        $this->name = $name;
-        $this->endpoint = $endpoint;
-        $this->urlSchemes = $urlSchemes;
-        $this->hasRegexUrlSchemes = $hasRegexUrlSchemes;
-    }
+        private string $name,
+        private string $endpoint,
+        private array $urlSchemes,
+        private bool $hasRegexUrlSchemes,
+        private bool $displayDirectLink = true,
+        private array $processors = [],
+        private ?ProviderRequestHandlerConfig $requestHandlerConfig = null,
+    ) {}
 
     public function getEndpoint(): string
     {
@@ -91,12 +49,12 @@ class Provider
 
     public function getRequestHandlerClass(): string
     {
-        return $this->requestHandlerClass;
+        return $this->requestHandlerConfig->requestHandlerClass ?? '';
     }
 
     public function getRequestHandlerSettings(): array
     {
-        return $this->requestHandlerSettings;
+        return $this->requestHandlerConfig->requestHandlerSettings ?? [];
     }
 
     public function getUrlSchemes(): array
@@ -109,24 +67,8 @@ class Provider
         return $this->hasRegexUrlSchemes;
     }
 
-    public function hideDirectLink(): void
-    {
-        $this->displayDirectLink = false;
-    }
-
     public function shouldDirectLinkBeDisplayed(): bool
     {
         return $this->displayDirectLink;
-    }
-
-    public function withProcessor(string $processorClass): void
-    {
-        $this->processors[] = $processorClass;
-    }
-
-    public function withRequestHandler(string $requestHandlerClass, array $requestHandlerSettings): void
-    {
-        $this->requestHandlerClass = $requestHandlerClass;
-        $this->requestHandlerSettings = $requestHandlerSettings;
     }
 }

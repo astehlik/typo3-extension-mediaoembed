@@ -17,35 +17,16 @@ namespace Sto\Mediaoembed\Domain\Model;
 /**
  * A mediaoembed tt_content record.
  */
-class Content
+readonly class Content
 {
-    private string $aspectRatio;
-
-    private int $maxHeight;
-
-    private int $maxWidth;
-
-    private bool $playRelated;
-
-    private int $uid;
-
-    private string $url;
-
     public function __construct(
-        int $uid,
-        string $url,
-        int $maxHeight = 0,
-        int $maxWidth = 0,
-        bool $playRelated = true,
-        string $aspectRatio = '',
-    ) {
-        $this->maxHeight = $maxHeight;
-        $this->maxWidth = $maxWidth;
-        $this->uid = $uid;
-        $this->url = $url;
-        $this->playRelated = $playRelated;
-        $this->aspectRatio = $aspectRatio;
-    }
+        private int $uid,
+        private string $url,
+        private int $maxHeight = 0,
+        private int $maxWidth = 0,
+        private bool $playRelated = true,
+        private string $aspectRatio = ''
+    ) {}
 
     public function getAspectRatio(): string
     {

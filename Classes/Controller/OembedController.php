@@ -93,7 +93,7 @@ class OembedController extends ActionController
     {
         $isValid = true;
 
-        if (empty($url)) {
+        if ($url === '') {
             $isValid = false;
         }
 
@@ -124,7 +124,7 @@ class OembedController extends ActionController
     {
         $requestHandlerClass = $provider->getRequestHandlerClass();
 
-        if (!$requestHandlerClass) {
+        if ($requestHandlerClass === '') {
             return $this->container->get(HttpRequestHandler::class);
         }
 
@@ -181,7 +181,7 @@ class OembedController extends ActionController
         if (!$this->settings['view']['displayDirectLink']) {
             return false;
         }
-        if (!$provider) {
+        if (!$provider instanceof Provider) {
             return true;
         }
         return $provider->shouldDirectLinkBeDisplayed();
@@ -219,7 +219,7 @@ class OembedController extends ActionController
             }
         }
 
-        if ($response === null) {
+        if (!$response instanceof GenericResponse) {
             $this->view->assign('hasErrors', true);
             $this->view->assign('providerExceptions', $providerExceptions);
             return;

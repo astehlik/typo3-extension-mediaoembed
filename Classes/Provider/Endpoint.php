@@ -6,21 +6,13 @@ namespace Sto\Mediaoembed\Provider;
 
 class Endpoint
 {
-    private bool $isRegex;
+    private array $urlSchemes = [];
 
-    private string $name;
-
-    private string $url;
-
-    private array $urlSchemes;
-
-    public function __construct(string $name, string $url, bool $isRegex)
-    {
-        $this->name = $name;
-        $this->url = $url;
-        $this->isRegex = $isRegex;
-        $this->urlSchemes = [];
-    }
+    public function __construct(
+        private readonly string $name,
+        private readonly string $url,
+        private readonly bool $isRegex
+    ) {}
 
     public function addUrlScheme(string $urlScheme): void
     {

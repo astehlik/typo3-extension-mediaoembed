@@ -4,61 +4,31 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Service;
 
+use InvalidArgumentException;
 use Sto\Mediaoembed\Exception\InvalidUrlException;
+use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 
 final class UrlService
 {
-    /**
-     * Takes query parts and builds a URL. Based on:
-     * https://stackoverflow.com/a/31691249.
-     */
-    public function buildUrl(array $urlParts, string $originalUrl): string
-    {
-        $hasFragment = str_contains($originalUrl, '#');
-        $hasQuery = str_contains($originalUrl, '?');
-
-        $pass = $urlParts['pass'] ?? null;
-        $user = $urlParts['user'] ?? null;
-        $userinfo = $pass !== null ? $user . ':' . $pass : $user;
-        $port = $urlParts['port'] ?? 0;
-        $scheme = $urlParts['scheme'] ?? '';
-        $query = $urlParts['query'] ?? '';
-        $fragment = $urlParts['fragment'] ?? '';
-
-        $authority = ($userinfo !== null ? $userinfo . '@' : '')
-            . ($urlParts['host'] ?? '')
-            . ($port ? ':' . $port : '');
-
-        return ($scheme ? $scheme . ':' : '')
-            . ($authority ? '//' . $authority : '')
-            . ($urlParts['path'] ?? '')
-            . ($hasQuery ? '?' . $query : '')
-            . ($hasFragment ? '#' . $fragment : '');
-    }
-
-    public function mergeQueryParameters(string $url, array $parameters): string
+    public function mergeQueryParameters(Uri $url, array $parameters): Uri
     {
         if ($parameters === []) {
             return $url;
         }
 
-        $urlParts = $this->parseUrl($url);
+        $newQuery = $this->queryParamsOverwrite($url->getQuery(), $parameters);
 
-        $query = $urlParts['query'] ?? '';
-        $newQuery = $this->queryParamsOverwrite($query, $parameters);
-        $urlParts['query'] = $newQuery;
-
-        return $this->buildUrl($urlParts, $url);
+        return $url->withQuery($newQuery);
     }
 
-    public function parseUrl(string $url): array
+    public function parseUrl(string $url): Uri
     {
-        $urlParts = parse_url($url);
-        if (!$urlParts) {
-            throw new InvalidUrlException($url);
+        try {
+            return new Uri($url);
+        } catch (InvalidArgumentException $e) {
+            throw new InvalidUrlException($url, $e);
         }
-        return $urlParts;
     }
 
     public function queryParamsDefaults(string $query, array $defaultParameters): string
@@ -81,18 +51,16 @@ final class UrlService
         return http_build_query($queryParams);
     }
 
-    public function replaceSchemeAndHost(string $url, string $scheme, string $host): string
+    public function replaceSchemeAndHost(Uri $url, string $scheme, string $host): Uri
     {
-        $urlParts = $this->parseUrl($url);
-        $urlParts['scheme'] = $scheme;
-        $urlParts['host'] = $host;
-        return $this->buildUrl($urlParts, $url);
+        return $url->withScheme($scheme)
+            ->withHost($host);
     }
 
     private function parseQueryParams(string $query): array
     {
         $queryParams = [];
-        if ($query) {
+        if ($query !== '' && $query !== '0') {
             parse_str($query, $queryParams);
         }
         return $queryParams;
