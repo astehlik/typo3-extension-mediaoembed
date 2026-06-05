@@ -7,15 +7,12 @@
 defined('TYPO3') or die();
 
 $bootMediaoembed = function () {
-    $lllPrefix = 'LLL:' . 'EXT:mediaoembed/Resources/Private/Language/locallang_db.xlf:';
-
+    // @extensionScannerIgnoreLine - False positive
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
         'Mediaoembed',
         'OembedMediaRenderer',
         /** @uses \Sto\Mediaoembed\Controller\OembedController::renderMediaAction() */
         [\Sto\Mediaoembed\Controller\OembedController::class => 'renderMedia'],
-        [],
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][\Sto\Mediaoembed\Backend\AspectRatioEvaluation::class]

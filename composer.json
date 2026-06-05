@@ -19,6 +19,7 @@
 		"de-swebhosting/typo3-extension-buildtools": "dev-TYPO3_14",
 		"michielroos/typo3scan": "dev-master as 1.7.99",
 		"phpunit/phpunit": "^11.5.50",
+		"ssch/typo3-rector": "^3.14",
 		"typo3/cms-filelist": "*",
 		"typo3/cms-fluid-styled-content": "*",
 		"typo3/cms-install": "*"

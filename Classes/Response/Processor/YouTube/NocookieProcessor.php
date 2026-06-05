@@ -10,6 +10,7 @@ use Sto\Mediaoembed\Response\Processor\ResponseProcessorInterface;
 use Sto\Mediaoembed\Response\Processor\Support\IframeManipulator;
 use Sto\Mediaoembed\Response\VideoResponse;
 use Sto\Mediaoembed\Service\UrlService;
+use TYPO3\CMS\Core\Http\Uri;
 
 readonly class NocookieProcessor implements ResponseProcessorInterface
 {
@@ -29,15 +30,19 @@ readonly class NocookieProcessor implements ResponseProcessorInterface
 
     private function processVideoResponse(VideoResponse $response): void
     {
-        $replaceYoutubeUrl = fn(?string $url): string => $this->replaceYoutubeUrl((string)$url);
+        $replaceYoutubeUrl = fn(?Uri $url): ?Uri => $this->replaceYoutubeUrl($url);
 
         $this->iframeManipulator->modifyIframeUrl($response, $replaceYoutubeUrl);
     }
 
-    private function replaceYoutubeUrl(string $url): string
+    private function replaceYoutubeUrl(?Uri $url): ?Uri
     {
-        if ($url === '') {
-            return '';
+        if (!$url instanceof Uri) {
+            return null;
+        }
+
+        if ($url->getHost() === '') {
+            return $url;
         }
 
         return $this->urlService->replaceSchemeAndHost(

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Provider;
 
-class ProviderUrls
+readonly class ProviderUrls
 {
     private array $urls;
 

@@ -31,17 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class HttpRequest
 {
     /**
-     * The configuration.
-     */
-    private Configuration $configuration;
-
-    /**
-     * The endpoint URL that should be contacted to get the embed
-     * information.
-     */
-    private string $endpoint;
-
-    /**
      * The required response format. When not specified, the provider can return
      * any valid response format.
      * When specified, the provider must return data in the request format,
@@ -52,20 +41,20 @@ class HttpRequest
      */
     private string $format = 'json';
 
-    private HttpClientFactory $httpClientFactory;
-
     private array $httpErrorHandlers = [
         401,
         404,
         501,
     ];
 
-    public function __construct(Configuration $configuration, string $endpoint, HttpClientFactory $httpClientFactory)
-    {
-        $this->configuration = $configuration;
-        $this->endpoint = $endpoint;
-        $this->httpClientFactory = $httpClientFactory;
-    }
+    /**
+     * @param string $endpoint the endpoint URL that should be contacted to get the embed information
+     */
+    public function __construct(
+        private readonly Configuration $configuration,
+        private readonly string $endpoint,
+        private readonly HttpClientFactory $httpClientFactory
+    ) {}
 
     /**
      * Builds a request url and tries to read the embed information
@@ -107,7 +96,7 @@ class HttpRequest
     protected function buildQueryStringParameters(string $endpointQueryParameters, array $parameters): array
     {
         $baseUrlParameters = [];
-        if ($endpointQueryParameters) {
+        if ($endpointQueryParameters !== '') {
             parse_str($endpointQueryParameters, $baseUrlParameters);
         }
 

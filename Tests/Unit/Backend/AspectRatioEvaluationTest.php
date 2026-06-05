@@ -20,10 +20,9 @@ final class AspectRatioEvaluationTest extends AbstractUnitTestCase
 
     protected function setUp(): void
     {
-        $this->aspectRatioEvaluation = new AspectRatioEvaluation();
-
         $this->aspectRatioCalculatorMock = $this->createMock(AspectRatioCalculatorInterface::class);
-        $this->aspectRatioEvaluation->injectAspectRatioCalculator($this->aspectRatioCalculatorMock);
+
+        $this->aspectRatioEvaluation = new AspectRatioEvaluation($this->aspectRatioCalculatorMock);
     }
 
     #[DataProvider('provideDeevaluateFieldValueReturnsExpectedValueCases')]
@@ -44,12 +43,6 @@ final class AspectRatioEvaluationTest extends AbstractUnitTestCase
                 'test',
             ],
         ];
-    }
-
-    public function testEvaluateFieldValueInstantiatesCalculatorIfNotInjected(): void
-    {
-        $evaluation = new AspectRatioEvaluation();
-        $this->assertSame('16:9', $evaluation->evaluateFieldValue('16:9'));
     }
 
     #[DataProvider('provideEvaluateFieldValueReturnsEmptyStringForInvalidValuesCases')]

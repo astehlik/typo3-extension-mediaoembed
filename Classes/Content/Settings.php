@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Sto\Mediaoembed\Content;
 
-class Settings
+readonly class Settings
 {
-    private array $settings;
-
-    public function __construct(array $settings)
-    {
-        $this->settings = $settings;
-    }
+    public function __construct(
+        private array $settings
+    ) {}
 
     public function getAspectRatioFallback(): string
     {

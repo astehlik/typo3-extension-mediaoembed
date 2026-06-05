@@ -6,29 +6,24 @@ namespace Sto\Mediaoembed\Request\RequestHandler\Panopto;
 
 use Sto\Mediaoembed\Service\UrlService;
 
-final class PanoptoUrlProcessor
+final readonly class PanoptoUrlProcessor
 {
-    private UrlService $urlService;
-
-    public function __construct(UrlService $urlService)
-    {
-        $this->urlService = $urlService;
-    }
+    public function __construct(private UrlService $urlService) {}
 
     public function processUrl(string $mediaUrl, array $defaultViewerUrlParameters): string
     {
-        $urlParts = $this->urlService->parseUrl($mediaUrl);
-        $urlPath = $urlParts['path'] ?? '';
-        $urlQuery = $urlParts['query'] ?? '';
+        $uri = $this->urlService->parseUrl($mediaUrl);
 
         // URL is already an embed URL so we assume it contains all required parameters.
-        if (!str_ends_with($urlPath, 'Viewer.aspx')) {
+        if (!str_ends_with($uri->getPath(), 'Viewer.aspx')) {
             return $mediaUrl;
         }
 
-        $urlParts['path'] = preg_replace('/Viewer.aspx$/', 'Embed.aspx', $urlPath);
-        $urlParts['query'] = $this->urlService->queryParamsDefaults($urlQuery, $defaultViewerUrlParameters);
+        $newPath = preg_replace('/Viewer.aspx$/', 'Embed.aspx', $uri->getPath());
+        $newQuery = $this->urlService->queryParamsDefaults($uri->getQuery(), $defaultViewerUrlParameters);
 
-        return $this->urlService->buildUrl($urlParts, $mediaUrl);
+        return (string)$uri
+            ->withPath($newPath)
+            ->withQuery($newQuery);
     }
 }

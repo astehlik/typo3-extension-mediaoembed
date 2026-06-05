@@ -9,7 +9,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Sto\Mediaoembed\Exception\ProcessorException;
 use Sto\Mediaoembed\Response\HtmlAwareResponseInterface;
 use Sto\Mediaoembed\Response\Processor\Support\IframeManipulator;
+use Sto\Mediaoembed\Service\UrlService;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
+use TYPO3\CMS\Core\Http\Uri;
 
 #[CoversClass(IframeManipulator::class)]
 final class IframeManipulatorTest extends AbstractUnitTestCase
@@ -18,7 +20,7 @@ final class IframeManipulatorTest extends AbstractUnitTestCase
 
     protected function setUp(): void
     {
-        $this->subject = new IframeManipulator();
+        $this->subject = new IframeManipulator(new UrlService());
     }
 
     public function testAddIframeAttributeIfNonExistingAddsNewAttribute(): void
@@ -57,7 +59,14 @@ final class IframeManipulatorTest extends AbstractUnitTestCase
             '<iframe src="https://my-new-src"></iframe>'
         );
 
-        $urlModifier = static fn(?string $url) => $url === null ? 'https://my-new-src' : $url;
+        $urlModifier = function (?Uri $uri): Uri {
+            if ($uri instanceof Uri) {
+                $this->fail('Expected null URI');
+            }
+
+            return new Uri('https://my-new-src');
+        };
+
         $this->subject->modifyIframeUrl($responseMock, $urlModifier);
     }
 
@@ -68,7 +77,7 @@ final class IframeManipulatorTest extends AbstractUnitTestCase
             '<iframe src="https://modified.com/video"></iframe>'
         );
 
-        $urlModifier = static fn(?string $url) => str_replace('example.com', 'modified.com', $url);
+        $urlModifier = static fn(?Uri $url) => $url->withHost('modified.com');
         $this->subject->modifyIframeUrl($responseMock, $urlModifier);
     }
 
@@ -79,7 +88,7 @@ final class IframeManipulatorTest extends AbstractUnitTestCase
             '<iframe></iframe>'
         );
 
-        $urlModifier = static fn(?string $url) => null;
+        $urlModifier = static fn(?Uri $url) => null;
         $this->subject->modifyIframeUrl($responseMock, $urlModifier);
     }
 

@@ -17,19 +17,12 @@ namespace Sto\Mediaoembed\Content;
 use Sto\Mediaoembed\Domain\Repository\ContentRepository;
 use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
 
-class ConfigurationFactory
+final readonly class ConfigurationFactory
 {
-    private AspectRatioCalculatorInterface $aspectRatioCalculator;
-
-    private ContentRepository $contentRepository;
-
     public function __construct(
-        AspectRatioCalculatorInterface $aspectRatioCalculator,
-        ContentRepository $contentRepository,
-    ) {
-        $this->aspectRatioCalculator = $aspectRatioCalculator;
-        $this->contentRepository = $contentRepository;
-    }
+        private AspectRatioCalculatorInterface $aspectRatioCalculator,
+        private ContentRepository $contentRepository
+    ) {}
 
     public function createConfiguration(array $contentObjectData, array $settings): Configuration
     {

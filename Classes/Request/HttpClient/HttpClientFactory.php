@@ -7,15 +7,11 @@ namespace Sto\Mediaoembed\Request\HttpClient;
 use Psr\Container\ContainerInterface;
 use Sto\Mediaoembed\Content\Configuration;
 
-class HttpClientFactory
+readonly class HttpClientFactory
 {
-    private ContainerInterface $container;
-
     public function __construct(
-        ContainerInterface $container,
-    ) {
-        $this->container = $container;
-    }
+        private ContainerInterface $container
+    ) {}
 
     public function getHttpClient(Configuration $configuration): HttpClientInterface
     {

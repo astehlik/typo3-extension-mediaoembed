@@ -20,7 +20,7 @@ class NocookieProcessorTest extends AbstractUnitTestCase
 
     protected function setUp(): void
     {
-        $this->processor = new NocookieProcessor(new IframeManipulator(), new UrlService());
+        $this->processor = new NocookieProcessor(new IframeManipulator(new UrlService()), new UrlService());
     }
 
     public function testProcessResponse(): void

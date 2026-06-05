@@ -7,11 +7,18 @@ namespace Sto\Mediaoembed\Response\Processor\Support;
 use Closure;
 use DOMDocument;
 use DOMElement;
+use Sto\Mediaoembed\Exception\InvalidUrlException;
 use Sto\Mediaoembed\Exception\ProcessorException;
 use Sto\Mediaoembed\Response\HtmlAwareResponseInterface;
+use Sto\Mediaoembed\Service\UrlService;
+use TYPO3\CMS\Core\Http\Uri;
 
-class IframeManipulator
+final readonly class IframeManipulator
 {
+    public function __construct(
+        private UrlService $urlService,
+    ) {}
+
     /**
      * @param callable(): string|string $value
      */
@@ -28,11 +35,21 @@ class IframeManipulator
     }
 
     /**
-     * @param callable(?string $iframeSrc): ?string $urlModifier
+     * @param callable(?Uri $iframeSrc): ?Uri $urlModifier
      */
     public function modifyIframeUrl(HtmlAwareResponseInterface $response, callable $urlModifier): void
     {
-        $attributeModifier = static fn(?string $iframeSrc): ?string => $urlModifier($iframeSrc);
+        $attributeModifier = function (?string $iframeSrc) use ($urlModifier): ?string {
+            $iframeUri = $this->parseUriIfPossible($iframeSrc);
+
+            $uri = $urlModifier($iframeUri);
+
+            if ($uri === null) {
+                return null;
+            }
+
+            return (string)$uri;
+        };
 
         $this->modifyIframeAttribute($response, 'src', $attributeModifier);
     }
@@ -96,6 +113,19 @@ class IframeManipulator
         $this->modifyAttribute($iframe, $attribute, $modifiedAttributeValue);
         $modifiedHtml = $iframe->ownerDocument->saveHTML($iframe);
         $response->setHtml($modifiedHtml);
+    }
+
+    private function parseUriIfPossible(?string $iframeSrc): ?Uri
+    {
+        if (!is_string($iframeSrc)) {
+            return null;
+        }
+
+        try {
+            return $this->urlService->parseUrl($iframeSrc);
+        } catch (InvalidUrlException) {
+            return null;
+        }
     }
 
     private function withoutXmlErrors(Closure $callback): void

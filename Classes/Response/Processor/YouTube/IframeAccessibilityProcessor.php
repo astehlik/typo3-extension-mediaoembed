@@ -34,7 +34,7 @@ readonly class IframeAccessibilityProcessor implements HtmlResponseProcessorInte
 
     private function getAriaLabel(GenericResponse $response): string
     {
-        if (!$response->getTitle()) {
+        if ($response->getTitle() === '') {
             return $this->localizationService->translate(
                 'iframe_aria_label_fallback',
                 [$response->getProviderName()],

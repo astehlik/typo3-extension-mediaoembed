@@ -30,6 +30,7 @@ final class AspectRatioCalculator implements AspectRatioCalculatorInterface
             $width,
             $height,
         ] = $this->getAspectRatioParts($aspectRatio);
+
         return $width > 0 && $height > 0
             && MathUtility::canBeInterpretedAsInteger($width) && MathUtility::canBeInterpretedAsInteger($height);
     }
