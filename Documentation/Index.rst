@@ -46,6 +46,7 @@ like YouTube or Vimeo videos, Flickr images and much more.
    User/Index
    Installation/Index
    Configuration/Index
+   Developer/Index
    KnownProblems/Index
    ToDoList/Index
 
