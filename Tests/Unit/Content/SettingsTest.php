@@ -130,7 +130,7 @@ final class SettingsTest extends AbstractUnitTestCase
             'processor2',
         ];
         $settings = new Settings([
-            'reponseProcessors' => ['html' => $processors],
+            'responseProcessors' => ['html' => $processors],
         ]);
         $this->assertSame($processors, $settings->getProcessorsForHtml());
     }

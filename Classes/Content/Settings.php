@@ -60,7 +60,7 @@ readonly class Settings
 
     public function getProcessorsForHtml(): array
     {
-        return $this->settings['reponseProcessors']['html'] ?? [];
+        return $this->settings['responseProcessors']['html'] ?? [];
     }
 
     public function isConsentEnabled(): bool
