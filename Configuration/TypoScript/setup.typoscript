@@ -17,7 +17,7 @@ plugin.tx_mediaoembed.settings {
     folderIdentifier = {$plugin.tx_mediaoembed.downloadPhotoSettings.folderIdentifier}
   }
 
-  reponseProcessors {
+  responseProcessors {
     html {
       10 = Sto\Mediaoembed\Response\Processor\YouTube\IframeAccessibilityProcessor
     }

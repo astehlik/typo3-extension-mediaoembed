@@ -7,6 +7,7 @@ namespace Sto\Mediaoembed\Tests\Unit\Domain\Repository;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Sto\Mediaoembed\Domain\Repository\ContentRepository;
 use Sto\Mediaoembed\Tests\Unit\AbstractUnitTestCase;
+use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
 
 #[CoversClass(ContentRepository::class)]
 final class ContentRepositoryTest extends AbstractUnitTestCase
@@ -15,7 +16,7 @@ final class ContentRepositoryTest extends AbstractUnitTestCase
 
     protected function setUp(): void
     {
-        $this->contentRepository = new ContentRepository();
+        $this->contentRepository = new ContentRepository(new NoopEventDispatcher());
     }
 
     public function testCreateFromContentDataWithCompleteData(): void

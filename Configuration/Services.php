@@ -28,6 +28,7 @@ return static function (ContainerConfigurator $configurator): void {
         ->set(ConfigurationFactory::class, ConfigurationFactory::class)
         ->load('Sto\\Mediaoembed\\Controller\\', __DIR__ . '/../Classes/Controller/')
         ->load('Sto\\Mediaoembed\\Domain\\Repository\\', __DIR__ . '/../Classes/Domain/Repository/')
+        ->load('Sto\\Mediaoembed\\EventListener\\', __DIR__ . '/../Classes/EventListener/')
         ->load('Sto\\Mediaoembed\\Request\\HttpClient\\', __DIR__ . '/../Classes/Request/HttpClient/')
         ->load('Sto\\Mediaoembed\\Request\\RequestHandler\\', __DIR__ . '/../Classes/Request/RequestHandler/')
         ->load('Sto\\Mediaoembed\\Response\\Processor\\', __DIR__ . '/../Classes/Response/Processor/')
