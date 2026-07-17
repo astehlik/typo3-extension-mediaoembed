@@ -16,7 +16,15 @@ final class AspectRatioCalculatorTest extends AbstractUnitTestCase
         $this->aspectRatioCalculator = new AspectRatioCalculator();
     }
 
-    public static function calculateAspectRatioReturnsExpectedValuesDataProvider(): array
+    /**
+     * @dataProvider provideCalculateAspectRatioReturnsExpectedValuesCases
+     */
+    public function testCalculateAspectRatioReturnsExpectedValues(float $expectedValue, string $aspectRatio): void
+    {
+        self::assertSame($expectedValue, $this->aspectRatioCalculator->calculateAspectRatio($aspectRatio));
+    }
+
+    public static function provideCalculateAspectRatioReturnsExpectedValuesCases(): iterable
     {
         return [
             'invalid value' => [
@@ -34,7 +42,15 @@ final class AspectRatioCalculatorTest extends AbstractUnitTestCase
         ];
     }
 
-    public static function isValidAspectRatioReturnsFalseForInvalidValuesDataProvider(): array
+    /**
+     * @dataProvider provideIsValidAspectRatioReturnsFalseForInvalidValuesCases
+     */
+    public function testIsValidAspectRatioReturnsFalseForInvalidValues(string $value): void
+    {
+        self::assertFalse($this->aspectRatioCalculator->isValidAspectRatio($value));
+    }
+
+    public static function provideIsValidAspectRatioReturnsFalseForInvalidValuesCases(): iterable
     {
         return [
             'regex not matching' => ['asdf'],
@@ -43,22 +59,6 @@ final class AspectRatioCalculatorTest extends AbstractUnitTestCase
             'height is zero' => ['10:0'],
             'height is invalid' => ['10:01'],
         ];
-    }
-
-    /**
-     * @dataProvider calculateAspectRatioReturnsExpectedValuesDataProvider
-     */
-    public function testCalculateAspectRatioReturnsExpectedValues(float $expectedValue, string $aspectRatio): void
-    {
-        self::assertSame($expectedValue, $this->aspectRatioCalculator->calculateAspectRatio($aspectRatio));
-    }
-
-    /**
-     * @dataProvider isValidAspectRatioReturnsFalseForInvalidValuesDataProvider
-     */
-    public function testIsValidAspectRatioReturnsFalseForInvalidValues(string $value): void
-    {
-        self::assertFalse($this->aspectRatioCalculator->isValidAspectRatio($value));
     }
 
     public function testIsValidAspectRatioReturnsTrueForValidValue(): void

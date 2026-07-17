@@ -21,6 +21,4 @@ namespace Sto\Mediaoembed\Response;
  * The consumer may then link to the resource, using the URL specified in the
  * original request.
  */
-class LinkResponse extends GenericResponse
-{
-}
+class LinkResponse extends GenericResponse {}

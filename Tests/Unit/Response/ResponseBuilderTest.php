@@ -106,7 +106,7 @@ class ResponseBuilderTest extends AbstractUnitTestCase
         string $responseClass,
         array $responseData,
         ?Configuration $configuration = null,
-        PhotoDownloadService|MockObject $photoDownloadServiceMock = null
+        MockObject|PhotoDownloadService|null $photoDownloadServiceMock = null
     ): GenericResponse {
         if (!$photoDownloadServiceMock) {
             $photoDownloadServiceMock = $this->createMock(PhotoDownloadService::class);

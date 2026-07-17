@@ -242,9 +242,7 @@ class GenericResponse
      * Initializes the response parameters that are specific for this
      * resource type.
      */
-    public function initializeTypeSpecificResponseData(): void
-    {
-    }
+    public function initializeTypeSpecificResponseData(): void {}
 
     /**
      * Retrieves a value from the response array or returns NULL if the array key is not set.

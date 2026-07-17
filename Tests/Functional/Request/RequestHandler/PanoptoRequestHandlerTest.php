@@ -11,24 +11,8 @@ use Sto\Mediaoembed\Tests\Functional\AbstractFunctionalTestCase;
 
 final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
 {
-    public static function handleBuildsExpectedIframeDataProvider(): array
-    {
-        return [
-            [
-                'https://the-iframe-url.tld',
-                'https://the-iframe-url.tld',
-            ],
-            [
-                'https://demo.hosted.panopto.com/Panopto/Pages/Viewer.aspx'
-                . '?id=af1d34c39-d435-45456-b5451-a45b045377&offerviewer=false',
-                'https://demo.hosted.panopto.com/Panopto/Pages/Embed.aspx'
-                . '?offerviewer=false&amp;autoplay=false&amp;id=af1d34c39-d435-45456-b5451-a45b045377',
-            ],
-        ];
-    }
-
     /**
-     * @dataProvider handleBuildsExpectedIframeDataProvider
+     * @dataProvider provideHandleBuildsExpectedIframeCases
      */
     public function testHandleBuildsExpectedIframe(string $mediaUrl, string $expectedUrl): void
     {
@@ -65,5 +49,21 @@ final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
 
         $requestHandler = $this->getContainer()->get(PanoptoRequestHandler::class);
         self::assertSame($expectedResponse, $requestHandler->handle($provider, $configurationMock));
+    }
+
+    public static function provideHandleBuildsExpectedIframeCases(): iterable
+    {
+        return [
+            [
+                'https://the-iframe-url.tld',
+                'https://the-iframe-url.tld',
+            ],
+            [
+                'https://demo.hosted.panopto.com/Panopto/Pages/Viewer.aspx'
+                . '?id=af1d34c39-d435-45456-b5451-a45b045377&offerviewer=false',
+                'https://demo.hosted.panopto.com/Panopto/Pages/Embed.aspx'
+                . '?offerviewer=false&amp;autoplay=false&amp;id=af1d34c39-d435-45456-b5451-a45b045377',
+            ],
+        ];
     }
 }

@@ -19,6 +19,4 @@ use TYPO3\CMS\Extbase\Exception;
 /**
  * Base class for all possible Exceptions that are not runtime errors.
  */
-abstract class OEmbedException extends Exception
-{
-}
+abstract class OEmbedException extends Exception {}

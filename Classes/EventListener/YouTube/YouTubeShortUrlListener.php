@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Attribute\AsEventListener;
 #[AsEventListener(identifier: 'mediaoembed/youtube-short-url')]
 final class YouTubeShortUrlListener
 {
-    private const URL_PATTERN = '~^https?://((m|www)\\.)?youtube\\.com/shorts/([^/?#]+)~i';
+    private const URL_PATTERN = '~^https?://((m|www)\.)?youtube\.com/shorts/([^/?#]+)~i';
 
     public function __invoke(BeforeMediaUrlResolvedEvent $event): void
     {

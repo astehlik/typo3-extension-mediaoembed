@@ -17,7 +17,7 @@ trait IframeAwareProcessorTrait
         /**
          * @return string
          */
-        $attributeModifier = function (?string $currentValue) use ($value) {
+        $attributeModifier = static function (?string $currentValue) use ($value) {
             if ($currentValue !== null && $currentValue !== '') {
                 return $currentValue;
             }
@@ -58,7 +58,7 @@ trait IframeAwareProcessorTrait
         $document = new \DOMDocument();
         $loadSuccess = false;
         $this->withoutXmlErrors(
-            function () use ($response, $document, &$loadSuccess): void {
+            static function () use ($response, $document, &$loadSuccess): void {
                 $xmlPrefixForEncodingFix = '<?xml version="1.0" encoding="utf-8" ?>';
                 $htmlWrapping = '<html><body><div id="oembed-response">%s</div></body></html>';
                 $template = $xmlPrefixForEncodingFix . $htmlWrapping;
@@ -92,7 +92,7 @@ trait IframeAwareProcessorTrait
         /**
          * @return mixed
          */
-        $attributeModifier = function (?string $iframeSrc) use ($urlModifier) {
+        $attributeModifier = static function (?string $iframeSrc) use ($urlModifier) {
             return $urlModifier($iframeSrc);
         };
 

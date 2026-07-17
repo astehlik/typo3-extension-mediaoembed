@@ -24,7 +24,15 @@ final class AspectRatioEvaluationTest extends AbstractUnitTestCase
         $this->aspectRatioEvaluation->injectAspectRatioCalculator($this->aspectRatioCalculatorMock);
     }
 
-    public static function deevaluateFieldValueReturnsExpectedValueDataProvider(): array
+    /**
+     * @dataProvider provideDeevaluateFieldValueReturnsExpectedValueCases
+     */
+    public function testDeevaluateFieldValueReturnsExpectedValue(array $parameters, string $expectedValue): void
+    {
+        self::assertSame($expectedValue, $this->aspectRatioEvaluation->deevaluateFieldValue($parameters));
+    }
+
+    public static function provideDeevaluateFieldValueReturnsExpectedValueCases(): iterable
     {
         return [
             [
@@ -38,26 +46,8 @@ final class AspectRatioEvaluationTest extends AbstractUnitTestCase
         ];
     }
 
-    public static function evaluateFieldValueReturnsEmptyStringForInvalidValuesDataProvider(): array
-    {
-        return [
-            [null],
-            [''],
-            [' '],
-            ['invalid'],
-        ];
-    }
-
     /**
-     * @dataProvider deevaluateFieldValueReturnsExpectedValueDataProvider
-     */
-    public function testDeevaluateFieldValueReturnsExpectedValue(array $parameters, string $expectedValue): void
-    {
-        self::assertSame($expectedValue, $this->aspectRatioEvaluation->deevaluateFieldValue($parameters));
-    }
-
-    /**
-     * @dataProvider evaluateFieldValueReturnsEmptyStringForInvalidValuesDataProvider
+     * @dataProvider provideEvaluateFieldValueReturnsEmptyStringForInvalidValuesCases
      */
     public function testEvaluateFieldValueReturnsEmptyStringForInvalidValues(mixed $value): void
     {
@@ -68,6 +58,16 @@ final class AspectRatioEvaluationTest extends AbstractUnitTestCase
         }
 
         self::assertSame('', $this->aspectRatioEvaluation->evaluateFieldValue($value));
+    }
+
+    public static function provideEvaluateFieldValueReturnsEmptyStringForInvalidValuesCases(): iterable
+    {
+        return [
+            [null],
+            [''],
+            [' '],
+            ['invalid'],
+        ];
     }
 
     public function testEvaluateFieldValueReturnsValueForvalueValue(): void

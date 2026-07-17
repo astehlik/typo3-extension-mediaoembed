@@ -1,16 +1,17 @@
 <?php
 
 declare(strict_types=1);
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 defined('TYPO3') || exit;
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+ExtensionManagementUtility::addStaticFile(
     'mediaoembed',
     'Configuration/TypoScript',
     'Media oEmbed'
 );
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+ExtensionManagementUtility::addStaticFile(
     'mediaoembed',
     'Configuration/TypoScript/DefaultProviders',
     'Media oEmbed default providers'

@@ -15,9 +15,9 @@ class EndpointCollectorTest extends TestCase
 {
     private EndpointCollector $collector;
 
-    private ProviderEndpoints|MockObject $providerEndpointsMock;
+    private MockObject|ProviderEndpoints $providerEndpointsMock;
 
-    private ProviderUrls|MockObject $providerUrlsMock;
+    private MockObject|ProviderUrls $providerUrlsMock;
 
     protected function setUp(): void
     {

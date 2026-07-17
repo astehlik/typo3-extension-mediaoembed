@@ -78,8 +78,8 @@ ExtensionManagementUtility::addTcaSelectItem(
     'after'
 );
 
-$GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes']['mediaoembed_oembedmediarenderer'] =
-    'extensions-mediaoembed-content-externalmedia';
+$GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes']['mediaoembed_oembedmediarenderer']
+    = 'extensions-mediaoembed-content-externalmedia';
 
 $GLOBALS['TCA']['tt_content']['palettes']['tx_mediaoembed_settings'] = [
     'showitem' => 'tx_mediaoembed_url,

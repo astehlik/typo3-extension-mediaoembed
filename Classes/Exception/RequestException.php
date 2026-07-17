@@ -18,6 +18,4 @@ namespace Sto\Mediaoembed\Exception;
  * All excpetions that are expected during a request need to extend this
  * exception.
  */
-class RequestException extends OEmbedException
-{
-}
+class RequestException extends OEmbedException {}

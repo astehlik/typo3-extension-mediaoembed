@@ -24,33 +24,33 @@ final class BeforeMediaUrlResolvedEventTest extends AbstractUnitTestCase
     public function testGetRequestUrlDefaultsToConstructorValue(): void
     {
         $event = new BeforeMediaUrlResolvedEvent('https://example.com/video');
-        $this->assertSame('https://example.com/video', $event->getRequestUrl());
+        self::assertSame('https://example.com/video', $event->getRequestUrl());
     }
 
     public function testGetUrlReturnsConstructorValue(): void
     {
         $event = new BeforeMediaUrlResolvedEvent('https://example.com/video');
-        $this->assertSame('https://example.com/video', $event->getUrl());
+        self::assertSame('https://example.com/video', $event->getUrl());
     }
 
     public function testSetRequestUrlOverridesRequestUrl(): void
     {
         $event = new BeforeMediaUrlResolvedEvent('https://example.com/video');
         $event->setRequestUrl('https://example.com/other-video');
-        $this->assertSame('https://example.com/other-video', $event->getRequestUrl());
+        self::assertSame('https://example.com/other-video', $event->getRequestUrl());
     }
 
     public function testSetUrlDoesNotAffectRequestUrl(): void
     {
         $event = new BeforeMediaUrlResolvedEvent('https://example.com/video');
         $event->setUrl('https://example.com/other-video');
-        $this->assertSame('https://example.com/video', $event->getRequestUrl());
+        self::assertSame('https://example.com/video', $event->getRequestUrl());
     }
 
     public function testSetUrlOverridesUrl(): void
     {
         $event = new BeforeMediaUrlResolvedEvent('https://example.com/video');
         $event->setUrl('https://example.com/other-video');
-        $this->assertSame('https://example.com/other-video', $event->getUrl());
+        self::assertSame('https://example.com/other-video', $event->getUrl());
     }
 }

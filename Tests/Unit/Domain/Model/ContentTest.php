@@ -41,7 +41,7 @@ class ContentTest extends TestCase
 
     public function testGetRequestUrl(): void
     {
-        $this->assertSame('https://the.request.url', $this->contentElement->getRequestUrl());
+        self::assertSame('https://the.request.url', $this->contentElement->getRequestUrl());
     }
 
     public function testGetUid(): void

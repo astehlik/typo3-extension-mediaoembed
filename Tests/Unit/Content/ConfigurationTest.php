@@ -17,7 +17,7 @@ class ConfigurationTest extends TestCase
 
     private Content|MockObject $contentMock;
 
-    private Settings|MockObject $settingsMock;
+    private MockObject|Settings $settingsMock;
 
     protected function setUp(): void
     {
@@ -25,32 +25,6 @@ class ConfigurationTest extends TestCase
         $this->aspectRatioCalculatorMock = $this->createMock(AspectRatioCalculatorInterface::class);
 
         $this->settingsMock = $this->createMock(Settings::class);
-    }
-
-    public static function getMaxWidthHeightDataProvider(): array
-    {
-        return [
-            'settings and content object zero returns zero' => [
-                0,
-                0,
-                0,
-            ],
-            'settings zero, content object set uses content object' => [
-                10,
-                0,
-                10,
-            ],
-            'settings set, content object zero uses settings' => [
-                0,
-                20,
-                20,
-            ],
-            'settings set, content object set uses content object' => [
-                30,
-                20,
-                30,
-            ],
-        ];
     }
 
     public function testGetAspectRatioUsesFallbackFromConfig(): void
@@ -120,6 +94,32 @@ class ConfigurationTest extends TestCase
         self::assertSame($expectedValue, $this->getConfiguration()->getMaxwidth());
     }
 
+    public static function getMaxWidthHeightDataProvider(): iterable
+    {
+        return [
+            'settings and content object zero returns zero' => [
+                0,
+                0,
+                0,
+            ],
+            'settings zero, content object set uses content object' => [
+                10,
+                0,
+                10,
+            ],
+            'settings set, content object zero uses settings' => [
+                0,
+                20,
+                20,
+            ],
+            'settings set, content object set uses content object' => [
+                30,
+                20,
+                30,
+            ],
+        ];
+    }
+
     public function testGetMediaUrlReturnsUrlFromContent(): void
     {
         $this->contentMock->method('getUrl')->willReturn('http://my.test.url');
@@ -131,7 +131,7 @@ class ConfigurationTest extends TestCase
     {
         $this->contentMock->method('getRequestUrl')->willReturn('http://my.request.url');
 
-        $this->assertSame('http://my.request.url', $this->getConfiguration()->getRequestMediaUrl());
+        self::assertSame('http://my.request.url', $this->getConfiguration()->getRequestMediaUrl());
     }
 
     protected function getConfiguration(): Configuration
