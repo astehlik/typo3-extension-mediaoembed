@@ -29,13 +29,14 @@ class ContentRepository
 
     public function createFromContentData(array $contentObjectData): Content
     {
-        $event = $this->eventDispatcher->dispatch(
-            new BeforeMediaUrlResolvedEvent((string)($contentObjectData['tx_mediaoembed_url'] ?? '')),
-        );
+        $url = (string)($contentObjectData['tx_mediaoembed_url'] ?? '');
+
+        $event = $this->eventDispatcher->dispatch(new BeforeMediaUrlResolvedEvent($url));
 
         return new Content(
             (int)($contentObjectData['uid'] ?? 0),
             $event->getUrl(),
+            $event->getRequestUrl(),
             (int)($contentObjectData['tx_mediaoembed_maxheight'] ?? 0),
             (int)($contentObjectData['tx_mediaoembed_maxwidth'] ?? 0),
             (bool)($contentObjectData['tx_mediaoembed_play_related'] ?? true),

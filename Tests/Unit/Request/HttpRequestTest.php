@@ -125,6 +125,7 @@ class HttpRequestTest extends TestCase
         $configurationMock->expects(self::once())->method('getMaxheight')->willReturn($maxHeight);
         $configurationMock->expects(self::once())->method('getMaxwidth')->willReturn($maxWidth);
         $configurationMock->method('getMediaUrl')->willReturn('http://my-media.tld/theurl');
+        $configurationMock->method('getRequestMediaUrl')->willReturn('http://my-media.tld/theurl');
 
         $httpClientFactoryMock = $this->createMock(HttpClientFactory::class);
         $httpClientFactoryMock->expects(self::once())

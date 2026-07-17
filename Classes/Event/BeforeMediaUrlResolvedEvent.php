@@ -16,16 +16,39 @@ namespace Sto\Mediaoembed\Event;
 
 /**
  * Dispatched with the raw media URL from the content element before it is
- * used for provider resolving, so listeners can rewrite it into a form
- * that a provider's URL schemes will match.
+ * used for provider resolving, so listeners can rewrite it.
+ *
+ * The event carries two independent URLs, both initialized to the raw media
+ * URL:
+ *
+ * - `url` is shown to visitors (direct link, consent placeholder text) and
+ *   kept as entered by editors unless a listener decides otherwise.
+ * - `requestUrl` is used for provider resolving and the request to the
+ *   provider, and can be rewritten into a form that a provider's URL schemes
+ *   will match without affecting what is displayed.
  */
 final class BeforeMediaUrlResolvedEvent
 {
-    public function __construct(private string $url) {}
+    private string $requestUrl;
+
+    public function __construct(private string $url)
+    {
+        $this->requestUrl = $url;
+    }
+
+    public function getRequestUrl(): string
+    {
+        return $this->requestUrl;
+    }
 
     public function getUrl(): string
     {
         return $this->url;
+    }
+
+    public function setRequestUrl(string $requestUrl): void
+    {
+        $this->requestUrl = $requestUrl;
     }
 
     public function setUrl(string $url): void

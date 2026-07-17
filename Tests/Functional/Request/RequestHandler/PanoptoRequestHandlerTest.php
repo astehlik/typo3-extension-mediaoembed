@@ -33,7 +33,7 @@ final class PanoptoRequestHandlerTest extends AbstractFunctionalTestCase
     public function testHandleBuildsExpectedIframe(string $mediaUrl, string $expectedUrl): void
     {
         $configurationMock = $this->createMock(Configuration::class);
-        $configurationMock->method('getMediaUrl')->willReturn($mediaUrl);
+        $configurationMock->method('getRequestMediaUrl')->willReturn($mediaUrl);
 
         $provider = new Provider(
             'panopto',

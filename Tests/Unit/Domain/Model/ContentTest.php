@@ -13,7 +13,15 @@ class ContentTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->contentElement = new Content(10, 'https://the.media.url', 12, 43, false, '12:2');
+        $this->contentElement = new Content(
+            10,
+            'https://the.media.url',
+            'https://the.request.url',
+            12,
+            43,
+            false,
+            '12:2'
+        );
     }
 
     public function testGetAspectRatio(): void
@@ -29,6 +37,11 @@ class ContentTest extends TestCase
     public function testGetMaxWidth(): void
     {
         self::assertSame(43, $this->contentElement->getMaxWidth());
+    }
+
+    public function testGetRequestUrl(): void
+    {
+        $this->assertSame('https://the.request.url', $this->contentElement->getRequestUrl());
     }
 
     public function testGetUid(): void

@@ -26,7 +26,7 @@ final class PanoptoRequestHandler implements RequestHandlerInterface
 
         $settings = $provider->getRequestHandlerSettings();
 
-        $mediaUrl = $configuration->getMediaUrl();
+        $mediaUrl = $configuration->getRequestMediaUrl();
         $mediaUrl = $this->urlProcessor->processUrl($mediaUrl, $settings['defaultViewerUrlParameters'] ?? []);
         $view->assign('mediaUrl', $mediaUrl);
 

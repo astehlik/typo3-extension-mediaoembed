@@ -27,6 +27,8 @@ class Content
 
     private bool $playRelated;
 
+    private string $requestUrl;
+
     private int $uid;
 
     private string $url;
@@ -34,6 +36,7 @@ class Content
     public function __construct(
         int $uid,
         string $url,
+        string $requestUrl,
         int $maxHeight = 0,
         int $maxWidth = 0,
         bool $playRelated = true,
@@ -43,6 +46,7 @@ class Content
         $this->maxWidth = $maxWidth;
         $this->uid = $uid;
         $this->url = $url;
+        $this->requestUrl = $requestUrl;
         $this->playRelated = $playRelated;
         $this->aspectRatio = $aspectRatio;
     }
@@ -60,6 +64,11 @@ class Content
     public function getMaxWidth(): int
     {
         return $this->maxWidth;
+    }
+
+    public function getRequestUrl(): string
+    {
+        return $this->requestUrl;
     }
 
     public function getUid(): int

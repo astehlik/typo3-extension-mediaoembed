@@ -127,6 +127,13 @@ class ConfigurationTest extends TestCase
         self::assertSame('http://my.test.url', $this->getConfiguration()->getMediaUrl());
     }
 
+    public function testGetRequestMediaUrlReturnsUrlFromContent(): void
+    {
+        $this->contentMock->method('getRequestUrl')->willReturn('http://my.request.url');
+
+        $this->assertSame('http://my.request.url', $this->getConfiguration()->getRequestMediaUrl());
+    }
+
     protected function getConfiguration(): Configuration
     {
         return new Configuration(
