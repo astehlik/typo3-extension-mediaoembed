@@ -121,7 +121,7 @@ class HttpRequest
         $this->addRequestParameterFormat($parameters);
 
         // Needs to be last parameter
-        $parameters['url'] = $this->configuration->getMediaUrl();
+        $parameters['url'] = $this->configuration->getRequestMediaUrl();
 
         return $parameters;
     }
