@@ -28,10 +28,10 @@ final class YouTubeShortUrlListener
 
     public function __invoke(BeforeMediaUrlResolvedEvent $event): void
     {
-        if (!preg_match(self::URL_PATTERN, $event->getUrl(), $matches)) {
+        if (!preg_match(self::URL_PATTERN, $event->getRequestUrl(), $matches)) {
             return;
         }
 
-        $event->setUrl('https://www.youtube.com/watch?v=' . $matches[3]);
+        $event->setRequestUrl('https://www.youtube.com/watch?v=' . $matches[3]);
     }
 }

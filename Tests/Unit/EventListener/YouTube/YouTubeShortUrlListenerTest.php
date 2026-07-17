@@ -30,18 +30,26 @@ final class YouTubeShortUrlListenerTest extends AbstractUnitTestCase
         $this->listener = new YouTubeShortUrlListener();
     }
 
+    public function testInvokeDoesNotChangeDisplayedUrl(): void
+    {
+        $shortUrl = 'https://www.youtube.com/shorts/abc123';
+        $event = new BeforeMediaUrlResolvedEvent($shortUrl);
+        ($this->listener)($event);
+        $this->assertSame($shortUrl, $event->getUrl());
+    }
+
     public function testInvokeKeepsNonShortUrlUnchanged(): void
     {
         $event = new BeforeMediaUrlResolvedEvent('https://www.youtube.com/watch?v=abc123');
         ($this->listener)($event);
-        $this->assertSame('https://www.youtube.com/watch?v=abc123', $event->getUrl());
+        $this->assertSame('https://www.youtube.com/watch?v=abc123', $event->getRequestUrl());
     }
 
     public function testInvokeKeepsUnrelatedUrlUnchanged(): void
     {
         $event = new BeforeMediaUrlResolvedEvent('https://example.com/shorts/abc123');
         ($this->listener)($event);
-        $this->assertSame('https://example.com/shorts/abc123', $event->getUrl());
+        $this->assertSame('https://example.com/shorts/abc123', $event->getRequestUrl());
     }
 
     #[DataProvider('provideInvokeRewritesShortUrlToWatchUrlCases')]
@@ -49,7 +57,7 @@ final class YouTubeShortUrlListenerTest extends AbstractUnitTestCase
     {
         $event = new BeforeMediaUrlResolvedEvent($url);
         ($this->listener)($event);
-        $this->assertSame($expectedUrl, $event->getUrl());
+        $this->assertSame($expectedUrl, $event->getRequestUrl());
     }
 
     /**

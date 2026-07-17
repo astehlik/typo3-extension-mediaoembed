@@ -181,6 +181,13 @@ class ConfigurationTest extends TestCase
         $this->assertSame(['Processor'], $this->getConfiguration()->getProcessorsForHtml());
     }
 
+    public function testGetRequestMediaUrlReturnsUrlFromContent(): void
+    {
+        $this->contentMock->method('getRequestUrl')->willReturn('http://my.request.url');
+
+        $this->assertSame('http://my.request.url', $this->getConfiguration()->getRequestMediaUrl());
+    }
+
     public function testIsConsentEnabledReturnsValueFromSettings(): void
     {
         $this->settingsMock->method('isConsentEnabled')->willReturn(true);

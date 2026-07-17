@@ -22,6 +22,7 @@ readonly class Content
     public function __construct(
         private int $uid,
         private string $url,
+        private string $requestUrl,
         private int $maxHeight = 0,
         private int $maxWidth = 0,
         private bool $playRelated = true,
@@ -41,6 +42,11 @@ readonly class Content
     public function getMaxWidth(): int
     {
         return $this->maxWidth;
+    }
+
+    public function getRequestUrl(): string
+    {
+        return $this->requestUrl;
     }
 
     public function getUid(): int

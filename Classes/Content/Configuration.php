@@ -15,6 +15,7 @@ namespace Sto\Mediaoembed\Content;
  *                                                                        */
 
 use Sto\Mediaoembed\Domain\Model\Content;
+use Sto\Mediaoembed\Event\BeforeMediaUrlResolvedEvent;
 use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
 
 /**
@@ -128,6 +129,17 @@ class Configuration
     public function getProcessorsForHtml(): array
     {
         return $this->settings->getProcessorsForHtml();
+    }
+
+    /**
+     * The URL that is actually used to resolve a provider and to build the
+     * request to it. Defaults to {@see getMediaUrl()} but may differ from it
+     * if a {@see BeforeMediaUrlResolvedEvent} listener
+     * rewrote it.
+     */
+    public function getRequestMediaUrl(): string
+    {
+        return $this->getContent()->getRequestUrl();
     }
 
     public function isConsentEnabled(): bool

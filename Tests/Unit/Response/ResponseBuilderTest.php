@@ -129,7 +129,7 @@ class ResponseBuilderTest extends AbstractUnitTestCase
     private function createConfiguration(): Configuration
     {
         return new Configuration(
-            new Content(12, 'https://the-url.tld/embed'),
+            new Content(12, 'https://the-url.tld/embed', 'https://the-url.tld/embed'),
             new Settings([]),
             $this->createMock(AspectRatioCalculatorInterface::class),
         );

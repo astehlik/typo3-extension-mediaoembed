@@ -197,7 +197,7 @@ class OembedController extends ActionController
         $response = null;
         $request = null;
 
-        $url = $configuration->getMediaUrl();
+        $url = $configuration->getRequestMediaUrl();
         $this->checkIfUrlIsValid($url);
 
         $providerResolver = new ProviderResolver($this->providerRepository->findAll());

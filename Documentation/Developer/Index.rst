@@ -194,20 +194,27 @@ BeforeMediaUrlResolvedEvent
 `Sto\\Mediaoembed\\Event\\BeforeMediaUrlResolvedEvent`
 
 Dispatched with the raw media URL taken from the content element, before it is used to
-resolve a matching provider (see :ref:`configuration-manage-providers`). Listeners can
-rewrite the URL, for example to translate an alternative or shortened URL format into one
-that matches a provider's :typoscript:`urlRegexes` or :typoscript:`urlSchemes`.
+resolve a matching provider (see :ref:`configuration-manage-providers`).
+
+The event carries two independent URLs, both initialized to the raw media URL from the
+content element:
+
+*   `url`, exposed via `getUrl()`/`setUrl(string $url)`, ends up in `Configuration::getMediaUrl()`
+    and is what templates show to visitors (the direct link, the consent placeholder text).
+*   `requestUrl`, exposed via `getRequestUrl()`/`setRequestUrl(string $requestUrl)`, ends up
+    in `Configuration::getRequestMediaUrl()` and is what is used for provider resolving and
+    for the request to the provider's endpoint.
+
+Listeners can rewrite either or both independently. Typically only `requestUrl` is rewritten,
+for example to translate an alternative or shortened URL format into one that matches a
+provider's :typoscript:`urlRegexes` or :typoscript:`urlSchemes`, while `url` is left as entered
+so visitors keep seeing the URL they recognize.
 
 The extension itself uses this event to translate YouTube Shorts URLs
 (`https://www.youtube.com/shorts/{id}`) into regular watch URLs
 (`https://www.youtube.com/watch?v={id}`) so that they are still handled by the bundled
-`youtube` provider.
-
-The event provides two methods:
-
-*   `getUrl(): string` returns the current media URL.
-*   `setUrl(string $url): void` overwrites the media URL that will be used for provider
-    resolving and for the request to the provider's endpoint.
+`youtube` provider. It only rewrites `requestUrl`, so the direct link and consent text still
+show the original Shorts URL.
 
 Example listener that rewrites a fictional shortened URL format:
 
@@ -227,10 +234,12 @@ Example listener that rewrites a fictional shortened URL format:
     {
         public function __invoke(BeforeMediaUrlResolvedEvent $event): void
         {
-            if (!str_contains($event->getUrl(), 'short.example.com/')) {
+            if (!str_contains($event->getRequestUrl(), 'short.example.com/')) {
                 return;
             }
 
-            $event->setUrl(str_replace('short.example.com/', 'example.com/videos/', $event->getUrl()));
+            $event->setRequestUrl(
+                str_replace('short.example.com/', 'example.com/videos/', $event->getRequestUrl()),
+            );
         }
     }
