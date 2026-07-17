@@ -39,11 +39,19 @@
 	},
 	"config": {
 		"allow-plugins": {
-			"typo3/cms-composer-installers": true,
+			"ergebnis/composer-normalize": true,
 			"typo3/class-alias-loader": true,
-			"ergebnis/composer-normalize": true
+			"typo3/cms-composer-installers": true
 		},
 		"bin-dir": ".Build/bin",
+		"policy": {
+			"advisories": {
+				"ignore": [
+					"typo3/cms-core",
+					"typo3/cms-backend"
+				]
+			}
+		},
 		"vendor-dir": ".Build/vendor"
 	},
 	"extra": {
