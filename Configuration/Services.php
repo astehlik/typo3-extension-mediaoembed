@@ -24,14 +24,6 @@ return static function (ContainerConfigurator $configurator): void {
                 'identifier' => 'mediaoembedAfterFormEnginePageInitializedEvent',
             ]
         )
-        ->set(YouTubeShortUrlListener::class, YouTubeShortUrlListener::class)
-        ->tag(
-            'event.listener',
-            [
-                'event' => BeforeMediaUrlResolvedEvent::class,
-                'identifier' => 'mediaoembed/youtube-short-url',
-            ]
-        )
         ->load('Sto\Mediaoembed\Controller\\', __DIR__ . '/../Classes/Controller/')
         ->load('Sto\Mediaoembed\Domain\Repository\\', __DIR__ . '/../Classes/Domain/Repository/')
         ->load('Sto\Mediaoembed\EventListener\\', __DIR__ . '/../Classes/EventListener/')
@@ -41,5 +33,13 @@ return static function (ContainerConfigurator $configurator): void {
         ->set(ResponseBuilder::class, ResponseBuilder::class)
         ->load('Sto\Mediaoembed\Service\\', __DIR__ . '/../Classes/Service/')
         ->set(AspectRatioCalculatorInterface::class, AspectRatioCalculator::class)
-        ->load('Sto\Mediaoembed\ViewHelpers\\', __DIR__ . '/../Classes/ViewHelpers/');
+        ->load('Sto\Mediaoembed\ViewHelpers\\', __DIR__ . '/../Classes/ViewHelpers/')
+        ->set(YouTubeShortUrlListener::class, YouTubeShortUrlListener::class)
+        ->tag(
+            'event.listener',
+            [
+                'event' => BeforeMediaUrlResolvedEvent::class,
+                'identifier' => 'mediaoembed/youtube-short-url',
+            ]
+        );
 };
