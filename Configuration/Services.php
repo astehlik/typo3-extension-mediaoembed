@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use Sto\Mediaoembed\Backend\EditDocumentControllerHooks;
 use Sto\Mediaoembed\Content\ConfigurationFactory;
+use Sto\Mediaoembed\Event\BeforeMediaUrlResolvedEvent;
+use Sto\Mediaoembed\EventListener\YouTube\YouTubeShortUrlListener;
 use Sto\Mediaoembed\Response\ResponseBuilder;
 use Sto\Mediaoembed\Service\AspectRatioCalculator;
 use Sto\Mediaoembed\Service\AspectRatioCalculatorInterface;
@@ -20,6 +22,14 @@ return static function (ContainerConfigurator $configurator): void {
             [
                 'event' => AfterFormEnginePageInitializedEvent::class,
                 'identifier' => 'mediaoembedAfterFormEnginePageInitializedEvent',
+            ]
+        )
+        ->set(YouTubeShortUrlListener::class, YouTubeShortUrlListener::class)
+        ->tag(
+            'event.listener',
+            [
+                'event' => BeforeMediaUrlResolvedEvent::class,
+                'identifier' => 'mediaoembed/youtube-short-url',
             ]
         )
         ->load('Sto\Mediaoembed\Controller\\', __DIR__ . '/../Classes/Controller/')

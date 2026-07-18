@@ -15,13 +15,11 @@ namespace Sto\Mediaoembed\EventListener\YouTube;
  *                                                                        */
 
 use Sto\Mediaoembed\Event\BeforeMediaUrlResolvedEvent;
-use TYPO3\CMS\Core\Attribute\AsEventListener;
 
 /**
  * Rewrites YouTube Shorts URLs to regular watch URLs so that they match
  * the youtube provider's URL schemes.
  */
-#[AsEventListener(identifier: 'mediaoembed/youtube-short-url')]
 final class YouTubeShortUrlListener
 {
     private const URL_PATTERN = '~^https?://((m|www)\.)?youtube\.com/shorts/([^/?#]+)~i';
